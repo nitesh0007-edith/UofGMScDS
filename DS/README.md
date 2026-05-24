@@ -1,4 +1,4 @@
-# Intelligent Data Storage & Systems (IDSS)
+# Introduction to Data Science & Systems (IDSS)
 
 **Course:** Intelligent Data Storage & Systems (MSc Data Science, University of Glasgow)
 
