@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sampling & Monte Carlo Methods - A Beginner's Guide</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; color: #2c3e50; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.1); padding: 50px; }
+        h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 40px; font-style: italic; }
+        h2 { color: #34495e; font-size: 2em; margin-top: 50px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #667eea; }
+        h3 { color: #34495e; font-size: 1.5em; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 20px; font-size: 1.1em; text-align: justify; }
+        .definition-box { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 5px solid #667eea; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .definition-box h4 { color: #667eea; font-size: 1.3em; margin-bottom: 15px; }
+        .example-box { background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%); border-left: 5px solid #f5576c; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .example-box h4 { color: #f5576c; font-size: 1.3em; margin-bottom: 15px; }
+        .key-point { background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%); border-left: 5px solid #4facfe; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .key-point h4 { color: #4facfe; font-size: 1.3em; margin-bottom: 15px; }
+        .formula { background: #f8f9fa; padding: 25px; margin: 25px 0; border-radius: 10px; border: 2px dashed #667eea; text-align: center; font-size: 1.2em; }
+        ul, ol { margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; font-size: 1.05em; }
+        .visual-example { background: #ecf0f1; padding: 20px; margin: 25px 0; border-radius: 10px; font-family: 'Courier New', monospace; }
+        .toc { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 30px 0; }
+        .toc h3 { color: #667eea; margin-top: 0; }
+        .toc a { color: #3498db; text-decoration: none; transition: color 0.3s; }
+        .toc a:hover { color: #667eea; }
+        .print-button { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 25px; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); transition: transform 0.3s; z-index: 1000; }
+        .print-button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6); }
+        @media print { body { background: white; } .container { box-shadow: none; } .print-button { display: none; } }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Sampling & Monte Carlo Methods</h1>
+        <p class="subtitle">Using Randomness to Solve Complex Problems</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: The Power of Randomness</a></li>
+                <li><a href="#sampling">Random Sampling</a></li>
+                <li><a href="#monte-carlo">Monte Carlo Estimation</a></li>
+                <li><a href="#law-large-numbers">Law of Large Numbers</a></li>
+                <li><a href="#applications">Real-World Applications</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: The Power of Randomness</h2>
+
+        <p>Imagine you want to estimate the value of π (pi). Instead of using calculus, you could:</p>
+
+        <div class="visual-example">
+            1. Draw a square with side length 2<br>
+            2. Inscribe a circle of radius 1 inside it<br>
+            3. Randomly throw darts at the square<br>
+            4. Count how many land inside the circle<br>
+            5. Estimate: π ≈ 4 × (darts in circle) / (total darts)
+        </div>
+
+        <p>This is <strong>Monte Carlo estimation</strong> - using random sampling to solve mathematical problems!</p>
+
+        <h2 id="sampling">🎲 Random Sampling</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Random Sample</h4>
+            <p>A <strong>random sample</strong> is a set of values drawn from a probability distribution, where each value is independent and identically distributed (i.i.d.).</p>
+
+            <div class="formula">
+                \[X_1, X_2, \ldots, X_n \sim P(X)\]
+            </div>
+
+            <p>Read as: "\(X_1\) through \(X_n\) are drawn from distribution \(P(X)\)"</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example 1: Sampling from a Fair Die</h4>
+            <p>Rolling a die 10 times:</p>
+
+            <div class="visual-example">
+                Possible outcomes: {1, 2, 3, 4, 5, 6}<br>
+                Each has probability: 1/6<br><br>
+
+                Sample: [3, 1, 6, 2, 5, 3, 4, 1, 6, 2]<br><br>
+
+                Properties:<br>
+                - Each roll is independent<br>
+                - Each follows same distribution (uniform over 1-6)
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>🎯 Example 2: Sampling from PMF</h4>
+            <p>Submarine location PMF (256 grid squares):</p>
+
+            <p><strong>How to sample:</strong></p>
+            <ol>
+                <li>Generate random number \(u\) between 0 and 1</li>
+                <li>Find which square's cumulative probability contains \(u\)</li>
+                <li>Return that square as the sample</li>
+            </ol>
+
+            <div class="formula">
+                \[P(\text{Sample} = x_i) = P(X = x_i)\]
+            </div>
+        </div>
+
+        <h2 id="monte-carlo">🎰 Monte Carlo Estimation</h2>
+
+        <div class="definition-box">
+            <h4>Monte Carlo Method</h4>
+            <p>Use random sampling to estimate quantities that are difficult to compute analytically.</p>
+
+            <p><strong>Basic Idea:</strong></p>
+            <div class="formula">
+                \[\text{True Value} \approx \frac{1}{n}\sum_{i=1}^{n} f(X_i)\]
+            </div>
+
+            <p>Where \(X_1, \ldots, X_n\) are random samples</p>
+        </div>
+
+        <h3>Estimating Expected Values</h3>
+
+        <div class="definition-box">
+            <h4>Monte Carlo Expectation</h4>
+            <p>To estimate \(E[f(X)]\):</p>
+
+            <ol>
+                <li>Draw \(n\) samples: \(X_1, X_2, \ldots, X_n \sim P(X)\)</li>
+                <li>Compute: \(\hat{\mu} = \frac{1}{n}\sum_{i=1}^{n} f(X_i)\)</li>
+            </ol>
+
+            <div class="formula">
+                \[E[f(X)] \approx \frac{1}{n}\sum_{i=1}^{n} f(X_i)\]
+            </div>
+
+            <p>As \(n \to \infty\), the estimate converges to the true value!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Estimating π</h4>
+
+            <p><strong>Setup:</strong></p>
+            <ul>
+                <li>Unit circle: \(x^2 + y^2 \leq 1\)</li>
+                <li>Enclosing square: \(-1 \leq x, y \leq 1\)</li>
+                <li>Area of circle: \(\pi r^2 = \pi\)</li>
+                <li>Area of square: \(4\)</li>
+                <li>Ratio: \(\pi/4\)</li>
+            </ul>
+
+            <p><strong>Monte Carlo Procedure:</strong></p>
+            <ol>
+                <li>Sample random points \((x, y)\) uniformly in \([-1, 1] \times [-1, 1]\)</li>
+                <li>Check if \(x^2 + y^2 \leq 1\) (inside circle)</li>
+                <li>Estimate: \(\pi \approx 4 \times \frac{\text{points in circle}}{\text{total points}}\)</li>
+            </ol>
+
+            <div class="visual-example">
+                With 1,000 samples:<br>
+                Points in circle: 786<br>
+                π ≈ 4 × (786/1000) = 3.144<br><br>
+
+                With 10,000 samples:<br>
+                Points in circle: 7,854<br>
+                π ≈ 4 × (7854/10000) = 3.1416<br><br>
+
+                True value: π = 3.14159...<br>
+                More samples → Better estimate!
+            </div>
+        </div>
+
+        <h2 id="law-large-numbers">📊 Law of Large Numbers</h2>
+
+        <div class="definition-box">
+            <h4>Law of Large Numbers (LLN)</h4>
+            <p>As sample size increases, the sample average converges to the expected value.</p>
+
+            <div class="formula">
+                \[\lim_{n \to \infty} \frac{1}{n}\sum_{i=1}^{n} X_i = E[X]\]
+            </div>
+
+            <p><strong>In words:</strong> With enough samples, the average of your samples will equal the true mean!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>💡 Why Monte Carlo Works</h4>
+            <p>The Law of Large Numbers <strong>guarantees</strong> that Monte Carlo estimates converge to the true value as we take more samples.</p>
+
+            <p><strong>Convergence Rate:</strong></p>
+            <div class="formula">
+                \[\text{Error} \propto \frac{1}{\sqrt{n}}\]
+            </div>
+
+            <p>To cut error in half, you need 4× more samples!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Estimating Mean of a Die</h4>
+
+            <p><strong>True mean:</strong></p>
+            <div class="formula">
+                \[E[X] = \frac{1 + 2 + 3 + 4 + 5 + 6}{6} = 3.5\]
+            </div>
+
+            <p><strong>Monte Carlo Estimates:</strong></p>
+
+            <div class="visual-example">
+                10 rolls: [4, 2, 6, 1, 3, 5, 4, 2, 6, 3]<br>
+                Average = 3.6 (error = 0.1)<br><br>
+
+                100 rolls average: 3.52 (error = 0.02)<br><br>
+
+                1,000 rolls average: 3.498 (error = 0.002)<br><br>
+
+                10,000 rolls average: 3.5001 (error ≈ 0)
+            </div>
+        </div>
+
+        <h2 id="applications">🌍 Real-World Applications</h2>
+
+        <div class="example-box">
+            <h4>🎯 Application 1: Estimating Probabilities</h4>
+
+            <p><strong>Problem:</strong> What's the probability of getting exactly 3 heads in 10 coin flips?</p>
+
+            <p><strong>Analytical Solution:</strong></p>
+            <div class="formula">
+                \[P(X = 3) = \binom{10}{3} \left(\frac{1}{2}\right)^{10} = \frac{120}{1024} \approx 0.117\]
+            </div>
+
+            <p><strong>Monte Carlo Solution:</strong></p>
+            <ol>
+                <li>Simulate 10,000 trials of flipping 10 coins</li>
+                <li>Count how many trials had exactly 3 heads</li>
+                <li>Estimate = (count with 3 heads) / 10,000</li>
+            </ol>
+
+            <div class="visual-example">
+                Trials with exactly 3 heads: 1,173<br>
+                Estimate: 1,173 / 10,000 = 0.1173<br>
+                True value: 0.117<br>
+                Very close!
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>💰 Application 2: Pricing Options (Finance)</h4>
+
+            <p>Stock options are priced using Monte Carlo simulation:</p>
+
+            <ol>
+                <li>Simulate thousands of possible stock price paths</li>
+                <li>Calculate option payoff for each path</li>
+                <li>Average the payoffs</li>
+                <li>Discount to present value</li>
+            </ol>
+
+            <p>This is the industry standard for complex derivatives!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎮 Application 3: Game AI</h4>
+
+            <p><strong>Monte Carlo Tree Search (MCTS):</strong></p>
+
+            <ol>
+                <li>From current game state, randomly play out to the end</li>
+                <li>Repeat many times</li>
+                <li>Choose move that led to most wins</li>
+            </ol>
+
+            <p>Used in AlphaGo to master Go!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🏥 Application 4: Medical Research</h4>
+
+            <p><strong>Clinical Trial Simulation:</strong></p>
+
+            <p>Before running expensive trials, simulate:</p>
+            <ul>
+                <li>Patient outcomes under different treatments</li>
+                <li>Statistical power of the study</li>
+                <li>Required sample sizes</li>
+            </ul>
+
+            <p>Saves time and resources!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🔍 Application 5: Submarine Search</h4>
+
+            <p><strong>Estimating Search Effectiveness:</strong></p>
+
+            <ol>
+                <li>Sample possible submarine locations from posterior</li>
+                <li>For each location, simulate search outcomes</li>
+                <li>Estimate probability of finding submarine</li>
+                <li>Choose search strategy with highest success rate</li>
+            </ol>
+
+            <div class="visual-example">
+                After 1,000 simulated searches:<br>
+                - Strategy A: 65% success<br>
+                - Strategy B: 72% success<br>
+                → Choose Strategy B!
+            </div>
+        </div>
+
+        <h3>Importance Sampling</h3>
+
+        <div class="definition-box">
+            <h4>Advanced: Importance Sampling</h4>
+            <p>Sample from a different distribution to reduce variance:</p>
+
+            <div class="formula">
+                \[E_P[f(X)] = E_Q\left[f(X) \frac{P(X)}{Q(X)}\right]\]
+            </div>
+
+            <p><strong>Why?</strong> Sample more from important regions, less from unimportant ones.</p>
+
+            <p><strong>Example:</strong> Estimating rare event probabilities - sample more from the rare region!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <p><strong>Random Sampling:</strong></p>
+            <ul>
+                <li>Draw independent samples from a distribution</li>
+                <li>Each sample follows the same distribution</li>
+            </ul>
+
+            <p><strong>Monte Carlo Estimation:</strong></p>
+            <div class="formula">
+                \[E[f(X)] \approx \frac{1}{n}\sum_{i=1}^{n} f(X_i)\]
+            </div>
+            <ul>
+                <li>Use random samples to estimate expectations</li>
+                <li>Converges to true value by Law of Large Numbers</li>
+                <li>Error decreases as \(\frac{1}{\sqrt{n}}\)</li>
+            </ul>
+
+            <p><strong>Applications:</strong></p>
+            <ul>
+                <li>Estimating probabilities and integrals</li>
+                <li>Financial modeling and risk analysis</li>
+                <li>Game AI and decision making</li>
+                <li>Scientific simulations</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand sampling, explore:</p>
+            <ul>
+                <li><strong>Multivariate Distributions:</strong> Sampling in multiple dimensions</li>
+                <li><strong>MCMC Methods:</strong> Markov Chain Monte Carlo</li>
+                <li><strong>Variance Reduction:</strong> Better Monte Carlo techniques</li>
+                <li><strong>Bootstrap:</strong> Resampling for statistical inference</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

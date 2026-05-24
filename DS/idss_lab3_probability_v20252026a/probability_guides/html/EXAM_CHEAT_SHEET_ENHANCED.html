@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Exam Cheat Sheet - Complete Reference with Exam Tips</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 8mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px;
+        }
+
+        .page {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 12mm;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22pt;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 11pt;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .exam-notice {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: 3px solid #f39c12;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #c0392b;
+            font-size: 10pt;
+        }
+
+        .columns {
+            column-count: 2;
+            column-gap: 15px;
+            column-rule: 2px solid #667eea;
+        }
+
+        .section {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 4px solid;
+            border-radius: 5px;
+            page-break-inside: avoid;
+        }
+
+        .section.official {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ffe5e5 0%, #fff0f0 100%);
+        }
+        .section.blue { border-color: #667eea; }
+        .section.purple { border-color: #764ba2; }
+        .section.pink { border-color: #f5576c; }
+        .section.cyan { border-color: #4facfe; }
+        .section.green { border-color: #43e97b; }
+        .section.orange { border-color: #f39c12; }
+        .section.red { border-color: #e74c3c; }
+        .section.teal { border-color: #1abc9c; }
+
+        h2 {
+            font-size: 11pt;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 2px;
+        }
+
+        h3 {
+            font-size: 9pt;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        .formula {
+            background: white;
+            padding: 5px;
+            margin: 4px 0;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 8.5pt;
+        }
+
+        .formula-name {
+            font-size: 7pt;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .meaning {
+            background: #fff9e6;
+            padding: 5px;
+            margin: 4px 0;
+            border-radius: 3px;
+            font-size: 8pt;
+            border-left: 3px solid #f39c12;
+        }
+
+        .exam-use {
+            background: #e8f5e9;
+            padding: 5px;
+            margin: 4px 0;
+            border-radius: 3px;
+            font-size: 8pt;
+            border-left: 3px solid #4caf50;
+        }
+
+        .compact-list {
+            margin: 4px 0 4px 12px;
+            padding: 0;
+        }
+
+        .compact-list li {
+            margin: 2px 0;
+            font-size: 8pt;
+            line-height: 1.3;
+        }
+
+        .key-point {
+            background: #fff3cd;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border-left: 3px solid #ffc107;
+            font-size: 8pt;
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border-left: 3px solid #dc3545;
+            font-size: 8pt;
+        }
+
+        .tip-box {
+            background: #d1ecf1;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border-left: 3px solid #17a2b8;
+            font-size: 8pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5px 0;
+            font-size: 7.5pt;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 7pt;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .badge.official {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge.exam {
+            background: #27ae60;
+            color: white;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .page {
+                box-shadow: none;
+                padding: 5mm;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+
+        .example-mini {
+            background: #f0f0f0;
+            padding: 4px;
+            margin: 3px 0;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>🎯 COMPLETE PROBABILITY EXAM CHEAT SHEET</h1>
+        <p class="subtitle">Official Formulas + What They Mean + How to Use Them</p>
+
+        <div class="exam-notice">
+            ⚡ EXAM DAY GUIDE ⚡ All Official Crib Sheet Formulas with Practical Applications
+        </div>
+
+        <div class="columns">
+
+            <!-- ==================== SECTION 1: AXIOMS (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>1️⃣ Axioms of Probability <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Boundedness</h3>
+                <div class="formula">
+                    \[0 \leq P(A) \leq 1\]
+                </div>
+                <div class="meaning">
+                    <strong>What it means:</strong> All probabilities are between 0 (impossible) and 1 (certain).
+                </div>
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong> Check if given probability is valid. If P(X) = 1.2 or P(Y) = -0.3, it's INVALID!
+                </div>
+
+                <h3>📌 Unitarity (Normalization)</h3>
+                <div class="formula">
+                    \[\sum_x P(x) = 1\]
+                </div>
+                <div class="meaning">
+                    <strong>What it means:</strong> All possible outcomes must sum to 100%.
+                </div>
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Verify PMF is valid</li>
+                        <li>Find missing probability: P(C) = 1 - P(A) - P(B)</li>
+                        <li>Check your answers sum to 1</li>
+                    </ul>
+                </div>
+
+                <h3>📌 Sum Rule</h3>
+                <div class="formula">
+                    \[P(A \vee B) = P(A) + P(B) - P(A \wedge B)\]
+                </div>
+                <div class="meaning">
+                    <strong>What it means:</strong> Probability of "A OR B" = subtract overlap to avoid double-counting.
+                </div>
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong> When asked "at least one event happens". If A and B are mutually exclusive, P(A∧B)=0, so just add.
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 2: CONDITIONAL PROBABILITY (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>2️⃣ Conditional Probability <span class="badge official">OFFICIAL</span></h2>
+
+                <div class="formula">
+                    \[P(A|B) = \frac{P(A \wedge B)}{P(B)} = \frac{P(A,B)}{P(B)}\]
+                </div>
+                <div class="meaning">
+                    <strong>What it means:</strong> Probability of A <em>given</em> B happened. Restricts sample space to only cases where B is true.
+                </div>
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Problems with "given that..."</li>
+                        <li>Update probabilities with new info</li>
+                        <li>Rearrange to find P(A,B) = P(A|B)·P(B)</li>
+                    </ul>
+                </div>
+
+                <div class="example-mini">
+                    Example: P(Rain|Cloudy) = P(Rain,Cloudy)/P(Cloudy)
+                </div>
+
+                <div class="warning-box">
+                    ⚠️ <strong>Common mistake:</strong> P(A|B) ≠ P(B|A) in general!
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 3: MARGINAL PROBABILITY (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>3️⃣ Marginal Probability <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Discrete</h3>
+                <div class="formula">
+                    \[P(X) = \sum_y P(X,Y)\]
+                </div>
+
+                <h3>📌 Continuous</h3>
+                <div class="formula">
+                    \[P(X) = \int_y P(X,Y) \, dy\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> "Sum out" or "integrate out" other variables to get probability of X alone.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Given joint P(X,Y) table, sum rows/cols for marginals</li>
+                        <li>Convert joint distribution to single variable</li>
+                        <li>Use with Law of Total Probability</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    💡 <strong>Tip:</strong> In joint probability tables, marginals are the row/column totals!
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 4: BAYES RULE (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>4️⃣ Bayes' Rule <span class="badge official">OFFICIAL</span></h2>
+
+                <div class="formula">
+                    \[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Flip conditional probabilities! Go from P(B|A) to P(A|B).
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li><strong>Medical test:</strong> P(Disease|Positive) from P(Positive|Disease)</li>
+                        <li><strong>Spam filter:</strong> P(Spam|Word) from P(Word|Spam)</li>
+                        <li><strong>Diagnostic:</strong> Update beliefs with evidence</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    <strong>Expanded form when P(B) unknown:</strong>
+                    \[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B|A) \cdot P(A) + P(B|\neg A) \cdot P(\neg A)}\]
+                </div>
+
+                <div class="example-mini">
+                    Pattern: Know P(Test+|Sick), want P(Sick|Test+)
+                    → Use Bayes Rule!
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 5: INTEGRATION TO UNITY (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>5️⃣ Integration to Unity <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Discrete</h3>
+                <div class="formula">
+                    \[\sum_i f_X(x_i) = 1\]
+                </div>
+
+                <h3>📌 Continuous</h3>
+                <div class="formula">
+                    \[\int_{-\infty}^{\infty} f_X(x) \, dx = 1\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> PDF/PMF must integrate/sum to 1 (total probability = 100%).
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Find normalizing constant in PDF</li>
+                        <li>Verify if function is valid PDF/PMF</li>
+                        <li>Find unknown parameter c in f(x) = c·g(x)</li>
+                    </ul>
+                </div>
+
+                <div class="example-mini">
+                    If f(x) = c·x² on [0,1], find c:
+                    ∫₀¹ c·x² dx = 1 → c·[x³/3]₀¹ = 1 → c = 3
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 6: EXPECTATION (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>6️⃣ Expectation <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Discrete</h3>
+                <div class="formula">
+                    \[E[X] = \sum_x x \cdot f_X(x)\]
+                </div>
+
+                <h3>📌 Continuous</h3>
+                <div class="formula">
+                    \[E[X] = \int_{-\infty}^{\infty} x \cdot f_X(x) \, dx\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Average value if experiment repeated infinitely. "Center of mass" of distribution.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Calculate mean/average</li>
+                        <li>Find expected payoff/cost/value</li>
+                        <li>Use E[X] = μ for normal distributions</li>
+                    </ul>
+                </div>
+
+                <h3>📌 Expectation of Function g(X)</h3>
+
+                <div class="formula">
+                    \[E[g(X)] = \sum_x f_X(x) \cdot g(x) \quad \text{(discrete)}\]
+                </div>
+
+                <div class="formula">
+                    \[E[g(X)] = \int_{-\infty}^{\infty} f_X(x) \cdot g(x) \, dx \quad \text{(continuous)}\]
+                </div>
+
+                <div class="warning-box">
+                    ⚠️ <strong>Critical:</strong> E[g(X)] ≠ g(E[X]) in general!
+                    Must apply g FIRST, then take expectation.
+                </div>
+
+                <div class="example-mini">
+                    E[X²] ≠ (E[X])²
+                    Need E[X²] for variance: Var(X) = E[X²] - (E[X])²
+                </div>
+
+                <div class="key-point">
+                    <strong>Linearity:</strong> E[aX + b] = aE[X] + b
+                    <br><strong>Sum:</strong> E[X + Y] = E[X] + E[Y] (always!)
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 7: ODDS & LOGIT (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>7️⃣ Odds and Logit <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Odds</h3>
+                <div class="formula">
+                    \[\text{odds} = \frac{p}{1-p}\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Ratio of "happens" to "doesn't happen". Alternative to probability.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Convert probability ↔ odds</li>
+                        <li>Interpret betting odds</li>
+                        <li>Logistic regression problems</li>
+                    </ul>
+                </div>
+
+                <h3>📌 Logit (Log-Odds)</h3>
+                <div class="formula">
+                    \[\text{logit}(p) = \log\left(\frac{p}{1-p}\right)\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Log of odds. Maps [0,1] to (-∞,+∞).
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong> Logistic regression link function. If logit(p) = 0, then p = 0.5.
+                </div>
+
+                <table style="margin-top: 5px;">
+                    <tr><th>p</th><th>odds</th><th>logit</th><th>Meaning</th></tr>
+                    <tr><td>0.5</td><td>1</td><td>0</td><td>Even odds</td></tr>
+                    <tr><td>0.75</td><td>3</td><td>1.1</td><td>3:1 favorable</td></tr>
+                    <tr><td>0.25</td><td>0.33</td><td>-1.1</td><td>1:3 against</td></tr>
+                </table>
+            </div>
+
+            <!-- ==================== SECTION 8: CDF (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>8️⃣ Cumulative Distribution <span class="badge official">OFFICIAL</span></h2>
+
+                <div class="formula">
+                    \[F_X(x) = \int_{-\infty}^x f_X(t) \, dt = P(X \leq x)\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Probability that X is at most x. Accumulates probability from -∞ to x.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>P(X ≤ a) = F(a)</li>
+                        <li>P(X > a) = 1 - F(a)</li>
+                        <li>P(a < X ≤ b) = F(b) - F(a)</li>
+                        <li>Recover PDF: f(x) = dF/dx</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    <strong>Properties:</strong>
+                    <ul class="compact-list">
+                        <li>F(-∞) = 0</li>
+                        <li>F(+∞) = 1</li>
+                        <li>Non-decreasing</li>
+                        <li>Right-continuous</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 9: NORMAL DISTRIBUTION (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>9️⃣ Normal Distribution <span class="badge official">OFFICIAL</span></h2>
+
+                <div class="formula">
+                    \[f_X(x) = \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]
+                    <div class="formula-name">where Z = σ√(2π)</div>
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Bell curve distribution. Characterized by mean μ (center) and variance σ² (spread).
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Recognize normal: X ~ N(μ, σ²)</li>
+                        <li>68% within μ ± σ</li>
+                        <li>95% within μ ± 2σ</li>
+                        <li>99.7% within μ ± 3σ</li>
+                        <li>Standardize: Z = (X-μ)/σ ~ N(0,1)</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    💡 <strong>Quick check:</strong> If asked for P(X < μ), answer is 0.5 (symmetry!)
+                </div>
+
+                <div class="example-mini">
+                    IQ ~ N(100, 15²)
+                    P(85 < IQ < 115) ≈ 68% (within 1 std dev)
+                </div>
+            </div>
+
+            <!-- ==================== SECTION 10: MEAN & VARIANCE (OFFICIAL) ==================== -->
+            <div class="section official">
+                <h2>🔟 Mean and Variance <span class="badge official">OFFICIAL</span></h2>
+
+                <h3>📌 Sample Mean</h3>
+                <div class="formula">
+                    \[\hat{\mu} = \frac{1}{N} \sum_{i=1}^N x_i\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Average of your data. Hat (^) indicates it's an estimate.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Calculate from data: add all, divide by N</li>
+                        <li>Estimates population mean μ</li>
+                        <li>Use in MLE for normal distribution</li>
+                    </ul>
+                </div>
+
+                <h3>📌 Sample Variance</h3>
+                <div class="formula">
+                    \[\hat{\sigma}^2 = \frac{1}{N} \sum_{i=1}^N (x_i - \hat{\mu})^2\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Average squared deviation from mean. Measures spread.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Exam use:</strong>
+                    <ul class="compact-list">
+                        <li>Step 1: Calculate μ̂</li>
+                        <li>Step 2: Find (xᵢ - μ̂)² for each point</li>
+                        <li>Step 3: Average these squared deviations</li>
+                        <li>Standard deviation: σ̂ = √(σ̂²)</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    ⚠️ <strong>Note:</strong> Divide by N (biased) or N-1 (unbiased). Check problem statement!
+                </div>
+
+                <div class="key-point">
+                    <strong>Alternative formula:</strong> Var(X) = E[X²] - (E[X])²
+                    <br>Easier when you already know E[X] and E[X²]
+                </div>
+            </div>
+
+            <!-- ==================== EXAM STRATEGY SECTION ==================== -->
+            <div class="section blue">
+                <h2>📝 EXAM STRATEGY GUIDE</h2>
+
+                <div class="tip-box">
+                    <strong>🎯 Problem Type Recognition:</strong>
+                    <ul class="compact-list">
+                        <li><strong>"Given that..."</strong> → Conditional probability P(A|B)</li>
+                        <li><strong>"Find probability of..."</strong> → Use PMF/PDF or CDF</li>
+                        <li><strong>"Reverse the condition"</strong> → Bayes' Rule</li>
+                        <li><strong>"Average" or "expected"</strong> → Expectation E[X]</li>
+                        <li><strong>"Spread" or "variability"</strong> → Variance</li>
+                        <li><strong>"At least one"</strong> → Sum rule or complement</li>
+                        <li><strong>"Both happen"</strong> → Joint probability P(A,B)</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    <strong>✓ Always check:</strong>
+                    <ul class="compact-list">
+                        <li>Does probability sum/integrate to 1?</li>
+                        <li>Are all probabilities in [0,1]?</li>
+                        <li>Did I use the right formula?</li>
+                        <li>Do units make sense?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ==================== COMMON EXAM PATTERNS ==================== -->
+            <div class="section purple">
+                <h2>🔄 Common Exam Patterns</h2>
+
+                <h3>Pattern 1: Medical/Test Diagnosis</h3>
+                <div class="example-mini">
+                    Given: P(Test+|Disease), P(Disease)
+                    Find: P(Disease|Test+)
+                    → Use Bayes' Rule!
+                </div>
+
+                <h3>Pattern 2: Joint → Marginal</h3>
+                <div class="example-mini">
+                    Given: P(X,Y) table
+                    Find: P(X) or P(Y)
+                    → Sum rows or columns
+                </div>
+
+                <h3>Pattern 3: Finding Constants</h3>
+                <div class="example-mini">
+                    Given: f(x) = c·g(x)
+                    Find: c
+                    → Use ∫f(x)dx = 1
+                </div>
+
+                <h3>Pattern 4: Probability Ranges</h3>
+                <div class="example-mini">
+                    Find: P(a < X < b)
+                    → F(b) - F(a) or ∫ₐᵇ f(x)dx
+                </div>
+
+                <h3>Pattern 5: Independence Check</h3>
+                <div class="example-mini">
+                    Check if P(A,B) = P(A)·P(B)
+                    Or if P(A|B) = P(A)
+                </div>
+            </div>
+
+            <!-- ==================== QUICK FORMULAS ==================== -->
+            <div class="section pink">
+                <h2>⚡ Quick Formula Reference</h2>
+
+                <table>
+                    <tr>
+                        <th>Need</th>
+                        <th>Formula</th>
+                    </tr>
+                    <tr>
+                        <td>Complement</td>
+                        <td>P(Ā) = 1 - P(A)</td>
+                    </tr>
+                    <tr>
+                        <td>Independence</td>
+                        <td>P(A,B) = P(A)·P(B)</td>
+                    </tr>
+                    <tr>
+                        <td>Chain rule</td>
+                        <td>P(A,B) = P(A|B)·P(B)</td>
+                    </tr>
+                    <tr>
+                        <td>Partition</td>
+                        <td>P(A) = ΣP(A|Bᵢ)P(Bᵢ)</td>
+                    </tr>
+                    <tr>
+                        <td>Variance alt</td>
+                        <td>Var(X) = E[X²] - (E[X])²</td>
+                    </tr>
+                    <tr>
+                        <td>Linear transform</td>
+                        <td>E[aX+b] = aE[X]+b</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ==================== COMMON DISTRIBUTIONS ==================== -->
+            <div class="section green">
+                <h2>📊 Common Distributions Quick Ref</h2>
+
+                <table>
+                    <tr>
+                        <th>Distribution</th>
+                        <th>PMF/PDF</th>
+                        <th>E[X]</th>
+                        <th>Var(X)</th>
+                    </tr>
+                    <tr>
+                        <td>Bernoulli(p)</td>
+                        <td>p^x(1-p)^(1-x)</td>
+                        <td>p</td>
+                        <td>p(1-p)</td>
+                    </tr>
+                    <tr>
+                        <td>Binomial(n,p)</td>
+                        <td>C(n,k)p^k(1-p)^(n-k)</td>
+                        <td>np</td>
+                        <td>np(1-p)</td>
+                    </tr>
+                    <tr>
+                        <td>Uniform[a,b]</td>
+                        <td>1/(b-a)</td>
+                        <td>(a+b)/2</td>
+                        <td>(b-a)²/12</td>
+                    </tr>
+                    <tr>
+                        <td>Exponential(λ)</td>
+                        <td>λe^(-λx)</td>
+                        <td>1/λ</td>
+                        <td>1/λ²</td>
+                    </tr>
+                    <tr>
+                        <td>Normal(μ,σ²)</td>
+                        <td>See section 9</td>
+                        <td>μ</td>
+                        <td>σ²</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ==================== MLE ==================== -->
+            <div class="section cyan">
+                <h2>🎯 Maximum Likelihood (MLE)</h2>
+
+                <div class="formula">
+                    \[\hat{\theta}_{MLE} = \arg\max_\theta L(\theta)\]
+                </div>
+
+                <div class="meaning">
+                    <strong>What it means:</strong> Find parameter that makes observed data most likely.
+                </div>
+
+                <div class="exam-use">
+                    <strong>🎯 Steps:</strong>
+                    <ol class="compact-list">
+                        <li>Write likelihood: L(θ) = P(data|θ)</li>
+                        <li>Take log: ℓ(θ) = log L(θ)</li>
+                        <li>Differentiate: dℓ/dθ</li>
+                        <li>Set to 0 and solve</li>
+                        <li>Verify it's maximum</li>
+                    </ol>
+                </div>
+
+                <h3>Common MLEs</h3>
+                <ul class="compact-list">
+                    <li><strong>Binomial p:</strong> p̂ = k/n (fraction of successes)</li>
+                    <li><strong>Normal μ:</strong> μ̂ = x̄ (sample mean)</li>
+                    <li><strong>Normal σ²:</strong> σ̂² = (1/n)Σ(xᵢ-μ)²</li>
+                    <li><strong>Exponential λ:</strong> λ̂ = 1/x̄</li>
+                </ul>
+            </div>
+
+            <!-- ==================== COMMON MISTAKES ==================== -->
+            <div class="section red">
+                <h2>⚠️ TOP EXAM MISTAKES TO AVOID</h2>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 1:</strong> Confusing P(A|B) with P(B|A)
+                    <br><strong>✓ FIX:</strong> They're different! Use Bayes' Rule to flip.
+                </div>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 2:</strong> Thinking mutually exclusive = independent
+                    <br><strong>✓ FIX:</strong> If A and B can't both happen, they're dependent!
+                </div>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 3:</strong> E[g(X)] = g(E[X])
+                    <br><strong>✓ FIX:</strong> Usually NOT true! Must apply g first, then integrate.
+                </div>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 4:</strong> Forgetting to normalize
+                    <br><strong>✓ FIX:</strong> Always check Σp = 1 or ∫f dx = 1
+                </div>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 5:</strong> Using wrong formula for variance
+                    <br><strong>✓ FIX:</strong> Var(X) = E[X²] - (E[X])², not E[(X-μ)]²
+                </div>
+
+                <div class="warning-box">
+                    <strong>❌ MISTAKE 6:</strong> Ignoring base rates in Bayes
+                    <br><strong>✓ FIX:</strong> Prior P(A) matters! Don't ignore it.
+                </div>
+            </div>
+
+            <!-- ==================== LAST MINUTE CHECKLIST ==================== -->
+            <div class="section orange">
+                <h2>✅ LAST MINUTE EXAM CHECKLIST</h2>
+
+                <div class="key-point">
+                    <strong>Before starting problem:</strong>
+                    <ul class="compact-list">
+                        <li>☐ Read problem completely</li>
+                        <li>☐ Identify what's given vs. what to find</li>
+                        <li>☐ Recognize problem type (Bayes? Expectation? CDF?)</li>
+                        <li>☐ Draw diagram if helpful</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    <strong>While solving:</strong>
+                    <ul class="compact-list">
+                        <li>☐ Write out formula before plugging numbers</li>
+                        <li>☐ Show all steps clearly</li>
+                        <li>☐ Check units and reasonableness</li>
+                        <li>☐ Verify probabilities in [0,1]</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    <strong>After solving:</strong>
+                    <ul class="compact-list">
+                        <li>☐ Does answer make intuitive sense?</li>
+                        <li>☐ Did probabilities sum to 1 if applicable?</li>
+                        <li>☐ Double-check arithmetic</li>
+                        <li>☐ Answer the actual question asked</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ==================== TIME MANAGEMENT ==================== -->
+            <div class="section teal">
+                <h2>⏰ TIME MANAGEMENT TIPS</h2>
+
+                <div class="tip-box">
+                    <strong>Quick wins first:</strong>
+                    <ul class="compact-list">
+                        <li>Do problems you recognize immediately</li>
+                        <li>Skip and return to hard ones</li>
+                        <li>Easy points: verification problems (check if valid PMF)</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    <strong>Stuck? Try these:</strong>
+                    <ul class="compact-list">
+                        <li>Write what you know and what you need</li>
+                        <li>Look for pattern in this cheat sheet</li>
+                        <li>Try complement: P(Ā) = 1 - P(A)</li>
+                        <li>Break into cases and sum</li>
+                        <li>Check if Bayes' Rule applies</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 15px; padding-top: 10px; border-top: 3px solid #667eea;">
+            <p style="font-size: 10pt; color: #000; font-weight: bold;">
+                🎓 YOU'VE GOT THIS! Apply these formulas systematically and check your work! 🎓
+            </p>
+            <p style="font-size: 8pt; color: #666; margin-top: 5px;">
+                All official crib sheet formulas included with meanings and exam applications
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

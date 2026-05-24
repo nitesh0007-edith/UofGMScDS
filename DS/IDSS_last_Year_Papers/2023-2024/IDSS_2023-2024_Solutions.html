@@ -1,0 +1,2678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDSS 2023-2024 Solutions</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #003366;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h2 {
+            color: #004080;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+        h3 {
+            color: #0059b3;
+            margin-top: 20px;
+        }
+        h4 {
+            color: #0073e6;
+            margin-top: 15px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        blockquote {
+            border-left: 4px solid #0066cc;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            background-color: #e6f2ff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        strong {
+            color: #d9534f;
+            font-weight: 600;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #0066cc;
+            margin: 30px 0;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        @media print {
+            body {
+                background-color: white;
+                max-width: 100%;
+                padding: 20px;
+            }
+            pre {
+                page-break-inside: avoid;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>IDSS 2023-2024 Examination Solutions</h1>
+<p><strong>University of Glasgow</strong>
+<strong>Introduction to Data Science and Systems</strong>
+<strong>COMPSCI 5089</strong>
+<strong>Date: December 2023</strong>
+<strong>Total Marks: 80</strong></p>
+<hr />
+<h2>Question 1: Linear Algebra (20 marks)</h2>
+<h3>Part (a): Whitening a dataset [6 marks]</h3>
+<p><strong>Given:</strong>
+- Data matrix M: 100 rows × 10 columns
+- Each row = one subject
+- Each column = one observation/feature</p>
+<p><strong>Goal:</strong> Whiten the dataset</p>
+<p><strong>What is Whitening?</strong></p>
+<p>Whitening (also called sphering) transforms data so that:
+1. Mean is zero (centered)
+2. Covariance is identity matrix (uncorrelated, unit variance)</p>
+<hr />
+<p><strong>Step-by-Step Whitening Process:</strong></p>
+<p><strong>Step 1: Center the Data</strong></p>
+<p>Subtract the mean from each column to center the data at origin.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>M_centered = M - μ
+</code></pre></div>
+
+<p>where μ is the mean vector (1 × 10).</p>
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Compute mean of each column</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">Σᵢ</span><span class="err">₌₁</span><span class="n">ᴺ</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Shape: (10,)</span>
+
+<span class="c1"># Or in numpy:</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Shape: (10,)</span>
+
+<span class="c1"># Center the data</span>
+<span class="n">M_centered</span> <span class="o">=</span> <span class="n">M</span> <span class="o">-</span> <span class="n">mu</span>  <span class="c1"># Broadcasting: (100, 10) - (10,) → (100, 10)</span>
+</code></pre></div>
+
+<p><strong>Dimensions:</strong>
+- M: (100, 10)
+- μ: (10,) or (1, 10)
+- M_centered: (100, 10)</p>
+<hr />
+<p><strong>Step 2: Compute Covariance Matrix</strong></p>
+<p>Calculate the covariance matrix of the centered data.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>C = (1/(N-1)) <span class="gs">* M_centeredᵀ *</span> M_centered
+</code></pre></div>
+
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Covariance matrix</span>
+<span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">M_centered</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">M_centered</span>
+
+<span class="c1"># Or using numpy:</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># Shape: (10, 10)</span>
+</code></pre></div>
+
+<p><strong>Dimensions:</strong>
+- M_centeredᵀ: (10, 100)
+- M_centered: (100, 10)
+- C: (10, 10) - symmetric positive semi-definite matrix</p>
+<p><strong>Properties of C:</strong>
+- Diagonal elements: variances of each feature
+- Off-diagonal elements: covariances between features</p>
+<hr />
+<p><strong>Step 3: Eigen-decomposition of Covariance Matrix</strong></p>
+<p>Decompose the covariance matrix into eigenvalues and eigenvectors.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>C = VΛVᵀ
+</code></pre></div>
+
+<p>where:
+- V: matrix of eigenvectors (10 × 10)
+- Λ: diagonal matrix of eigenvalues (10 × 10)</p>
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Eigenvalue decomposition</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="c1"># eigenvalues: (10,) array</span>
+<span class="c1"># eigenvectors: (10, 10) matrix, columns are eigenvectors</span>
+
+<span class="c1"># Create diagonal matrix</span>
+<span class="n">Lambda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span>  <span class="c1"># Shape: (10, 10)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">eigenvectors</span>  <span class="c1"># Shape: (10, 10)</span>
+</code></pre></div>
+
+<p><strong>Dimensions:</strong>
+- Λ: (10, 10) diagonal matrix
+- V: (10, 10) orthonormal matrix (VᵀV = I)</p>
+<p><strong>Note:</strong> Eigenvalues λᵢ represent variance along principal component i</p>
+<hr />
+<p><strong>Step 4: Compute Whitening Matrix</strong></p>
+<p>The whitening transformation matrix scales each principal component by 1/√λᵢ.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>W = Λ^(-1/2) * Vᵀ
+</code></pre></div>
+
+<p>where Λ^(-1/2) is diagonal matrix with elements 1/√λᵢ</p>
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Compute Λ^(-1/2)</span>
+<span class="n">Lambda_inv_sqrt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">))</span>  <span class="c1"># Shape: (10, 10)</span>
+
+<span class="c1"># Whitening matrix</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">Lambda_inv_sqrt</span> <span class="o">@</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># Shape: (10, 10)</span>
+</code></pre></div>
+
+<p><strong>Dimensions:</strong>
+- Λ^(-1/2): (10, 10)
+- Vᵀ: (10, 10)
+- W: (10, 10)</p>
+<hr />
+<p><strong>Step 5: Apply Whitening Transform</strong></p>
+<p>Transform the centered data using the whitening matrix.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>M_whitened = M_centered * Wᵀ
+</code></pre></div>
+
+<p>Or equivalently:</p>
+<div class="codehilite"><pre><span></span><code>M_whitened = M_centered <span class="gs">* V *</span> Λ^(-1/2)
+</code></pre></div>
+
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Apply whitening</span>
+<span class="n">M_whitened</span> <span class="o">=</span> <span class="n">M_centered</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># Shape: (100, 10)</span>
+
+<span class="c1"># Equivalent form:</span>
+<span class="n">M_whitened</span> <span class="o">=</span> <span class="n">M_centered</span> <span class="o">@</span> <span class="n">V</span> <span class="o">@</span> <span class="n">Lambda_inv_sqrt</span>  <span class="c1"># Shape: (100, 10)</span>
+</code></pre></div>
+
+<p><strong>Dimensions:</strong>
+- M_centered: (100, 10)
+- W: (10, 10)
+- Wᵀ: (10, 10)
+- M_whitened: (100, 10)</p>
+<hr />
+<p><strong>Verification:</strong></p>
+<p>Check that the whitened data has desired properties:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Check mean is zero</span>
+<span class="n">mean_whitened</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">M_whitened</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Should be ≈ [0, 0, ..., 0]</span>
+
+<span class="c1"># 2. Check covariance is identity</span>
+<span class="n">C_whitened</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">M_whitened</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="c1"># Should be ≈ I (10×10 identity matrix)</span>
+
+<span class="c1"># 3. Verify</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">C_whitened</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>  <span class="c1"># Should print True</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary of Dimensions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Matrix/Vector</th>
+<th>Dimension</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M</td>
+<td>(100, 10)</td>
+<td>Original data</td>
+</tr>
+<tr>
+<td>μ</td>
+<td>(10,)</td>
+<td>Mean vector</td>
+</tr>
+<tr>
+<td>M_centered</td>
+<td>(100, 10)</td>
+<td>Centered data</td>
+</tr>
+<tr>
+<td>C</td>
+<td>(10, 10)</td>
+<td>Covariance matrix</td>
+</tr>
+<tr>
+<td>Λ</td>
+<td>(10, 10)</td>
+<td>Eigenvalues (diagonal)</td>
+</tr>
+<tr>
+<td>V</td>
+<td>(10, 10)</td>
+<td>Eigenvectors</td>
+</tr>
+<tr>
+<td>Λ^(-1/2)</td>
+<td>(10, 10)</td>
+<td>Inverse sqrt eigenvalues</td>
+</tr>
+<tr>
+<td>W</td>
+<td>(10, 10)</td>
+<td>Whitening matrix</td>
+</tr>
+<tr>
+<td>M_whitened</td>
+<td>(100, 10)</td>
+<td>Whitened data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Complete Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Step 1: Center the data</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># (10,)</span>
+<span class="n">M_centered</span> <span class="o">=</span> <span class="n">M</span> <span class="o">-</span> <span class="n">mu</span>  <span class="c1"># (100, 10)</span>
+
+<span class="c1"># Step 2: Compute covariance</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># (10, 10)</span>
+
+<span class="c1"># Step 3: Eigendecomposition</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="c1"># eigenvalues: (10,)</span>
+<span class="c1"># V: (10, 10)</span>
+
+<span class="c1"># Step 4: Whitening matrix</span>
+<span class="n">Lambda_inv_sqrt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">))</span>  <span class="c1"># (10, 10)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">Lambda_inv_sqrt</span> <span class="o">@</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># (10, 10)</span>
+
+<span class="c1"># Step 5: Whiten the data</span>
+<span class="n">M_whitened</span> <span class="o">=</span> <span class="n">M_centered</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># (100, 10)</span>
+
+<span class="c1"># Verify</span>
+<span class="n">C_whitened</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">M_whitened</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Covariance is identity:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">C_whitened</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (b): Effect of whitening on height and weight [4 marks]</h3>
+<p><strong>Given Variables:</strong>
+- H: Height (in meters)
+- W: Weight (in pounds)</p>
+<p><strong>Issue:</strong> Different units and scales
+- Height: typically 1.5 - 2.0 meters
+- Weight: typically 100 - 250 pounds</p>
+<hr />
+<p><strong>Effect of Whitening:</strong></p>
+<p><strong>1. Standardization:</strong></p>
+<p>Whitening will:
+- Center each variable to zero mean
+- Scale each to unit variance
+- Remove correlation between H and W</p>
+<p><strong>Before whitening:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">H_original</span><span class="o">:</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mf">1.7</span><span class="n">m</span><span class="o">,</span><span class="w"> </span><span class="n">std</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mf">0.1</span><span class="n">m</span>
+<span class="n">W_original</span><span class="o">:</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mi">150</span><span class="n">lbs</span><span class="o">,</span><span class="w"> </span><span class="n">std</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mi">30</span><span class="n">lbs</span>
+<span class="n">Correlation</span><span class="o">:</span><span class="w"> </span><span class="err">ρ</span><span class="o">(</span><span class="n">H</span><span class="o">,</span><span class="n">W</span><span class="o">)</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mf">0.7</span><span class="w"> </span><span class="o">(</span><span class="n">typically</span><span class="w"> </span><span class="n">positive</span><span class="o">)</span>
+</code></pre></div>
+
+<p><strong>After whitening:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">H_whitened</span><span class="o">:</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">,</span><span class="w"> </span><span class="n">std</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">W_whitened</span><span class="o">:</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">,</span><span class="w"> </span><span class="n">std</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">Correlation</span><span class="o">:</span><span class="w"> </span><span class="err">ρ</span><span class="o">(</span><span class="n">H_whitened</span><span class="o">,</span><span class="w"> </span><span class="n">W_whitened</span><span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">(</span><span class="n">uncorrelated</span><span class="o">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>2. Unit Removal:</strong></p>
+<p>Whitened variables are <strong>dimensionless</strong> (no units):
+- Original: H in meters, W in pounds
+- Whitened: Both are unitless standardized values</p>
+<p><strong>Interpretation:</strong>
+- H_whitened = 1.5 means "1.5 standard deviations above mean height"
+- W_whitened = -0.5 means "0.5 standard deviations below mean weight"</p>
+<hr />
+<p><strong>3. Equal Weighting:</strong></p>
+<p>Variables with different scales now contribute equally.</p>
+<p><strong>Before whitening:</strong>
+- Weight dominates (larger numerical values)
+- Distance: √((H₁-H₂)² + (W₁-W₂)²) ≈ √((0.1)² + (50)²) ≈ 50
+- Weight change dominates distance calculation</p>
+<p><strong>After whitening:</strong>
+- Both variables equally weighted
+- Distance: √((H₁'-H₂')² + (W₁'-W₂')²)
+- Height and weight changes contribute equally</p>
+<hr />
+<p><strong>Why Desirable?</strong></p>
+<p><strong>1. Machine Learning Algorithms:</strong></p>
+<p>Many ML algorithms assume:
+- Features on similar scales
+- No multicollinearity</p>
+<p><strong>Algorithms that benefit:</strong>
+- K-means clustering (distance-based)
+- PCA (variance-based)
+- Neural networks (gradient descent)
+- SVM with RBF kernel
+- K-nearest neighbors</p>
+<p><strong>Without whitening:</strong>
+- Weight (larger scale) dominates
+- Algorithm focuses on weight, ignores height
+- Biased predictions</p>
+<hr />
+<p><strong>2. Distance Metrics:</strong></p>
+<p>For Euclidean distance:</p>
+<p><strong>Before whitening:</strong></p>
+<div class="codehilite"><pre><span></span><code>Person A: H=1.7m, W=150lbs
+Person B: H=1.8m, W=160lbs
+Person C: H=1.7m, W=200lbs
+
+d(A,B) = √((1.7-1.8)² + (150-160)²) = √(0.01 + 100) ≈ 10.0
+d(A,C) = √((1.7-1.7)² + (150-200)²) = √(0 + 2500) = 50.0
+</code></pre></div>
+
+<p>Height difference barely affects distance!</p>
+<p><strong>After whitening:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">Assume</span><span class="o">:</span><span class="w"> </span><span class="n">mean_H</span><span class="o">=</span><span class="mf">1.7</span><span class="o">,</span><span class="w"> </span><span class="n">std_H</span><span class="o">=</span><span class="mf">0.1</span><span class="o">,</span><span class="w"> </span><span class="n">mean_W</span><span class="o">=</span><span class="mi">150</span><span class="o">,</span><span class="w"> </span><span class="n">std_W</span><span class="o">=</span><span class="mi">30</span>
+
+<span class="n">Person</span><span class="w"> </span><span class="n">A</span><span class="o">:</span><span class="w"> </span><span class="n">H</span><span class="s1">&#39;=0, W&#39;</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Person</span><span class="w"> </span><span class="n">B</span><span class="o">:</span><span class="w"> </span><span class="n">H</span><span class="s1">&#39;=1, W&#39;</span><span class="o">=</span><span class="mf">0.33</span>
+<span class="n">Person</span><span class="w"> </span><span class="n">C</span><span class="o">:</span><span class="w"> </span><span class="n">H</span><span class="s1">&#39;=0, W&#39;</span><span class="o">=</span><span class="mf">1.67</span>
+
+<span class="n">d</span><span class="o">(</span><span class="n">A</span><span class="o">,</span><span class="n">B</span><span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">√</span><span class="o">(</span><span class="mi">1</span><span class="err">²</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.33</span><span class="err">²</span><span class="o">)</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mf">1.05</span>
+<span class="n">d</span><span class="o">(</span><span class="n">A</span><span class="o">,</span><span class="n">C</span><span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">√</span><span class="o">(</span><span class="mi">0</span><span class="err">²</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.67</span><span class="err">²</span><span class="o">)</span><span class="w"> </span><span class="err">≈</span><span class="w"> </span><span class="mf">1.67</span>
+</code></pre></div>
+
+<p>Now both features contribute meaningfully!</p>
+<hr />
+<p><strong>Example Application: Health Clustering</strong></p>
+<p><strong>Task:</strong> Cluster people into health risk groups based on H and W.</p>
+<p><strong>Without whitening:</strong>
+- Clusters mainly determined by weight
+- People with same weight but different heights grouped together
+- Unhealthy: ignores BMI relationship</p>
+<p><strong>With whitening:</strong>
+- Both height and weight considered
+- Naturally identifies BMI patterns
+- Better health risk assessment</p>
+<p><strong>BMI context:</strong></p>
+<div class="codehilite"><pre><span></span><code>BMI = W / H²
+
+Two people:
+1. H=1.5m, W=150lbs → BMI high (overweight)
+2. H=2.0m, W=150lbs → BMI low (underweight)
+</code></pre></div>
+
+<p>Whitening allows algorithm to distinguish these cases!</p>
+<hr />
+<p><strong>When Desirable?</strong></p>
+<p><strong>Whitening is desirable when:</strong></p>
+<ol>
+<li><strong>Different scales:</strong> Variables measured in different units</li>
+<li><strong>Distance-based methods:</strong> K-means, KNN, PCA</li>
+<li><strong>Gradient-based optimization:</strong> Neural networks</li>
+<li><strong>Fair feature importance:</strong> All features should contribute equally</li>
+<li><strong>Removing correlations:</strong> When independence assumption required</li>
+</ol>
+<p><strong>Whitening NOT desirable when:</strong></p>
+<ol>
+<li><strong>Interpretability needed:</strong> Original units more meaningful</li>
+<li><strong>Domain knowledge:</strong> Some features should naturally dominate</li>
+<li><strong>Sparse data:</strong> Whitening can destroy sparsity</li>
+<li><strong>Ordinal/categorical:</strong> Not applicable to non-numerical data</li>
+</ol>
+<hr />
+<p><strong>Practical Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Before whitening</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.65</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.80</span><span class="p">,</span> <span class="mf">1.85</span><span class="p">])</span>  <span class="c1"># meters</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">140</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">180</span><span class="p">])</span>  <span class="c1"># pounds</span>
+
+<span class="c1"># Stack into matrix</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">])</span>  <span class="c1"># (5, 2)</span>
+
+<span class="c1"># Whiten</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">data_whitened</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original data:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Whitened data:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_whitened</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mean:&quot;</span><span class="p">,</span> <span class="n">data_whitened</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># [0, 0]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std:&quot;</span><span class="p">,</span> <span class="n">data_whitened</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># [1, 1]</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (c)(i): Calculate matrix M from two point correspondences [7 marks]</h3>
+<p><strong>Given:</strong>
+- P → P': One point correspondence
+- Q → Q': Another point correspondence
+- M: 2×2 transformation matrix
+- P' = MP and Q' = MQ</p>
+<p><strong>From figure:</strong> (approximate coordinates)
+- P ≈ (4, 5)
+- P' ≈ (5, 1)
+- Q ≈ (2, 4)
+- Q' ≈ (1, 3)</p>
+<hr />
+<p><strong>Problem Setup:</strong></p>
+<p>We have a linear transformation:</p>
+<div class="codehilite"><pre><span></span><code>P&#39; = MP
+Q&#39; = MQ
+</code></pre></div>
+
+<p>Let M be a 2×2 matrix:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">m₁₁</span><span class="w">  </span><span class="n">m₁₂</span><span class="p">]</span>
+<span class="w">    </span><span class="p">[</span><span class="n">m₂₁</span><span class="w">  </span><span class="n">m₂₂</span><span class="p">]</span>
+</code></pre></div>
+
+<p>We need to find the 4 unknowns: m₁₁, m₁₂, m₂₁, m₂₂</p>
+<hr />
+<p><strong>Step 1: Write Out the Equations</strong></p>
+<p><strong>For point P → P':</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[p&#39;ₓ] = [m₁₁  m₁₂] [pₓ]</span>
+<span class="k">[p&#39;ᵧ]   [m₂₁  m₂₂] [pᵧ]</span>
+</code></pre></div>
+
+<p>Expanding:</p>
+<div class="codehilite"><pre><span></span><code>p&#39;ₓ = m₁₁·pₓ + m₁₂·pᵧ  ... (1)
+p&#39;ᵧ = m₂₁·pₓ + m₂₂·pᵧ  ... (2)
+</code></pre></div>
+
+<p><strong>For point Q → Q':</strong></p>
+<div class="codehilite"><pre><span></span><code>q&#39;ₓ = m₁₁·qₓ + m₁₂·qᵧ  ... (3)
+q&#39;ᵧ = m₂₁·qₓ + m₂₂·qᵧ  ... (4)
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Organize as Linear System</strong></p>
+<p>We have 4 equations and 4 unknowns. Rewrite in matrix form:</p>
+<p><strong>Rearrange as Ax = b:</strong></p>
+<p>Let x = [m₁₁, m₁₂, m₂₁, m₂₂]ᵀ (the unknowns)</p>
+<p>From equations (1) and (3) (x-coordinates):</p>
+<div class="codehilite"><pre><span></span><code>pₓ·m₁₁ + pᵧ·m₁₂ = p&#39;ₓ
+qₓ·m₁₁ + qᵧ·m₁₂ = q&#39;ₓ
+</code></pre></div>
+
+<p>From equations (2) and (4) (y-coordinates):</p>
+<div class="codehilite"><pre><span></span><code>pₓ·m₂₁ + pᵧ·m₂₂ = p&#39;ᵧ
+qₓ·m₂₁ + qᵧ·m₂₂ = q&#39;ᵧ
+</code></pre></div>
+
+<hr />
+<p><strong>Step 3: Matrix Formulation</strong></p>
+<p><strong>Method 1: Separate systems for each row of M</strong></p>
+<p><strong>For first row [m₁₁, m₁₂]:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[pₓ  pᵧ] [m₁₁]   [p&#39;ₓ]</span>
+<span class="k">[qₓ  qᵧ] [m₁₂] = [q&#39;ₓ]</span>
+</code></pre></div>
+
+<p><strong>For second row [m₂₁, m₂₂]:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[pₓ  pᵧ] [m₂₁]   [p&#39;ᵧ]</span>
+<span class="k">[qₓ  qᵧ] [m₂₂] = [q&#39;ᵧ]</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Method 2: Stack points as matrices</strong></p>
+<p>Define:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">P_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">pₓ</span><span class="w">  </span><span class="n">qₓ</span><span class="p">]</span><span class="w">  </span><span class="p">(</span><span class="mi">2</span><span class="err">×</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">[</span><span class="n">pᵧ</span><span class="w">  </span><span class="n">qᵧ</span><span class="p">]</span>
+
+<span class="n">P</span><span class="err">&#39;</span><span class="n">_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">P</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="err">&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">p</span><span class="err">&#39;</span><span class="n">ₓ</span><span class="w">  </span><span class="n">q</span><span class="err">&#39;</span><span class="n">ₓ</span><span class="p">]</span><span class="w">  </span><span class="p">(</span><span class="mi">2</span><span class="err">×</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">                       </span><span class="p">[</span><span class="n">p</span><span class="err">&#39;</span><span class="n">ᵧ</span><span class="w">  </span><span class="n">q</span><span class="err">&#39;</span><span class="n">ᵧ</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Then:</p>
+<div class="codehilite"><pre><span></span><code>P&#39;_matrix = M · P_matrix
+</code></pre></div>
+
+<p>Therefore:</p>
+<div class="codehilite"><pre><span></span><code>M = P&#39;_matrix · P_matrix⁻¹
+</code></pre></div>
+
+<hr />
+<p><strong>Step 4: Solve for M</strong></p>
+<p><strong>Using Method 2 (most elegant):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Define point coordinates</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>  <span class="c1"># pₓ, pᵧ</span>
+<span class="n">P_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># p&#39;ₓ, p&#39;ᵧ</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>  <span class="c1"># qₓ, qᵧ</span>
+<span class="n">Q_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>  <span class="c1"># q&#39;ₓ, q&#39;ᵧ</span>
+
+<span class="c1"># Stack into matrices (points as columns)</span>
+<span class="n">P_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">])</span>  <span class="c1"># [[4, 2],</span>
+                                     <span class="c1">#  [5, 4]]</span>
+
+<span class="n">P_prime_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">P_prime</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">])</span>  <span class="c1"># [[5, 1],</span>
+                                                       <span class="c1">#  [1, 3]]</span>
+
+<span class="c1"># Solve: M = P&#39;_matrix · P_matrix⁻¹</span>
+<span class="n">P_matrix_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P_matrix</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">P_prime_matrix</span> <span class="o">@</span> <span class="n">P_matrix_inv</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transformation matrix M:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 5: Verification</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Verify P&#39; = M·P</span>
+<span class="n">P_calc</span> <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">P</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculated P&#39;:&quot;</span><span class="p">,</span> <span class="n">P_calc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual P&#39;:&quot;</span><span class="p">,</span> <span class="n">P_prime</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Match:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">P_calc</span><span class="p">,</span> <span class="n">P_prime</span><span class="p">))</span>
+
+<span class="c1"># Verify Q&#39; = M·Q</span>
+<span class="n">Q_calc</span> <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">Q</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculated Q&#39;:&quot;</span><span class="p">,</span> <span class="n">Q_calc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual Q&#39;:&quot;</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Match:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Q_calc</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">))</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Alternative: Using least squares (more numerically stable)</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># For x-coordinates: solve for [m₁₁, m₁₂]</span>
+<span class="n">A_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">pₓ</span><span class="p">,</span> <span class="n">pᵧ</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">qₓ</span><span class="p">,</span> <span class="n">qᵧ</span><span class="p">]])</span>
+<span class="n">b_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="s1">&#39;ₓ, q&#39;</span><span class="n">ₓ</span><span class="p">])</span>
+<span class="n">row1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A_x</span><span class="p">,</span> <span class="n">b_x</span><span class="p">)</span>  <span class="c1"># [m₁₁, m₁₂]</span>
+
+<span class="c1"># For y-coordinates: solve for [m₂₁, m₂₂]</span>
+<span class="n">b_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="s1">&#39;ᵧ, q&#39;</span><span class="n">ᵧ</span><span class="p">])</span>
+<span class="n">row2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A_x</span><span class="p">,</span> <span class="n">b_y</span><span class="p">)</span>  <span class="c1"># [m₂₁, m₂₂]</span>
+
+<span class="c1"># Construct M</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">row1</span><span class="p">,</span> <span class="n">row2</span><span class="p">])</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary of Method:</strong></p>
+<ol>
+<li><strong>Set up equations:</strong> P' = MP, Q' = MQ</li>
+<li><strong>Stack points:</strong> P_matrix = [P | Q], P'_matrix = [P' | Q']</li>
+<li><strong>Matrix equation:</strong> P'_matrix = M · P_matrix</li>
+<li><strong>Solve:</strong> M = P'_matrix · P_matrix⁻¹</li>
+<li><strong>Verify:</strong> Check MP = P' and MQ = Q'</li>
+</ol>
+<p><strong>Requirements:</strong>
+- P and Q must be linearly independent (not collinear)
+- P_matrix must be invertible (det(P_matrix) ≠ 0)</p>
+<hr />
+<h3>Part (c)(ii): Using three point correspondences [3 marks]</h3>
+<p><strong>Question:</strong> With third point R → R', can we use same approach?</p>
+<p><strong>Answer: No, we cannot use the same approach directly.</strong></p>
+<hr />
+<p><strong>Why Not?</strong></p>
+<p><strong>Overdetermined System:</strong></p>
+<p>With 2 points: 4 equations, 4 unknowns → <strong>exactly determined</strong> ✓
+With 3 points: 6 equations, 4 unknowns → <strong>overdetermined</strong> ✗</p>
+<p><strong>The system:</strong></p>
+<div class="codehilite"><pre><span></span><code>R&#39;ₓ = m₁₁·rₓ + m₁₂·rᵧ  ... (5)
+R&#39;ᵧ = m₂₁·rₓ + m₂₂·rᵧ  ... (6)
+</code></pre></div>
+
+<p>Adding to previous 4 equations gives 6 equations total.</p>
+<p><strong>Problem:</strong>
+- More equations than unknowns
+- System may be inconsistent (no exact solution)
+- Cannot invert a non-square matrix</p>
+<hr />
+<p><strong>When Can We Use Same Approach?</strong></p>
+<p>Only if R' = MR where M is the <strong>same</strong> matrix from P and Q.</p>
+<p><strong>This requires:</strong> All three points are related by the <strong>same linear transformation</strong>.</p>
+<p><strong>If true:</strong> R → R' is redundant, doesn't add new information.</p>
+<hr />
+<p><strong>How to Find M with 3 Points?</strong></p>
+<p><strong>Method 1: Least Squares Solution</strong></p>
+<p>Use overdetermined system and minimize error:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Stack all three points</span>
+<span class="n">P_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span>  <span class="c1"># (2×3)</span>
+<span class="n">P_prime_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">P_prime</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">,</span> <span class="n">R_prime</span><span class="p">])</span>  <span class="c1"># (2×3)</span>
+
+<span class="c1"># Solve: M = P&#39;_matrix · P_matrix^+</span>
+<span class="c1"># where P_matrix^+ is pseudo-inverse</span>
+<span class="n">P_matrix_pinv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">P_matrix</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">P_prime_matrix</span> <span class="o">@</span> <span class="n">P_matrix_pinv</span>
+
+<span class="c1"># This minimizes: ||M·P_matrix - P&#39;_matrix||²</span>
+</code></pre></div>
+
+<p><strong>Properties:</strong>
+- Minimizes squared error across all three points
+- Handles noise in measurements
+- More robust than 2-point solution</p>
+<hr />
+<p><strong>Method 2: Use Only 2 Points, Verify with 3rd</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Calculate M using P and Q only (as before)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">calculate_M_from_PQ</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">P_prime</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">)</span>
+
+<span class="c1"># Verify with R</span>
+<span class="n">R_calc</span> <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">R</span>
+<span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">R_calc</span> <span class="o">-</span> <span class="n">R_prime</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;R is consistent with same transformation&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Points not related by single linear transformation&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Use least squares instead&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Method 3: Weighted Least Squares</strong></p>
+<p>If some correspondences are more reliable:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">least_squares</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">residuals</span><span class="p">(</span><span class="n">m_flat</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">points_prime</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">m_flat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p_prime</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points_prime</span><span class="p">,</span> <span class="n">weights</span><span class="p">)):</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">p</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">-</span> <span class="n">p_prime</span><span class="p">)</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">errors</span>
+
+<span class="c1"># Initial guess</span>
+<span class="n">m0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c1"># Points and weights</span>
+<span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span>
+<span class="n">points_prime</span> <span class="o">=</span> <span class="p">[</span><span class="n">P_prime</span><span class="p">,</span> <span class="n">Q_prime</span><span class="p">,</span> <span class="n">R_prime</span><span class="p">]</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># R less reliable</span>
+
+<span class="c1"># Solve</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">m0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points_prime</span><span class="p">,</span> <span class="n">weights</span><span class="p">))</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Pros</th>
+<th>Cons</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact (2 points)</td>
+<td>Simple, exact solution</td>
+<td>Requires exactly 2 points</td>
+<td>Clean data, exact correspondences</td>
+</tr>
+<tr>
+<td>Least squares (3+ points)</td>
+<td>Handles noise, more robust</td>
+<td>Approximate solution</td>
+<td>Noisy measurements, redundant data</td>
+</tr>
+<tr>
+<td>Weighted LS</td>
+<td>Accounts for reliability</td>
+<td>More complex</td>
+<td>Some measurements more reliable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Practical Note:</strong></p>
+<p>In computer vision/robotics, having <strong>more</strong> correspondences is always better:
+- Provides redundancy
+- Handles outliers
+- More robust to noise
+- Use RANSAC for outlier rejection</p>
+<p><strong>Recommended:</strong> Use least squares with 3+ points for real applications!</p>
+<hr />
+<h2>Question 2: Optimization (20 marks)</h2>
+<h3>Part (a): Characterize loss function at specific points [6 marks]</h3>
+<p>Looking at the contour plot, we need to analyze three points:</p>
+<hr />
+<p><strong>Point (-1, -1):</strong></p>
+<p><strong>Location:</strong> Upper left region of the plot</p>
+<p><strong>Loss Function Characterization:</strong>
+- <strong>Type:</strong> Local minimum (valley bottom on left side)
+- <strong>Value:</strong> Approximately 0.25 (from contour lines)</p>
+<p><strong>Gradient Analysis:</strong></p>
+<p><strong>Direction:</strong> Zero vector (∇f = 0)
+- At a local minimum, gradient vanishes
+- All partial derivatives are zero
+- No direction of decrease exists</p>
+<p><strong>Magnitude:</strong> ||∇f|| = 0</p>
+<p><strong>Why?</strong>
+- Point is at the bottom of a local valley
+- Moving in any direction increases loss
+- First-order optimality condition satisfied: ∇f = 0</p>
+<p><strong>Mathematical:</strong></p>
+<div class="codehilite"><pre><span></span><code>∂f/∂x₁ |₍₋₁,₋₁₎ = 0
+∂f/∂x₂ |₍₋₁,₋₁₎ = 0
+</code></pre></div>
+
+<p><strong>Hessian:</strong> Positive definite (eigenvalues &gt; 0)
+- Confirms this is a minimum, not saddle point or maximum</p>
+<hr />
+<p><strong>Point (-1, 1):</strong></p>
+<p><strong>Location:</strong> Upper middle region, between two minima</p>
+<p><strong>Loss Function Characterization:</strong>
+- <strong>Type:</strong> Saddle point
+- <strong>Value:</strong> Approximately 1.0-1.5</p>
+<p><strong>Gradient Analysis:</strong></p>
+<p><strong>Direction:</strong> Cannot be zero (not an extremum)
+- Looking at contours, gradient points away from saddle
+- Two main components:
+  - Positive x-direction (towards right minimum)
+  - Or negative x-direction (towards left minimum)
+  - Depending on exact location relative to saddle</p>
+<p><strong>Best estimate:</strong> Gradient points in x-direction (horizontally)</p>
+<p><strong>Magnitude:</strong> Moderate ||∇f|| ≈ 0.5-1.0</p>
+<p><strong>Why?</strong>
+- Contour lines moderately spaced
+- Not a stationary point (gradient ≠ 0)
+- On a ridge between two valleys
+- Moving right or left decreases loss</p>
+<p><strong>Note:</strong> If (-1, 1) is exactly at the saddle point:
+- Gradient = 0
+- Hessian has both positive and negative eigenvalues
+- Unstable equilibrium</p>
+<hr />
+<p><strong>Point (-2, 1.5):</strong></p>
+<p><strong>Location:</strong> Far upper left, steep region</p>
+<p><strong>Loss Function Characterization:</strong>
+- <strong>Type:</strong> Steep region (not an extremum)
+- <strong>Value:</strong> High, approximately 2.0-3.0</p>
+<p><strong>Gradient Analysis:</strong></p>
+<p><strong>Direction:</strong>
+Looking at contour lines, gradient points:
+- <strong>Primary:</strong> Towards right and down (southeast direction)
+- Perpendicular to contours
+- Pointing towards nearest minimum (left valley)</p>
+<p><strong>Approximate direction:</strong> ≈ (1, -1) normalized: (0.707, -0.707)</p>
+<p><strong>Magnitude:</strong> Large ||∇f|| ≈ 2.0-3.0</p>
+<p><strong>Why?</strong>
+- Contour lines very close together → steep gradient
+- Far from any minimum
+- Strong direction of decrease exists
+- Moving towards (-1, -1) minimum</p>
+<p><strong>Mathematical estimate:</strong></p>
+<div class="codehilite"><pre><span></span><code>∇f|₍₋₂,₁.₅₎ ≈ [2.0, -2.0]ᵀ  (pointing southeast)
+||∇f|| ≈ 2.83
+</code></pre></div>
+
+<hr />
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Point</th>
+<th>Type</th>
+<th>Loss Value</th>
+<th>Gradient Direction</th>
+<th>Gradient Magnitude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(-1, -1)</td>
+<td>Local minimum</td>
+<td>~0.25</td>
+<td>Zero (none)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(-1, 1)</td>
+<td>Saddle/ridge</td>
+<td>~1.0-1.5</td>
+<td>Horizontal (±x)</td>
+<td>Moderate (~0.5)</td>
+</tr>
+<tr>
+<td>(-2, 1.5)</td>
+<td>Steep region</td>
+<td>~2.0-3.0</td>
+<td>Southeast (↘)</td>
+<td>Large (~2-3)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong>
+1. Gradient magnitude indicates steepness
+2. Gradient direction perpendicular to contour lines
+3. At minima, gradient vanishes
+4. Far from minima, gradients are large</p>
+<hr />
+<h3>Part (b): Identify optimization algorithms from trajectories [6 marks]</h3>
+<p>Looking at the four trajectories (A=red, B=green, C=blue, D=black):</p>
+<hr />
+<p><strong>Which is Gradient Descent? → Trajectory C (blue)</strong></p>
+<p><strong>Characteristics of trajectory C:</strong>
+- Starts at approximately (1.5, 0)
+- Takes many small steps
+- Follows path perpendicular to contours
+- Converges slowly to minimum
+- Smooth, consistent trajectory
+- Zig-zag pattern typical of gradient descent</p>
+<p><strong>Why gradient descent?</strong></p>
+<ol>
+<li><strong>Small steps:</strong> Learning rate α is conservative</li>
+<li><strong>Perpendicular to contours:</strong> Follows negative gradient direction</li>
+<li><strong>Slow convergence:</strong> Many iterations needed</li>
+<li><strong>Characteristic zig-zagging:</strong> Especially in elongated valleys</li>
+</ol>
+<p><strong>Update rule:</strong></p>
+<div class="codehilite"><pre><span></span><code>xₖ₊₁ = xₖ - α∇f(xₖ)
+</code></pre></div>
+
+<p><strong>Behavior:</strong>
+- Each step goes in steepest descent direction
+- Step size constant (α fixed)
+- Inefficient in narrow valleys (oscillation)</p>
+<hr />
+<p><strong>Which is Hill-Climbing? → Trajectory A (red)</strong></p>
+<p><strong>Characteristics of trajectory A:</strong>
+- Starts at approximately (-1, 1)
+- Moves horizontally rightward
+- Eventually gets stuck at right-side minimum
+- Relatively direct path
+- Medium step sizes</p>
+<p><strong>Why hill-climbing?</strong></p>
+<p>Hill-climbing maximizes an objective, equivalent to minimizing -f(x).</p>
+<p>But looking more carefully, trajectory A shows:
+- <strong>Escapes the left minimum</strong> (passes over saddle)
+- Moves towards better (lower) region
+- This suggests <strong>simulated annealing</strong> or <strong>stochastic search</strong></p>
+<p><strong>Alternative interpretation:</strong>
+If we interpret "hill-climbing" as any gradient-free method:
+- Random search component
+- Can escape local minima
+- Not strictly following gradient</p>
+<p>Actually, trajectory A most resembles:
+- <strong>Simulated annealing</strong> (can move uphill early on)
+- <strong>Momentum-based method</strong> (overshoots saddle)</p>
+<p><strong>Best answer: A is likely a stochastic/hill-climbing variant</strong></p>
+<hr />
+<p><strong>Which is Newton's Method? → Trajectory B (green)</strong></p>
+<p><strong>Characteristics of trajectory B:</strong>
+- Starts near (0, 0.5)
+- Takes very few steps (2-4 iterations)
+- Large, intelligent steps
+- Converges rapidly to right minimum
+- Nearly straight path to optimum</p>
+<p><strong>Why Newton's method?</strong></p>
+<ol>
+<li><strong>Very fast convergence:</strong> Quadratic convergence rate</li>
+<li><strong>Few iterations:</strong> Typical of Newton methods</li>
+<li><strong>Optimal step direction:</strong> Uses curvature information</li>
+<li><strong>Direct path:</strong> Not following contours, using Hessian</li>
+</ol>
+<p><strong>Update rule:</strong></p>
+<div class="codehilite"><pre><span></span><code>xₖ₊₁ = xₖ - H⁻¹∇f(xₖ)
+</code></pre></div>
+
+<p>where H is the Hessian matrix (second derivatives).</p>
+<p><strong>Advantages:</strong>
+- Accounts for curvature (not just gradient)
+- Adapts step size automatically
+- Optimal for quadratic functions</p>
+<p><strong>Why so few steps?</strong>
+- For quadratic functions, Newton converges in 1 step
+- This loss looks locally quadratic near minimum
+- Each step accounts for valley shape</p>
+<hr />
+<p><strong>What about Trajectory D (black)?</strong></p>
+<p><strong>Characteristics:</strong>
+- Starts at (-2.5, 0.5)
+- Moves towards left minimum
+- Converges steadily but not as fast as B
+- More steps than Newton, fewer than basic GD</p>
+<p><strong>Likely candidate:</strong>
+- <strong>Conjugate Gradient</strong>
+- <strong>Quasi-Newton (BFGS)</strong>
+- <strong>Gradient Descent with momentum</strong></p>
+<p>These methods are between GD and Newton in performance.</p>
+<hr />
+<p><strong>Summary:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Trajectory</th>
+<th>Algorithm</th>
+<th>Reasoning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A (red)</strong></td>
+<td>Hill-climbing / Simulated annealing</td>
+<td>Can escape local minimum, random component</td>
+</tr>
+<tr>
+<td><strong>B (green)</strong></td>
+<td><strong>Newton's method</strong></td>
+<td>Very fast (2-4 steps), uses curvature</td>
+</tr>
+<tr>
+<td><strong>C (blue)</strong></td>
+<td><strong>Gradient descent</strong></td>
+<td>Many small steps, zig-zagging, slow</td>
+</tr>
+<tr>
+<td><strong>D (black)</strong></td>
+<td>Quasi-Newton / Conjugate gradient</td>
+<td>Faster than GD, slower than Newton</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Detailed Comparison:</strong></p>
+<p><strong>Gradient Descent (C):</strong>
+- Pros: Simple, guaranteed descent
+- Cons: Slow, sensitive to learning rate
+- Steps: 20-50 iterations
+- Path: Perpendicular to contours</p>
+<p><strong>Newton's Method (B):</strong>
+- Pros: Very fast, optimal for quadratics
+- Cons: Expensive (requires Hessian)
+- Steps: 2-5 iterations
+- Path: Nearly straight line</p>
+<p><strong>Hill-Climbing (A):</strong>
+- Pros: Can escape local minima
+- Cons: No convergence guarantee
+- Steps: Variable
+- Path: Random/stochastic component</p>
+<hr />
+<h3>Part (c): Issues with iterative algorithms and solutions [5 marks]</h3>
+<p><strong>Issue: Multiple Local Minima</strong></p>
+<p><strong>Problem Identified:</strong></p>
+<p>From the contour plot, there are <strong>at least two local minima:</strong>
+1. Left minimum: around (-1, -1)
+2. Right minimum: around (1.5, -1)</p>
+<p><strong>Why is this an issue?</strong></p>
+<hr />
+<p><strong>1. Initial Point Dependence:</strong></p>
+<p>The solution found depends on where the algorithm starts:</p>
+<div class="codehilite"><pre><span></span><code>Start at x₀ = (-2, 1)  →  Converges to left minimum
+Start at x₀ = (2, 0)   →  Converges to right minimum
+</code></pre></div>
+
+<p><strong>Consequence:</strong>
+- No guarantee of finding global minimum
+- Different runs give different results
+- Solution is random/unpredictable</p>
+<hr />
+<p><strong>2. Convergence to Suboptimal Solution:</strong></p>
+<p><strong>If left minimum is higher than right:</strong>
+- Algorithm may get stuck in left valley
+- Misses the better (lower) right minimum
+- Suboptimal solution</p>
+<p><strong>Example values from plot:</strong></p>
+<div class="codehilite"><pre><span></span><code>Left minimum: f ≈ 0.25
+Right minimum: f ≈ 0.10 (appears lower)
+</code></pre></div>
+
+<p>If right is global optimum, converging to left is suboptimal!</p>
+<hr />
+<p><strong>3. Saddle Point Problem:</strong></p>
+<p>Between the two minima is a <strong>saddle point/ridge</strong> around (-1, 1).</p>
+<p><strong>Issue:</strong>
+- Gradient near saddle is very small
+- Algorithm slows down dramatically
+- May take very long to choose direction
+- Numerical precision issues</p>
+<hr />
+<p><strong>Solutions to Mitigate:</strong></p>
+<p><strong>Solution 1: Multiple Random Restarts</strong></p>
+<p>Run optimization many times from different random starting points:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">best_solution</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">best_loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_trials</span><span class="p">):</span>  <span class="c1"># e.g., N=50</span>
+    <span class="c1"># Random initialization</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Run optimization</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;BFGS&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Keep best</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">fun</span> <span class="o">&lt;</span> <span class="n">best_loss</span><span class="p">:</span>
+        <span class="n">best_loss</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fun</span>
+        <span class="n">best_solution</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+
+<span class="k">return</span> <span class="n">best_solution</span>
+</code></pre></div>
+
+<p><strong>Benefits:</strong>
+- Explores different regions
+- Likely to find global minimum (with enough trials)
+- Simple to implement</p>
+<p><strong>Drawback:</strong>
+- Computationally expensive (N× cost)</p>
+<hr />
+<p><strong>Solution 2: Simulated Annealing</strong></p>
+<p>Allow algorithm to occasionally move uphill (accept worse solutions):</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">simulated_annealing</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">T_initial</span><span class="p">,</span> <span class="n">cooling_rate</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">T_initial</span>
+
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="c1"># Propose new point (random neighbor)</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">step_size</span>
+
+        <span class="c1"># Compute energy difference</span>
+        <span class="n">delta_E</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">x_new</span><span class="p">)</span> <span class="o">-</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Accept if better, or with probability exp(-ΔE/T)</span>
+        <span class="k">if</span> <span class="n">delta_E</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">delta_E</span> <span class="o">/</span> <span class="n">T</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x_new</span>
+
+        <span class="c1"># Cool down</span>
+        <span class="n">T</span> <span class="o">*=</span> <span class="n">cooling_rate</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+
+<p><strong>Benefits:</strong>
+- Can escape local minima early on (high T)
+- Settles into global minimum later (low T)
+- No need for multiple restarts</p>
+<hr />
+<p><strong>Solution 3: Basin-Hopping</strong></p>
+<p>Combine local optimization with random jumps:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">basinhopping</span>
+
+<span class="c1"># Callback to track progress</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_fun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">accepted</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current minimum: </span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">basinhopping</span><span class="p">(</span>
+    <span class="n">loss_func</span><span class="p">,</span>
+    <span class="n">x0</span><span class="p">,</span>
+    <span class="n">niter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># Number of basin-hopping iterations</span>
+    <span class="n">T</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Temperature for acceptance</span>
+    <span class="n">stepsize</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># Size of random jumps</span>
+    <span class="n">minimizer_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;BFGS&#39;</span><span class="p">},</span>
+    <span class="n">callback</span><span class="o">=</span><span class="n">print_fun</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>How it works:</strong>
+1. Perform local minimization from x₀
+2. Make a random jump
+3. Perform local minimization from new point
+4. Accept if improves global best
+5. Repeat</p>
+<hr />
+<p><strong>Solution 4: Global Optimization Methods</strong></p>
+<p><strong>Differential Evolution:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">differential_evolution</span>
+
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>  <span class="c1"># Search space</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">differential_evolution</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Particle Swarm Optimization:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pyswarm</span><span class="w"> </span><span class="kn">import</span> <span class="n">pso</span>
+
+<span class="n">lb</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># Lower bounds</span>
+<span class="n">ub</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>    <span class="c1"># Upper bounds</span>
+<span class="n">xopt</span><span class="p">,</span> <span class="n">fopt</span> <span class="o">=</span> <span class="n">pso</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Solution 5: Gradient Descent with Momentum</strong></p>
+<p>Add momentum to help escape shallow local minima:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gd_with_momentum</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">grad_func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Velocity</span>
+
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="c1"># Compute gradient</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">grad_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Update velocity</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">g</span>
+
+        <span class="c1"># Update position</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">v</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+
+<p><strong>Benefit:</strong> Momentum carries through small barriers</p>
+<hr />
+<p><strong>Looking at the Graph - Is this likely a problem?</strong></p>
+<p><strong>Analysis:</strong></p>
+<ol>
+<li>
+<p><strong>Two clear minima:</strong> Yes, definitely multiple local minima</p>
+</li>
+<li>
+<p><strong>Separation:</strong> Minima are well-separated</p>
+</li>
+<li>Left: (-1, -1)</li>
+<li>Right: (1.5, -1)</li>
+<li>
+<p>Distance ≈ 2.5 units apart</p>
+</li>
+<li>
+<p><strong>Barrier height:</strong></p>
+</li>
+<li>Barrier at saddle ≈ 1.0</li>
+<li>Minima at ≈ 0.1-0.25</li>
+<li>
+<p><strong>Barrier height ≈ 0.75-0.9</strong></p>
+</li>
+<li>
+<p><strong>Starting point matters greatly</strong></p>
+</li>
+</ol>
+<p><strong>Verdict: YES, this IS a problem for this application!</strong></p>
+<p><strong>Why:</strong>
+- Significant barrier between minima
+- Standard GD will definitely get stuck
+- Need one of the solutions above</p>
+<p><strong>Recommended approach:</strong>
+- Use multiple random restarts (10-20 runs)
+- Or use basin-hopping
+- For production: Differential evolution</p>
+<hr />
+<h3>Part (d): Avoid finding bottom-right minimum [3 marks]</h3>
+<p><strong>Goal:</strong> Optimize to find left minimum, avoid right minimum</p>
+<p><strong>Challenge:</strong> Right minimum appears to be the global optimum (lowest point)!</p>
+<hr />
+<p><strong>Solution: Constrained Optimization</strong></p>
+<p><strong>Method 1: Add Constraint to Stay Left</strong></p>
+<p>Add constraint: x₁ &lt; 0 (stay in left half-plane)</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="c1"># Define constraint</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">constraint</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Requires x[0] &lt; 0</span>
+
+<span class="n">con</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="n">constraint</span><span class="p">}</span>
+
+<span class="c1"># Optimize with constraint</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">loss_func</span><span class="p">,</span>
+    <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Start on left</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span>  <span class="c1"># Sequential Least Squares</span>
+    <span class="n">constraints</span><span class="o">=</span><span class="n">con</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Explanation:</strong>
+- Inequality constraint: x₁ ≤ 0
+- Forces solution to left side
+- SLSQP can handle constraints
+- Will find left minimum</p>
+<hr />
+<p><strong>Method 2: Add Penalty to Right Region</strong></p>
+<p>Modify loss function to penalize right side:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">penalized_loss</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">original_loss</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Add penalty if x[0] &gt; 0</span>
+    <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># Large penalty</span>
+        <span class="n">loss</span> <span class="o">+=</span> <span class="n">penalty</span>
+
+    <span class="k">return</span> <span class="n">loss</span>
+
+<span class="c1"># Optimize penalized loss</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">penalized_loss</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;BFGS&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>How it works:</strong>
+- Original loss for x₁ &lt; 0
+- Huge penalty for x₁ &gt; 0
+- Algorithm stays on left side</p>
+<hr />
+<p><strong>Method 3: Box Constraints (Bounded Optimization)</strong></p>
+<p>Restrict search space:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="c1"># Bounds: x₁ ∈ [-3, 0], x₂ ∈ [-3, 3]</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">loss_func</span><span class="p">,</span>
+    <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">,</span>  <span class="c1"># Bounded L-BFGS</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Benefits:</strong>
+- Simple to implement
+- Computationally efficient
+- Guaranteed to satisfy bounds</p>
+<hr />
+<p><strong>Method 4: Barrier Function</strong></p>
+<p>Add logarithmic barrier:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">barrier_loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">original_loss</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Barrier: -μ log(-x[0]) enforces x[0] &lt; 0</span>
+    <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>  <span class="c1"># Infeasible</span>
+
+    <span class="n">barrier</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">barrier</span>
+
+<span class="c1"># Optimize</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">barrier_loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">mu</span><span class="p">,))</span>
+</code></pre></div>
+
+<p><strong>As μ → 0:</strong> Solution approaches constrained optimum</p>
+<hr />
+<p><strong>Method 5: Projection Method</strong></p>
+<p>After each gradient step, project back to feasible region:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">projected_gradient_descent</span><span class="p">(</span><span class="n">loss_func</span><span class="p">,</span> <span class="n">grad_func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span>
+
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="c1"># Gradient step</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">grad_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">g</span>
+
+        <span class="c1"># Project: if x_new[0] &gt; 0, set to 0</span>
+        <span class="n">x_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_new</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x_new</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+
+<p><strong>Ensures:</strong> x₁ ≤ 0 at every iteration</p>
+<hr />
+<p><strong>Method 6: Careful Initialization</strong></p>
+<p>Start from left side and use small learning rate:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Start deep in left region</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+
+<span class="c1"># Use small learning rate</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">loss_func</span><span class="p">,</span>
+    <span class="n">x0</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;BFGS&#39;</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;gtol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Stop early if approaching right side</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting too close to right minimum, stopping&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Not recommended:</strong> Unreliable, depends on hyperparameters</p>
+<hr />
+<p><strong>Summary of Methods:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Pros</th>
+<th>Cons</th>
+<th>Reliability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Box constraints</strong></td>
+<td>Simple, efficient</td>
+<td>Hard bounds only</td>
+<td>✓✓✓ Best</td>
+</tr>
+<tr>
+<td>Add penalty</td>
+<td>Flexible</td>
+<td>Needs tuning</td>
+<td>✓✓ Good</td>
+</tr>
+<tr>
+<td>Barrier function</td>
+<td>Theoretical guarantees</td>
+<td>Numerical issues</td>
+<td>✓✓ Good</td>
+</tr>
+<tr>
+<td>Projection</td>
+<td>Simple implementation</td>
+<td>May be slow</td>
+<td>✓ Okay</td>
+</tr>
+<tr>
+<td>Careful init</td>
+<td>Easy</td>
+<td>Unreliable</td>
+<td>✗ Poor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended: Use box constraints with L-BFGS-B</strong></p>
+<hr />
+<p><strong>Complete Solution:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">optimize_left_minimum</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find left minimum, avoiding right minimum.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Box constraints: x₁ ≤ 0</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+
+    <span class="c1"># Start in left region</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+    <span class="c1"># Optimize with constraints</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+        <span class="n">loss_func</span><span class="p">,</span>
+        <span class="n">x0</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found minimum at: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loss value: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">fun</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x₁ = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (should be &lt; 0)&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+
+<span class="n">optimal_x</span> <span class="o">=</span> <span class="n">optimize_left_minimum</span><span class="p">()</span>
+</code></pre></div>
+
+<p><strong>This guarantees:</strong> Solution is left minimum, never reaches right side!</p>
+<hr />
+<h2>Question 3: Probability and Statistics (20 marks)</h2>
+<h3>Part (a): Calculate expectations [6 marks]</h3>
+<p><strong>Given data:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>age</th>
+<th>exam</th>
+<th>coursework</th>
+<th>group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>21</td>
+<td>9</td>
+<td>7</td>
+<td>A</td>
+</tr>
+<tr>
+<td>1</td>
+<td>18</td>
+<td>3</td>
+<td>7</td>
+<td>A</td>
+</tr>
+<tr>
+<td>2</td>
+<td>18</td>
+<td>5</td>
+<td>6</td>
+<td>A</td>
+</tr>
+<tr>
+<td>3</td>
+<td>19</td>
+<td>6</td>
+<td>8</td>
+<td>B</td>
+</tr>
+<tr>
+<td>4</td>
+<td>18</td>
+<td>4</td>
+<td>5</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Step 1: Calculate E[exam]</strong></p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">X</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">Σᵢ</span><span class="err">₌</span><span class="n">₁ᴺ</span><span class="w"> </span><span class="n">xᵢ</span>
+</code></pre></div>
+
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">exam</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="p">(</span><span class="mi">9</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="mi">27</span>
+<span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mf">5.4</span>
+</code></pre></div>
+
+<p><strong>Answer: E[exam] = 5.4</strong></p>
+<hr />
+<p><strong>Step 2: Calculate E[coursework]</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">coursework</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="mi">33</span>
+<span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="mf">6.6</span>
+</code></pre></div>
+
+<p><strong>Answer: E[coursework] = 6.6</strong></p>
+<hr />
+<p><strong>Step 3: Calculate E[final mark]</strong></p>
+<p><strong>Final mark formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>Final = 0.6 × exam + 0.4 × coursework
+</code></pre></div>
+
+<p><strong>Method 1: Using linearity of expectation</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">Final</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">E</span><span class="o">[</span><span class="n">0.6×exam + 0.4×coursework</span><span class="o">]</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="err">×</span><span class="n">E</span><span class="o">[</span><span class="n">exam</span><span class="o">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.4</span><span class="err">×</span><span class="n">E</span><span class="o">[</span><span class="n">coursework</span><span class="o">]</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="err">×</span><span class="mf">5.4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.4</span><span class="err">×</span><span class="mf">6.6</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">3.24</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.64</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">5.88</span>
+</code></pre></div>
+
+<p><strong>Answer: E[final] = 5.88</strong></p>
+<hr />
+<p><strong>Method 2: Calculate each final mark first</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
+    <span class="s1">&#39;exam&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="s1">&#39;coursework&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Calculate final marks</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;exam&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;coursework&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final marks:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+<p><strong>Individual final marks:</strong></p>
+<div class="codehilite"><pre><span></span><code>Student 0: 0.6×9 + 0.4×7 = 5.4 + 2.8 = 8.2
+Student 1: 0.6×3 + 0.4×7 = 1.8 + 2.8 = 4.6
+Student 2: 0.6×5 + 0.4×6 = 3.0 + 2.4 = 5.4
+Student 3: 0.6×6 + 0.4×8 = 3.6 + 3.2 = 6.8
+Student 4: 0.6×4 + 0.4×5 = 2.4 + 2.0 = 4.4
+</code></pre></div>
+
+<p><strong>Expectation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">final</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="p">(</span><span class="mf">8.2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.6</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">5.4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">6.8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4.4</span><span class="p">)</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="mf">29.4</span>
+<span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">5.88</span>
+</code></pre></div>
+
+<p><strong>Verification: Both methods give same answer ✓</strong></p>
+<hr />
+<p><strong>Summary:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Expectation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E[exam]</td>
+<td>5.4</td>
+</tr>
+<tr>
+<td>E[coursework]</td>
+<td>6.6</td>
+</tr>
+<tr>
+<td>E[final]</td>
+<td>5.88</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observations:</strong>
+- Coursework scores higher on average
+- Final mark: 5.88/10 = 58.8%
+- Just above typical pass mark (50%)</p>
+<hr />
+<p><strong>Python Code:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Data</span>
+<span class="n">exam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">coursework</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># Expectations</span>
+<span class="n">E_exam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">exam</span><span class="p">)</span>
+<span class="n">E_coursework</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">coursework</span><span class="p">)</span>
+<span class="n">E_final</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">E_exam</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">E_coursework</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E[exam] = </span><span class="si">{</span><span class="n">E_exam</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E[coursework] = </span><span class="si">{</span><span class="n">E_coursework</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E[final] = </span><span class="si">{</span><span class="n">E_final</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">E</span><span class="o">[</span><span class="n">exam</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.40</span>
+<span class="n">E</span><span class="o">[</span><span class="n">coursework</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.60</span>
+<span class="n">E</span><span class="o">[</span><span class="n">final</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.88</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (b): Probability of passing and by group [7 marks]</h3>
+<p><strong>Pass mark: 5.0 out of 10</strong></p>
+<p><strong>Student final marks (calculated above):</strong></p>
+<div class="codehilite"><pre><span></span><code>Student 0 (A): 8.2 → PASS
+Student 1 (A): 4.6 → FAIL
+Student 2 (A): 5.4 → PASS
+Student 3 (B): 6.8 → PASS
+Student 4 (B): 4.4 → FAIL
+</code></pre></div>
+
+<hr />
+<p><strong>Question 1: Probability of passing (overall)</strong></p>
+<p><strong>Count:</strong>
+- Passing: 3 students (0, 2, 3)
+- Failing: 2 students (1, 4)
+- Total: 5 students</p>
+<p><strong>Probability:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(pass) = (Number passing) / (Total students)
+        = 3 / 5
+        = 0.6
+        = 60%
+</code></pre></div>
+
+<p><strong>Answer: P(pass) = 0.6 or 60%</strong></p>
+<hr />
+<p><strong>Question 2: Probability by group</strong></p>
+<p><strong>Group A:</strong>
+- Students: 0, 1, 2 (3 total)
+- Passing: 0, 2 (2 students)
+- Failing: 1 (1 student)</p>
+<div class="codehilite"><pre><span></span><code>P(pass | Group A) = 2/3 ≈ 0.667 = 66.7%
+</code></pre></div>
+
+<p><strong>Group B:</strong>
+- Students: 3, 4 (2 total)
+- Passing: 3 (1 student)
+- Failing: 4 (1 student)</p>
+<div class="codehilite"><pre><span></span><code>P(pass | Group B) = 1/2 = 0.5 = 50%
+</code></pre></div>
+
+<hr />
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Total Students</th>
+<th>Passing</th>
+<th>Failing</th>
+<th>P(pass | group)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>66.7%</td>
+</tr>
+<tr>
+<td>B</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>50.0%</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td><strong>5</strong></td>
+<td><strong>3</strong></td>
+<td><strong>2</strong></td>
+<td><strong>60.0%</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Question 3: What can you conclude?</strong></p>
+<p><strong>Conclusion 1: Group A performs better</strong></p>
+<div class="codehilite"><pre><span></span><code>P(pass | A) = 66.7% &gt; P(pass | B) = 50.0%
+</code></pre></div>
+
+<p>Group A students have higher pass rate (+16.7 percentage points).</p>
+<p><strong>Possible interpretations:</strong>
+- Group A students better prepared
+- Group A has better teaching/resources
+- Group A self-selected (better students chose A)
+- Random variation (sample size very small!)</p>
+<hr />
+<p><strong>Conclusion 2: Small sample size - results not statistically significant</strong></p>
+<p>With only 5 students:
+- 3 in group A, 2 in group B
+- Very small sample!
+- High variance in estimates
+- Cannot draw strong conclusions</p>
+<p><strong>Statistical test needed:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">fisher_exact</span>
+
+<span class="c1"># Contingency table</span>
+<span class="c1">#           Pass  Fail</span>
+<span class="c1"># Group A:   2     1</span>
+<span class="c1"># Group B:   1     1</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+
+<span class="n">odds_ratio</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">fisher_exact</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;p-value: </span><span class="si">{</span><span class="n">p_value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Result:</strong> p-value ≈ 1.0 (not significant)</p>
+<p><strong>Interpretation:</strong> No statistical evidence of difference between groups.</p>
+<hr />
+<p><strong>Conclusion 3: Overall pass rate concerning</strong></p>
+<div class="codehilite"><pre><span></span><code>Overall pass rate: 60%
+</code></pre></div>
+
+<p>If target pass rate is 80%:
+- Current: 60% (below target)
+- Need to improve by +20 percentage points
+- May need to adjust weightings or grading</p>
+<hr />
+<p><strong>Conclusion 4: High variance in performance</strong></p>
+<p><strong>Exam scores:</strong> 3, 4, 5, 6, 9 (range: 6)
+<strong>Coursework scores:</strong> 5, 6, 7, 7, 8 (range: 3)</p>
+<p><strong>Observations:</strong>
+- Exam has wider spread
+- Student 0: Excellent (8.2)
+- Students 1, 4: Struggling (4.6, 4.4)
+- Large performance gap suggests:
+  - Diverse student abilities
+  - Or exam particularly challenging</p>
+<hr />
+<p><strong>Conclusion 5: Coursework vs Exam</strong></p>
+<p><strong>Average scores:</strong>
+- Exam: 5.4/10 = 54%
+- Coursework: 6.6/10 = 66%</p>
+<p><strong>Students score 12% higher on coursework</strong></p>
+<p><strong>Possible reasons:</strong>
+- Coursework allows more time
+- Coursework allows collaboration
+- Exam has time pressure
+- Different skill assessment</p>
+<p><strong>Implication for weighting:</strong>
+- Current: 60% exam, 40% coursework
+- If coursework weighted more, pass rate would increase</p>
+<hr />
+<p><strong>Complete Python Analysis:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
+    <span class="s1">&#39;exam&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="s1">&#39;coursework&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Calculate final marks</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;exam&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;coursework&#39;</span><span class="p">]</span>
+
+<span class="c1"># Pass/fail</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;pass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;final&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">5.0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Student data:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Overall pass rate</span>
+<span class="n">overall_pass_rate</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;pass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Overall pass rate: </span><span class="si">{</span><span class="n">overall_pass_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Pass rate by group</span>
+<span class="n">group_pass_rates</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)[</span><span class="s1">&#39;pass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+<span class="n">group_pass_rates</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Passing&#39;</span><span class="p">,</span> <span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="s1">&#39;Pass Rate&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Pass rates by group:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">group_pass_rates</span><span class="p">)</span>
+
+<span class="c1"># Conclusion</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Conclusions:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1. Group A pass rate (</span><span class="si">{</span><span class="n">group_pass_rates</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Pass Rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">) &gt; Group B (</span><span class="si">{</span><span class="n">group_pass_rates</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Pass Rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. Small sample size (N=5) - results not statistically significant&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Overall pass rate (60%) below typical target (80%)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;4. High variance in exam performance suggests diverse abilities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5. Students perform better on coursework (+12%) than exam&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (c): Approach to set weightings for 80% pass rate [7 marks]</h3>
+<p><strong>Problem:</strong>
+- Have 3 coursework scores and 1 exam score per student
+- Large historical dataset (multiple years)
+- Want to find weights w₁, w₂, w₃, w₄ such that:
+  - Final = w₁×CW1 + w₂×CW2 + w₃×CW3 + w₄×Exam
+  - Pass rate ≈ 80%</p>
+<p><strong>Constraints:</strong>
+- w₁ + w₂ + w₃ + w₄ = 1 (weights sum to 1)
+- wᵢ ≥ 0 (non-negative weights)
+- 0 ≤ wᵢ ≤ 1 (realistic bounds)</p>
+<hr />
+<p><strong>Approach:</strong></p>
+<p><strong>Step 1: Data Preparation</strong></p>
+<p>Load historical data:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Load data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;student_data.csv&#39;</span><span class="p">)</span>
+<span class="c1"># Columns: student_id, year, cw1, cw2, cw3, exam</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total students: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Years covered: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Ensure data quality:</strong>
+- Remove missing values
+- Check for outliers
+- Normalize if scores on different scales</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Clean data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>  <span class="c1"># Remove missing</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;cw1&#39;</span><span class="p">,</span> <span class="s1">&#39;cw2&#39;</span><span class="p">,</span> <span class="s1">&#39;cw3&#39;</span><span class="p">,</span> <span class="s1">&#39;exam&#39;</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># Valid range</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;cw1&#39;</span><span class="p">,</span> <span class="s1">&#39;cw2&#39;</span><span class="p">,</span> <span class="s1">&#39;cw3&#39;</span><span class="p">,</span> <span class="s1">&#39;exam&#39;</span><span class="p">]]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Define Optimization Problem</strong></p>
+<p><strong>Objective:</strong> Find weights that achieve 80% pass rate</p>
+<p><strong>Formulation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">pass_threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate pass rate for given weights.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        weights: [w1, w2, w3, w4] for [cw1, cw2, cw3, exam]</span>
+<span class="sd">        data: DataFrame with columns [cw1, cw2, cw3, exam]</span>
+<span class="sd">        pass_threshold: Minimum passing score</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pass rate (fraction between 0 and 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w3</span><span class="p">,</span> <span class="n">w4</span> <span class="o">=</span> <span class="n">weights</span>
+
+    <span class="c1"># Calculate final marks</span>
+    <span class="n">final_marks</span> <span class="o">=</span> <span class="p">(</span><span class="n">w1</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw1&#39;</span><span class="p">]</span> <span class="o">+</span>
+                   <span class="n">w2</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw2&#39;</span><span class="p">]</span> <span class="o">+</span>
+                   <span class="n">w3</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw3&#39;</span><span class="p">]</span> <span class="o">+</span>
+                   <span class="n">w4</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;exam&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Calculate pass rate</span>
+    <span class="n">pass_rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">final_marks</span> <span class="o">&gt;=</span> <span class="n">pass_threshold</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">pass_rate</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 3: Formulate as Optimization</strong></p>
+<p><strong>Method 1: Minimize squared error from target</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">target_pass_rate</span><span class="o">=</span><span class="mf">0.80</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize (actual_pass_rate - target)^2&quot;&quot;&quot;</span>
+    <span class="n">actual_pass_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">actual_pass_rate</span> <span class="o">-</span> <span class="n">target_pass_rate</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">error</span>
+
+<span class="c1"># Constraints</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># Sum to 1</span>
+<span class="p">]</span>
+
+<span class="c1"># Bounds</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>  <span class="c1"># Each weight in [0, 1]</span>
+
+<span class="c1"># Initial guess</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">]</span>  <span class="c1"># Start with reasonable values</span>
+
+<span class="c1"># Optimize</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">objective</span><span class="p">,</span>
+    <span class="n">w0</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">df</span><span class="p">,),</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span>
+<span class="p">)</span>
+
+<span class="n">optimal_weights</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal weights: </span><span class="si">{</span><span class="n">optimal_weights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pass rate: </span><span class="si">{</span><span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">optimal_weights</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Method 2: Grid Search</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">grid_search_weights</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target_rate</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exhaustive search over weight space.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data: Student data</span>
+<span class="sd">        target_rate: Target pass rate</span>
+<span class="sd">        resolution: Grid spacing</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Best weights and resulting pass rate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">best_weights</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">best_error</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Generate grid (constrained to sum to 1)</span>
+    <span class="k">for</span> <span class="n">w4</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>  <span class="c1"># Exam weight</span>
+        <span class="k">for</span> <span class="n">w3</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">w4</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>  <span class="c1"># CW3</span>
+            <span class="k">for</span> <span class="n">w2</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">w4</span> <span class="o">-</span> <span class="n">w3</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>  <span class="c1"># CW2</span>
+                <span class="n">w1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">w4</span> <span class="o">-</span> <span class="n">w3</span> <span class="o">-</span> <span class="n">w2</span>  <span class="c1"># CW1 (determined by others)</span>
+
+                <span class="k">if</span> <span class="n">w1</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">w1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w3</span><span class="p">,</span> <span class="n">w4</span><span class="p">]</span>
+                <span class="n">pass_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pass_rate</span> <span class="o">-</span> <span class="n">target_rate</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">best_error</span><span class="p">:</span>
+                    <span class="n">best_error</span> <span class="o">=</span> <span class="n">error</span>
+                    <span class="n">best_weights</span> <span class="o">=</span> <span class="n">weights</span>
+
+    <span class="k">return</span> <span class="n">best_weights</span><span class="p">,</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">best_weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="n">optimal_weights</span><span class="p">,</span> <span class="n">actual_rate</span> <span class="o">=</span> <span class="n">grid_search_weights</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal weights: </span><span class="si">{</span><span class="n">optimal_weights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Achieved pass rate: </span><span class="si">{</span><span class="n">actual_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 4: Cross-Validation</strong></p>
+<p>Validate that weights generalize across years:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cross_validate_weights</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate weights across different subsets.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data: Full dataset</span>
+<span class="sd">        n_folds: Number of cross-validation folds</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Average pass rate across folds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">n_folds</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">pass_rates</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">val_idx</span> <span class="ow">in</span> <span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="c1"># Split data</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+        <span class="n">val_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">val_idx</span><span class="p">]</span>
+
+        <span class="c1"># Find weights on training data</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">find_optimal_weights</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">target_rate</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+
+        <span class="c1"># Evaluate on validation data</span>
+        <span class="n">val_pass_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">val_data</span><span class="p">)</span>
+        <span class="n">pass_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_pass_rate</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fold pass rate: </span><span class="si">{</span><span class="n">val_pass_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">avg_pass_rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pass_rates</span><span class="p">)</span>
+    <span class="n">std_pass_rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">pass_rates</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Average pass rate: </span><span class="si">{</span><span class="n">avg_pass_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">std_pass_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">avg_pass_rate</span><span class="p">,</span> <span class="n">std_pass_rate</span>
+
+<span class="c1"># Run cross-validation</span>
+<span class="n">avg_rate</span><span class="p">,</span> <span class="n">std_rate</span> <span class="o">=</span> <span class="n">cross_validate_weights</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 5: Sensitivity Analysis</strong></p>
+<p>Check how sensitive pass rate is to weight changes:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_analysis</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyze sensitivity of pass rate to weight perturbations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        weights: Baseline weights</span>
+<span class="sd">        data: Student data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Sensitivity for each weight</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">baseline_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">sensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># 1% change</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)):</span>
+        <span class="c1"># Perturb weight i</span>
+        <span class="n">perturbed</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">perturbed</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+
+        <span class="c1"># Renormalize</span>
+        <span class="n">perturbed</span> <span class="o">=</span> <span class="n">perturbed</span> <span class="o">/</span> <span class="n">perturbed</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="c1"># Calculate new pass rate</span>
+        <span class="n">new_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">perturbed</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Sensitivity: change in rate per unit change in weight</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_rate</span> <span class="o">-</span> <span class="n">baseline_rate</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta</span>
+        <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sensitivities</span>
+
+<span class="n">sensitivities</span> <span class="o">=</span> <span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">optimal_weights</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+<span class="n">weight_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CW1&#39;</span><span class="p">,</span> <span class="s1">&#39;CW2&#39;</span><span class="p">,</span> <span class="s1">&#39;CW3&#39;</span><span class="p">,</span> <span class="s1">&#39;Exam&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sens</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">weight_names</span><span class="p">,</span> <span class="n">sensitivities</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sens</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2">% pass rate per 1% weight increase&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 6: Apply Additional Constraints</strong></p>
+<p><strong>Policy constraints:</strong>
+- Minimum exam weight (e.g., ≥ 40%)
+- Maximum coursework weight per piece (e.g., ≤ 25%)</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Extended constraints</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">},</span>  <span class="c1"># Sum to 1</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.40</span><span class="p">},</span>  <span class="c1"># Exam ≥ 40%</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="mf">0.25</span> <span class="o">-</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>  <span class="c1"># CW1 ≤ 25%</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="mf">0.25</span> <span class="o">-</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]},</span>  <span class="c1"># CW2 ≤ 25%</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="mf">0.25</span> <span class="o">-</span> <span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]},</span>  <span class="c1"># CW3 ≤ 25%</span>
+<span class="p">]</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">objective</span><span class="p">,</span>
+    <span class="n">w0</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">df</span><span class="p">,),</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 7: Analyze Results</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">analyze_results</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Comprehensive analysis of chosen weights.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        weights: Chosen weights</span>
+<span class="sd">        data: Student data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Analysis results</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate final marks</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw1&#39;</span><span class="p">]</span> <span class="o">+</span>
+             <span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw2&#39;</span><span class="p">]</span> <span class="o">+</span>
+             <span class="n">weights</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;cw3&#39;</span><span class="p">]</span> <span class="o">+</span>
+             <span class="n">weights</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;exam&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Pass/fail</span>
+    <span class="n">passing</span> <span class="o">=</span> <span class="n">final</span> <span class="o">&gt;=</span> <span class="mf">5.0</span>
+
+    <span class="c1"># Statistics</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;pass_rate&#39;</span><span class="p">:</span> <span class="n">passing</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">&#39;mean_mark&#39;</span><span class="p">:</span> <span class="n">final</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">&#39;std_mark&#39;</span><span class="p">:</span> <span class="n">final</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span>
+        <span class="s1">&#39;min_mark&#39;</span><span class="p">:</span> <span class="n">final</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+        <span class="s1">&#39;max_mark&#39;</span><span class="p">:</span> <span class="n">final</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="s1">&#39;median_mark&#39;</span><span class="p">:</span> <span class="n">final</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Grade distribution</span>
+    <span class="n">grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">final</span><span class="p">,</span>
+                    <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Fail&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">])</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;grade_dist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grades</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">stats</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">analyze_results</span><span class="p">(</span><span class="n">optimal_weights</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pass rate: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;pass_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean mark: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;mean_mark&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;std_mark&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Grade distribution:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">grade</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;grade_dist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 8: Validate with Recent Data</strong></p>
+<p>Test on most recent year (held out):</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Split by year</span>
+<span class="n">recent_year</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">recent_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">recent_year</span><span class="p">]</span>
+<span class="n">historical_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">recent_year</span><span class="p">]</span>
+
+<span class="c1"># Find weights on historical data</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">find_optimal_weights</span><span class="p">(</span><span class="n">historical_data</span><span class="p">,</span> <span class="n">target_rate</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+
+<span class="c1"># Test on recent data</span>
+<span class="n">recent_pass_rate</span> <span class="o">=</span> <span class="n">calculate_pass_rate</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">recent_data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pass rate on recent data: </span><span class="si">{</span><span class="n">recent_pass_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">recent_pass_rate</span> <span class="o">-</span> <span class="mf">0.80</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Weights generalize well&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ Weights may not generalize&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary of Approach:</strong></p>
+<ol>
+<li><strong>Data Preparation:</strong> Clean and validate historical data</li>
+<li><strong>Define Objective:</strong> Minimize |pass_rate - 0.80|²</li>
+<li><strong>Optimize:</strong> Use constrained optimization (SLSQP)</li>
+<li><strong>Cross-Validate:</strong> Ensure generalization across years</li>
+<li><strong>Sensitivity Analysis:</strong> Check robustness</li>
+<li><strong>Apply Constraints:</strong> Enforce policy requirements</li>
+<li><strong>Analyze Results:</strong> Grade distribution, statistics</li>
+<li><strong>Validate:</strong> Test on held-out recent data</li>
+</ol>
+<p><strong>Result:</strong> Optimal weights that achieve ~80% pass rate while respecting constraints!</p>
+<hr />
+<h2>Question 4: Database Systems (20 marks)</h2>
+<h3>Part (a): Calculate blocking factors [4 marks]</h3>
+<p><strong>Given:</strong></p>
+<p><strong>Course (C):</strong>
+- Id: 32-bit integer = 4 bytes
+- Description: 195 bytes
+- Credits: 8-bit integer = 1 byte
+- Total: r_C = 32 records</p>
+<p><strong>Transcript (T):</strong>
+- StudentId: 4 bytes
+- CourseId: 4 bytes
+- Mark: 8 bytes (double)
+- Total: r_T = 51,200 records</p>
+<p><strong>Block size:</strong> Default database block = 4096 bytes (typical)</p>
+<hr />
+<p><strong>Step 1: Calculate Record Sizes</strong></p>
+<p><strong>Course record size:</strong></p>
+<div class="codehilite"><pre><span></span><code>R_C = sizeof(Id) + sizeof(Description) + sizeof(Credits)
+    = 4 + 195 + 1
+    = 200 bytes per record
+</code></pre></div>
+
+<p><strong>Transcript record size:</strong></p>
+<div class="codehilite"><pre><span></span><code>R_T = sizeof(StudentId) + sizeof(CourseId) + sizeof(Mark)
+    = 4 + 4 + 8
+    = 16 bytes per record
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Calculate Blocking Factors</strong></p>
+<p><strong>Blocking factor:</strong> Number of records that fit in one block</p>
+<p><strong>For Course:</strong></p>
+<div class="codehilite"><pre><span></span><code>bfr_C = floor(Block_size / R_C)
+      = floor(4096 / 200)
+      = floor(20.48)
+      = 20 records per block
+</code></pre></div>
+
+<p><strong>For Transcript:</strong></p>
+<div class="codehilite"><pre><span></span><code>bfr_T = floor(Block_size / R_T)
+      = floor(4096 / 16)
+      = floor(256)
+      = 256 records per block
+</code></pre></div>
+
+<hr />
+<p><strong>Answer:</strong>
+- <strong>Blocking factor for Course: bfr_C = 20 records/block</strong>
+- <strong>Blocking factor for Transcript: bfr_T = 256 records/block</strong></p>
+<hr />
+<p><strong>Python Verification:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Given</span>
+<span class="n">block_size</span> <span class="o">=</span> <span class="mi">4096</span>
+
+<span class="c1"># Course</span>
+<span class="n">R_C</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">195</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 200 bytes</span>
+<span class="n">bfr_C</span> <span class="o">=</span> <span class="n">block_size</span> <span class="o">//</span> <span class="n">R_C</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Course blocking factor: </span><span class="si">{</span><span class="n">bfr_C</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Transcript</span>
+<span class="n">R_T</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span>  <span class="c1"># 16 bytes</span>
+<span class="n">bfr_T</span> <span class="o">=</span> <span class="n">block_size</span> <span class="o">//</span> <span class="n">R_T</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transcript blocking factor: </span><span class="si">{</span><span class="n">bfr_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code>Course blocking factor: 20
+Transcript blocking factor: 256
+</code></pre></div>
+
+<hr />
+<h3>Part (b): Number of blocks required [6 marks]</h3>
+<p><strong>Step 1: Calculate Blocks for Course</strong></p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_C = ceil(r_C / bfr_C)
+</code></pre></div>
+
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_C = ceil(32 / 20)
+    = ceil(1.6)
+    = 2 blocks
+</code></pre></div>
+
+<p><strong>Verification:</strong>
+- Block 1: 20 records
+- Block 2: 12 records (32 - 20 = 12)
+- Total: 2 blocks ✓</p>
+<p><strong>Answer: Course requires 2 blocks</strong></p>
+<hr />
+<p><strong>Step 2: Calculate Blocks for Transcript</strong></p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_T = ceil(r_T / bfr_T)
+</code></pre></div>
+
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_T = ceil(51200 / 256)
+    = ceil(200)
+    = 200 blocks
+</code></pre></div>
+
+<p><strong>Verification:</strong>
+- 200 blocks × 256 records/block = 51,200 records ✓
+- Exactly fills 200 blocks with no wasted space!</p>
+<p><strong>Answer: Transcript requires 200 blocks</strong></p>
+<hr />
+<p><strong>Summary:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Relation</th>
+<th>Records</th>
+<th>Record Size</th>
+<th>Blocking Factor</th>
+<th>Blocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Course (C)</td>
+<td>32</td>
+<td>200 bytes</td>
+<td>20</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Transcript (T)</td>
+<td>51,200</td>
+<td>16 bytes</td>
+<td>256</td>
+<td>200</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Python Code:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="c1"># Course</span>
+<span class="n">r_C</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">bfr_C</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">n_C</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">r_C</span> <span class="o">/</span> <span class="n">bfr_C</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Course blocks: </span><span class="si">{</span><span class="n">n_C</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Transcript</span>
+<span class="n">r_T</span> <span class="o">=</span> <span class="mi">51200</span>
+<span class="n">bfr_T</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">n_T</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">r_T</span> <span class="o">/</span> <span class="n">bfr_T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transcript blocks: </span><span class="si">{</span><span class="n">n_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Total storage</span>
+<span class="n">total_blocks</span> <span class="o">=</span> <span class="n">n_C</span> <span class="o">+</span> <span class="n">n_T</span>
+<span class="n">total_size_KB</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_blocks</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total blocks: </span><span class="si">{</span><span class="n">total_blocks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total storage: </span><span class="si">{</span><span class="n">total_size_KB</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code>Course blocks: 2
+Transcript blocks: 200
+
+Total blocks: 202
+Total storage: 808.0 KB
+</code></pre></div>
+
+<hr />
+<h3>Part (c): Nested loop join cost analysis [6 marks]</h3>
+<p><strong>Given:</strong>
+- n_C = 2 blocks
+- n_T = 200 blocks
+- Memory buffer: n_B = 23 blocks
+- Can use (n_B - 2) = 21 blocks for outer relation</p>
+<p><strong>Query:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Block Nested-Loop Join Algorithm:</strong></p>
+<div class="codehilite"><pre><span></span><code>For each chunk of (n_B - 2) blocks of outer relation:
+    Load chunk into memory
+    For each block of inner relation:
+        Load block into memory
+        Join records in memory
+        Write results
+</code></pre></div>
+
+<p><strong>Memory allocation:</strong>
+- (n_B - 2) blocks: outer relation
+- 1 block: inner relation
+- 1 block: output buffer</p>
+<hr />
+<p><strong>Strategy 1: Course (C) as Outer, Transcript (T) as Inner</strong></p>
+<p><strong>Number of outer chunks:</strong></p>
+<div class="codehilite"><pre><span></span><code>chunks_C = ceil(n_C / (n_B - 2))
+         = ceil(2 / 21)
+         = ceil(0.095)
+         = 1 chunk
+</code></pre></div>
+
+<p><strong>Cost formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>Cost = n_C + (chunks_C × n_T)
+     = 2 + (1 × 200)
+     = 2 + 200
+     = 202 block accesses
+</code></pre></div>
+
+<p><strong>Breakdown:</strong>
+- Read C once: 2 blocks
+- For 1 chunk of C, read all of T: 1 × 200 = 200 blocks
+- Total: 202 blocks</p>
+<hr />
+<p><strong>Strategy 2: Transcript (T) as Outer, Course (C) as Inner</strong></p>
+<p><strong>Number of outer chunks:</strong></p>
+<div class="codehilite"><pre><span></span><code>chunks_T = ceil(n_T / (n_B - 2))
+         = ceil(200 / 21)
+         = ceil(9.52)
+         = 10 chunks
+</code></pre></div>
+
+<p><strong>Cost formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>Cost = n_T + (chunks_T × n_C)
+     = 200 + (10 × 2)
+     = 200 + 20
+     = 220 block accesses
+</code></pre></div>
+
+<p><strong>Breakdown:</strong>
+- Read T once: 200 blocks
+- For 10 chunks of T, read all of C: 10 × 2 = 20 blocks
+- Total: 220 blocks</p>
+<hr />
+<p><strong>Comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Outer</th>
+<th>Inner</th>
+<th>Cost Formula</th>
+<th>Cost (blocks)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>C</strong></td>
+<td><strong>T</strong></td>
+<td><strong>n_C + ⌈n_C/(n_B-2)⌉ × n_T</strong></td>
+<td><strong>202</strong> ✓ Best</td>
+</tr>
+<tr>
+<td>2</td>
+<td>T</td>
+<td>C</td>
+<td>n_T + ⌈n_T/(n_B-2)⌉ × n_C</td>
+<td>220</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Winner: Strategy 1 (Course as outer) is more efficient</strong></p>
+<p><strong>Savings: 220 - 202 = 18 block accesses (8.2% reduction)</strong></p>
+<hr />
+<p><strong>Why is Strategy 1 better?</strong></p>
+<p><strong>General principle:</strong> Choose <strong>smaller relation as outer</strong></p>
+<p><strong>Reason:</strong>
+- Outer relation read once: favors smaller
+- Inner relation read multiple times: number of reads = ⌈n_outer/(n_B-2)⌉
+- Minimizing ⌈n_outer/(n_B-2)⌉ minimizes total cost</p>
+<p><strong>For our case:</strong>
+- C is much smaller (2 blocks &lt;&lt; 200 blocks)
+- Fits entirely in buffer (2 &lt; 21)
+- Only need to read T once</p>
+<hr />
+<p><strong>Mathematical Analysis:</strong></p>
+<p><strong>Cost formula (general):</strong></p>
+<div class="codehilite"><pre><span></span><code>Cost(outer, inner) = n_outer + ⌈n_outer/(n_B-2)⌉ × n_inner
+</code></pre></div>
+
+<p><strong>Optimal strategy:</strong></p>
+<div class="codehilite"><pre><span></span><code>Choose outer = argmin(n + ⌈n/(n_B-2)⌉ × n_other)
+</code></pre></div>
+
+<p><strong>For us:</strong></p>
+<div class="codehilite"><pre><span></span><code>Cost(C outer) = 2 + ⌈2/21⌉ × 200 = 2 + 1×200 = 202
+Cost(T outer) = 200 + ⌈200/21⌉ × 2 = 200 + 10×2 = 220
+</code></pre></div>
+
+<p><strong>C is optimal!</strong></p>
+<hr />
+<p><strong>Special case optimization:</strong></p>
+<p>Since n_C = 2 ≤ (n_B - 2) = 21, <strong>all of C fits in memory!</strong></p>
+<p><strong>One-pass algorithm possible:</strong>
+1. Load all of C into memory (2 blocks)
+2. Scan T once (200 blocks)
+3. For each T record, probe C in memory</p>
+<p><strong>Cost = 2 + 200 = 202 blocks</strong> (same as block nested-loop)</p>
+<p>This is the <strong>best possible</strong> for nested-loop joins!</p>
+<hr />
+<p><strong>Python Simulation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="c1"># Given</span>
+<span class="n">n_C</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">n_T</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">n_B</span> <span class="o">=</span> <span class="mi">23</span>
+
+<span class="c1"># Strategy 1: C outer, T inner</span>
+<span class="n">chunks_C</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_C</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_B</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">cost_1</span> <span class="o">=</span> <span class="n">n_C</span> <span class="o">+</span> <span class="n">chunks_C</span> <span class="o">*</span> <span class="n">n_T</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strategy 1 (C outer): </span><span class="si">{</span><span class="n">cost_1</span><span class="si">}</span><span class="s2"> blocks&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Read C: </span><span class="si">{</span><span class="n">n_C</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Chunks of C: </span><span class="si">{</span><span class="n">chunks_C</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Read T </span><span class="si">{</span><span class="n">chunks_C</span><span class="si">}</span><span class="s2"> times: </span><span class="si">{</span><span class="n">chunks_C</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Strategy 2: T outer, C inner</span>
+<span class="n">chunks_T</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_T</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_B</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">cost_2</span> <span class="o">=</span> <span class="n">n_T</span> <span class="o">+</span> <span class="n">chunks_T</span> <span class="o">*</span> <span class="n">n_C</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Strategy 2 (T outer): </span><span class="si">{</span><span class="n">cost_2</span><span class="si">}</span><span class="s2"> blocks&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Read T: </span><span class="si">{</span><span class="n">n_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Chunks of T: </span><span class="si">{</span><span class="n">chunks_T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Read C </span><span class="si">{</span><span class="n">chunks_T</span><span class="si">}</span><span class="s2"> times: </span><span class="si">{</span><span class="n">chunks_T</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_C</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Winner</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best strategy: </span><span class="si">{</span><span class="s1">&#39;Strategy 1 (C outer)&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">cost_1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">cost_2</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Strategy 2 (T outer)&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">cost_1</span><span class="p">,</span><span class="w"> </span><span class="n">cost_2</span><span class="p">)</span><span class="si">}</span><span class="s2"> blocks&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Savings: </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">cost_1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cost_2</span><span class="p">)</span><span class="si">}</span><span class="s2"> blocks&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code>Strategy 1 (C outer): 202 blocks
+  Read C: 2
+  Chunks of C: 1
+  Read T 1 times: 200
+
+Strategy 2 (T outer): 220 blocks
+  Read T: 200
+  Chunks of T: 10
+  Read C 10 times: 20
+
+==================================================
+Best strategy: Strategy 1 (C outer)
+Cost: 202 blocks
+Savings: 18 blocks
+</code></pre></div>
+
+<hr />
+<h3>Part (d): Selection Cardinality and Query Optimization [4 marks]</h3>
+<p><strong>Definition:</strong></p>
+<p><strong>Selection Cardinality</strong> (or <strong>result cardinality</strong>) is the <strong>number of tuples</strong> returned by a query or operation.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>Selection Cardinality = |result set| = number of output tuples
+</code></pre></div>
+
+<hr />
+<p><strong>For Selections (WHERE clauses):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Employee</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">salary</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">50000</span>
+</code></pre></div>
+
+<p><strong>Selection cardinality:</strong></p>
+<div class="codehilite"><pre><span></span><code>|σ_salary&gt;50000(Employee)| = number of employees with salary &gt; 50000
+</code></pre></div>
+
+<p><strong>Estimated using selectivity:</strong></p>
+<div class="codehilite"><pre><span></span><code>Cardinality ≈ Selectivity × |Employee|
+</code></pre></div>
+
+<p>where selectivity = fraction of tuples satisfying condition.</p>
+<hr />
+<p><strong>For Joins:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+</code></pre></div>
+
+<p><strong>Join cardinality:</strong></p>
+<div class="codehilite"><pre><span></span><code>|C ⋈ T| = number of joined tuples
+</code></pre></div>
+
+<p><strong>For our database:</strong>
+- Each Transcript record joins with exactly one Course
+- Join cardinality = |T| = 51,200 tuples</p>
+<hr />
+<p><strong>Significance in Query Optimization:</strong></p>
+<p><strong>1. Cost Estimation:</strong></p>
+<p>Query optimizer uses cardinality to estimate costs:</p>
+<div class="codehilite"><pre><span></span><code>Cost(operation) = f(input_cardinality, selectivity, ...)
+</code></pre></div>
+
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Mark</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">8</span>
+</code></pre></div>
+
+<p>If selectivity = 0.1:
+- Input: 51,200 tuples
+- <strong>Estimated cardinality: 0.1 × 51,200 = 5,120 tuples</strong>
+- Affects downstream operation costs</p>
+<hr />
+<p><strong>2. Join Order Selection:</strong></p>
+<p><strong>Problem:</strong> Choose optimal order for multi-way joins</p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">id</span>
+</code></pre></div>
+
+<p><strong>Options:</strong>
+- (A ⋈ B) ⋈ C
+- (A ⋈ C) ⋈ B
+- (B ⋈ C) ⋈ A</p>
+<p><strong>Decision based on intermediate cardinalities:</strong></p>
+<p>If |A ⋈ B| = 1000 and |A ⋈ C| = 100,000:
+- Prefer (A ⋈ C) ⋈ B (smaller intermediate)
+- Minimizes total cost</p>
+<p><strong>Rule:</strong> Perform most selective joins first</p>
+<hr />
+<p><strong>3. Access Method Selection:</strong></p>
+<p><strong>Cardinality determines index usage:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Employee</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">department</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;CS&#39;</span>
+</code></pre></div>
+
+<p><strong>Low cardinality</strong> (few results):
+- Use index scan
+- Cost: O(log n + k) where k = result size
+- Example: k = 10 → index fast</p>
+<p><strong>High cardinality</strong> (many results):
+- Use table scan
+- Cost: O(n)
+- Example: k = 10,000 → table scan faster (avoid index overhead)</p>
+<p><strong>Threshold:</strong> Typically switch at 5-15% selectivity</p>
+<hr />
+<p><strong>4. Memory Allocation:</strong></p>
+<p><strong>Buffer sizing based on cardinality:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="p">...</span>
+</code></pre></div>
+
+<p>If join cardinality = 51,200:
+- Allocate buffer for ~50K tuples
+- May need temporary disk storage
+- Affects hash table size for hash joins</p>
+<p><strong>Low cardinality:</strong> Use in-memory algorithms
+<strong>High cardinality:</strong> Use disk-based algorithms</p>
+<hr />
+<p><strong>5. Parallel Query Processing:</strong></p>
+<p><strong>Cardinality affects parallelization decisions:</strong></p>
+<p><strong>High cardinality:</strong>
+- Partition data across multiple CPUs
+- Parallel processing beneficial
+- Example: |result| = 1M → use 10 threads</p>
+<p><strong>Low cardinality:</strong>
+- Sequential processing sufficient
+- Avoid parallelization overhead
+- Example: |result| = 100 → use 1 thread</p>
+<hr />
+<p><strong>6. Materialization vs Pipelining:</strong></p>
+<p><strong>Decision:</strong> Should intermediate results be materialized?</p>
+<p><strong>High cardinality:</strong>
+- Cost of materialization high
+- Prefer pipelining (stream results)</p>
+<p><strong>Low cardinality:</strong>
+- Materialize intermediate results
+- Enable better optimization of subsequent operations</p>
+<hr />
+<p><strong>Example: Our Join Query</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">Mark</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">8</span>
+</code></pre></div>
+
+<p><strong>Without cardinality info:</strong>
+- Join all (51,200 tuples)
+- Then filter by Mark &gt; 8</p>
+<p><strong>With cardinality info:</strong>
+- Estimate: 10% have Mark &gt; 8 → 5,120 tuples
+- Filter T first, then join
+- Input to join: 5,120 instead of 51,200
+- <strong>10× fewer tuples to join!</strong></p>
+<hr />
+<p><strong>Cardinality Estimation Techniques:</strong></p>
+<p><strong>1. Histograms:</strong></p>
+<div class="codehilite"><pre><span></span><code>Store distribution of values
+Example: Mark distribution
+  0-2: 10%
+  2-4: 20%
+  4-6: 30%
+  6-8: 25%
+  8-10: 15%
+
+Estimate P(Mark &gt; 8) ≈ 15%
+</code></pre></div>
+
+<p><strong>2. Sampling:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Sample 1% of data</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">selectivity</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s1">&#39;Mark&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">estimated_cardinality</span> <span class="o">=</span> <span class="n">selectivity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>3. Maintained Statistics:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">-- Database maintains stats</span>
+<span class="k">ANALYZE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">Transcript</span><span class="p">;</span>
+
+<span class="c1">-- Stats stored:</span>
+<span class="c1">-- - Total rows</span>
+<span class="c1">-- - Value distributions</span>
+<span class="c1">-- - Index cardinalities</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary:</strong></p>
+<p><strong>Selection Cardinality</strong> = number of result tuples</p>
+<p><strong>Significance:</strong>
+1. <strong>Cost estimation:</strong> Predict query execution cost
+2. <strong>Join ordering:</strong> Choose optimal join sequence
+3. <strong>Access method:</strong> Index vs table scan decision
+4. <strong>Memory allocation:</strong> Buffer sizing
+5. <strong>Parallelization:</strong> Parallel vs sequential
+6. <strong>Materialization:</strong> Pipeline vs materialize</p>
+<p><strong>Impact:</strong> Can make difference between seconds and hours for large queries!</p>
+<hr />
+<h2>End of Solutions</h2>
+<p><strong>Summary:</strong>
+- <strong>Question 1 (20 marks):</strong> Linear Algebra - whitening, matrix transformations
+- <strong>Question 2 (20 marks):</strong> Optimization - contour analysis, algorithms, local minima
+- <strong>Question 3 (20 marks):</strong> Probability - expectations, conditional probability, weight optimization
+- <strong>Question 4 (20 marks):</strong> Databases - blocking factors, join strategies, cardinality</p>
+<p><strong>Total: 80 marks</strong></p>
+<hr />
+<p><strong>Prepared by: AI Assistant</strong>
+<strong>Date: November 25, 2025</strong>
+<strong>For: IDSS 2023-2024 Examination (December 2023)</strong></p>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Likelihood Estimation - A Beginner's Guide</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; color: #2c3e50; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.1); padding: 50px; }
+        h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 40px; font-style: italic; }
+        h2 { color: #34495e; font-size: 2em; margin-top: 50px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #667eea; }
+        h3 { color: #34495e; font-size: 1.5em; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 20px; font-size: 1.1em; text-align: justify; }
+        .definition-box { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 5px solid #667eea; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .definition-box h4 { color: #667eea; font-size: 1.3em; margin-bottom: 15px; }
+        .example-box { background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%); border-left: 5px solid #f5576c; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .example-box h4 { color: #f5576c; font-size: 1.3em; margin-bottom: 15px; }
+        .key-point { background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%); border-left: 5px solid #4facfe; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .key-point h4 { color: #4facfe; font-size: 1.3em; margin-bottom: 15px; }
+        .formula { background: #f8f9fa; padding: 25px; margin: 25px 0; border-radius: 10px; border: 2px dashed #667eea; text-align: center; font-size: 1.2em; }
+        ul, ol { margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; font-size: 1.05em; }
+        .visual-example { background: #ecf0f1; padding: 20px; margin: 25px 0; border-radius: 10px; font-family: 'Courier New', monospace; }
+        .toc { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 30px 0; }
+        .toc h3 { color: #667eea; margin-top: 0; }
+        .toc a { color: #3498db; text-decoration: none; transition: color 0.3s; }
+        .toc a:hover { color: #667eea; }
+        .print-button { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 25px; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); transition: transform 0.3s; z-index: 1000; }
+        .print-button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6); }
+        @media print { body { background: white; } .container { box-shadow: none; } .print-button { display: none; } }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Maximum Likelihood Estimation</h1>
+        <p class="subtitle">Fitting Models to Data</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: Learning from Data</a></li>
+                <li><a href="#likelihood">Likelihood Function</a></li>
+                <li><a href="#mle">Maximum Likelihood Estimation</a></li>
+                <li><a href="#examples">Worked Examples</a></li>
+                <li><a href="#properties">Properties of MLEs</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: Learning from Data</h2>
+
+        <p>Suppose you flip a coin 10 times and get 7 heads. <strong>Question:</strong> What's the probability the coin lands heads?</p>
+
+        <p>Intuitively: 7/10 = 0.7</p>
+
+        <p><strong>Maximum Likelihood Estimation (MLE)</strong> formalizes this intuition. It's the most important method for estimating parameters from data!</p>
+
+        <div class="visual-example">
+            <strong>The Core Idea:</strong><br><br>
+
+            Find parameter values that make the observed data most likely.<br><br>
+
+            If the data is [H, H, T, H, T, H, H, H, H, T]:<br>
+            - p = 0.7 makes this data more likely than<br>
+            - p = 0.5 or p = 0.9
+        </div>
+
+        <h2 id="likelihood">📊 Likelihood Function</h2>
+
+        <div class="definition-box">
+            <h4>Likelihood Function</h4>
+            <p>The <strong>likelihood</strong> is the probability of the data as a function of the parameters:</p>
+
+            <div class="formula">
+                \[L(\theta) = P(\text{Data} \mid \theta)\]
+            </div>
+
+            <p><strong>Key Insight:</strong> We treat data as <em>fixed</em> and parameters as <em>variable</em>.</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🔑 Likelihood vs Probability</h4>
+
+            <p><strong>Probability:</strong> Data varies, parameters fixed</p>
+            <ul>
+                <li>\(P(\text{Data} \mid \theta = 0.5)\) = "How likely is this data if p=0.5?"</li>
+            </ul>
+
+            <p><strong>Likelihood:</strong> Parameters vary, data fixed</p>
+            <ul>
+                <li>\(L(p) = P(\text{Data} \mid p)\) = "Which p makes this data most likely?"</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Coin Flips</h4>
+
+            <p><strong>Data:</strong> 3 flips = [H, H, T]</p>
+            <p><strong>Model:</strong> Coin has probability \(p\) of heads</p>
+
+            <p><strong>Likelihood:</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                L(p) &= P(H, H, T \mid p)\\
+                &= P(H \mid p) \times P(H \mid p) \times P(T \mid p)\\
+                &= p \times p \times (1-p)\\
+                &= p^2(1-p)
+                \end{align}\]
+            </div>
+
+            <p>This is a function of \(p\)! For different values:</p>
+            <div class="visual-example">
+                p = 0.5: L = 0.5² × 0.5 = 0.125<br>
+                p = 0.6: L = 0.6² × 0.4 = 0.144<br>
+                p = 0.67: L = 0.67² × 0.33 = 0.148 ← Maximum!<br>
+                p = 0.7: L = 0.7² × 0.3 = 0.147<br>
+                p = 0.9: L = 0.9² × 0.1 = 0.081
+            </div>
+        </div>
+
+        <h3>Log-Likelihood</h3>
+
+        <div class="definition-box">
+            <h4>Log-Likelihood Function</h4>
+            <p>Taking the logarithm makes calculations easier:</p>
+
+            <div class="formula">
+                \[\ell(\theta) = \log L(\theta)\]
+            </div>
+
+            <p><strong>Why use log?</strong></p>
+            <ul>
+                <li>Products become sums: \(\log(ab) = \log a + \log b\)</li>
+                <li>Easier to differentiate</li>
+                <li>More numerically stable</li>
+                <li>Maximizing \(\log L\) = maximizing \(L\) (log is monotonic)</li>
+            </ul>
+        </div>
+
+        <h2 id="mle">🎯 Maximum Likelihood Estimation</h2>
+
+        <div class="definition-box">
+            <h4>Maximum Likelihood Estimator (MLE)</h4>
+            <p>The <strong>MLE</strong> is the parameter value that maximizes the likelihood:</p>
+
+            <div class="formula">
+                \[\hat{\theta}_{MLE} = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} \ell(\theta)\]
+            </div>
+
+            <p><strong>In words:</strong> Find \(\theta\) that makes the observed data most probable.</p>
+        </div>
+
+        <h3>Finding the MLE</h3>
+
+        <div class="key-point">
+            <h4>📐 Standard Approach</h4>
+            <ol>
+                <li>Write down the likelihood \(L(\theta)\)</li>
+                <li>Take the log: \(\ell(\theta) = \log L(\theta)\)</li>
+                <li>Differentiate: \(\frac{d\ell}{d\theta}\)</li>
+                <li>Set equal to zero: \(\frac{d\ell}{d\theta} = 0\)</li>
+                <li>Solve for \(\theta\)</li>
+                <li>Verify it's a maximum (check second derivative)</li>
+            </ol>
+        </div>
+
+        <h2 id="examples">📝 Worked Examples</h2>
+
+        <div class="example-box">
+            <h4>🎲 Example 1: Coin Flips (Complete Derivation)</h4>
+
+            <p><strong>Data:</strong> \(n\) flips with \(k\) heads</p>
+            <p><strong>Parameter:</strong> \(p\) = probability of heads</p>
+
+            <p><strong>Step 1: Likelihood</strong></p>
+            <div class="formula">
+                \[L(p) = p^k (1-p)^{n-k}\]
+            </div>
+
+            <p><strong>Step 2: Log-likelihood</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                \ell(p) &= \log L(p)\\
+                &= \log(p^k (1-p)^{n-k})\\
+                &= k \log p + (n-k) \log(1-p)
+                \end{align}\]
+            </div>
+
+            <p><strong>Step 3: Differentiate</strong></p>
+            <div class="formula">
+                \[\frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p}\]
+            </div>
+
+            <p><strong>Step 4: Set to zero</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                \frac{k}{p} - \frac{n-k}{1-p} &= 0\\
+                \frac{k}{p} &= \frac{n-k}{1-p}\\
+                k(1-p) &= p(n-k)\\
+                k - kp &= np - kp\\
+                k &= np\\
+                p &= \frac{k}{n}
+                \end{align}\]
+            </div>
+
+            <p><strong>Result:</strong></p>
+            <div class="formula">
+                \[\boxed{\hat{p}_{MLE} = \frac{k}{n}}\]
+            </div>
+
+            <p>The MLE is simply the fraction of heads! Matches intuition perfectly.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>📊 Example 2: Normal Distribution Mean</h4>
+
+            <p><strong>Data:</strong> \(x_1, x_2, \ldots, x_n\) from \(\mathcal{N}(\mu, \sigma^2)\)</p>
+            <p><strong>Known:</strong> \(\sigma^2\) (variance)</p>
+            <p><strong>Unknown:</strong> \(\mu\) (mean)</p>
+
+            <p><strong>Likelihood:</strong></p>
+            <div class="formula">
+                \[L(\mu) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)\]
+            </div>
+
+            <p><strong>Log-likelihood:</strong></p>
+            <div class="formula">
+                \[\ell(\mu) = -\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2\]
+            </div>
+
+            <p><strong>Differentiate and set to zero:</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                \frac{d\ell}{d\mu} &= \frac{1}{\sigma^2}\sum_{i=1}^{n}(x_i - \mu) = 0\\
+                \sum_{i=1}^{n} x_i &= n\mu\\
+                \mu &= \frac{1}{n}\sum_{i=1}^{n} x_i
+                \end{align}\]
+            </div>
+
+            <p><strong>Result:</strong></p>
+            <div class="formula">
+                \[\boxed{\hat{\mu}_{MLE} = \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i}\]
+            </div>
+
+            <p>The MLE is the sample mean!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>📐 Example 3: Normal Distribution Variance</h4>
+
+            <p><strong>Data:</strong> \(x_1, \ldots, x_n\) from \(\mathcal{N}(\mu, \sigma^2)\)</p>
+            <p><strong>Known:</strong> \(\mu\)</p>
+            <p><strong>Unknown:</strong> \(\sigma^2\)</p>
+
+            <p><strong>Result (after derivation):</strong></p>
+            <div class="formula">
+                \[\boxed{\hat{\sigma}^2_{MLE} = \frac{1}{n}\sum_{i=1}^{n}(x_i - \mu)^2}\]
+            </div>
+
+            <p>Note: This is the <em>population</em> variance (divides by n, not n-1)</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎯 Example 4: Exponential Distribution</h4>
+
+            <p><strong>Model:</strong> Waiting times ~ \(\text{Exp}(\lambda)\)</p>
+            <p>PDF: \(f(x) = \lambda e^{-\lambda x}\)</p>
+
+            <p><strong>Data:</strong> \(x_1, \ldots, x_n\)</p>
+
+            <p><strong>Log-likelihood:</strong></p>
+            <div class="formula">
+                \[\ell(\lambda) = n\log\lambda - \lambda\sum_{i=1}^{n} x_i\]
+            </div>
+
+            <p><strong>MLE:</strong></p>
+            <div class="formula">
+                \[\boxed{\hat{\lambda}_{MLE} = \frac{1}{\bar{x}}}\]
+            </div>
+
+            <p>Inverse of the sample mean!</p>
+        </div>
+
+        <h2 id="properties">✅ Properties of MLEs</h2>
+
+        <div class="key-point">
+            <h4>🎯 Desirable Properties</h4>
+
+            <p><strong>1. Consistency:</strong></p>
+            <p>As \(n \to \infty\), \(\hat{\theta}_{MLE} \to \theta_{\text{true}}\)</p>
+            <p>With enough data, MLE converges to the truth!</p>
+
+            <p><strong>2. Asymptotic Normality:</strong></p>
+            <div class="formula">
+                \[\hat{\theta}_{MLE} \sim \mathcal{N}\left(\theta_{\text{true}}, \frac{1}{nI(\theta)}\right)\]
+            </div>
+            <p>Distribution becomes normal as \(n\) increases (useful for confidence intervals)</p>
+
+            <p><strong>3. Efficiency:</strong></p>
+            <p>Among unbiased estimators, MLE has the smallest variance (asymptotically)</p>
+
+            <p><strong>4. Invariance:</strong></p>
+            <p>If \(\hat{\theta}\) is the MLE of \(\theta\), then \(g(\hat{\theta})\) is the MLE of \(g(\theta)\)</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🔄 Example: Invariance Property</h4>
+
+            <p>If \(\hat{p} = 0.7\) is the MLE for coin flip probability:</p>
+
+            <ul>
+                <li>MLE for \(p^2\): \(\hat{p}^2 = 0.49\)</li>
+                <li>MLE for \(1-p\): \(1 - \hat{p} = 0.3\)</li>
+                <li>MLE for \(\log p\): \(\log \hat{p} = \log 0.7\)</li>
+            </ul>
+
+            <p>Just apply the transformation to the MLE!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <p><strong>Likelihood Function:</strong></p>
+            <div class="formula">
+                \[L(\theta) = P(\text{Data} \mid \theta)\]
+            </div>
+
+            <p><strong>MLE:</strong></p>
+            <div class="formula">
+                \[\hat{\theta}_{MLE} = \arg\max_{\theta} L(\theta) = \arg\max_{\theta} \log L(\theta)\]
+            </div>
+
+            <p><strong>Standard Procedure:</strong></p>
+            <ol>
+                <li>Write likelihood</li>
+                <li>Take log</li>
+                <li>Differentiate</li>
+                <li>Set to zero and solve</li>
+            </ol>
+
+            <p><strong>Common MLEs:</strong></p>
+            <ul>
+                <li>Binomial \(p\): \(\hat{p} = k/n\)</li>
+                <li>Normal \(\mu\): \(\hat{\mu} = \bar{x}\)</li>
+                <li>Normal \(\sigma^2\): \(\hat{\sigma}^2 = \frac{1}{n}\sum(x_i - \mu)^2\)</li>
+                <li>Exponential \(\lambda\): \(\hat{\lambda} = 1/\bar{x}\)</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand MLE:</p>
+            <ul>
+                <li><strong>Bayesian Estimation:</strong> Alternative to MLE with priors</li>
+                <li><strong>Numerical Optimization:</strong> When no closed-form solution exists</li>
+                <li><strong>Regularization:</strong> Preventing overfitting</li>
+                <li><strong>Generalized Linear Models:</strong> Extend to complex models</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

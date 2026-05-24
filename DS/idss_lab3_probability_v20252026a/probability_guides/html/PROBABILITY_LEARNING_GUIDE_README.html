@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Learning Guide - Complete Learning Path</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.5em;
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid #f5576c;
+        }
+
+        .intro h2 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .guide-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .guide-card.beginner {
+            border-left: 5px solid #3498db;
+        }
+
+        .guide-card.intermediate {
+            border-left: 5px solid #f39c12;
+        }
+
+        .guide-card.advanced {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .guide-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .guide-card h3 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .guide-card p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .difficulty.beginner {
+            background: #3498db20;
+            color: #3498db;
+        }
+
+        .difficulty.intermediate {
+            background: #f39c1220;
+            color: #f39c12;
+        }
+
+        .difficulty.advanced {
+            background: #e74c3c20;
+            color: #e74c3c;
+        }
+
+        .key-topics {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .key-topics h4 {
+            color: #34495e;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .key-topics ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-topics li {
+            padding: 5px 0;
+            color: #7f8c8d;
+        }
+
+        .key-topics li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .guide-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .guide-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .learning-path {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid #4facfe;
+        }
+
+        .learning-path h2 {
+            color: #4facfe;
+            margin-bottom: 20px;
+        }
+
+        .path-step {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #7f8c8d;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Probability Learning Guide</h1>
+        <p class="subtitle">Your Complete Journey to Mastering Probability Theory</p>
+
+        <div class="intro">
+            <h2>🎯 Welcome to Your Probability Learning Journey!</h2>
+            <p>This comprehensive guide will take you from probability fundamentals to advanced concepts. Each lesson is designed to be:</p>
+            <ul style="margin-left: 30px; margin-top: 15px;">
+                <li><strong>Beginner-Friendly:</strong> Clear explanations with no prior knowledge assumed</li>
+                <li><strong>Mathematically Rigorous:</strong> Beautiful MathJax equations throughout</li>
+                <li><strong>Example-Rich:</strong> Real-world applications and step-by-step solutions</li>
+                <li><strong>Visual:</strong> Modern design with colored boxes and clear formatting</li>
+            </ul>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Beautiful Design</h3>
+                <p>Modern, colorful interface that makes learning enjoyable</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📐</div>
+                <h3>Clear Math</h3>
+                <p>MathJax rendering for crystal-clear equations</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💡</div>
+                <h3>Intuitive Examples</h3>
+                <p>Real-world scenarios that build understanding</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3>Progressive Learning</h3>
+                <p>Carefully sequenced from basics to advanced</p>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; margin: 60px 0 20px; color: #2c3e50; font-size: 2.5em;">📖 Complete Learning Path</h2>
+
+        <!-- Featured Reference Guide -->
+        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 40px; border-radius: 20px; margin: 30px 0 50px; border: 3px solid #fc6c85; box-shadow: 0 10px 30px rgba(252, 108, 133, 0.3);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span style="font-size: 3em;">📋</span>
+            </div>
+            <h3 style="text-align: center; color: #2c3e50; font-size: 2em; margin-bottom: 15px;">Formula Reference Guide</h3>
+            <p style="text-align: center; color: #555; font-size: 1.2em; margin-bottom: 25px;">
+                A comprehensive quick-reference for all essential probability formulas with detailed examples and connections
+            </p>
+            <div style="background: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <h4 style="color: #34495e; margin-bottom: 15px;">📚 What's Inside:</h4>
+                <ul style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; list-style: none; padding: 0;">
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Axioms of Probability</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Conditional & Marginal Probability</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Bayes' Rule</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Expectation & Variance</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Normal Distribution</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> CDF & Integration</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> Odds & Logit</li>
+                    <li style="color: #555; padding: 8px 0;"><strong>✓</strong> How Everything Connects</li>
+                </ul>
+            </div>
+            <div style="text-align: center; margin-top: 25px;">
+                <a href="00_Probability_Formulas_Complete_Reference.html" class="guide-link" style="font-size: 1.1em; padding: 15px 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    📖 View Complete Reference →
+                </a>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 0.95em; margin-top: 20px; font-style: italic;">
+                Perfect for quick lookups and understanding how formulas relate to each other!
+            </p>
+        </div>
+
+        <h3 style="text-align: center; margin: 40px 0 30px; color: #2c3e50; font-size: 1.8em;">📚 Learning Guides (In Order)</h3>
+
+        <div class="guide-grid">
+            <!-- Guide 1 -->
+            <div class="guide-card beginner">
+                <div class="guide-number">1</div>
+                <span class="difficulty beginner">Beginner</span>
+                <h3>Probability Mass Functions</h3>
+                <p>Start your journey by understanding how we represent probability for discrete outcomes.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>What is probability?</li>
+                        <li>Random variables</li>
+                        <li>PMF properties and validation</li>
+                        <li>Expected values</li>
+                        <li>Real-world examples</li>
+                    </ul>
+                </div>
+
+                <a href="01_PMF_Discrete_Probability.html" class="guide-link">Start Learning →</a>
+            </div>
+
+            <!-- Guide 2 -->
+            <div class="guide-card beginner">
+                <div class="guide-number">2</div>
+                <span class="difficulty beginner">Beginner</span>
+                <h3>Conditional Probability</h3>
+                <p>Learn how information changes probabilities and discover the power of conditioning.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Joint probability</li>
+                        <li>Marginal probability</li>
+                        <li>Conditional probability formula</li>
+                        <li>Independence</li>
+                        <li>Chain rule</li>
+                    </ul>
+                </div>
+
+                <a href="02_Conditional_Probability.html" class="guide-link">Continue →</a>
+            </div>
+
+            <!-- Guide 3 -->
+            <div class="guide-card intermediate">
+                <div class="guide-number">3</div>
+                <span class="difficulty intermediate">Intermediate</span>
+                <h3>Bayes' Rule</h3>
+                <p>Master the most powerful tool in probability - updating beliefs based on evidence.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Bayes' Rule formula</li>
+                        <li>Prior, Likelihood, Posterior</li>
+                        <li>Base rate fallacy</li>
+                        <li>Sequential updates</li>
+                        <li>Real-world applications</li>
+                    </ul>
+                </div>
+
+                <a href="03_Bayes_Rule.html" class="guide-link">Learn More →</a>
+            </div>
+
+            <!-- Guide 4 -->
+            <div class="guide-card intermediate">
+                <div class="guide-number">4</div>
+                <span class="difficulty intermediate">Intermediate</span>
+                <h3>Entropy & Information Theory</h3>
+                <p>Quantify uncertainty and learn how to measure information gain.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Shannon entropy</li>
+                        <li>Information content</li>
+                        <li>KL divergence</li>
+                        <li>Mutual information</li>
+                        <li>Decision trees and compression</li>
+                    </ul>
+                </div>
+
+                <a href="04_Entropy_Information_Theory.html" class="guide-link">Explore →</a>
+            </div>
+
+            <!-- Guide 5 -->
+            <div class="guide-card intermediate">
+                <div class="guide-number">5</div>
+                <span class="difficulty intermediate">Intermediate</span>
+                <h3>Sampling & Monte Carlo</h3>
+                <p>Learn how to use randomness to solve complex problems through simulation.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Random sampling</li>
+                        <li>Monte Carlo estimation</li>
+                        <li>Law of large numbers</li>
+                        <li>Importance sampling</li>
+                        <li>Practical applications</li>
+                    </ul>
+                </div>
+
+                <a href="05_Sampling_Monte_Carlo.html" class="guide-link">Discover →</a>
+            </div>
+
+            <!-- Guide 6 -->
+            <div class="guide-card advanced">
+                <div class="guide-number">6</div>
+                <span class="difficulty advanced">Advanced</span>
+                <h3>Multivariate Normal Distribution</h3>
+                <p>Understand probability distributions in multiple dimensions and correlation.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Covariance and correlation</li>
+                        <li>Multivariate normal PDF</li>
+                        <li>Marginals and conditionals</li>
+                        <li>Independence vs uncorrelation</li>
+                        <li>Applications in ML</li>
+                    </ul>
+                </div>
+
+                <a href="06_Multivariate_Normal.html" class="guide-link">Deep Dive →</a>
+            </div>
+
+            <!-- Guide 7 -->
+            <div class="guide-card advanced">
+                <div class="guide-number">7</div>
+                <span class="difficulty advanced">Advanced</span>
+                <h3>Maximum Likelihood Estimation</h3>
+                <p>Learn the fundamental method for fitting statistical models to data.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Likelihood function</li>
+                        <li>Log-likelihood</li>
+                        <li>MLE derivations</li>
+                        <li>Properties of MLEs</li>
+                        <li>Practical examples</li>
+                    </ul>
+                </div>
+
+                <a href="07_Maximum_Likelihood_Estimation.html" class="guide-link">Master →</a>
+            </div>
+
+            <!-- Guide 8 -->
+            <div class="guide-card advanced">
+                <div class="guide-number">8</div>
+                <span class="difficulty advanced">Advanced</span>
+                <h3>Optimization & Hill Climbing</h3>
+                <p>Discover how to find optimal solutions in complex probability landscapes.</p>
+
+                <div class="key-topics">
+                    <h4>Key Topics:</h4>
+                    <ul>
+                        <li>Gradient-based optimization</li>
+                        <li>Stochastic hill climbing</li>
+                        <li>Simulated annealing</li>
+                        <li>Global vs local optima</li>
+                        <li>Convergence criteria</li>
+                    </ul>
+                </div>
+
+                <a href="08_Optimization_Stochastic_Hill_Climbing.html" class="guide-link">Optimize →</a>
+            </div>
+        </div>
+
+        <div class="learning-path">
+            <h2>🗺️ Recommended Learning Path</h2>
+
+            <div class="path-step">
+                <strong>📍 Step 1: Foundation (Guides 1-2)</strong>
+                <p>Start with PMFs and Conditional Probability to build your foundation. These are essential for everything that follows.</p>
+            </div>
+
+            <div class="path-step">
+                <strong>📍 Step 2: Core Concepts (Guides 3-4)</strong>
+                <p>Master Bayes' Rule and Entropy - two of the most powerful tools in probability theory.</p>
+            </div>
+
+            <div class="path-step">
+                <strong>📍 Step 3: Practical Methods (Guide 5)</strong>
+                <p>Learn Monte Carlo methods to solve real-world problems through simulation.</p>
+            </div>
+
+            <div class="path-step">
+                <strong>📍 Step 4: Advanced Topics (Guides 6-8)</strong>
+                <p>Dive into multivariate distributions, parameter estimation, and optimization techniques.</p>
+            </div>
+        </div>
+
+        <div class="intro">
+            <h2>🎓 Study Tips</h2>
+            <ul style="margin-left: 30px; margin-top: 15px;">
+                <li><strong>Take Your Time:</strong> Don't rush - probability concepts build on each other</li>
+                <li><strong>Work Through Examples:</strong> Actually solve the problems yourself before reading solutions</li>
+                <li><strong>Use the Print Function:</strong> Each guide has a "Print to PDF" button for offline study</li>
+                <li><strong>Practice Regularly:</strong> Return to earlier guides to reinforce understanding</li>
+                <li><strong>Connect Concepts:</strong> Notice how later topics use earlier ones</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 60px 0 20px;">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">Ready to Begin?</h2>
+            <p style="color: #7f8c8d; font-size: 1.2em; margin-bottom: 30px;">
+                Start with Guide 1 and work your way through at your own pace!
+            </p>
+            <a href="01_PMF_Discrete_Probability.html" class="guide-link" style="font-size: 1.2em; padding: 15px 40px;">
+                🚀 Start Learning Now
+            </a>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-top: 40px; border-top: 2px solid #ecf0f1; color: #7f8c8d;">
+            <p>Created with ❤️ for beginners learning probability theory</p>
+            <p style="margin-top: 10px;">All guides feature MathJax equations, beautiful design, and no Python code</p>
+        </div>
+    </div>
+</body>
+</html>

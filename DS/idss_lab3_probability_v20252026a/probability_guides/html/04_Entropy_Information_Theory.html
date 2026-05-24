@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entropy & Information Theory - A Beginner's Guide</title>
+
+    <!-- MathJax for beautiful equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            padding: 50px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .definition-box h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+            border-left: 5px solid #f5576c;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h4 {
+            color: #f5576c;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+            border-left: 5px solid #4facfe;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .key-point h4 {
+            color: #4facfe;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .visual-example {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #667eea;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Entropy & Information Theory</h1>
+        <p class="subtitle">Measuring Uncertainty and Information</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: What is Information?</a></li>
+                <li><a href="#entropy">Entropy: Measuring Uncertainty</a></li>
+                <li><a href="#properties">Properties of Entropy</a></li>
+                <li><a href="#kl-divergence">KL Divergence</a></li>
+                <li><a href="#mutual-information">Mutual Information</a></li>
+                <li><a href="#applications">Real-World Applications</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: What is Information?</h2>
+
+        <p>Imagine you're searching for a lost submarine. You have two scenarios:</p>
+
+        <div class="visual-example">
+            <strong>Scenario 1:</strong> Submarine equally likely in any of 256 squares<br>
+            Uncertainty: VERY HIGH<br><br>
+
+            <strong>Scenario 2:</strong> You know it's in one specific square<br>
+            Uncertainty: ZERO
+        </div>
+
+        <p><strong>Information Theory</strong> gives us mathematical tools to:</p>
+        <ul>
+            <li>📊 Quantify uncertainty (entropy)</li>
+            <li>📈 Measure how much we learn from observations</li>
+            <li>🎯 Decide which search locations give us the most information</li>
+            <li>🔍 Compare different probability distributions</li>
+        </ul>
+
+        <h2 id="entropy">📊 Entropy: Measuring Uncertainty</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Shannon Entropy</h4>
+            <p><strong>Entropy</strong> measures the average uncertainty or "surprise" in a random variable.</p>
+
+            <div class="formula">
+                \[H(X) = -\sum_{x} P(x) \log_2 P(x)\]
+            </div>
+
+            <p><strong>Units:</strong> Bits (when using log base 2)</p>
+            <p><strong>Interpretation:</strong> Average number of yes/no questions needed to determine the outcome</p>
+        </div>
+
+        <h3>Intuitive Understanding</h3>
+
+        <p>Think of entropy as answering: <strong>"How surprised would I be on average?"</strong></p>
+
+        <div class="example-box">
+            <h4>🎲 Example 1: Fair Coin</h4>
+            <p>Coin flip: P(Heads) = 0.5, P(Tails) = 0.5</p>
+
+            <div class="formula">
+                \[\begin{align}
+                H(X) &= -P(H) \log_2 P(H) - P(T) \log_2 P(T)\\
+                &= -0.5 \log_2(0.5) - 0.5 \log_2(0.5)\\
+                &= -0.5 \times (-1) - 0.5 \times (-1)\\
+                &= 0.5 + 0.5 = 1 \text{ bit}
+                \end{align}\]
+            </div>
+
+            <p><strong>Interpretation:</strong> You need exactly 1 yes/no question to determine the outcome.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example 2: Unfair Coin</h4>
+            <p>Biased coin: P(Heads) = 0.9, P(Tails) = 0.1</p>
+
+            <div class="formula">
+                \[\begin{align}
+                H(X) &= -0.9 \log_2(0.9) - 0.1 \log_2(0.1)\\
+                &= -0.9 \times (-0.152) - 0.1 \times (-3.322)\\
+                &= 0.137 + 0.332\\
+                &= 0.469 \text{ bits}
+                \end{align}\]
+            </div>
+
+            <p><strong>Much lower entropy!</strong> You're rarely surprised - it's almost always heads.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example 3: Certain Outcome</h4>
+            <p>Always heads: P(Heads) = 1.0, P(Tails) = 0.0</p>
+
+            <div class="formula">
+                \[\begin{align}
+                H(X) &= -1.0 \log_2(1.0) - 0.0 \log_2(0.0)\\
+                &= -1.0 \times 0 - 0\\
+                &= 0 \text{ bits}
+                \end{align}\]
+            </div>
+
+            <p><strong>Zero entropy!</strong> No uncertainty, never surprised.</p>
+            <p><em>Note: We define \(0 \log 0 = 0\) by convention (limit as p→0)</em></p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example 4: Fair Die</h4>
+            <p>Six-sided die: P(each face) = 1/6</p>
+
+            <div class="formula">
+                \[\begin{align}
+                H(X) &= -\sum_{i=1}^{6} \frac{1}{6} \log_2\left(\frac{1}{6}\right)\\
+                &= -6 \times \frac{1}{6} \times \log_2\left(\frac{1}{6}\right)\\
+                &= -\log_2\left(\frac{1}{6}\right)\\
+                &= \log_2(6) \approx 2.585 \text{ bits}
+                \end{align}\]
+            </div>
+
+            <p>You need about 2.585 yes/no questions on average to determine the outcome.</p>
+        </div>
+
+        <h2 id="properties">✅ Properties of Entropy</h2>
+
+        <div class="definition-box">
+            <h4>Key Properties</h4>
+
+            <p><strong>1. Non-negativity:</strong></p>
+            <div class="formula">
+                \[H(X) \geq 0\]
+            </div>
+            <p>Entropy is always non-negative. Zero only when outcome is certain.</p>
+
+            <p><strong>2. Maximum Entropy:</strong></p>
+            <div class="formula">
+                \[H(X) \leq \log_2(n)\]
+            </div>
+            <p>For n possible outcomes, entropy is maximized when all outcomes are equally likely (uniform distribution).</p>
+
+            <p><strong>3. Additivity for Independent Variables:</strong></p>
+            <div class="formula">
+                \[H(X, Y) = H(X) + H(Y) \quad \text{if X and Y are independent}\]
+            </div>
+        </div>
+
+        <div class="visual-example">
+            <strong>Entropy Spectrum</strong><br><br>
+
+            0 bits ←──────────────────→ Maximum<br>
+            Certain        Uncertain       Uniform<br><br>
+
+            Examples with 4 outcomes:<br>
+            [1.0, 0, 0, 0] → H = 0 bits (certain)<br>
+            [0.7, 0.2, 0.05, 0.05] → H = 1.19 bits<br>
+            [0.4, 0.3, 0.2, 0.1] → H = 1.85 bits<br>
+            [0.25, 0.25, 0.25, 0.25] → H = 2 bits (maximum)
+        </div>
+
+        <h3>Conditional Entropy</h3>
+
+        <div class="definition-box">
+            <h4>Conditional Entropy</h4>
+            <p>The average uncertainty remaining about X after observing Y:</p>
+
+            <div class="formula">
+                \[H(X \mid Y) = \sum_{y} P(y) H(X \mid Y=y)\]
+            </div>
+
+            <p>Expanded form:</p>
+            <div class="formula">
+                \[H(X \mid Y) = -\sum_{x,y} P(x,y) \log_2 P(x \mid y)\]
+            </div>
+        </div>
+
+        <div class="key-point">
+            <h4>🔑 Important Relationship</h4>
+            <div class="formula">
+                \[H(X, Y) = H(X) + H(Y \mid X) = H(Y) + H(X \mid Y)\]
+            </div>
+
+            <p><strong>Chain Rule for Entropy!</strong></p>
+        </div>
+
+        <h2 id="kl-divergence">📏 KL Divergence</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Kullback-Leibler Divergence</h4>
+            <p>KL divergence measures how different two probability distributions are.</p>
+
+            <div class="formula">
+                \[D_{KL}(P \| Q) = \sum_{x} P(x) \log_2 \frac{P(x)}{Q(x)}\]
+            </div>
+
+            <p><strong>Interpretation:</strong> Expected extra bits needed when using distribution Q to encode data actually from distribution P.</p>
+        </div>
+
+        <div class="key-point">
+            <h4>⚠️ Important Properties</h4>
+            <ul>
+                <li><strong>Non-negative:</strong> \(D_{KL}(P \| Q) \geq 0\)</li>
+                <li><strong>Zero iff identical:</strong> \(D_{KL}(P \| Q) = 0\) only when P = Q</li>
+                <li><strong>NOT symmetric:</strong> \(D_{KL}(P \| Q) \neq D_{KL}(Q \| P)\) in general</li>
+                <li><strong>NOT a metric:</strong> Doesn't satisfy triangle inequality</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📊 Example: Comparing Distributions</h4>
+
+            <p><strong>True distribution P:</strong> [0.5, 0.3, 0.2]</p>
+            <p><strong>Approximate distribution Q:</strong> [0.4, 0.4, 0.2]</p>
+
+            <div class="formula">
+                \[\begin{align}
+                D_{KL}(P \| Q) &= 0.5 \log_2\frac{0.5}{0.4} + 0.3 \log_2\frac{0.3}{0.4} + 0.2 \log_2\frac{0.2}{0.2}\\
+                &= 0.5 \times 0.322 + 0.3 \times (-0.415) + 0.2 \times 0\\
+                &= 0.161 - 0.125 + 0\\
+                &= 0.036 \text{ bits}
+                \end{align}\]
+            </div>
+
+            <p>The distributions are quite similar (low KL divergence).</p>
+        </div>
+
+        <h2 id="mutual-information">🔗 Mutual Information</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Mutual Information</h4>
+            <p>Mutual information measures how much knowing one variable tells you about another.</p>
+
+            <div class="formula">
+                \[I(X; Y) = H(X) - H(X \mid Y) = H(Y) - H(Y \mid X)\]
+            </div>
+
+            <p>Alternative formula:</p>
+            <div class="formula">
+                \[I(X; Y) = \sum_{x,y} P(x,y) \log_2 \frac{P(x,y)}{P(x)P(y)}\]
+            </div>
+
+            <p><strong>Interpretation:</strong> Reduction in uncertainty about X after observing Y.</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🔑 Key Insights</h4>
+            <ul>
+                <li><strong>Symmetric:</strong> \(I(X; Y) = I(Y; X)\)</li>
+                <li><strong>Non-negative:</strong> \(I(X; Y) \geq 0\)</li>
+                <li><strong>If independent:</strong> \(I(X; Y) = 0\)</li>
+                <li><strong>Maximum:</strong> \(I(X; Y) = H(X) = H(Y)\) when X and Y are deterministically related</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>🔍 Example: Submarine Search</h4>
+
+            <p><strong>Before search:</strong></p>
+            <p>Submarine equally likely in 256 squares</p>
+            <div class="formula">
+                \[H(\text{Location}) = \log_2(256) = 8 \text{ bits}\]
+            </div>
+
+            <p><strong>After searching one square and not finding it:</strong></p>
+            <p>Now 255 remaining squares (approximately)</p>
+            <div class="formula">
+                \[H(\text{Location | Not found}) \approx \log_2(255) \approx 7.99 \text{ bits}\]
+            </div>
+
+            <p><strong>Information gained:</strong></p>
+            <div class="formula">
+                \[I = 8 - 7.99 = 0.01 \text{ bits}\]
+            </div>
+
+            <p>Small information gain! This guides search strategy - search where you expect to find it!</p>
+        </div>
+
+        <h2 id="applications">🌍 Real-World Applications</h2>
+
+        <div class="example-box">
+            <h4>🎯 Application 1: Decision Trees</h4>
+
+            <p>When building decision trees, choose splits that maximize <strong>information gain</strong>:</p>
+
+            <div class="formula">
+                \[\text{Information Gain} = H(\text{Before Split}) - H(\text{After Split})\]
+            </div>
+
+            <p><strong>Example: Predicting if someone plays tennis</strong></p>
+            <p>Initial entropy (50% yes, 50% no): H = 1 bit</p>
+            <p>After split on "Weather":</p>
+            <ul>
+                <li>Sunny: 80% no → H = 0.72 bits</li>
+                <li>Rainy: 80% yes → H = 0.72 bits</li>
+            </ul>
+            <p>Information Gain = 1.0 - 0.72 = 0.28 bits</p>
+        </div>
+
+        <div class="example-box">
+            <h4>📱 Application 2: Data Compression</h4>
+
+            <p>Entropy gives a lower bound on how much we can compress data:</p>
+
+            <div class="formula">
+                \[\text{Minimum bits per symbol} = H(X)\]
+            </div>
+
+            <p><strong>English text:</strong> H ≈ 1.5 bits per character</p>
+            <p>ASCII uses 8 bits, so theoretically we could compress to ~19% of original size!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🔬 Application 3: Feature Selection</h4>
+
+            <p>Choose features with highest mutual information with the target:</p>
+
+            <div class="formula">
+                \[I(\text{Feature}; \text{Target})\]
+            </div>
+
+            <p>High mutual information = feature is informative for prediction</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Application 4: Twenty Questions Game</h4>
+
+            <p>Optimal strategy: Ask questions that split probability space in half!</p>
+
+            <p>With 1024 possible items:</p>
+            <div class="formula">
+                \[H = \log_2(1024) = 10 \text{ bits}\]
+            </div>
+
+            <p>You need 10 yes/no questions if you choose optimally!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <p><strong>Entropy:</strong></p>
+            <div class="formula">
+                \[H(X) = -\sum_{x} P(x) \log_2 P(x)\]
+            </div>
+            <ul>
+                <li>Measures average uncertainty</li>
+                <li>Maximum for uniform distribution</li>
+                <li>Zero for certain outcomes</li>
+            </ul>
+
+            <p><strong>KL Divergence:</strong></p>
+            <div class="formula">
+                \[D_{KL}(P \| Q) = \sum_{x} P(x) \log_2 \frac{P(x)}{Q(x)}\]
+            </div>
+            <ul>
+                <li>Measures difference between distributions</li>
+                <li>Non-negative, zero iff P = Q</li>
+                <li>NOT symmetric</li>
+            </ul>
+
+            <p><strong>Mutual Information:</strong></p>
+            <div class="formula">
+                \[I(X; Y) = H(X) - H(X \mid Y)\]
+            </div>
+            <ul>
+                <li>Measures shared information</li>
+                <li>Symmetric</li>
+                <li>Zero for independent variables</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand information theory, explore:</p>
+            <ul>
+                <li><strong>Sampling Methods:</strong> Monte Carlo techniques</li>
+                <li><strong>Maximum Likelihood Estimation:</strong> Parameter fitting</li>
+                <li><strong>Cross-Entropy Loss:</strong> Training neural networks</li>
+                <li><strong>Information Bottleneck:</strong> Deep learning theory</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

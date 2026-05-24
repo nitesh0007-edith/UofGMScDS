@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Exam Cheat Sheet - Quick Reference</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 9pt;
+            line-height: 1.3;
+            color: #000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px;
+        }
+
+        .page {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 15mm;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24pt;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 10pt;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .columns {
+            column-count: 2;
+            column-gap: 20px;
+            column-rule: 1px solid #ddd;
+        }
+
+        .section {
+            break-inside: avoid;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 4px solid;
+            border-radius: 5px;
+        }
+
+        .section.blue { border-color: #667eea; }
+        .section.purple { border-color: #764ba2; }
+        .section.pink { border-color: #f5576c; }
+        .section.cyan { border-color: #4facfe; }
+        .section.green { border-color: #43e97b; }
+        .section.orange { border-color: #f39c12; }
+        .section.red { border-color: #e74c3c; }
+        .section.teal { border-color: #1abc9c; }
+
+        h2 {
+            font-size: 11pt;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 3px;
+        }
+
+        h3 {
+            font-size: 9pt;
+            margin-top: 8px;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        .formula {
+            background: white;
+            padding: 6px;
+            margin: 5px 0;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 8.5pt;
+        }
+
+        .compact-list {
+            margin: 5px 0 5px 15px;
+            padding: 0;
+        }
+
+        .compact-list li {
+            margin: 2px 0;
+            font-size: 8.5pt;
+        }
+
+        .inline-formula {
+            background: #f8f9fa;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .key-point {
+            background: #fff3cd;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border-left: 3px solid #ffc107;
+            font-size: 8.5pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5px 0;
+            font-size: 8pt;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .mini-box {
+            background: white;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 8pt;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .page {
+                box-shadow: none;
+                padding: 5mm;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin: 8px 0 5px 0;
+            font-size: 9pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>🎯 Probability Exam Cheat Sheet</h1>
+        <p class="subtitle">Essential Formulas & Concepts for Quick Reference</p>
+
+        <div class="columns">
+            <!-- ==================== AXIOMS & FUNDAMENTALS ==================== -->
+            <div class="section blue">
+                <h2>1️⃣ Axioms of Probability</h2>
+
+                <div class="formula">
+                    \[0 \leq P(A) \leq 1\]
+                    <div style="font-size: 7pt; color: #666;">Boundedness</div>
+                </div>
+
+                <div class="formula">
+                    \[\sum_x P(x) = 1\]
+                    <div style="font-size: 7pt; color: #666;">Unitarity (Normalization)</div>
+                </div>
+
+                <div class="formula">
+                    \[P(A \cup B) = P(A) + P(B) - P(A \cap B)\]
+                    <div style="font-size: 7pt; color: #666;">Sum Rule</div>
+                </div>
+
+                <div class="formula">
+                    \[P(\neg A) = 1 - P(A)\]
+                    <div style="font-size: 7pt; color: #666;">Complement</div>
+                </div>
+            </div>
+
+            <!-- ==================== PMF & EXPECTATION ==================== -->
+            <div class="section purple">
+                <h2>2️⃣ PMF & Expectation</h2>
+
+                <h3>Discrete Expectation</h3>
+                <div class="formula">
+                    \[E[X] = \sum_x x \cdot P(X=x)\]
+                </div>
+
+                <div class="formula">
+                    \[E[g(X)] = \sum_x g(x) \cdot P(X=x)\]
+                </div>
+
+                <h3>Continuous Expectation</h3>
+                <div class="formula">
+                    \[E[X] = \int_{-\infty}^{\infty} x \cdot f_X(x) \, dx\]
+                </div>
+
+                <div class="key-point">
+                    ⚠️ <strong>Important:</strong> \(E[g(X)] \neq g(E[X])\) in general
+                </div>
+
+                <h3>Properties</h3>
+                <ul class="compact-list">
+                    <li>\(E[aX + b] = aE[X] + b\) (Linearity)</li>
+                    <li>\(E[X + Y] = E[X] + E[Y]\) (Always)</li>
+                    <li>\(E[XY] = E[X]E[Y]\) (if independent)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== CONDITIONAL PROBABILITY ==================== -->
+            <div class="section pink">
+                <h2>3️⃣ Conditional Probability</h2>
+
+                <div class="formula">
+                    \[P(A|B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A,B)}{P(B)}\]
+                </div>
+
+                <h3>Chain Rule (Product Rule)</h3>
+                <div class="formula">
+                    \[P(A,B) = P(A|B) \cdot P(B) = P(B|A) \cdot P(A)\]
+                </div>
+
+                <div class="formula">
+                    \[P(A,B,C) = P(A|B,C) \cdot P(B|C) \cdot P(C)\]
+                </div>
+
+                <h3>Marginal Probability</h3>
+                <div class="formula">
+                    \[P(X) = \sum_y P(X,Y=y)\]
+                </div>
+
+                <div class="formula">
+                    \[P(X) = \int_{-\infty}^{\infty} P(X,Y) \, dy\]
+                </div>
+
+                <h3>Law of Total Probability</h3>
+                <div class="formula">
+                    \[P(A) = \sum_i P(A|B_i) \cdot P(B_i)\]
+                </div>
+
+                <h3>Independence</h3>
+                <ul class="compact-list">
+                    <li>\(P(A|B) = P(A)\)</li>
+                    <li>\(P(A,B) = P(A) \cdot P(B)\)</li>
+                    <li>⚠️ Mutually Exclusive ≠ Independent!</li>
+                </ul>
+            </div>
+
+            <!-- ==================== BAYES' RULE ==================== -->
+            <div class="section cyan">
+                <h2>4️⃣ Bayes' Rule</h2>
+
+                <div class="formula">
+                    \[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\]
+                </div>
+
+                <div class="formula">
+                    \[\text{Posterior} = \frac{\text{Likelihood} \times \text{Prior}}{\text{Evidence}}\]
+                </div>
+
+                <h3>Expanded Form</h3>
+                <div class="formula">
+                    \[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B|A) \cdot P(A) + P(B|\neg A) \cdot P(\neg A)}\]
+                </div>
+
+                <h3>Proportional Form</h3>
+                <div class="formula">
+                    \[P(A|B) \propto P(B|A) \cdot P(A)\]
+                </div>
+
+                <div class="key-point">
+                    <strong>Key:</strong> \(P(A|B) \neq P(B|A)\) in general!
+                </div>
+            </div>
+
+            <!-- ==================== ENTROPY & INFORMATION ==================== -->
+            <div class="section green">
+                <h2>5️⃣ Entropy & Information Theory</h2>
+
+                <h3>Shannon Entropy</h3>
+                <div class="formula">
+                    \[H(X) = -\sum_x P(x) \log_2 P(x)\]
+                    <div style="font-size: 7pt; color: #666;">Units: bits</div>
+                </div>
+
+                <h3>Conditional Entropy</h3>
+                <div class="formula">
+                    \[H(X|Y) = -\sum_{x,y} P(x,y) \log_2 P(x|y)\]
+                </div>
+
+                <div class="formula">
+                    \[H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)\]
+                </div>
+
+                <h3>KL Divergence</h3>
+                <div class="formula">
+                    \[D_{KL}(P \| Q) = \sum_x P(x) \log_2 \frac{P(x)}{Q(x)}\]
+                </div>
+
+                <ul class="compact-list">
+                    <li>\(D_{KL}(P \| Q) \geq 0\)</li>
+                    <li>\(D_{KL}(P \| Q) = 0\) iff \(P = Q\)</li>
+                    <li>⚠️ NOT symmetric!</li>
+                </ul>
+
+                <h3>Mutual Information</h3>
+                <div class="formula">
+                    \[I(X;Y) = H(X) - H(X|Y)\]
+                </div>
+
+                <div class="formula">
+                    \[I(X;Y) = \sum_{x,y} P(x,y) \log_2 \frac{P(x,y)}{P(x)P(y)}\]
+                </div>
+
+                <ul class="compact-list">
+                    <li>Symmetric: \(I(X;Y) = I(Y;X)\)</li>
+                    <li>Zero if independent</li>
+                </ul>
+            </div>
+
+            <!-- ==================== NORMAL DISTRIBUTION ==================== -->
+            <div class="section blue">
+                <h2>6️⃣ Normal Distribution</h2>
+
+                <h3>PDF</h3>
+                <div class="formula">
+                    \[f_X(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]
+                </div>
+
+                <h3>Standard Normal</h3>
+                <div class="formula">
+                    \[Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0,1)\]
+                </div>
+
+                <div class="formula">
+                    \[f_Z(z) = \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}}\]
+                </div>
+
+                <h3>68-95-99.7 Rule</h3>
+                <ul class="compact-list">
+                    <li>68% within \(\mu \pm \sigma\)</li>
+                    <li>95% within \(\mu \pm 2\sigma\)</li>
+                    <li>99.7% within \(\mu \pm 3\sigma\)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== STATISTICS ==================== -->
+            <div class="section purple">
+                <h2>7️⃣ Sample Statistics</h2>
+
+                <h3>Sample Mean</h3>
+                <div class="formula">
+                    \[\hat{\mu} = \bar{x} = \frac{1}{n}\sum_{i=1}^n x_i\]
+                </div>
+
+                <h3>Sample Variance</h3>
+                <div class="formula">
+                    \[\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \hat{\mu})^2\]
+                </div>
+
+                <div class="formula">
+                    \[s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\]
+                    <div style="font-size: 7pt; color: #666;">Unbiased (Bessel's correction)</div>
+                </div>
+
+                <h3>Population Variance</h3>
+                <div class="formula">
+                    \[\sigma^2 = E[(X-\mu)^2] = E[X^2] - (E[X])^2\]
+                </div>
+
+                <h3>Covariance</h3>
+                <div class="formula">
+                    \[\text{Cov}(X,Y) = E[(X-E[X])(Y-E[Y])]\]
+                </div>
+
+                <h3>Correlation</h3>
+                <div class="formula">
+                    \[\rho(X,Y) = \frac{\text{Cov}(X,Y)}{\sigma_X \sigma_Y}\]
+                </div>
+                <ul class="compact-list">
+                    <li>\(-1 \leq \rho \leq 1\)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== MULTIVARIATE NORMAL ==================== -->
+            <div class="section pink">
+                <h2>8️⃣ Multivariate Normal</h2>
+
+                <div class="formula">
+                    \[\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\]
+                </div>
+
+                <h3>PDF</h3>
+                <div class="formula" style="font-size: 7.5pt;">
+                    \[f(\mathbf{x}) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^T\Sigma^{-1}(\mathbf{x}-\boldsymbol{\mu})\right)\]
+                </div>
+
+                <h3>Covariance Matrix</h3>
+                <div class="formula" style="font-size: 7.5pt;">
+                    \[\Sigma = \begin{bmatrix}
+                    \sigma_1^2 & \text{Cov}(X_1,X_2) & \cdots \\
+                    \text{Cov}(X_2,X_1) & \sigma_2^2 & \cdots \\
+                    \vdots & \vdots & \ddots
+                    \end{bmatrix}\]
+                </div>
+
+                <h3>Key Properties</h3>
+                <ul class="compact-list">
+                    <li>Marginals are normal</li>
+                    <li>Conditionals are normal</li>
+                    <li>Linear combinations: \(A\mathbf{X} + \mathbf{b} \sim \mathcal{N}(A\boldsymbol{\mu}+\mathbf{b}, A\Sigma A^T)\)</li>
+                    <li>Uncorrelated ⇔ Independent (special to MVN!)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== MONTE CARLO ==================== -->
+            <div class="section cyan">
+                <h2>9️⃣ Monte Carlo Methods</h2>
+
+                <h3>Basic Principle</h3>
+                <div class="formula">
+                    \[E[f(X)] \approx \frac{1}{n}\sum_{i=1}^n f(X_i)\]
+                </div>
+
+                <h3>Law of Large Numbers</h3>
+                <div class="formula">
+                    \[\lim_{n \to \infty} \frac{1}{n}\sum_{i=1}^n X_i = E[X]\]
+                </div>
+
+                <h3>Convergence Rate</h3>
+                <div class="formula">
+                    \[\text{Error} \propto \frac{1}{\sqrt{n}}\]
+                </div>
+
+                <div class="key-point">
+                    To halve error, need 4× samples!
+                </div>
+
+                <h3>Importance Sampling</h3>
+                <div class="formula">
+                    \[E_P[f(X)] = E_Q\left[f(X)\frac{P(X)}{Q(X)}\right]\]
+                </div>
+            </div>
+
+            <!-- ==================== MLE ==================== -->
+            <div class="section green">
+                <h2>🔟 Maximum Likelihood Estimation</h2>
+
+                <h3>Likelihood</h3>
+                <div class="formula">
+                    \[L(\theta) = P(\text{Data}|\theta)\]
+                </div>
+
+                <h3>Log-Likelihood</h3>
+                <div class="formula">
+                    \[\ell(\theta) = \log L(\theta)\]
+                </div>
+
+                <h3>MLE</h3>
+                <div class="formula">
+                    \[\hat{\theta}_{MLE} = \arg\max_\theta L(\theta) = \arg\max_\theta \ell(\theta)\]
+                </div>
+
+                <h3>Standard Procedure</h3>
+                <ol class="compact-list">
+                    <li>Write \(L(\theta)\)</li>
+                    <li>Take \(\log\): \(\ell(\theta)\)</li>
+                    <li>Differentiate: \(\frac{d\ell}{d\theta}\)</li>
+                    <li>Set to 0 and solve</li>
+                    <li>Verify maximum</li>
+                </ol>
+
+                <h3>Common MLEs</h3>
+                <div class="grid-2">
+                    <div class="mini-box">
+                        <strong>Binomial p:</strong>
+                        \[\hat{p} = \frac{k}{n}\]
+                    </div>
+                    <div class="mini-box">
+                        <strong>Normal μ:</strong>
+                        \[\hat{\mu} = \bar{x}\]
+                    </div>
+                    <div class="mini-box">
+                        <strong>Normal σ²:</strong>
+                        \[\hat{\sigma}^2 = \frac{1}{n}\sum(x_i-\mu)^2\]
+                    </div>
+                    <div class="mini-box">
+                        <strong>Exponential λ:</strong>
+                        \[\hat{\lambda} = \frac{1}{\bar{x}}\]
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== OPTIMIZATION ==================== -->
+            <div class="section orange">
+                <h2>1️⃣1️⃣ Optimization</h2>
+
+                <h3>Gradient Ascent/Descent</h3>
+                <div class="formula">
+                    \[x_{t+1} = x_t + \alpha \nabla f(x_t)\]
+                </div>
+
+                <h3>Hill Climbing</h3>
+                <div class="key-point">
+                    Always accept better, reject worse
+                </div>
+
+                <h3>Simulated Annealing</h3>
+                <div class="formula">
+                    \[P(\text{accept worse}) = \exp\left(\frac{\Delta f}{T}\right)\]
+                </div>
+
+                <div class="formula">
+                    \[T_t = T_0 \cdot \alpha^t, \quad 0 < \alpha < 1\]
+                </div>
+
+                <ul class="compact-list">
+                    <li>High T → Explore (accept worse)</li>
+                    <li>Low T → Exploit (refine)</li>
+                    <li>Common: \(\alpha = 0.95\)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== ODDS & LOGIT ==================== -->
+            <div class="section red">
+                <h2>1️⃣2️⃣ Odds & Logit</h2>
+
+                <h3>Odds</h3>
+                <div class="formula">
+                    \[\text{odds} = \frac{p}{1-p}\]
+                </div>
+
+                <h3>Logit (Log-Odds)</h3>
+                <div class="formula">
+                    \[\text{logit}(p) = \log\left(\frac{p}{1-p}\right)\]
+                </div>
+
+                <table>
+                    <tr>
+                        <th>p</th>
+                        <th>Odds</th>
+                        <th>Logit</th>
+                    </tr>
+                    <tr>
+                        <td>0.5</td>
+                        <td>1</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>0.73</td>
+                        <td>2.7</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>0.88</td>
+                        <td>7.3</td>
+                        <td>2</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ==================== CDF ==================== -->
+            <div class="section teal">
+                <h2>1️⃣3️⃣ Cumulative Distribution Function</h2>
+
+                <div class="formula">
+                    \[F_X(x) = P(X \leq x) = \int_{-\infty}^x f_X(t) \, dt\]
+                </div>
+
+                <h3>Properties</h3>
+                <ul class="compact-list">
+                    <li>\(F_X(-\infty) = 0\)</li>
+                    <li>\(F_X(+\infty) = 1\)</li>
+                    <li>Non-decreasing</li>
+                    <li>\(f_X(x) = \frac{d}{dx}F_X(x)\)</li>
+                </ul>
+
+                <h3>Probability Intervals</h3>
+                <div class="formula">
+                    \[P(a < X \leq b) = F_X(b) - F_X(a)\]
+                </div>
+            </div>
+
+            <!-- ==================== COMMON DISTRIBUTIONS ==================== -->
+            <div class="section blue">
+                <h2>1️⃣4️⃣ Common Distributions</h2>
+
+                <table>
+                    <tr>
+                        <th>Distribution</th>
+                        <th>PMF/PDF</th>
+                        <th>E[X]</th>
+                        <th>Var(X)</th>
+                    </tr>
+                    <tr>
+                        <td>Bernoulli(p)</td>
+                        <td>\(p^x(1-p)^{1-x}\)</td>
+                        <td>p</td>
+                        <td>p(1-p)</td>
+                    </tr>
+                    <tr>
+                        <td>Binomial(n,p)</td>
+                        <td>\(\binom{n}{k}p^k(1-p)^{n-k}\)</td>
+                        <td>np</td>
+                        <td>np(1-p)</td>
+                    </tr>
+                    <tr>
+                        <td>Poisson(λ)</td>
+                        <td>\(\frac{\lambda^k e^{-\lambda}}{k!}\)</td>
+                        <td>λ</td>
+                        <td>λ</td>
+                    </tr>
+                    <tr>
+                        <td>Uniform[a,b]</td>
+                        <td>\(\frac{1}{b-a}\)</td>
+                        <td>\(\frac{a+b}{2}\)</td>
+                        <td>\(\frac{(b-a)^2}{12}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Exp(λ)</td>
+                        <td>\(\lambda e^{-\lambda x}\)</td>
+                        <td>\(\frac{1}{\lambda}\)</td>
+                        <td>\(\frac{1}{\lambda^2}\)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ==================== KEY INEQUALITIES ==================== -->
+            <div class="section purple">
+                <h2>1️⃣5️⃣ Key Inequalities & Limits</h2>
+
+                <h3>Markov's Inequality</h3>
+                <div class="formula">
+                    \[P(X \geq a) \leq \frac{E[X]}{a}\]
+                    <div style="font-size: 7pt; color: #666;">For non-negative X</div>
+                </div>
+
+                <h3>Chebyshev's Inequality</h3>
+                <div class="formula">
+                    \[P(|X - \mu| \geq k\sigma) \leq \frac{1}{k^2}\]
+                </div>
+
+                <h3>Jensen's Inequality</h3>
+                <ul class="compact-list">
+                    <li>If f is convex: \(E[f(X)] \geq f(E[X])\)</li>
+                    <li>If f is concave: \(E[f(X)] \leq f(E[X])\)</li>
+                </ul>
+            </div>
+
+            <!-- ==================== QUICK TIPS ==================== -->
+            <div class="section pink">
+                <h2>💡 Quick Tips & Common Mistakes</h2>
+
+                <div class="key-point">
+                    <strong>✓ DO:</strong>
+                    <ul class="compact-list">
+                        <li>Check normalization: \(\sum P(x) = 1\)</li>
+                        <li>Use Bayes for flipping conditionals</li>
+                        <li>Remember \(E[X+Y] = E[X] + E[Y]\) always</li>
+                        <li>Apply log to products in MLE</li>
+                    </ul>
+                </div>
+
+                <div class="key-point" style="background: #f8d7da; border-color: #dc3545;">
+                    <strong>✗ DON'T:</strong>
+                    <ul class="compact-list">
+                        <li>Confuse \(P(A|B)\) with \(P(B|A)\)</li>
+                        <li>Think mutually exclusive = independent</li>
+                        <li>Assume \(E[XY] = E[X]E[Y]\) without independence</li>
+                        <li>Forget to check if variance exists</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; padding-top: 10px; border-top: 2px solid #ddd;">
+            <p style="font-size: 8pt; color: #666;">
+                <strong>Good Luck on Your Exam! 🎓</strong> |
+                Print this sheet for quick reference during study sessions
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Print keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+
+        // Auto-print option
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>

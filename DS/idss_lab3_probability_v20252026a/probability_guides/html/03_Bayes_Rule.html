@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayes' Rule - A Beginner's Guide</title>
+
+    <!-- MathJax for beautiful equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            padding: 50px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .definition-box h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+            border-left: 5px solid #f5576c;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h4 {
+            color: #f5576c;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+            border-left: 5px solid #4facfe;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .key-point h4 {
+            color: #4facfe;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fa709a15 0%, #fee14015 100%);
+            border-left: 5px solid #fa709a;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .warning-box h4 {
+            color: #fa709a;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .visual-example {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #667eea;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+
+        .bayes-diagram {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Bayes' Rule</h1>
+        <p class="subtitle">The Most Powerful Tool for Updating Beliefs</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: Why Bayes' Rule Matters</a></li>
+                <li><a href="#the-formula">The Formula</a></li>
+                <li><a href="#terminology">Understanding the Terminology</a></li>
+                <li><a href="#intuition">Building Intuition</a></li>
+                <li><a href="#base-rate">The Base Rate Fallacy</a></li>
+                <li><a href="#sequential">Sequential Updates</a></li>
+                <li><a href="#examples">Real-World Examples</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: Why Bayes' Rule Matters</h2>
+
+        <p><strong>Bayes' Rule</strong> is one of the most important formulas in all of probability and statistics. It's the foundation of:</p>
+
+        <ul>
+            <li>🔬 Scientific reasoning and hypothesis testing</li>
+            <li>🤖 Machine learning and artificial intelligence</li>
+            <li>📊 Medical diagnosis</li>
+            <li>🎯 Spam filtering and recommendation systems</li>
+            <li>🧠 Rational decision-making under uncertainty</li>
+        </ul>
+
+        <div class="visual-example">
+            <strong>The Core Idea</strong><br><br>
+
+            Before Evidence: "What do I believe?"<br>
+            ↓<br>
+            New Evidence Arrives: "What did I observe?"<br>
+            ↓<br>
+            Bayes' Rule: "How should I update my beliefs?"<br>
+            ↓<br>
+            After Evidence: "What do I believe now?"
+        </div>
+
+        <h2 id="the-formula">📐 The Formula</h2>
+
+        <div class="definition-box">
+            <h4>Bayes' Rule - Standard Form</h4>
+
+            <div class="formula">
+                \[P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}\]
+            </div>
+
+            <p><strong>In words:</strong></p>
+            <div class="formula">
+                \[\text{Posterior} = \frac{\text{Likelihood} \times \text{Prior}}{\text{Evidence}}\]
+            </div>
+        </div>
+
+        <div class="definition-box">
+            <h4>Bayes' Rule - Expanded Form</h4>
+
+            <p>Using the Law of Total Probability to expand \(P(B)\):</p>
+
+            <div class="formula">
+                \[P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B \mid A) \cdot P(A) + P(B \mid \neg A) \cdot P(\neg A)}\]
+            </div>
+
+            <p>This form is useful when you don't know \(P(B)\) directly.</p>
+        </div>
+
+        <div class="definition-box">
+            <h4>Bayes' Rule - Proportional Form</h4>
+
+            <p>Often we only care about comparing hypotheses, so we can ignore the denominator:</p>
+
+            <div class="formula">
+                \[P(A \mid B) \propto P(B \mid A) \cdot P(A)\]
+            </div>
+
+            <p>Read as: "Posterior is proportional to Likelihood times Prior"</p>
+            <p>Then normalize at the end to ensure probabilities sum to 1.</p>
+        </div>
+
+        <h2 id="terminology">📖 Understanding the Terminology</h2>
+
+        <h3>Prior: P(A)</h3>
+
+        <div class="definition-box">
+            <h4>What is the Prior?</h4>
+            <p>The <strong>prior</strong> is your belief <em>before</em> seeing any data or evidence.</p>
+
+            <p><strong>Example:</strong> "Before testing, I believe the disease prevalence is 1%"</p>
+
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Represents background knowledge</li>
+                <li>Doesn't depend on the current observation</li>
+                <li>Can be based on expert knowledge, past data, or assumptions</li>
+            </ul>
+        </div>
+
+        <h3>Likelihood: P(B | A)</h3>
+
+        <div class="definition-box">
+            <h4>What is the Likelihood?</h4>
+            <p>The <strong>likelihood</strong> is the probability of observing the data <em>if</em> the hypothesis were true.</p>
+
+            <p><strong>Example:</strong> "If someone has the disease, there's a 95% chance the test is positive"</p>
+
+            <p><strong>Important:</strong> This is NOT \(P(A \mid B)\)! It's \(P(B \mid A)\).</p>
+
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Depends on your measurement/observation model</li>
+                <li>Higher likelihood = data is more consistent with hypothesis</li>
+                <li>Does NOT have to sum to 1 (it's not a distribution over hypotheses)</li>
+            </ul>
+        </div>
+
+        <h3>Posterior: P(A | B)</h3>
+
+        <div class="definition-box">
+            <h4>What is the Posterior?</h4>
+            <p>The <strong>posterior</strong> is your updated belief <em>after</em> seeing the data.</p>
+
+            <p><strong>Example:</strong> "After testing positive, I believe there's an 8.8% chance I have the disease"</p>
+
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Combines prior knowledge with new evidence</li>
+                <li>IS a valid probability distribution (sums to 1)</li>
+                <li>Can become the prior for the next observation</li>
+            </ul>
+        </div>
+
+        <h3>Evidence: P(B)</h3>
+
+        <div class="definition-box">
+            <h4>What is the Evidence?</h4>
+            <p>The <strong>evidence</strong> (or marginal likelihood) is the total probability of observing the data.</p>
+
+            <div class="formula">
+                \[P(B) = P(B \mid A) \cdot P(A) + P(B \mid \neg A) \cdot P(\neg A)\]
+            </div>
+
+            <p><strong>Example:</strong> "Overall, 10.85% of people test positive"</p>
+
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Acts as a normalizing constant</li>
+                <li>Same for all hypotheses (when comparing, can be ignored)</li>
+                <li>Ensures posterior is a valid probability distribution</li>
+            </ul>
+        </div>
+
+        <div class="bayes-diagram">
+            <strong>📊 The Bayes' Rule Diagram</strong><br><br>
+
+            <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <table style="border: none; box-shadow: none;">
+                    <tr style="background: none;">
+                        <td style="border: none; text-align: center;">
+                            <div style="background: #667eea; color: white; padding: 15px; border-radius: 10px; margin: 5px;">
+                                <strong>Prior</strong><br>P(A)<br>Initial Belief
+                            </div>
+                        </td>
+                        <td style="border: none; text-align: center; font-size: 2em;">×</td>
+                        <td style="border: none; text-align: center;">
+                            <div style="background: #f5576c; color: white; padding: 15px; border-radius: 10px; margin: 5px;">
+                                <strong>Likelihood</strong><br>P(B|A)<br>Evidence
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="background: none;">
+                        <td colspan="3" style="border: none; text-align: center; padding: 20px; font-size: 1.5em;">↓</td>
+                    </tr>
+                    <tr style="background: none;">
+                        <td colspan="3" style="border: none; text-align: center;">
+                            <div style="background: #4facfe; color: white; padding: 15px; border-radius: 10px; margin: 5px;">
+                                <strong>Unnormalized Posterior</strong><br>P(B|A) · P(A)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="background: none;">
+                        <td colspan="3" style="border: none; text-align: center; padding: 20px;">
+                            Divide by Evidence P(B) to normalize<br>↓
+                        </td>
+                    </tr>
+                    <tr style="background: none;">
+                        <td colspan="3" style="border: none; text-align: center;">
+                            <div style="background: #43e97b; color: white; padding: 15px; border-radius: 10px; margin: 5px;">
+                                <strong>Posterior</strong><br>P(A|B)<br>Updated Belief
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="intuition">💡 Building Intuition</h2>
+
+        <h3>Why Do We Need Bayes' Rule?</h3>
+
+        <p>Often we know one conditional probability but need the reverse:</p>
+
+        <div class="visual-example">
+            <strong>What We Know vs. What We Want</strong><br><br>
+
+            <strong>Medical Testing:</strong><br>
+            ✓ We know: P(Positive Test | Disease) = 95%<br>
+            ❓ We want: P(Disease | Positive Test) = ?<br><br>
+
+            <strong>Spam Filtering:</strong><br>
+            ✓ We know: P(Word "free" | Spam) = 80%<br>
+            ❓ We want: P(Spam | Word "free") = ?<br><br>
+
+            <strong>Weather Prediction:</strong><br>
+            ✓ We know: P(Heavy Traffic | Rain) = 70%<br>
+            ❓ We want: P(Rain | Heavy Traffic) = ?
+        </div>
+
+        <p><strong>Bayes' Rule lets us "flip" these conditional probabilities!</strong></p>
+
+        <div class="key-point">
+            <h4>🔑 Key Insight</h4>
+            <p>\(P(A \mid B)\) and \(P(B \mid A)\) are generally <strong>NOT equal</strong>!</p>
+
+            <p><strong>Example:</strong></p>
+            <ul>
+                <li>P(Positive Test | Disease) = 95% (very high)</li>
+                <li>P(Disease | Positive Test) = 8.8% (much lower!)</li>
+            </ul>
+
+            <p>This difference comes from the prior probability (base rate).</p>
+        </div>
+
+        <h2 id="base-rate">⚠️ The Base Rate Fallacy</h2>
+
+        <div class="warning-box">
+            <h4>One of the Most Common Mistakes in Reasoning!</h4>
+            <p>The <strong>base rate fallacy</strong> occurs when people ignore prior probabilities (base rates) and focus only on new information.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🏥 Classic Example: Medical Testing</h4>
+
+            <p><strong>Scenario:</strong></p>
+            <ul>
+                <li>A disease affects 1% of the population: P(Disease) = 0.01</li>
+                <li>Test sensitivity: 95% (P(Positive | Disease) = 0.95)</li>
+                <li>Test specificity: 90% (P(Negative | No Disease) = 0.90)</li>
+            </ul>
+
+            <p><strong>Question:</strong> You test positive. What's the probability you have the disease?</p>
+
+            <p><strong>❌ Intuitive (Wrong) Answer:</strong> "95% - the test is very accurate!"</p>
+
+            <p><strong>✅ Correct Answer using Bayes' Rule:</strong></p>
+
+            <p><strong>Step 1:</strong> Identify what we know</p>
+            <ul>
+                <li>Prior: P(Disease) = 0.01</li>
+                <li>Prior: P(No Disease) = 0.99</li>
+                <li>Likelihood: P(Positive | Disease) = 0.95</li>
+                <li>Likelihood: P(Positive | No Disease) = 0.10 (false positive rate)</li>
+            </ul>
+
+            <p><strong>Step 2:</strong> Calculate evidence P(Positive)</p>
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Positive}) &= P(+ \mid D) \cdot P(D) + P(+ \mid \neg D) \cdot P(\neg D)\\
+                &= 0.95 \times 0.01 + 0.10 \times 0.99\\
+                &= 0.0095 + 0.0990\\
+                &= 0.1085
+                \end{align}\]
+            </div>
+
+            <p><strong>Step 3:</strong> Apply Bayes' Rule</p>
+            <div class="formula">
+                \[\begin{align}
+                P(D \mid +) &= \frac{P(+ \mid D) \cdot P(D)}{P(+)}\\
+                &= \frac{0.95 \times 0.01}{0.1085}\\
+                &= \frac{0.0095}{0.1085}\\
+                &= 0.0876 \approx 8.8\%
+                \end{align}\]
+            </div>
+
+            <p><strong>Result:</strong> Only 8.8% chance of having the disease despite testing positive!</p>
+
+            <p><strong>Why so low?</strong> The disease is rare (low prior). Most positive tests are false positives from the 99% who don't have the disease.</p>
+        </div>
+
+        <div class="visual-example">
+            <strong>Understanding with a Population of 10,000</strong><br><br>
+
+            People with disease: 100 (1% of 10,000)<br>
+            - Test positive: 95 (95% sensitivity)<br>
+            - Test negative: 5 (5% false negative)<br><br>
+
+            People without disease: 9,900 (99% of 10,000)<br>
+            - Test positive: 990 (10% false positive)<br>
+            - Test negative: 8,910 (90% specificity)<br><br>
+
+            <strong>Total who test positive: 95 + 990 = 1,085</strong><br>
+            <strong>Of those, actually have disease: 95</strong><br><br>
+
+            Probability = 95 / 1,085 ≈ 8.8%<br><br>
+
+            📊 Most positive tests come from the huge pool of healthy people!
+        </div>
+
+        <h2 id="sequential">🔄 Sequential Bayesian Updates</h2>
+
+        <p>One of the most powerful aspects of Bayes' Rule: you can apply it repeatedly!</p>
+
+        <div class="key-point">
+            <h4>The Sequential Update Process</h4>
+            <div class="visual-example">
+                Prior₁ → Observe Data₁ → Posterior₁<br>
+                ↓<br>
+                Posterior₁ becomes Prior₂<br>
+                ↓<br>
+                Prior₂ → Observe Data₂ → Posterior₂<br>
+                ↓<br>
+                Posterior₂ becomes Prior₃<br>
+                ↓<br>
+                And so on...
+            </div>
+
+            <p><strong>Each posterior becomes the next prior!</strong></p>
+        </div>
+
+        <div class="example-box">
+            <h4>🔍 Example: Submarine Search</h4>
+
+            <p><strong>Initial State:</strong></p>
+            <p>Submarine equally likely in any of 256 grid squares</p>
+            <div class="formula">
+                \[P(\text{Location } i) = \frac{1}{256} \quad \text{for all } i\]
+            </div>
+
+            <p><strong>Update 1:</strong> Search square [10, 7], don't find it</p>
+            <p>Likelihood of not finding it if it were there: 20% (not perfect detection)</p>
+            <p>Likelihood of not finding it if it weren't there: 100%</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P([10,7] \mid \text{not found}) &= \frac{P(\text{not found} \mid [10,7]) \cdot P([10,7])}{P(\text{not found})}\\
+                &= \frac{0.20 \times (1/256)}{P(\text{not found})}\\
+                &\text{(decreases)}
+                \end{align}\]
+            </div>
+
+            <p>For all other locations:</p>
+            <div class="formula">
+                \[P(\text{other location} \mid \text{not found}) = \frac{1.00 \times (1/256)}{P(\text{not found})} \text{(increases slightly)}\]
+            </div>
+
+            <p><strong>Update 2:</strong> Search square [8, 9], don't find it</p>
+            <p>Use the posterior from Update 1 as the new prior, and repeat!</p>
+
+            <p><strong>After Many Searches:</strong> The probability concentrates on unsearched areas and areas where detection is harder.</p>
+        </div>
+
+        <h2 id="examples">🌍 Real-World Examples</h2>
+
+        <div class="example-box">
+            <h4>☔ Example 1: Rain and Traffic</h4>
+
+            <p><strong>Given Information:</strong></p>
+            <ul>
+                <li>P(Rain) = 0.30 (rains 30% of days)</li>
+                <li>P(Traffic | Rain) = 0.60</li>
+                <li>P(Traffic | No Rain) = 0.20</li>
+            </ul>
+
+            <p><strong>Question:</strong> You observe heavy traffic. What's the probability it's raining?</p>
+
+            <p><strong>Step 1:</strong> Calculate P(Traffic)</p>
+            <div class="formula">
+                \[\begin{align}
+                P(T) &= P(T \mid R) \cdot P(R) + P(T \mid \neg R) \cdot P(\neg R)\\
+                &= 0.60 \times 0.30 + 0.20 \times 0.70\\
+                &= 0.18 + 0.14 = 0.32
+                \end{align}\]
+            </div>
+
+            <p><strong>Step 2:</strong> Apply Bayes' Rule</p>
+            <div class="formula">
+                \[\begin{align}
+                P(R \mid T) &= \frac{P(T \mid R) \cdot P(R)}{P(T)}\\
+                &= \frac{0.60 \times 0.30}{0.32}\\
+                &= \frac{0.18}{0.32}\\
+                &= 0.5625 = 56.25\%
+                \end{align}\]
+            </div>
+
+            <p>So if you see traffic, there's about a 56% chance it's raining!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>📧 Example 2: Spam Filtering</h4>
+
+            <p><strong>Given Information:</strong></p>
+            <ul>
+                <li>P(Spam) = 0.40 (40% of emails are spam)</li>
+                <li>P("FREE" appears | Spam) = 0.70</li>
+                <li>P("FREE" appears | Not Spam) = 0.05</li>
+            </ul>
+
+            <p><strong>Question:</strong> An email contains the word "FREE". What's the probability it's spam?</p>
+
+            <p><strong>Solution:</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Spam} \mid \text{"FREE"}) &= \frac{P(\text{"FREE"} \mid \text{Spam}) \cdot P(\text{Spam})}{P(\text{"FREE"})}\\
+                \\
+                P(\text{"FREE"}) &= 0.70 \times 0.40 + 0.05 \times 0.60\\
+                &= 0.28 + 0.03 = 0.31\\
+                \\
+                P(\text{Spam} \mid \text{"FREE"}) &= \frac{0.70 \times 0.40}{0.31}\\
+                &= \frac{0.28}{0.31}\\
+                &= 0.903 = 90.3\%
+                \end{align}\]
+            </div>
+
+            <p>Strong evidence for spam! This is how email filters work.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎓 Example 3: Student Cheating Detection</h4>
+
+            <p><strong>Scenario:</strong> A student gets a perfect score on a difficult test.</p>
+
+            <p><strong>Given:</strong></p>
+            <ul>
+                <li>P(Cheat) = 0.02 (2% of students cheat)</li>
+                <li>P(Perfect | Cheat) = 0.90 (cheaters usually get perfect scores)</li>
+                <li>P(Perfect | Not Cheat) = 0.10 (10% of honest students get perfect)</li>
+            </ul>
+
+            <p><strong>Question:</strong> Given a perfect score, what's P(Cheat)?</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(C \mid P) &= \frac{P(P \mid C) \cdot P(C)}{P(P \mid C) \cdot P(C) + P(P \mid \neg C) \cdot P(\neg C)}\\
+                &= \frac{0.90 \times 0.02}{0.90 \times 0.02 + 0.10 \times 0.98}\\
+                &= \frac{0.018}{0.018 + 0.098}\\
+                &= \frac{0.018}{0.116}\\
+                &= 0.155 = 15.5\%
+                \end{align}\]
+            </div>
+
+            <p>Only 15.5% - most perfect scores are from honest, skilled students!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🏭 Example 4: Quality Control</h4>
+
+            <p><strong>A factory has 3 machines:</strong></p>
+            <ul>
+                <li>Machine A: 60% of production, 1% defect rate</li>
+                <li>Machine B: 30% of production, 3% defect rate</li>
+                <li>Machine C: 10% of production, 5% defect rate</li>
+            </ul>
+
+            <p><strong>Question:</strong> A defective item is found. Which machine likely made it?</p>
+
+            <p><strong>For Machine A:</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                P(A \mid D) &= \frac{P(D \mid A) \cdot P(A)}{P(D)}\\
+                \\
+                P(D) &= 0.01 \times 0.60 + 0.03 \times 0.30 + 0.05 \times 0.10\\
+                &= 0.006 + 0.009 + 0.005 = 0.020\\
+                \\
+                P(A \mid D) &= \frac{0.01 \times 0.60}{0.020} = \frac{0.006}{0.020} = 0.30 = 30\%
+                \end{align}\]
+            </div>
+
+            <p><strong>For Machine B:</strong></p>
+            <div class="formula">
+                \[P(B \mid D) = \frac{0.03 \times 0.30}{0.020} = \frac{0.009}{0.020} = 0.45 = 45\%\]
+            </div>
+
+            <p><strong>For Machine C:</strong></p>
+            <div class="formula">
+                \[P(C \mid D) = \frac{0.05 \times 0.10}{0.020} = \frac{0.005}{0.020} = 0.25 = 25\%\]
+            </div>
+
+            <p><strong>Conclusion:</strong> Most likely from Machine B (45%), even though it only makes 30% of items!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <div class="formula">
+                \[\boxed{P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}}\]
+            </div>
+
+            <ul>
+                <li><strong>Prior P(A):</strong> Initial belief before evidence</li>
+                <li><strong>Likelihood P(B|A):</strong> Probability of evidence given hypothesis</li>
+                <li><strong>Posterior P(A|B):</strong> Updated belief after evidence</li>
+                <li><strong>Evidence P(B):</strong> Normalizing constant</li>
+            </ul>
+
+            <p><strong>Remember:</strong></p>
+            <ul>
+                <li>P(A|B) ≠ P(B|A) in general</li>
+                <li>Base rates (priors) matter enormously</li>
+                <li>You can chain Bayes' updates sequentially</li>
+                <li>Posterior ∝ Likelihood × Prior</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you master Bayes' Rule, you're ready for:</p>
+            <ul>
+                <li><strong>Entropy & Information Theory:</strong> Measuring uncertainty and information</li>
+                <li><strong>Bayesian Networks:</strong> Complex probabilistic models</li>
+                <li><strong>Maximum Likelihood:</strong> Parameter estimation</li>
+                <li><strong>Bayesian Inference:</strong> Full probability distributions over parameters</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <title>Multivariate Normal Distribution - A Beginner's Guide</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; color: #2c3e50; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.1); padding: 50px; }
+        h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 40px; font-style: italic; }
+        h2 { color: #34495e; font-size: 2em; margin-top: 50px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #667eea; }
+        h3 { color: #34495e; font-size: 1.5em; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 20px; font-size: 1.1em; text-align: justify; }
+        .definition-box { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 5px solid #667eea; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .definition-box h4 { color: #667eea; font-size: 1.3em; margin-bottom: 15px; }
+        .example-box { background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%); border-left: 5px solid #f5576c; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .example-box h4 { color: #f5576c; font-size: 1.3em; margin-bottom: 15px; }
+        .key-point { background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%); border-left: 5px solid #4facfe; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .key-point h4 { color: #4facfe; font-size: 1.3em; margin-bottom: 15px; }
+        .formula { background: #f8f9fa; padding: 25px; margin: 25px 0; border-radius: 10px; border: 2px dashed #667eea; text-align: center; font-size: 1.2em; }
+        ul, ol { margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; font-size: 1.05em; }
+        .visual-example { background: #ecf0f1; padding: 20px; margin: 25px 0; border-radius: 10px; font-family: 'Courier New', monospace; }
+        .toc { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 30px 0; }
+        .toc h3 { color: #667eea; margin-top: 0; }
+        .toc a { color: #3498db; text-decoration: none; transition: color 0.3s; }
+        .toc a:hover { color: #667eea; }
+        .print-button { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 25px; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); transition: transform 0.3s; z-index: 1000; }
+        .print-button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6); }
+        @media print { body { background: white; } .container { box-shadow: none; } .print-button { display: none; } }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Multivariate Normal Distribution</h1>
+        <p class="subtitle">Probability in Multiple Dimensions</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: Beyond One Dimension</a></li>
+                <li><a href="#covariance">Covariance and Correlation</a></li>
+                <li><a href="#definition">Multivariate Normal Definition</a></li>
+                <li><a href="#properties">Properties and Marginals</a></li>
+                <li><a href="#applications">Applications</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: Beyond One Dimension</h2>
+
+        <p>So far we've studied random variables one at a time. But real-world data often involves <strong>multiple related variables</strong>:</p>
+
+        <ul>
+            <li>Height and weight of a person</li>
+            <li>Temperature and humidity</li>
+            <li>Stock prices of different companies</li>
+            <li>Features in machine learning</li>
+        </ul>
+
+        <p>The <strong>multivariate normal distribution</strong> is the most important distribution for modeling multiple variables together.</p>
+
+        <h2 id="covariance">📊 Covariance and Correlation</h2>
+
+        <div class="definition-box">
+            <h4>Covariance</h4>
+            <p>Covariance measures how two variables change together:</p>
+
+            <div class="formula">
+                \[\text{Cov}(X, Y) = E[(X - E[X])(Y - E[Y])]\]
+            </div>
+
+            <p><strong>Interpretation:</strong></p>
+            <ul>
+                <li><strong>Positive:</strong> When X increases, Y tends to increase</li>
+                <li><strong>Negative:</strong> When X increases, Y tends to decrease</li>
+                <li><strong>Zero:</strong> No linear relationship</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📏 Example: Height and Weight</h4>
+
+            <div class="visual-example">
+                Person 1: Height = 170cm, Weight = 65kg<br>
+                Person 2: Height = 180cm, Weight = 75kg<br>
+                Person 3: Height = 160cm, Weight = 55kg<br><br>
+
+                Observation: Taller people tend to weigh more<br>
+                → Positive covariance!
+            </div>
+        </div>
+
+        <div class="definition-box">
+            <h4>Correlation</h4>
+            <p>Correlation is normalized covariance (always between -1 and 1):</p>
+
+            <div class="formula">
+                \[\rho(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}\]
+            </div>
+
+            <p><strong>Range:</strong> \(-1 \leq \rho \leq 1\)</p>
+            <ul>
+                <li>\(\rho = 1\): Perfect positive correlation</li>
+                <li>\(\rho = 0\): No linear correlation</li>
+                <li>\(\rho = -1\): Perfect negative correlation</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>Covariance Matrix</h4>
+            <p>For multiple variables, we organize covariances in a matrix:</p>
+
+            <div class="formula">
+                \[\Sigma = \begin{bmatrix}
+                \text{Var}(X_1) & \text{Cov}(X_1, X_2) & \cdots \\
+                \text{Cov}(X_2, X_1) & \text{Var}(X_2) & \cdots \\
+                \vdots & \vdots & \ddots
+                \end{bmatrix}\]
+            </div>
+
+            <p><strong>Properties:</strong></p>
+            <ul>
+                <li>Symmetric: \(\Sigma_{ij} = \Sigma_{ji}\)</li>
+                <li>Diagonal = variances</li>
+                <li>Off-diagonal = covariances</li>
+            </ul>
+        </div>
+
+        <h2 id="definition">📐 Multivariate Normal Definition</h2>
+
+        <div class="definition-box">
+            <h4>Multivariate Normal Distribution</h4>
+            <p>A random vector \(\mathbf{X} = [X_1, X_2, \ldots, X_d]^T\) follows a multivariate normal distribution:</p>
+
+            <div class="formula">
+                \[\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\]
+            </div>
+
+            <p>Where:</p>
+            <ul>
+                <li>\(\boldsymbol{\mu}\) = mean vector (d-dimensional)</li>
+                <li>\(\Sigma\) = covariance matrix (d × d)</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>Probability Density Function</h4>
+
+            <div class="formula">
+                \[f(\mathbf{x}) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^T \Sigma^{-1} (\mathbf{x} - \boldsymbol{\mu})\right)\]
+            </div>
+
+            <p>Don't worry about memorizing this! The key insights:</p>
+            <ul>
+                <li>Generalizes 1D normal to multiple dimensions</li>
+                <li>Shape determined by mean \(\boldsymbol{\mu}\) and covariance \(\Sigma\)</li>
+                <li>Contours are ellipsoids</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📊 Example: 2D Normal</h4>
+
+            <p><strong>Mean vector:</strong></p>
+            <div class="formula">
+                \[\boldsymbol{\mu} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}\]
+            </div>
+
+            <p><strong>Case 1: Independent variables (diagonal covariance)</strong></p>
+            <div class="formula">
+                \[\Sigma = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}\]
+            </div>
+            <p>→ Circular contours, no correlation</p>
+
+            <p><strong>Case 2: Positive correlation</strong></p>
+            <div class="formula">
+                \[\Sigma = \begin{bmatrix} 1 & 0.8 \\ 0.8 & 1 \end{bmatrix}\]
+            </div>
+            <p>→ Elliptical contours tilted diagonally (↗)</p>
+
+            <p><strong>Case 3: Negative correlation</strong></p>
+            <div class="formula">
+                \[\Sigma = \begin{bmatrix} 1 & -0.8 \\ -0.8 & 1 \end{bmatrix}\]
+            </div>
+            <p>→ Elliptical contours tilted opposite (↖)</p>
+        </div>
+
+        <h2 id="properties">✅ Properties and Marginals</h2>
+
+        <div class="key-point">
+            <h4>🔑 Key Property 1: Marginals are Normal</h4>
+            <p>If \(\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\), then each component is normally distributed:</p>
+
+            <div class="formula">
+                \[X_i \sim \mathcal{N}(\mu_i, \Sigma_{ii})\]
+            </div>
+
+            <p>The marginal of a multivariate normal is normal!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🔑 Key Property 2: Conditionals are Normal</h4>
+            <p>The conditional distribution is also normal (with updated parameters).</p>
+
+            <p>If we observe some variables, the conditional distribution of the remaining variables is still normal!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🔑 Key Property 3: Linear Combinations</h4>
+            <p>Any linear combination of normal variables is normal:</p>
+
+            <div class="formula">
+                \[\mathbf{Y} = A\mathbf{X} + \mathbf{b} \sim \mathcal{N}(A\boldsymbol{\mu} + \mathbf{b}, A\Sigma A^T)\]
+            </div>
+
+            <p>This is incredibly useful for transformations!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>📐 Example: Sum of Normal Variables</h4>
+
+            <p>If \(X_1 \sim \mathcal{N}(1, 4)\) and \(X_2 \sim \mathcal{N}(2, 9)\) are independent:</p>
+
+            <div class="formula">
+                \[Y = X_1 + X_2 \sim \mathcal{N}(1 + 2, 4 + 9) = \mathcal{N}(3, 13)\]
+            </div>
+
+            <p>Mean adds, variance adds (for independent variables)!</p>
+        </div>
+
+        <h3>Independence vs Uncorrelated</h3>
+
+        <div class="key-point">
+            <h4>⚠️ Important Distinction</h4>
+
+            <p><strong>Uncorrelated:</strong> Covariance = 0</p>
+            <p><strong>Independent:</strong> \(P(X, Y) = P(X)P(Y)\)</p>
+
+            <p><strong>Key Facts:</strong></p>
+            <ul>
+                <li>Independent → Uncorrelated (always)</li>
+                <li>Uncorrelated → Independent (only for multivariate normal!)</li>
+            </ul>
+
+            <p>For multivariate normal distributions, uncorrelated = independent!</p>
+        </div>
+
+        <h2 id="applications">🌍 Applications</h2>
+
+        <div class="example-box">
+            <h4>🤖 Application 1: Machine Learning</h4>
+
+            <p><strong>Gaussian Naive Bayes:</strong></p>
+            <ul>
+                <li>Assume features are normally distributed</li>
+                <li>Estimate mean and covariance for each class</li>
+                <li>Use Bayes' rule for classification</li>
+            </ul>
+
+            <p><strong>Principal Component Analysis (PCA):</strong></p>
+            <ul>
+                <li>Find directions of maximum variance</li>
+                <li>Uses eigenvalues/eigenvectors of covariance matrix</li>
+                <li>Dimensionality reduction</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📊 Application 2: Portfolio Theory</h4>
+
+            <p>Stock returns often modeled as multivariate normal:</p>
+
+            <div class="formula">
+                \[\mathbf{R} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\]
+            </div>
+
+            <p>Where:</p>
+            <ul>
+                <li>\(\boldsymbol{\mu}\) = expected returns</li>
+                <li>\(\Sigma\) = covariance matrix (captures correlation between stocks)</li>
+            </ul>
+
+            <p>Portfolio variance: \(\text{Var}(\mathbf{w}^T\mathbf{R}) = \mathbf{w}^T\Sigma\mathbf{w}\)</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎯 Application 3: Kalman Filtering</h4>
+
+            <p>Tracking objects (e.g., aircraft, submarines):</p>
+
+            <ul>
+                <li>State (position, velocity) ~ Multivariate Normal</li>
+                <li>Observations ~ Multivariate Normal</li>
+                <li>Update beliefs using Bayes' rule</li>
+                <li>All distributions remain normal!</li>
+            </ul>
+
+            <p>Used in GPS, robotics, autonomous vehicles</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🧬 Application 4: Genetics</h4>
+
+            <p>Multiple traits (height, weight, blood pressure) modeled jointly:</p>
+
+            <ul>
+                <li>Accounts for genetic correlations</li>
+                <li>Identifies genetic variants affecting multiple traits</li>
+                <li>Predicts disease risk</li>
+            </ul>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <p><strong>Multivariate Normal:</strong></p>
+            <div class="formula">
+                \[\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\]
+            </div>
+
+            <p><strong>Key Properties:</strong></p>
+            <ul>
+                <li>Marginals are normal</li>
+                <li>Conditionals are normal</li>
+                <li>Linear combinations are normal</li>
+                <li>Uncorrelated = Independent (special to MVN!)</li>
+            </ul>
+
+            <p><strong>Applications:</strong></p>
+            <ul>
+                <li>Machine learning (classification, PCA)</li>
+                <li>Finance (portfolio optimization)</li>
+                <li>Tracking (Kalman filters)</li>
+                <li>Genetics and medicine</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand multivariate distributions:</p>
+            <ul>
+                <li><strong>Maximum Likelihood Estimation:</strong> Fit MVN to data</li>
+                <li><strong>Gaussian Processes:</strong> Infinite-dimensional extension</li>
+                <li><strong>Copulas:</strong> Model dependence for non-normal data</li>
+                <li><strong>Factor Analysis:</strong> Latent variable models</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

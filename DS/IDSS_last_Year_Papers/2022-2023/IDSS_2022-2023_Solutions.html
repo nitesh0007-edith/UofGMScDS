@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDSS 2022-2023 Solutions</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #003366;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h2 {
+            color: #004080;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+        h3 {
+            color: #0059b3;
+            margin-top: 20px;
+        }
+        h4 {
+            color: #0073e6;
+            margin-top: 15px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        blockquote {
+            border-left: 4px solid #0066cc;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            background-color: #e6f2ff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        strong {
+            color: #d9534f;
+            font-weight: 600;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #0066cc;
+            margin: 30px 0;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        @media print {
+            body {
+                background-color: white;
+                max-width: 100%;
+                padding: 20px;
+            }
+            pre {
+                page-break-inside: avoid;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>IDSS 2022-2023 Examination Solutions</h1>
+<p><strong>Course:</strong> Introduction to Data Science and Systems (COMPSCI 5089)
+<strong>Duration:</strong> 2 hours + 30 minutes additional time
+<strong>Total Marks:</strong> 60 marks
+<strong>Type:</strong> Open book, online assessment
+<strong>Questions:</strong> Answer all 4 questions</p>
+<hr />
+<h2>Question 1: KNN Classification, PCA, and SVD (15 marks)</h2>
+<h3>Part (a): KNN Classification for T-shirt Size Prediction</h3>
+<p><strong>Given Dataset:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Customer ID</th>
+<th>Height (cm)</th>
+<th>Weight (kg)</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td>170</td>
+<td>60</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>172</td>
+<td>60</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>173</td>
+<td>61</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U4</td>
+<td>173</td>
+<td>64</td>
+<td>L</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>175</td>
+<td>67</td>
+<td>L</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>175</td>
+<td>66</td>
+<td>L</td>
+</tr>
+</tbody>
+</table>
+<p><strong>New Customer:</strong> Abel (U0): height = 173 cm, weight = 62 kg</p>
+<h4>(i) Calculate Euclidean Distance (L2 Norm) [3 marks]</h4>
+<p><strong>Formula:</strong>
+The Euclidean distance (L2 norm) between two points in 2D space is:</p>
+<p>$$d(p, q) = \sqrt{(p_1 - q_1)^2 + (p_2 - q_2)^2}$$</p>
+<p>where $p = (height_p, weight_p)$ and $q = (height_q, weight_q)$</p>
+<p><strong>Calculations:</strong></p>
+<p>For Abel: $(h_0, w_0) = (173, 62)$</p>
+<p><strong>Distance to U1:</strong> $(170, 60)$
+$$d_{U0,U1} = \sqrt{(173-170)^2 + (62-60)^2} = \sqrt{9 + 4} = \sqrt{13} \approx 3.606$$</p>
+<p><strong>Distance to U2:</strong> $(172, 60)$
+$$d_{U0,U2} = \sqrt{(173-172)^2 + (62-60)^2} = \sqrt{1 + 4} = \sqrt{5} \approx 2.236$$</p>
+<p><strong>Distance to U3:</strong> $(173, 61)$
+$$d_{U0,U3} = \sqrt{(173-173)^2 + (62-61)^2} = \sqrt{0 + 1} = 1.000$$</p>
+<p><strong>Distance to U4:</strong> $(173, 64)$
+$$d_{U0,U4} = \sqrt{(173-173)^2 + (62-64)^2} = \sqrt{0 + 4} = 2.000$$</p>
+<p><strong>Distance to U5:</strong> $(175, 67)$
+$$d_{U0,U5} = \sqrt{(173-175)^2 + (62-67)^2} = \sqrt{4 + 25} = \sqrt{29} \approx 5.385$$</p>
+<p><strong>Distance to U6:</strong> $(175, 66)$
+$$d_{U0,U6} = \sqrt{(173-175)^2 + (62-66)^2} = \sqrt{4 + 16} = \sqrt{20} \approx 4.472$$</p>
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Customer</th>
+<th>Distance</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U3</td>
+<td>1.000</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U4</td>
+<td>2.000</td>
+<td>L</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>2.236</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U1</td>
+<td>3.606</td>
+<td>M</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>4.472</td>
+<td>L</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>5.385</td>
+<td>L</td>
+</tr>
+</tbody>
+</table>
+<h4>(ii) Predict Size using k=3 [2 marks]</h4>
+<p><strong>KNN Algorithm with k=3:</strong></p>
+<p>Select the 3 nearest neighbors:
+1. <strong>U3</strong> - Distance: 1.000, Size: <strong>M</strong>
+2. <strong>U4</strong> - Distance: 2.000, Size: <strong>L</strong>
+3. <strong>U2</strong> - Distance: 2.236, Size: <strong>M</strong></p>
+<p><strong>Voting:</strong>
+- Size M: 2 votes (U3, U2)
+- Size L: 1 vote (U4)</p>
+<p><strong>Prediction:</strong> Size <strong>M</strong> (Medium)</p>
+<p><strong>Justification:</strong> Using the k-Nearest Neighbors algorithm with k=3, we select the 3 customers with the smallest Euclidean distances to Abel. Among these 3 neighbors, 2 wear size M and 1 wears size L. By majority voting, we predict Abel's T-shirt size as <strong>M</strong>.</p>
+<p><strong>Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># Dataset</span>
+<span class="n">customers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">170</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>  <span class="c1"># U1</span>
+    <span class="p">[</span><span class="mi">172</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>  <span class="c1"># U2</span>
+    <span class="p">[</span><span class="mi">173</span><span class="p">,</span> <span class="mi">61</span><span class="p">],</span>  <span class="c1"># U3</span>
+    <span class="p">[</span><span class="mi">173</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>  <span class="c1"># U4</span>
+    <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">67</span><span class="p">],</span>  <span class="c1"># U5</span>
+    <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">66</span><span class="p">]</span>   <span class="c1"># U6</span>
+<span class="p">])</span>
+
+<span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">])</span>
+
+<span class="c1"># New customer Abel</span>
+<span class="n">abel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">173</span><span class="p">,</span> <span class="mi">62</span><span class="p">])</span>
+
+<span class="c1"># Calculate Euclidean distances</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">customers</span> <span class="o">-</span> <span class="n">abel</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distances from Abel to each customer:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">dist</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (Size </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># KNN with k=3</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">nearest_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">)[:</span><span class="n">k</span><span class="p">]</span>
+<span class="n">nearest_sizes</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">nearest_indices</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> Nearest Neighbors:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">nearest_indices</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Distance </span><span class="si">{</span><span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Size </span><span class="si">{</span><span class="n">sizes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Predict by majority voting</span>
+<span class="n">predicted_size</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">nearest_sizes</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predicted Size for Abel: </span><span class="si">{</span><span class="n">predicted_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (b): Covariance Matrix and PCA</h3>
+<h4>(i) Calculate Covariance Matrix using NumPy [1 mark]</h4>
+<p><strong>Theory:</strong>
+The covariance matrix for a dataset with features $X$ is:</p>
+<p>$$\text{Cov}(X) = \frac{1}{n-1} (X - \bar{X})^T (X - \bar{X})$$</p>
+<p>where $\bar{X}$ is the mean of each feature.</p>
+<p><strong>Python Code:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Clothing dataset (height, weight)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">170</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">172</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">173</span><span class="p">,</span> <span class="mi">61</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">173</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">67</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">66</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="c1"># Calculate covariance matrix</span>
+<span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Covariance Matrix:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Shape: </span><span class="si">{</span><span class="n">cov_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">Covariance</span><span class="w"> </span><span class="n">Matrix</span><span class="p">:</span>
+<span class="p">[[</span><span class="w"> </span><span class="mf">4.4</span><span class="w">         </span><span class="mf">6.7</span><span class="w">       </span><span class="p">]</span>
+<span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">6.7</span><span class="w">        </span><span class="mf">11.86666667</span><span class="p">]]</span>
+
+<span class="n">Shape</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Interpretation:</strong>
+- Variance of height: 4.4
+- Variance of weight: 11.87
+- Covariance between height and weight: 6.7 (positive correlation)</p>
+<h4>(ii) Calculate Eigenvectors and Eigenvalues [2 marks]</h4>
+<p><strong>Theory:</strong>
+For a covariance matrix $C$, eigenvectors $v$ and eigenvalues $\lambda$ satisfy:</p>
+<p>$$Cv = \lambda v$$</p>
+<p>Eigenvalues represent the variance along principal components, and eigenvectors represent the directions of these components.</p>
+<p><strong>Python Code:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Calculate eigenvalues and eigenvectors</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eigenvalues:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Eigenvectors (columns):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)</span>
+
+<span class="c1"># Sort by eigenvalues (descending order)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">eigenvalues_sorted</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+<span class="n">eigenvectors_sorted</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Sorted by Eigenvalue (Descending) ---&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">eigenvalues_sorted</span><span class="p">,</span> <span class="n">eigenvectors_sorted</span><span class="o">.</span><span class="n">T</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Principal Component </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Eigenvalue: </span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Eigenvector: [</span><span class="si">{</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code>Eigenvalues:
+[15.88517119  0.38149547]
+
+Eigenvectors (columns):
+[[ 0.51270932 -0.85855975]
+ [ 0.85855975  0.51270932]]
+
+--- Sorted by Eigenvalue (Descending) ---
+Principal Component 1:
+  Eigenvalue: 15.8852
+  Eigenvector: [0.5127, 0.8586]
+
+Principal Component 2:
+  Eigenvalue: 0.3815
+  Eigenvector: [-0.8586, 0.5127]
+</code></pre></div>
+
+<p><strong>Interpretation:</strong>
+- <strong>PC1</strong> (largest eigenvalue = 15.89): Captures ~97.7% of variance, direction ≈ [0.51, 0.86]
+- <strong>PC2</strong> (smallest eigenvalue = 0.38): Captures ~2.3% of variance, direction ≈ [-0.86, 0.51]
+- The eigenvectors are orthogonal (perpendicular to each other)</p>
+<h4>(iii) Dimensionality Reduction - Map to Largest Principal Component [2 marks]</h4>
+<p><strong>Theory:</strong>
+To project data onto the principal component with the largest eigenvalue:</p>
+<p>$$X_{\text{projected}} = X \cdot v_1$$</p>
+<p>where $v_1$ is the eigenvector corresponding to the largest eigenvalue.</p>
+<p><strong>Python Code:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Get the principal component with largest eigenvalue</span>
+<span class="n">largest_eigenvector</span> <span class="o">=</span> <span class="n">eigenvectors_sorted</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Largest Principal Component (PC1): </span><span class="si">{</span><span class="n">largest_eigenvector</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Corresponding Eigenvalue: </span><span class="si">{</span><span class="n">eigenvalues_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Center the data (subtract mean)</span>
+<span class="n">data_centered</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Project onto the largest principal component</span>
+<span class="n">projected_data</span> <span class="o">=</span> <span class="n">data_centered</span> <span class="o">@</span> <span class="n">largest_eigenvector</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Original Data (Height, Weight):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Centered Data:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_centered</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Projected Data (1D - onto PC1):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">projected_data</span><span class="p">)</span>
+
+<span class="c1"># Create a table for visualization</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Projection Results ---&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Customer | Original (H, W) | Centered (H, W) | Projected (1D)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">      | (</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">2.0f</span><span class="si">}</span><span class="s2">)      | (</span><span class="si">{</span><span class="n">data_centered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">data_centered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">) | </span><span class="si">{</span><span class="n">projected_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">7.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Output:</strong></p>
+<div class="codehilite"><pre><span></span><code>Largest Principal Component (PC1): [0.5127 0.8586]
+Corresponding Eigenvalue: 15.8852
+
+Original Data (Height, Weight):
+[[170  60]
+ [172  60]
+ [173  61]
+ [173  64]
+ [175  67]
+ [175  66]]
+
+Centered Data:
+[[-3.16666667 -3.        ]
+ [-1.16666667 -3.        ]
+ [-0.16666667 -2.        ]
+ [-0.16666667  1.        ]
+ [ 1.83333333  4.        ]
+ [ 1.83333333  3.        ]]
+
+Projected Data (1D - onto PC1):
+[-4.1986816  -3.17415159 -1.80247574  0.77305424  4.37359999  3.57211844]
+
+--- Projection Results ---
+Customer | Original (H, W) | Centered (H, W) | Projected (1D)
+----------------------------------------------------------------------
+U1      | (170, 60)      | (-3.17, -3.00) | -4.1987
+U2      | (172, 60)      | (-1.17, -3.00) | -3.1742
+U3      | (173, 61)      | (-0.17, -2.00) | -1.8025
+U4      | (173, 64)      | (-0.17,  1.00) |  0.7731
+U5      | (175, 67)      | ( 1.83,  4.00) |  4.3736
+U6      | (175, 66)      | ( 1.83,  3.00) |  3.5721
+</code></pre></div>
+
+<p><strong>Explanation:</strong>
+We've successfully reduced the 2D data (height, weight) to 1D by projecting onto the principal component with the largest variance. This 1D representation preserves ~97.7% of the information in the original data.</p>
+<hr />
+<h3>Part (c): Singular Value Decomposition (SVD)</h3>
+<h4>(i) Find SVD for Matrix A [3 marks]</h4>
+<p><strong>Given:</strong>
+$$A = \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix}$$</p>
+<p><strong>Theory:</strong>
+For any matrix $A_{m \times n}$, the SVD decomposition is:</p>
+<p>$$A = U\Sigma V^T$$</p>
+<p>where:
+- $U$ is an $m \times m$ orthogonal matrix (left singular vectors)
+- $\Sigma$ is an $m \times n$ diagonal matrix with singular values
+- $V$ is an $n \times n$ orthogonal matrix (right singular vectors)</p>
+<p><strong>Step 1: Compute $A^TA$ (2×2 matrix)</strong></p>
+<p>$$A^T A = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$$</p>
+<p><strong>Step 2: Find eigenvalues of $A^TA$</strong></p>
+<p>$$\det(A^T A - \lambda I) = \det\begin{bmatrix} 1-\lambda & 0 \\ 0 & -\lambda \end{bmatrix} = (1-\lambda)(-\lambda) = 0$$</p>
+<p>Eigenvalues: $\lambda_1 = 1, \lambda_2 = 0$</p>
+<p>Singular values: $\sigma_1 = \sqrt{1} = 1, \sigma_2 = \sqrt{0} = 0$</p>
+<p><strong>Step 3: Find eigenvectors of $A^TA$ (these form V)</strong></p>
+<p>For $\lambda_1 = 1$:
+$$(A^T A - I)v = 0 \Rightarrow \begin{bmatrix} 0 & 0 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} v_1 \\ v_2 \end{bmatrix} = 0$$</p>
+<p>Eigenvector: $v_1 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$</p>
+<p>For $\lambda_2 = 0$:
+$$(A^T A)v = 0 \Rightarrow \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} v_1 \\ v_2 \end{bmatrix} = 0$$</p>
+<p>Eigenvector: $v_2 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$</p>
+<p>Therefore: $$V = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} = I$$</p>
+<p><strong>Step 4: Compute $AA^T$ (3×3 matrix)</strong></p>
+<p>$$AA^T = \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$$</p>
+<p><strong>Step 5: Find eigenvectors of $AA^T$ (these form U)</strong></p>
+<p>For $\lambda_1 = 1$:
+Eigenvector: $u_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}$</p>
+<p>For $\lambda_2 = 0$ (multiplicity 2), we need two orthogonal eigenvectors:
+$u_2 = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}$, $u_3 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$</p>
+<p>Therefore: $$U = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = I$$</p>
+<p><strong>Step 6: Construct $\Sigma$ (3×2 matrix)</strong></p>
+<p>$$\Sigma = \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix}$$</p>
+<p><strong>Final SVD:</strong></p>
+<p>$$A = U\Sigma V^T = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$</p>
+<p><strong>Verification:</strong>
+$$U\Sigma V^T = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix} = A \checkmark$$</p>
+<p><strong>Python Verification:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+<span class="c1"># Compute SVD using NumPy</span>
+<span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">VT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Matrix A:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">U (left singular vectors):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Singular values:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="c1"># Construct Sigma matrix</span>
+<span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">Sigma</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sigma matrix:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">V^T (right singular vectors transposed):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">VT</span><span class="p">)</span>
+
+<span class="c1"># Verify reconstruction</span>
+<span class="n">A_reconstructed</span> <span class="o">=</span> <span class="n">U</span> <span class="o">@</span> <span class="n">Sigma</span> <span class="o">@</span> <span class="n">VT</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Reconstructed A (U * Sigma * V^T):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A_reconstructed</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Verification (should be close to zero):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">A_reconstructed</span><span class="p">))</span>
+</code></pre></div>
+
+<h4>(ii) Relations between Determinant, Matrix Inversion, and Non-singular [2 marks]</h4>
+<p><strong>Definitions and Relations:</strong></p>
+<p><strong>1. Non-singular (Invertible) Matrix:</strong>
+A square matrix $A$ is <strong>non-singular</strong> (or invertible) if there exists a matrix $A^{-1}$ such that:
+$$AA^{-1} = A^{-1}A = I$$</p>
+<p><strong>2. Determinant:</strong>
+The determinant is a scalar value that encodes certain properties of a matrix.</p>
+<p><strong>3. Key Relations:</strong></p>
+<p><strong>Theorem 1:</strong> A square matrix $A$ is <strong>non-singular</strong> if and only if $\det(A) \neq 0$</p>
+<p><strong>Theorem 2:</strong> A square matrix $A$ is <strong>singular</strong> (not invertible) if and only if $\det(A) = 0$</p>
+<p><strong>Theorem 3:</strong> If $A$ is non-singular, then:
+$$A^{-1} = \frac{1}{\det(A)} \text{adj}(A)$$
+where $\text{adj}(A)$ is the adjugate matrix.</p>
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Non-singular Matrix</th>
+<th>Singular Matrix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Determinant</td>
+<td>$\det(A) \neq 0$</td>
+<td>$\det(A) = 0$</td>
+</tr>
+<tr>
+<td>Invertible</td>
+<td>Yes, $A^{-1}$ exists</td>
+<td>No, $A^{-1}$ does not exist</td>
+</tr>
+<tr>
+<td>Rank</td>
+<td>Full rank: $\text{rank}(A) = n$</td>
+<td>Rank deficient: $\text{rank}(A) < n$</td>
+</tr>
+<tr>
+<td>Linear system $Ax=b$</td>
+<td>Unique solution</td>
+<td>No solution or infinite solutions</td>
+</tr>
+<tr>
+<td>Columns/Rows</td>
+<td>Linearly independent</td>
+<td>Linearly dependent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<p>Non-singular: $\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$, $\det = -2 \neq 0$</p>
+<p>Singular: $\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, $\det = 0$</p>
+<hr />
+<h2>Question 2: Tennis Serve Statistical Analysis (15 marks)</h2>
+<h3>Context</h3>
+<p>Ed Balls wants to analyze Frank Racket's serve patterns using 1,000 first serves and 1,000 second serves. The service box is represented as $[0,1] \times [0,1]$ where (0,0) is the corner closer to the net and center court.</p>
+<h3>Part (a): Empirical Distribution [4 marks]</h3>
+<p><strong>Question:</strong> How would you use the empirical distribution to estimate $p(x|first)$?</p>
+<p><strong>Answer:</strong></p>
+<p><strong>Empirical Distribution Definition:</strong>
+The empirical distribution is a non-parametric estimate of the probability distribution based directly on observed data.</p>
+<p><strong>Steps to Estimate $p(x|first)$:</strong></p>
+<p><strong>Step 1: Create a 2D Histogram (Binning)</strong>
+- Divide the service box $[0,1] \times [0,1]$ into a grid of bins
+- Choose bin size: $\Delta x \times \Delta y$ (e.g., 0.1 × 0.1 creates a 10×10 grid)
+- Count the number of serves landing in each bin</p>
+<p><strong>Step 2: Normalize to Get Probability Density</strong>
+For each bin $(i,j)$:
+$$p(x \in \text{bin}_{ij} | first) = \frac{\text{count}_{ij}}{N_F \cdot \Delta x \cdot \Delta y}$$</p>
+<p>where $N_F = 1000$ is the total number of first serves.</p>
+<p><strong>Step 3: Density Estimation (Optional)</strong>
+Use kernel density estimation (KDE) for a smoother estimate:
+$$\hat{p}(x|first) = \frac{1}{N_F h^2} \sum_{i=1}^{N_F} K\left(\frac{x - x_i}{h}\right)$$</p>
+<p>where:
+- $K$ is a kernel function (e.g., Gaussian)
+- $h$ is the bandwidth parameter
+- $x_i$ are the observed serve locations</p>
+<p><strong>Parameters to Set:</strong></p>
+<ol>
+<li><strong>Bin Size ($\Delta x, \Delta y$) or Bandwidth ($h$):</strong></li>
+<li>Small bins/bandwidth: High resolution, captures fine details, but noisy</li>
+<li>
+<p>Large bins/bandwidth: Smooth, but may miss important patterns</p>
+</li>
+<li>
+<p><strong>Kernel Function (for KDE):</strong></p>
+</li>
+<li>Gaussian: $K(u) = \frac{1}{\sqrt{2\pi}} e^{-u^2/2}$</li>
+<li>Epanechnikov: $K(u) = \frac{3}{4}(1-u^2)$ for $|u| \leq 1$</li>
+</ol>
+<p><strong>Trade-offs:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Fine Resolution (Small bins)</th>
+<th>Coarse Resolution (Large bins)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detail</td>
+<td>Captures fine patterns</td>
+<td>Misses subtle patterns</td>
+</tr>
+<tr>
+<td>Noise</td>
+<td>High variance, noisy</td>
+<td>Low variance, smooth</td>
+</tr>
+<tr>
+<td>Overfitting</td>
+<td>Risk of overfitting</td>
+<td>Risk of underfitting</td>
+</tr>
+<tr>
+<td>Data Requirements</td>
+<td>Needs more data</td>
+<td>Works with less data</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong>
+- Start with $10 \times 10$ grid (0.1 × 0.1 bins)
+- Use cross-validation to optimize bin size
+- For smoother estimates, apply Gaussian KDE with bandwidth selected by Scott's rule: $h = n^{-1/(d+4)} \sigma$</p>
+<p><strong>Python Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="c1"># Simulate Frank&#39;s first serves (example)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">NF</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Assume bimodal distribution (Frank aims at two spots)</span>
+<span class="n">first_serves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]],</span> <span class="mi">600</span><span class="p">),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.03</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">]],</span> <span class="mi">400</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="c1"># Method 1: 2D Histogram</span>
+<span class="n">bins</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">hist</span><span class="p">,</span> <span class="n">xedges</span><span class="p">,</span> <span class="n">yedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
+    <span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="c1"># Normalize to probability density</span>
+<span class="n">bin_area</span> <span class="o">=</span> <span class="p">(</span><span class="n">xedges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xedges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">yedges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">yedges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">pdf_hist</span> <span class="o">=</span> <span class="n">hist</span> <span class="o">/</span> <span class="p">(</span><span class="n">NF</span> <span class="o">*</span> <span class="n">bin_area</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Histogram bins: </span><span class="si">{</span><span class="n">bins</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">bins</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bin area: </span><span class="si">{</span><span class="n">bin_area</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sum of probabilities (should be ≈ 1): </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdf_hist</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">bin_area</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Method 2: Kernel Density Estimation</span>
+<span class="n">kde</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">gaussian_kde</span><span class="p">(</span><span class="n">first_serves</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="c1"># Evaluate on a grid</span>
+<span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">Y</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">kde</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">KDE bandwidth: </span><span class="si">{</span><span class="n">kde</span><span class="o">.</span><span class="n">factor</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (b): Normal Distribution Model</h3>
+<h4>(i) Parameters and Estimation [4 marks]</h4>
+<p><strong>Given Distribution:</strong>
+$$f_X(x) = \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$</p>
+<p><strong>Standard Form (2D Multivariate Normal):</strong>
+For 2D case (x-coordinate, y-coordinate of serve):</p>
+<p>$$f(x, y) = \frac{1}{2\pi\sigma_x\sigma_y\sqrt{1-\rho^2}} \exp\left(-\frac{1}{2(1-\rho^2)}\left[\frac{(x-\mu_x)^2}{\sigma_x^2} + \frac{(y-\mu_y)^2}{\sigma_y^2} - \frac{2\rho(x-\mu_x)(y-\mu_y)}{\sigma_x\sigma_y}\right]\right)$$</p>
+<p><strong>For simplicity (assuming independence, $\rho = 0$):</strong>
+$$f(x, y) = \frac{1}{2\pi\sigma_x\sigma_y} \exp\left(-\frac{(x-\mu_x)^2}{2\sigma_x^2} - \frac{(y-\mu_y)^2}{2\sigma_y^2}\right)$$</p>
+<p><strong>Parameters:</strong></p>
+<ol>
+<li><strong>Mean $\mu = (\mu_x, \mu_y)$:</strong></li>
+<li><strong>Meaning:</strong> The center/average location of serves</li>
+<li><strong>Effect:</strong> Shifts the distribution in the service box</li>
+<li>
+<p>Example: $\mu = (0.5, 0.6)$ means serves center around the middle-right of the box</p>
+</li>
+<li>
+<p><strong>Standard Deviation $\sigma = (\sigma_x, \sigma_y)$:</strong></p>
+</li>
+<li><strong>Meaning:</strong> The spread/variability of serves</li>
+<li><strong>Effect:</strong><ul>
+<li>Small $\sigma$: Tight clustering, consistent serves</li>
+<li>Large $\sigma$: Wide spread, inconsistent serves</li>
+</ul>
+</li>
+<li>
+<p>Example: $\sigma_x = 0.1, \sigma_y = 0.15$ means more variation vertically</p>
+</li>
+<li>
+<p><strong>Normalization Constant $Z$:</strong></p>
+</li>
+<li><strong>1D case:</strong> $Z = \sigma\sqrt{2\pi}$</li>
+<li><strong>2D case:</strong> $Z = 2\pi\sigma_x\sigma_y\sqrt{1-\rho^2}$</li>
+<li>
+<p><strong>Effect:</strong> Ensures $\int f(x)dx = 1$</p>
+</li>
+<li>
+<p><strong>Correlation $\rho$ (for full covariance):</strong></p>
+</li>
+<li><strong>Meaning:</strong> Linear relationship between x and y coordinates</li>
+<li><strong>Effect:</strong> If non-zero, distribution is tilted</li>
+</ol>
+<p><strong>Best Way to Estimate Parameters - Maximum Likelihood Estimation (MLE):</strong></p>
+<p>For $N_F = 1000$ observed serves $\{x_1, x_2, \ldots, x_{N_F}\}$:</p>
+<p><strong>MLE for Mean:</strong>
+$$\hat{\mu}_x = \frac{1}{N_F} \sum_{i=1}^{N_F} x_i, \quad \hat{\mu}_y = \frac{1}{N_F} \sum_{i=1}^{N_F} y_i$$</p>
+<p><strong>MLE for Variance:</strong>
+$$\hat{\sigma}_x^2 = \frac{1}{N_F} \sum_{i=1}^{N_F} (x_i - \hat{\mu}_x)^2, \quad \hat{\sigma}_y^2 = \frac{1}{N_F} \sum_{i=1}^{N_F} (y_i - \hat{\mu}_y)^2$$</p>
+<p><strong>MLE for Covariance:</strong>
+$$\hat{\sigma}_{xy} = \frac{1}{N_F} \sum_{i=1}^{N_F} (x_i - \hat{\mu}_x)(y_i - \hat{\mu}_y)$$</p>
+<p><strong>Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Estimate parameters using MLE</span>
+<span class="n">mu_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">mu_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">sigma_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># MLE uses ddof=0</span>
+<span class="n">sigma_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">first_serves</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Full covariance matrix</span>
+<span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">first_serves</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># bias=True for MLE</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MLE Parameter Estimates:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean μ = (</span><span class="si">{</span><span class="n">mu_x</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">mu_y</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std Dev σ = (</span><span class="si">{</span><span class="n">sigma_x</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">sigma_y</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Covariance Matrix:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
+
+<span class="c1"># Create the normal distribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
+<span class="n">normal_model</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="n">mu_x</span><span class="p">,</span> <span class="n">mu_y</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">cov_matrix</span><span class="p">)</span>
+
+<span class="c1"># Evaluate probability at a point</span>
+<span class="n">test_point</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]</span>
+<span class="n">prob_density</span> <span class="o">=</span> <span class="n">normal_model</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">test_point</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Probability density at </span><span class="si">{</span><span class="n">test_point</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">prob_density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h4>(ii) Problems with Normal Distribution Model [2 marks]</h4>
+<p><strong>Problems:</strong></p>
+<p><strong>1. Unbounded Support:</strong>
+- Normal distribution has support $(-\infty, +\infty)$
+- Service box is bounded: $[0,1] \times [0,1]$
+- The model assigns non-zero probability to impossible locations (e.g., $x = 2$ or $y = -1$)</p>
+<p><strong>2. Assumes Unimodal Distribution:</strong>
+- Normal distribution has a single peak
+- Frank might aim at multiple targets (e.g., corners)
+- Cannot model multi-modal patterns</p>
+<p><strong>3. Assumes Symmetry:</strong>
+- Normal distribution is symmetric around the mean
+- Real serve patterns might be skewed (e.g., more serves near the net)</p>
+<p><strong>Example of Inappropriate Situation:</strong></p>
+<p><strong>Scenario:</strong> Frank uses two distinct serving strategies:
+- <strong>Strategy A (60%):</strong> Aim at position (0.3, 0.7) - deep center
+- <strong>Strategy B (40%):</strong> Aim at position (0.7, 0.4) - wide and short</p>
+<p><strong>Diagram:</strong></p>
+<div class="codehilite"><pre><span></span><code>Service Box [0,1] × [0,1]
+  1.0 ├────────────────────┐
+      │    ● A             │  Net (y=1)
+      │   (0.3, 0.7)       │
+  0.6 │                    │
+      │              ● B   │
+  0.4 │           (0.7, 0.4)
+      │                    │
+  0.0 └────────────────────┘  Baseline (y=0)
+     0.0  Center     1.0
+         (x=0)    (x=1) Outside
+
+Single Normal would fit around mean ≈ (0.46, 0.58)
+This misses both actual target areas!
+</code></pre></div>
+
+<p><strong>Why Normal is Inappropriate:</strong>
+- A single Gaussian would fit to the mean location (≈ (0.46, 0.58))
+- This is between the two clusters, where Frank rarely actually serves
+- Predictions would be poor for both strategies</p>
+<p><strong>Python Illustration:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Simulate bimodal data (two strategies)</span>
+<span class="n">strategy_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">]],</span> <span class="mi">600</span><span class="p">)</span>
+<span class="n">strategy_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">]],</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">bimodal_serves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">strategy_A</span><span class="p">,</span> <span class="n">strategy_B</span><span class="p">])</span>
+
+<span class="c1"># Fit single normal (will be poor fit)</span>
+<span class="n">mu_bimodal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">cov_bimodal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;True Strategy A center: (0.3, 0.7)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;True Strategy B center: (0.7, 0.4)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Single Normal fitted mean: (</span><span class="si">{</span><span class="n">mu_bimodal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">mu_bimodal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;→ The fitted mean is between clusters, not at either target!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (c): Gaussian Mixture Model (GMM) [5 marks]</h3>
+<p><strong>Question:</strong> Explain how a mixture of Gaussians would be parameterized and how to fit it to the data.</p>
+<p><strong>Answer:</strong></p>
+<p><strong>Gaussian Mixture Model (GMM) Definition:</strong></p>
+<p>A GMM with $K$ components models the data as a weighted sum of $K$ Gaussian distributions:</p>
+<p>$$p(x) = \sum_{k=1}^{K} \pi_k \mathcal{N}(x | \mu_k, \Sigma_k)$$</p>
+<p>where:
+- $\pi_k$: Mixing coefficient (weight) for component $k$, $\sum_{k=1}^K \pi_k = 1$, $\pi_k \geq 0$
+- $\mu_k$: Mean vector for component $k$
+- $\Sigma_k$: Covariance matrix for component $k$
+- $\mathcal{N}(x | \mu_k, \Sigma_k)$: Multivariate normal distribution</p>
+<p><strong>For 2D Serve Location:</strong></p>
+<p>$$p(x, y | first) = \sum_{k=1}^{K} \pi_k \frac{1}{2\pi|\Sigma_k|^{1/2}} \exp\left(-\frac{1}{2}(x - \mu_k)^T \Sigma_k^{-1} (x - \mu_k)\right)$$</p>
+<p>where $x = \begin{bmatrix} x \\ y \end{bmatrix}$</p>
+<p><strong>Parameterization:</strong></p>
+<p><strong>Total Parameters for K-component GMM:</strong></p>
+<p>For each component $k = 1, \ldots, K$:
+- Mean: $\mu_k = (\mu_{k,x}, \mu_{k,y})$ → 2 parameters
+- Covariance (full): $\Sigma_k = \begin{bmatrix} \sigma_{k,x}^2 & \sigma_{k,xy} \\ \sigma_{k,xy} & \sigma_{k,y}^2 \end{bmatrix}$ → 3 parameters (symmetric)
+- Mixing coefficient: $\pi_k$ → 1 parameter (but $\sum \pi_k = 1$, so only $K-1$ free parameters)</p>
+<p><strong>Total:</strong> $K \times (2 + 3) + (K-1) = 5K + K - 1 = 6K - 1$ parameters</p>
+<p><strong>Example for $K=2$:</strong>
+- $\mu_1, \mu_2$: Two 2D means → 4 parameters
+- $\Sigma_1, \Sigma_2$: Two 2×2 covariance matrices → 6 parameters
+- $\pi_1$ (since $\pi_2 = 1 - \pi_1$) → 1 parameter
+- <strong>Total: 11 parameters</strong></p>
+<p><strong>Fitting the Model - Expectation-Maximization (EM) Algorithm:</strong></p>
+<p>Since we don't know which component generated each serve, we use the EM algorithm:</p>
+<p><strong>Notation:</strong>
+- Data: $X = \{x_1, \ldots, x_{N_F}\}$ where $N_F = 1000$
+- Latent variables: $z_i \in \{1, \ldots, K\}$ indicates which component generated $x_i$</p>
+<p><strong>Algorithm:</strong></p>
+<p><strong>Initialization:</strong>
+- Randomly initialize $\mu_k, \Sigma_k, \pi_k$ or use k-means clustering</p>
+<p><strong>Iterate until convergence:</strong></p>
+<p><strong>E-Step (Expectation):</strong> Compute the responsibility $\gamma_{ik}$ (probability that component $k$ generated data point $i$):</p>
+<p>$$\gamma_{ik} = \frac{\pi_k \mathcal{N}(x_i | \mu_k, \Sigma_k)}{\sum_{j=1}^{K} \pi_j \mathcal{N}(x_i | \mu_j, \Sigma_j)}$$</p>
+<p>This is the posterior probability: $\gamma_{ik} = p(z_i = k | x_i, \theta)$</p>
+<p><strong>M-Step (Maximization):</strong> Update parameters using weighted MLE:</p>
+<p><strong>Effective number of points for component k:</strong>
+$$N_k = \sum_{i=1}^{N_F} \gamma_{ik}$$</p>
+<p><strong>Update mixing coefficients:</strong>
+$$\pi_k^{\text{new}} = \frac{N_k}{N_F}$$</p>
+<p><strong>Update means:</strong>
+$$\mu_k^{\text{new}} = \frac{1}{N_k} \sum_{i=1}^{N_F} \gamma_{ik} x_i$$</p>
+<p><strong>Update covariances:</strong>
+$$\Sigma_k^{\text{new}} = \frac{1}{N_k} \sum_{i=1}^{N_F} \gamma_{ik} (x_i - \mu_k^{\text{new}})(x_i - \mu_k^{\text{new}})^T$$</p>
+<p><strong>Convergence Check:</strong>
+- Monitor log-likelihood: $\log p(X|\theta) = \sum_{i=1}^{N_F} \log \left(\sum_{k=1}^K \pi_k \mathcal{N}(x_i|\mu_k, \Sigma_k)\right)$
+- Stop when change is below threshold (e.g., $|\log L^{(t+1)} - \log L^{(t)}| < \epsilon$)</p>
+<p><strong>Complete Log-Likelihood:</strong></p>
+<p>$$\mathcal{L}(\theta) = \sum_{i=1}^{N_F} \log \left( \sum_{k=1}^{K} \pi_k \mathcal{N}(x_i | \mu_k, \Sigma_k) \right)$$</p>
+<p><strong>Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Fit GMM with K=2 components</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">covariance_type</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GMM Parameters:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of components: </span><span class="si">{</span><span class="n">K</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mixing coefficients (π):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Component </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Means (μ):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Component </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: (</span><span class="si">{</span><span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Covariance matrices (Σ):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Component </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Predict component membership for each serve</span>
+<span class="n">responsibilities</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Example responsibilities for first serve:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  P(component 1): </span><span class="si">{</span><span class="n">responsibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  P(component 2): </span><span class="si">{</span><span class="n">responsibilities</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Model selection: Choose optimal K using BIC or AIC</span>
+<span class="n">bic_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">aic_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_range</span><span class="p">:</span>
+    <span class="n">gmm_temp</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">covariance_type</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">gmm_temp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">)</span>
+    <span class="n">bic_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmm_temp</span><span class="o">.</span><span class="n">bic</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">))</span>
+    <span class="n">aic_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmm_temp</span><span class="o">.</span><span class="n">aic</span><span class="p">(</span><span class="n">bimodal_serves</span><span class="p">))</span>
+
+<span class="n">optimal_K</span> <span class="o">=</span> <span class="n">K_range</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">bic_scores</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Optimal number of components (BIC): </span><span class="si">{</span><span class="n">optimal_K</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Model Selection (Choosing K):</strong></p>
+<p>Use information criteria:
+- <strong>Bayesian Information Criterion (BIC):</strong> $BIC = -2\log L + (6K-1)\log N_F$
+- <strong>Akaike Information Criterion (AIC):</strong> $AIC = -2\log L + 2(6K-1)$</p>
+<p>Choose $K$ that minimizes BIC or AIC (penalizes complexity).</p>
+<p><strong>Advantages of GMM over Single Normal:</strong>
+- Can model multi-modal distributions (multiple serving targets)
+- More flexible, can approximate complex distributions
+- Captures different serving strategies</p>
+<hr />
+<h2>Question 3: Radio Programming Optimization (15 marks)</h2>
+<h3>Context</h3>
+<p>IDSS Radio programming optimization with content types:
+$$\mathcal{C} = \{\text{music}, \text{news}, \text{business}, \text{fiction}, \text{comedy}, \text{advertisement}\}$$</p>
+<p>Programme: $p = [p_m, p_n, p_b, p_f, p_c, p_a] \in \mathbb{R}^6$ (hours for each content type)</p>
+<p>Listener rating: $r(p)$ on scale 1-10</p>
+<p>Data: 10 years of monthly records (120 data points)</p>
+<h3>Part (a): Linear Least Squares</h3>
+<h4>(i) Variables and Dimensions [4 marks]</h4>
+<p><strong>Canonical Form:</strong>
+$$\arg\min_x L(x) = \|Ax - y\|_2^2$$</p>
+<p><strong>Interpretation in Radio Programming Scenario:</strong></p>
+<p><strong>Variable $x$ (weights/coefficients):</strong>
+- <strong>Meaning:</strong> Impact of each content type on listener rating
+- <strong>Dimension:</strong> $x \in \mathbb{R}^7$ (6 content types + 1 intercept/bias term)
+- <strong>Components:</strong> $x = [x_0, x_m, x_n, x_b, x_f, x_c, x_a]^T$
+  - $x_0$: Intercept (baseline rating)
+  - $x_m$: Music coefficient
+  - $x_n$: News coefficient
+  - $x_b$: Business coefficient
+  - $x_f$: Fiction coefficient
+  - $x_c$: Comedy coefficient
+  - $x_a$: Advertisement coefficient</p>
+<p><strong>Variable $A$ (design matrix):</strong>
+- <strong>Meaning:</strong> Historical programming data
+- <strong>Dimension:</strong> $A \in \mathbb{R}^{120 \times 7}$ (120 months × 7 features)
+- <strong>Structure:</strong> Each row represents one month's programming</p>
+<p>$$A = \begin{bmatrix}
+1 & p_m^{(1)} & p_n^{(1)} & p_b^{(1)} & p_f^{(1)} & p_c^{(1)} & p_a^{(1)} \\
+1 & p_m^{(2)} & p_n^{(2)} & p_b^{(2)} & p_f^{(2)} & p_c^{(2)} & p_a^{(2)} \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+1 & p_m^{(120)} & p_n^{(120)} & p_b^{(120)} & p_f^{(120)} & p_c^{(120)} & p_a^{(120)}
+\end{bmatrix}$$</p>
+<p>(First column of 1's is for the intercept term)</p>
+<p><strong>Variable $y$ (target ratings):</strong>
+- <strong>Meaning:</strong> Observed listener ratings for each month
+- <strong>Dimension:</strong> $y \in \mathbb{R}^{120}$
+- <strong>Components:</strong> $y = [r^{(1)}, r^{(2)}, \ldots, r^{(120)}]^T$</p>
+<p><strong>Linear Model:</strong>
+$$r(p) = x_0 + x_m p_m + x_n p_n + x_b p_b + x_f p_f + x_c p_c + x_a p_a$$</p>
+<p>Or in matrix form:
+$$y \approx Ax$$</p>
+<p><strong>Result $x^*$:</strong>
+The optimal solution minimizes the residual sum of squares:</p>
+<p>$$x^* = \arg\min_x \|Ax - y\|_2^2$$</p>
+<p><strong>Normal Equations Solution:</strong>
+$$x^* = (A^T A)^{-1} A^T y$$</p>
+<p><strong>Interpretation of Result:</strong>
+- Positive $x_k$: Content type $k$ increases ratings
+- Negative $x_k$: Content type $k$ decreases ratings
+- Magnitude $|x_k|$: Strength of impact</p>
+<p><strong>Example:</strong>
+If $x^* = [5.0, 0.3, 0.1, -0.2, 0.4, 0.5, -0.8]^T$, then:
+$$r(p) = 5.0 + 0.3p_m + 0.1p_n - 0.2p_b + 0.4p_f + 0.5p_c - 0.8p_a$$</p>
+<ul>
+<li>Music increases rating (+0.3 per hour)</li>
+<li>Comedy has strong positive effect (+0.5 per hour)</li>
+<li>Advertisements decrease rating (-0.8 per hour)</li>
+</ul>
+<h4>(ii) Limitations and Validation [3 marks]</h4>
+<p><strong>Reasons Why Linear Model May Not Be Good:</strong></p>
+<p><strong>1. Non-linear Preferences:</strong>
+- <strong>Problem:</strong> Assumes marginal effect is constant
+- <strong>Reality:</strong> Preferences may peak and then decline
+  - Example: 2 hours of comedy → rating +1.0
+  - But 10 hours of comedy → rating -2.0 (too much!)
+- <strong>Mathematical:</strong> $\frac{\partial r}{\partial p_k} = x_k$ (constant) is unrealistic</p>
+<p><strong>2. Interaction Effects Ignored:</strong>
+- <strong>Problem:</strong> Assumes independence of content types
+- <strong>Reality:</strong> Combinations matter
+  - Music + News might work well together
+  - Fiction + Advertisement might clash
+- <strong>Mathematical:</strong> Model is $r = \sum x_k p_k$ but reality might be $r = f(p_1 p_2, p_1^2, \ldots)$</p>
+<p><strong>3. No Constraints on Predictions:</strong>
+- <strong>Problem:</strong> Can predict $r < 1$ or $r > 10$ (outside valid range)
+- <strong>Reality:</strong> Ratings are bounded [1, 10]</p>
+<p><strong>4. Saturation Effects:</strong>
+- Listeners might saturate at extreme values
+- Linear model can't capture diminishing returns</p>
+<p><strong>How to Measure Model Quality:</strong></p>
+<p><strong>Method 1: Cross-Validation</strong></p>
+<p>Split data into training and test sets:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+
+<span class="c1"># Split data (80% train, 20% test)</span>
+<span class="n">A_train</span><span class="p">,</span> <span class="n">A_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Fit linear model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">A_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Predict on test set</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">A_test</span><span class="p">)</span>
+
+<span class="c1"># Evaluate</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mse</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test RMSE: </span><span class="si">{</span><span class="n">rmse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test R²: </span><span class="si">{</span><span class="n">r2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Metrics:</strong>
+- <strong>RMSE (Root Mean Square Error):</strong> $\sqrt{\frac{1}{n}\sum(y_i - \hat{y}_i)^2}$
+  - Good: RMSE &lt; 0.5 (small prediction error)
+  - Bad: RMSE &gt; 2.0 (large prediction error)</p>
+<ul>
+<li><strong>$R^2$ Score (Coefficient of Determination):</strong> $1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$</li>
+<li>Good: $R^2 > 0.7$ (explains &gt; 70% of variance)</li>
+<li>Bad: $R^2 < 0.3$ (poor fit)</li>
+</ul>
+<p><strong>Method 2: Residual Analysis</strong></p>
+<p>Plot residuals $e_i = y_i - \hat{y}_i$:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">residuals</span> <span class="o">=</span> <span class="n">y_test</span> <span class="o">-</span> <span class="n">y_pred</span>
+
+<span class="c1"># Plot residuals vs predicted values</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">residuals</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Rating&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Residuals&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Residual Plot&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Good fit:</strong> Residuals randomly scattered around 0
+<strong>Bad fit:</strong> Residuals show patterns (e.g., curved, increasing variance)</p>
+<p><strong>Method 3: Information Criteria</strong></p>
+<p>Compare linear model with non-linear alternatives:
+- <strong>AIC:</strong> $2k - 2\log L$ (lower is better)
+- <strong>BIC:</strong> $k\log n - 2\log L$ (lower is better)</p>
+<p>where $k$ = number of parameters, $n$ = number of data points</p>
+<hr />
+<h3>Part (b): Non-linear Bell Curve Model</h3>
+<h4>(i) Number of Parameters and Their Roles [3 marks]</h4>
+<p><strong>Given Model:</strong></p>
+<p>Bell curve for each content type:
+$$B_z(p_z) = \alpha_z \exp(-\beta \|p_z - \mu_z\|^2)$$</p>
+<p>Overall rating:
+$$\hat{r}(p) = b + \sum_{z \in \mathcal{C}} B_z(p_z)$$</p>
+<p><strong>Parameters:</strong></p>
+<p><strong>For each content type $z$ (6 types):</strong>
+1. $\alpha_z$: Amplitude/height → 6 parameters
+2. $\mu_z$: Optimal amount (peak location) → 6 parameters</p>
+<p><strong>Shared across all content types:</strong>
+3. $\beta$: Width parameter (inverse variance) → 1 parameter
+4. $b$: Baseline rating (intercept) → 1 parameter</p>
+<p><strong>Total: $6 + 6 + 1 + 1 = 14$ parameters</strong></p>
+<p><strong>Detailed Breakdown:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Count</th>
+<th>Role</th>
+<th>Example Value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$b$</td>
+<td>1</td>
+<td>Baseline rating (intercept)</td>
+<td>3.0</td>
+<td>Minimum rating when all $p_z = 0$</td>
+</tr>
+<tr>
+<td>$\alpha_m, \alpha_n, \alpha_b, \alpha_f, \alpha_c, \alpha_a$</td>
+<td>6</td>
+<td>Peak contribution of each content</td>
+<td>$\alpha_c = 3.5$</td>
+<td>Comedy can boost rating by up to 3.5 points</td>
+</tr>
+<tr>
+<td>$\mu_m, \mu_n, \mu_b, \mu_f, \mu_c, \mu_a$</td>
+<td>6</td>
+<td>Optimal hours for each content</td>
+<td>$\mu_c = 4$</td>
+<td>Optimal comedy duration is 4 hours</td>
+</tr>
+<tr>
+<td>$\beta$</td>
+<td>1</td>
+<td>Rate of decline away from peak</td>
+<td>$\beta = 0.5$</td>
+<td>Controls how sharply rating drops when away from $\mu_z$</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Role of Each Parameter:</strong></p>
+<p><strong>1. Baseline $b$:</strong>
+- <strong>Meaning:</strong> Starting rating with no content
+- <strong>Typical value:</strong> 1-3 (low but positive)
+- <strong>Effect:</strong> Vertical shift of entire function</p>
+<p><strong>2. Amplitude $\alpha_z$:</strong>
+- <strong>Meaning:</strong> Maximum boost from content type $z$ at optimal amount
+- <strong>Typical value:</strong> 0-5 (can be negative if content is disliked)
+- <strong>Effect:</strong>
+  - Large $\alpha_z$: Content $z$ is very important
+  - Small $\alpha_z$: Content $z$ has little impact
+  - Negative $\alpha_z$: Content $z$ always decreases rating</p>
+<p><strong>3. Optimal Amount $\mu_z$:</strong>
+- <strong>Meaning:</strong> The "sweet spot" - best duration for content type $z$
+- <strong>Typical value:</strong> 1-8 hours (depends on content type)
+- <strong>Effect:</strong> Location of peak in the bell curve
+- <strong>Example:</strong>
+  - $\mu_{music} = 6$: Listeners prefer 6 hours of music
+  - $\mu_{ads} = 1$: Listeners tolerate only 1 hour of ads</p>
+<p><strong>4. Width Parameter $\beta$:</strong>
+- <strong>Meaning:</strong> How quickly preference drops away from optimal
+- <strong>Mathematical:</strong> $\beta = \frac{1}{2\sigma^2}$ where $\sigma$ is standard deviation
+- <strong>Effect:</strong>
+  - Large $\beta$ (small $\sigma$): Sharp peak, very sensitive to deviations
+  - Small $\beta$ (large $\sigma$): Broad peak, tolerant to variations
+- <strong>Typical value:</strong> 0.1 - 1.0</p>
+<p><strong>Example Curves:</strong></p>
+<p>For comedy with $\alpha_c = 3, \mu_c = 4, \beta = 0.2$:
+- At $p_c = 4$ hours: $B_c(4) = 3 \cdot e^{0} = 3.0$ (maximum)
+- At $p_c = 3$ hours: $B_c(3) = 3 \cdot e^{-0.2(3-4)^2} = 3 \cdot e^{-0.2} \approx 2.46$
+- At $p_c = 0$ hours: $B_c(0) = 3 \cdot e^{-0.2(0-4)^2} = 3 \cdot e^{-3.2} \approx 0.12$</p>
+<h4>(ii) Optimization Approach [3 marks]</h4>
+<p><strong>Problem:</strong> Fit non-linear model to data</p>
+<p><strong>Given:</strong>
+- Model is differentiable but non-linear
+- Data: $(p^{(i)}, r^{(i)})$ for $i = 1, \ldots, 120$
+- Parameters: $\theta = [b, \alpha_m, \ldots, \alpha_a, \mu_m, \ldots, \mu_a, \beta]^T \in \mathbb{R}^{14}$</p>
+<p><strong>Most Appropriate Approach: Non-linear Least Squares with Gradient Descent</strong></p>
+<p><strong>Objective Function:</strong></p>
+<p>$$L(\theta) = \sum_{i=1}^{120} \left(r^{(i)} - \hat{r}(p^{(i)}; \theta)\right)^2$$</p>
+<p>where:
+$$\hat{r}(p; \theta) = b + \sum_{z \in \mathcal{C}} \alpha_z \exp\left(-\beta (p_z - \mu_z)^2\right)$$</p>
+<p><strong>Parameterization:</strong></p>
+<p><strong>Step 1: Initialize Parameters</strong></p>
+<p>Choose reasonable starting values:
+- $b^{(0)} = \bar{r}$ (mean rating)
+- $\alpha_z^{(0)} = 1$ for all $z$
+- $\mu_z^{(0)} = $ typical duration for content $z$ (e.g., 3-5 hours)
+- $\beta^{(0)} = 0.5$</p>
+<p><strong>Step 2: Compute Gradients</strong></p>
+<p>Calculate partial derivatives:</p>
+<p>$$\frac{\partial L}{\partial b} = -2 \sum_{i=1}^{120} \left(r^{(i)} - \hat{r}(p^{(i)})\right)$$</p>
+<p>$$\frac{\partial L}{\partial \alpha_z} = -2 \sum_{i=1}^{120} \left(r^{(i)} - \hat{r}(p^{(i)})\right) \exp\left(-\beta (p_z^{(i)} - \mu_z)^2\right)$$</p>
+<p>$$\frac{\partial L}{\partial \mu_z} = -2 \sum_{i=1}^{120} \left(r^{(i)} - \hat{r}(p^{(i)})\right) \alpha_z \exp\left(-\beta (p_z^{(i)} - \mu_z)^2\right) \cdot 2\beta(p_z^{(i)} - \mu_z)$$</p>
+<p>$$\frac{\partial L}{\partial \beta} = -2 \sum_{i=1}^{120} \left(r^{(i)} - \hat{r}(p^{(i)})\right) \sum_z \alpha_z \exp\left(-\beta (p_z^{(i)} - \mu_z)^2\right) \cdot (-(p_z^{(i)} - \mu_z)^2)$$</p>
+<p><strong>Step 3: Update Parameters (Gradient Descent)</strong></p>
+<p>$$\theta^{(t+1)} = \theta^{(t)} - \eta \nabla L(\theta^{(t)})$$</p>
+<p>where $\eta$ is the learning rate (e.g., 0.01)</p>
+<p><strong>Step 4: Iterate Until Convergence</strong></p>
+<p>Stop when:
+- $\|L(\theta^{(t+1)}) - L(\theta^{(t)})\| < \epsilon$ (e.g., $\epsilon = 10^{-6}$)
+- Or maximum iterations reached</p>
+<p><strong>Alternative: Advanced Optimizers</strong></p>
+<ol>
+<li><strong>L-BFGS-B (Limited-memory BFGS with Bounds):</strong></li>
+<li>Better for smooth, low-dimensional problems</li>
+<li>
+<p>Can handle constraints (e.g., $\alpha_z > 0$, $\beta > 0$)</p>
+</li>
+<li>
+<p><strong>Levenberg-Marquardt:</strong></p>
+</li>
+<li>Specialized for least-squares problems</li>
+<li>
+<p>Interpolates between Gauss-Newton and gradient descent</p>
+</li>
+<li>
+<p><strong>Trust Region Methods:</strong></p>
+</li>
+<li>Robust to poor initialization</li>
+</ol>
+<p><strong>Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">least_squares</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Simulate some data</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">n_months</span> <span class="o">=</span> <span class="mi">120</span>
+
+<span class="c1"># True parameters (unknown in practice)</span>
+<span class="n">true_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">],</span>  <span class="c1"># music, news, business, fiction, comedy, ads</span>
+    <span class="s1">&#39;mu&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.3</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate synthetic data</span>
+<span class="n">programs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="n">n_months</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>  <span class="c1"># Random programs</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_months</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_months</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">programs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="o">-</span> <span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ratings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># Add noise</span>
+
+<span class="c1"># Define the model</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bell_model</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    p: program (6-dimensional array)</span>
+<span class="sd">    params: [b, alpha_1,...,alpha_6, mu_1,...,mu_6, beta]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">b</span>
+    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">alpha</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">-</span> <span class="n">mu</span><span class="p">[</span><span class="n">z</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+<span class="c1"># Objective function (residuals)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">residuals</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">programs</span><span class="p">,</span> <span class="n">ratings</span><span class="p">):</span>
+    <span class="n">pred_ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bell_model</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">programs</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">ratings</span> <span class="o">-</span> <span class="n">pred_ratings</span>
+
+<span class="c1"># Initial guess</span>
+<span class="n">initial_params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">)],</span>  <span class="c1"># b</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>     <span class="c1"># alpha</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>       <span class="c1"># mu</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span>                 <span class="c1"># beta</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit using Levenberg-Marquardt</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+    <span class="n">residuals</span><span class="p">,</span>
+    <span class="n">initial_params</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">programs</span><span class="p">,</span> <span class="n">ratings</span><span class="p">),</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;lm&#39;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+<span class="c1"># Extract fitted parameters</span>
+<span class="n">fitted_b</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">fitted_alpha</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">fitted_mu</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span>
+<span class="n">fitted_beta</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fitted Parameters:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;b (baseline): </span><span class="si">{</span><span class="n">fitted_b</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (true: </span><span class="si">{</span><span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Alpha (amplitudes):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;music&#39;</span><span class="p">,</span> <span class="s1">&#39;news&#39;</span><span class="p">,</span> <span class="s1">&#39;business&#39;</span><span class="p">,</span> <span class="s1">&#39;fiction&#39;</span><span class="p">,</span> <span class="s1">&#39;comedy&#39;</span><span class="p">,</span> <span class="s1">&#39;ads&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">fitted_alpha</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="si">:</span><span class="s2">6.3f</span><span class="si">}</span><span class="s2"> (true: </span><span class="si">{</span><span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">]</span><span class="si">:</span><span class="s2">6.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mu (optimal amounts):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;music&#39;</span><span class="p">,</span> <span class="s1">&#39;news&#39;</span><span class="p">,</span> <span class="s1">&#39;business&#39;</span><span class="p">,</span> <span class="s1">&#39;fiction&#39;</span><span class="p">,</span> <span class="s1">&#39;comedy&#39;</span><span class="p">,</span> <span class="s1">&#39;ads&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">fitted_mu</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="si">:</span><span class="s2">6.3f</span><span class="si">}</span><span class="s2"> (true: </span><span class="si">{</span><span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">]</span><span class="si">:</span><span class="s2">6.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Beta (width): </span><span class="si">{</span><span class="n">fitted_beta</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (true: </span><span class="si">{</span><span class="n">true_params</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Evaluate fit</span>
+<span class="n">pred_ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bell_model</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">programs</span><span class="p">])</span>
+<span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">ratings</span> <span class="o">-</span> <span class="n">pred_ratings</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">ratings</span> <span class="o">-</span> <span class="n">pred_ratings</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">ratings</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model Performance:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RMSE: </span><span class="si">{</span><span class="n">rmse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R²: </span><span class="si">{</span><span class="n">r2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Constraints (Optional but Recommended):</strong></p>
+<p>Add bounds to ensure realistic parameters:
+- $\alpha_z \in [-5, 5]$ (bounded impact)
+- $\mu_z \in [0, 18]$ (radio runs 18 hours/day)
+- $\beta > 0$ (ensures Gaussian shape)
+- $b \in [1, 10]$ (valid rating range)</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># With bounds</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">],</span>  <span class="c1"># lower bounds</span>
+    <span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="mi">18</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>      <span class="c1"># upper bounds</span>
+<span class="p">)</span>
+
+<span class="n">result_bounded</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+    <span class="n">residuals</span><span class="p">,</span>
+    <span class="n">initial_params</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">programs</span><span class="p">,</span> <span class="n">ratings</span><span class="p">),</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;trf&#39;</span><span class="p">,</span>  <span class="c1"># Trust Region Reflective (handles bounds)</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h3>Part (c): Constrained Optimization [2 marks]</h3>
+<p><strong>Question:</strong> How to find the best program with constraints:
+- Radio runs from 6am to midnight (18 hours daily)
+- Need at least 1 hour of advertisement</p>
+<p><strong>Optimization Problem:</strong></p>
+<p><strong>Objective:</strong> Maximize predicted rating
+$$\max_{p} \hat{r}(p) = b + \sum_{z \in \mathcal{C}} \alpha_z \exp\left(-\beta (p_z - \mu_z)^2\right)$$</p>
+<p><strong>Constraints:</strong>
+1. <strong>Total time:</strong> $\sum_{z \in \mathcal{C}} p_z = 18$ (equality constraint)
+2. <strong>Minimum ads:</strong> $p_a \geq 1$ (inequality constraint)
+3. <strong>Non-negativity:</strong> $p_z \geq 0$ for all $z$ (inequality constraints)</p>
+<p><strong>Mathematical Formulation:</strong></p>
+<p>$$\begin{align}
+\max_{p} \quad & b + \sum_{z \in \mathcal{C}} \alpha_z \exp\left(-\beta (p_z - \mu_z)^2\right) \\
+\text{s.t.} \quad & p_m + p_n + p_b + p_f + p_c + p_a = 18 \\
+& p_a \geq 1 \\
+& p_z \geq 0 \quad \forall z \in \mathcal{C}
+\end{align}$$</p>
+<p><strong>Equivalent (Minimization):</strong>
+$$\min_{p} -\hat{r}(p)$$</p>
+<p><strong>Solution Approach:</strong></p>
+<p><strong>Method 1: Lagrange Multipliers (for equality constraint only)</strong></p>
+<p>If we only had equality constraint:</p>
+<p>$$\mathcal{L}(p, \lambda) = -\hat{r}(p) + \lambda \left(\sum_z p_z - 18\right)$$</p>
+<p><strong>KKT Conditions:</strong>
+$$\frac{\partial \mathcal{L}}{\partial p_z} = -\frac{\partial \hat{r}}{\partial p_z} + \lambda = 0$$
+$$\sum_z p_z = 18$$</p>
+<p>But this doesn't handle inequality constraints easily.</p>
+<p><strong>Method 2: Sequential Quadratic Programming (SQP) - RECOMMENDED</strong></p>
+<p>Use <code>scipy.optimize.minimize</code> with constraints:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="c1"># Objective function (negative because we want to maximize)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">bell_model</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fitted_params</span><span class="p">)</span>
+
+<span class="c1"># Constraints</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">18</span><span class="p">},</span>  <span class="c1"># Total time = 18 hours</span>
+    <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">}</span>        <span class="c1"># p_a &gt;= 1 (ads index is 5)</span>
+<span class="p">]</span>
+
+<span class="c1"># Bounds (non-negativity)</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
+
+<span class="c1"># Initial guess (equal distribution)</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+
+<span class="c1"># Optimize</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">objective</span><span class="p">,</span>
+    <span class="n">p0</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span>  <span class="c1"># Sequential Least Squares Programming</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span>
+<span class="p">)</span>
+
+<span class="n">optimal_program</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimal Program:&quot;</span><span class="p">)</span>
+<span class="n">content_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;music&#39;</span><span class="p">,</span> <span class="s1">&#39;news&#39;</span><span class="p">,</span> <span class="s1">&#39;business&#39;</span><span class="p">,</span> <span class="s1">&#39;fiction&#39;</span><span class="p">,</span> <span class="s1">&#39;comedy&#39;</span><span class="p">,</span> <span class="s1">&#39;ads&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">content_types</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">optimal_program</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> hours&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total hours: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">optimal_program</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted rating: </span><span class="si">{</span><span class="o">-</span><span class="n">result</span><span class="o">.</span><span class="n">fun</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimization success: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Method 3: Penalty Method</strong></p>
+<p>Add penalty for constraint violations to objective:</p>
+<p>$$L_{\text{penalty}}(p) = -\hat{r}(p) + M \cdot \max(0, 1 - p_a)^2 + M \cdot \left(\sum_z p_z - 18\right)^2$$</p>
+<p>where $M$ is a large penalty coefficient (e.g., $M = 10000$).</p>
+<p><strong>Method 4: Active Set Methods</strong></p>
+<p>Iteratively solve subproblems with different active constraints.</p>
+<p><strong>Expected Result Example:</strong></p>
+<div class="codehilite"><pre><span></span><code>Optimal Program:
+  music     : 6.20 hours
+  news      : 2.10 hours
+  business  : 0.50 hours
+  fiction   : 3.05 hours
+  comedy    : 5.15 hours
+  ads       : 1.00 hours  (at lower bound)
+
+Total hours: 18.00
+Predicted rating: 8.45
+</code></pre></div>
+
+<p><strong>Interpretation:</strong>
+- Advertisements at minimum (1 hour) - they decrease ratings
+- Comedy and music maximized (highest positive impact)
+- Business minimized (negative or low impact)</p>
+<hr />
+<h2>Question 4: Database Systems (15 marks)</h2>
+<h3>Part (a): Weather Relation</h3>
+<h4>(i) Blocking Factor and Number of Blocks [2 marks]</h4>
+<p><strong>Given:</strong>
+- Relation: <code>Weather(Id, Time, Longitude, Latitude, Temperature, Humidity)</code>
+- <strong>Id:</strong> 116-byte string
+- <strong>Time:</strong> 8-byte Datetime
+- <strong>Longitude, Latitude, Temperature, Humidity:</strong> 32-bit float = 4 bytes each
+- <strong>Tuples:</strong> 30,000
+- <strong>Block size:</strong> 4096 bytes
+- <strong>Fixed-length records</strong></p>
+<p><strong>Step 1: Calculate Record Size</strong></p>
+<p>$$\text{Record size} = 116 + 8 + 4 + 4 + 4 + 4 = 140 \text{ bytes}$$</p>
+<p><strong>Step 2: Calculate Blocking Factor (bfr)</strong></p>
+<p>The blocking factor is the number of records that fit in one block:</p>
+<p>$$\text{bfr} = \left\lfloor \frac{\text{Block size}}{\text{Record size}} \right\rfloor = \left\lfloor \frac{4096}{140} \right\rfloor = \lfloor 29.257 \rfloor = 29$$</p>
+<p><strong>Step 3: Calculate Number of Blocks</strong></p>
+<p>$$\text{Number of blocks} = \left\lceil \frac{\text{Number of tuples}}{\text{bfr}} \right\rceil = \left\lceil \frac{30000}{29} \right\rceil = \lceil 1034.48 \rceil = 1035$$</p>
+<p><strong>Answer:</strong>
+- <strong>Blocking factor (bfr):</strong> 29 records per block
+- <strong>Number of blocks:</strong> 1035 blocks</p>
+<p><strong>Verification:</strong>
+- Total storage: $1035 \times 4096 = 4{,}239{,}360$ bytes ≈ 4.04 MB
+- Used storage: $30000 \times 140 = 4{,}200{,}000$ bytes = 4.0 MB
+- Wasted space per block: $4096 - (29 \times 140) = 4096 - 4060 = 36$ bytes
+- Total wasted space: $1035 \times 36 = 37{,}260$ bytes ≈ 37 KB (0.9%)</p>
+<h4>(ii) File Organization for Frequent Inserts [3 marks]</h4>
+<p><strong>Requirement Analysis:</strong>
+- <strong>Frequent adds:</strong> Need fast insertion
+- <strong>Infrequent reads:</strong> Read performance less critical</p>
+<p><strong>Recommended: Heap File Organization</strong></p>
+<p><strong>Description:</strong>
+- Records inserted at the end of the file (append-only)
+- No ordering maintained
+- Simple free space management</p>
+<p><strong>Advantages:</strong>
+- <strong>Fast insertion:</strong> $O(1)$ - just append to last block
+- <strong>Simple implementation:</strong> Minimal overhead
+- <strong>No reorganization needed:</strong> Unlike sorted files</p>
+<p><strong>Cost Analysis:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Heap File</th>
+<th>Sequential File</th>
+<th>Hash File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Insert</strong></td>
+<td><strong>1-2 blocks</strong> (best)</td>
+<td>$O(n)$ (reorder)</td>
+<td>1-2 blocks (good)</td>
+</tr>
+<tr>
+<td><strong>Search</strong></td>
+<td>$n/2$ blocks avg</td>
+<td>$\log_2 n$ (binary search)</td>
+<td>1 block (on key)</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>$n/2$ blocks + 1 write</td>
+<td>$n/2$ + reorganize</td>
+<td>1 block (on key)</td>
+</tr>
+</tbody>
+</table>
+<p>For Weather relation with 1035 blocks:
+- <strong>Heap insert:</strong> 1 block read + 1 block write = <strong>2 block accesses</strong>
+- <strong>Sequential insert:</strong> 1035/2 (find position) + 1035/2 (shift) ≈ <strong>1035 block accesses</strong></p>
+<p><strong>Implementation Details:</strong></p>
+<div class="codehilite"><pre><span></span><code>Heap File Structure:
+[Block 1][Block 2]...[Block 1034][Block 1035]
+                                    ↑
+                              Insert here (last block with free space)
+</code></pre></div>
+
+<p><strong>Free Space Management:</strong>
+- Maintain a pointer to the last block with free space
+- When full, allocate a new block</p>
+<p><strong>Python Simulation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HeapFile</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span> <span class="n">record_size</span><span class="o">=</span><span class="mi">140</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span> <span class="o">=</span> <span class="n">block_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_size</span> <span class="o">=</span> <span class="n">record_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bfr</span> <span class="o">=</span> <span class="n">block_size</span> <span class="o">//</span> <span class="n">record_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="p">[[]]</span>  <span class="c1"># List of blocks, each block is a list of records</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_block_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a record - O(1) operation&quot;&quot;&quot;</span>
+        <span class="c1"># Check if last block has space</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">last_block_idx</span><span class="p">])</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bfr</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">last_block_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Allocate new block</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">record</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_block_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="mi">2</span>  <span class="c1"># Cost: 1 read (check) + 1 write</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search requires scanning all blocks - O(n)&quot;&quot;&quot;</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Read block</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="n">record</span><span class="p">):</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">cost</span>
+
+<span class="c1"># Example usage</span>
+<span class="n">heap</span> <span class="o">=</span> <span class="n">HeapFile</span><span class="p">()</span>
+
+<span class="c1"># Insert 30,000 records</span>
+<span class="n">total_insert_cost</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30000</span><span class="p">):</span>
+    <span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;hash_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">:</span> <span class="mi">20</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mf">0.001</span><span class="p">}</span>
+    <span class="n">total_insert_cost</span> <span class="o">+=</span> <span class="n">heap</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total blocks used: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Blocking factor: </span><span class="si">{</span><span class="n">heap</span><span class="o">.</span><span class="n">bfr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total insert cost: </span><span class="si">{</span><span class="n">total_insert_cost</span><span class="si">}</span><span class="s2"> block accesses&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average insert cost: </span><span class="si">{</span><span class="n">total_insert_cost</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">30000</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> blocks per insert&quot;</span><span class="p">)</span>
+
+<span class="c1"># Search example</span>
+<span class="n">results</span><span class="p">,</span> <span class="n">search_cost</span> <span class="o">=</span> <span class="n">heap</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;temp&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">25</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search cost: </span><span class="si">{</span><span class="n">search_cost</span><span class="si">}</span><span class="s2"> block accesses&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Alternative Comparisons:</strong></p>
+<p><strong>1. Sequential File (Sorted):</strong>
+- <strong>Advantages:</strong> Fast search with binary search $O(\log n)$
+- <strong>Disadvantages:</strong> Insertion requires maintaining order → $O(n)$ cost
+- <strong>Use case:</strong> When reads dominate</p>
+<p><strong>2. Hash File:</strong>
+- <strong>Advantages:</strong> Fast insertion (similar to heap) and fast search on key
+- <strong>Disadvantages:</strong>
+  - Only works well for equality searches on hash key
+  - Weather data likely queried by time/location, not by Id hash
+  - Overflow handling adds complexity
+- <strong>Use case:</strong> When searches are only on primary key</p>
+<p><strong>3. B+ Tree Indexed Heap:</strong>
+- <strong>Advantages:</strong> Fast insertion + fast search on indexed attributes
+- <strong>Disadvantages:</strong> Index maintenance overhead
+- <strong>Use case:</strong> Good compromise if some searches are needed</p>
+<p><strong>Recommendation for Weather Scenario:</strong></p>
+<p><strong>Primary:</strong> Heap File
+- Insertion cost: 2 block accesses
+- Simple and efficient for the stated requirements</p>
+<p><strong>Enhancement (if budget allows):</strong>
+Add secondary index on Time (likely common query):
+- Heap file for storage
+- B+ tree index on Time attribute
+- Insert cost increases to ~4 block accesses (2 for heap + 2 for index update)
+- But enables fast time-range queries</p>
+<hr />
+<h3>Part (b): Three-Way Join Optimization</h3>
+<h4>Given Relations:</h4>
+<p><strong>Student(Id, FirstName, LastName, DateOfBirth)</strong>
+- Id: 32-bit integer = 4 bytes
+- FirstName: 96 bytes
+- LastName: 96 bytes
+- DateOfBirth: 32-bit integer = 4 bytes
+- <strong>Record size:</strong> $4 + 96 + 96 + 4 = 200$ bytes
+- <strong>Tuples:</strong> $r_S = 2000$
+- <strong>Blocks:</strong> $n_S = 100$
+- <strong>Organization:</strong> Heap file with 4-level secondary index on StudentId
+- <strong>Blocking factor:</strong> $\text{bfr}_S = \lfloor 4096/200 \rfloor = 20$ records/block</p>
+<p><strong>Course(Id, Description, Credits)</strong>
+- Id: 32-bit integer = 4 bytes
+- Description: 195 bytes
+- Credits: 8-bit integer = 1 byte
+- <strong>Record size:</strong> $4 + 195 + 1 = 200$ bytes
+- <strong>Tuples:</strong> $r_C = 32$
+- <strong>Blocks:</strong> $n_C = 2$
+- <strong>Organization:</strong> Heap file
+- <strong>Blocking factor:</strong> $\text{bfr}_C = \lfloor 4096/200 \rfloor = 20$ records/block</p>
+<p><strong>Transcript(StudentId, CourseId, Mark)</strong>
+- StudentId: 32-bit integer = 4 bytes
+- CourseId: 32-bit integer = 4 bytes
+- Mark: 8-byte double = 8 bytes
+- <strong>Record size:</strong> $4 + 4 + 8 = 16$ bytes
+- <strong>Tuples:</strong> $r_T = 51200$
+- <strong>Blocks:</strong> $n_T = 200$
+- <strong>Organization:</strong> Sequential file, ordered by StudentId
+- <strong>Blocking factor:</strong> $\text{bfr}_T = \lfloor 4096/16 \rfloor = 256$ records/block</p>
+<p><strong>Additional Info:</strong>
+- <strong>Memory buffers:</strong> $n_B = 23$ blocks
+- <strong>Join result blocking factor:</strong> $\text{bfr}_{RS} = 10$ records/block</p>
+<p><strong>Query:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Student</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">C</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">StudentId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Course</span><span class="p">.</span><span class="n">Id</span>
+</code></pre></div>
+
+<p><strong>Join order:</strong> $(T \bowtie C) \bowtie S$</p>
+<h4>(i) Most Efficient Join Strategy and Cost [8 marks]</h4>
+<p><strong>Analysis:</strong></p>
+<p><strong>Step 1: Choose Strategy for $T \bowtie C$ (First Join)</strong></p>
+<p><strong>Options:</strong></p>
+<p><strong>Option A: Block Nested Loop Join (BNLJ) - T as outer, C as inner</strong></p>
+<p>Cost formula:
+$$\text{Cost} = n_T + \left\lceil \frac{n_T}{n_B - 2} \right\rceil \times n_C$$</p>
+<p>Where:
+- $n_T = 200$ blocks (Transcript)
+- $n_C = 2$ blocks (Course)
+- $n_B = 23$ buffers (1 for output, $n_B - 2 = 21$ for outer, 1 for inner)</p>
+<p>Calculation:
+$$\text{Cost}_{T \bowtie C} = 200 + \left\lceil \frac{200}{21} \right\rceil \times 2 = 200 + 10 \times 2 = 220 \text{ block accesses}$$</p>
+<p><strong>Option B: Block Nested Loop Join - C as outer, T as inner</strong></p>
+<p>$$\text{Cost} = n_C + \left\lceil \frac{n_C}{n_B - 2} \right\rceil \times n_T = 2 + 1 \times 200 = 202 \text{ block accesses}$$</p>
+<p><strong>Better choice:</strong> Option B (C as outer) with <strong>202 block accesses</strong></p>
+<p><strong>Step 2: Estimate Intermediate Result Size</strong></p>
+<p><strong>Cardinality of $T \bowtie C$:</strong>
+- Every Transcript record matches exactly one Course record (foreign key)
+- Result tuples: $r_{TC} = r_T = 51200$</p>
+<p><strong>Intermediate result blocking:</strong>
+- Given: $\text{bfr}_{RS} = 10$ records/block
+- Blocks needed: $n_{TC} = \lceil 51200 / 10 \rceil = 5120$ blocks</p>
+<p><strong>BUT:</strong> Problem states intermediate results stored only in RAM!
+- With $n_B = 23$ buffers available
+- We can only store $23 \times 10 = 230$ tuples in memory
+- This is much less than 51,200 tuples</p>
+<p><strong>Critical Issue:</strong> We cannot store all intermediate results in RAM!</p>
+<p><strong>Revised Strategy:</strong> Use pipelined execution or write intermediate results to disk</p>
+<p><strong>Assumption for this problem:</strong> The question states "each block of intermediate results stored only in RAM (in one of the $n_B$ blocks)". This suggests we should use pipelining where we process intermediate results in chunks.</p>
+<p><strong>Step 3: Second Join $(T \bowtie C) \bowtie S$</strong></p>
+<p>Since Student has a 4-level secondary index on StudentId, we should use <strong>Index Nested Loop Join</strong>.</p>
+<p><strong>Index Nested Loop Join Cost:</strong></p>
+<p>For each tuple in $T \bowtie C$, lookup matching Student record using index:</p>
+<p><strong>Cost per tuple:</strong>
+- Index traversal: 4 levels (given) = 4 block accesses
+- Retrieve matching record: 1 block access
+- Total: 5 block accesses per tuple</p>
+<p><strong>But with buffering:</strong>
+Since Transcript is sorted by StudentId, many consecutive tuples will have the same StudentId:
+- Average students: $r_S = 2000$
+- Transcript records: $r_T = 51200$
+- Records per student: $51200 / 2000 = 25.6$ on average</p>
+<p><strong>Optimized: Process in StudentId order, cache index lookups</strong></p>
+<p><strong>Better approach: Sort-Merge or Hash Join on StudentId</strong></p>
+<p><strong>Given constraints, most efficient: Modified Block Nested Loop with Index</strong></p>
+<p><strong>Complete Strategy:</strong></p>
+<p><strong>Phase 1:</strong> $C \bowtie T$ using BNLJ (C as outer)
+- Read all Course blocks: $n_C = 2$
+- For each Course block, scan Transcript: $n_T = 200$
+- Cost: $2 + \lceil 2/(23-2) \rceil \times 200 = 2 + 1 \times 200 = 202$ blocks</p>
+<p><strong>Phase 2:</strong> $(C \bowtie T) \bowtie S$ using Index Nested Loop
+- For each intermediate result tuple, use index to find Student
+- Intermediate results: 51,200 tuples
+- But Transcript is sorted by StudentId!
+- Only need to lookup 2,000 distinct students</p>
+<p><strong>Optimization:</strong> Process Transcript in order, lookup each unique StudentId once:
+- Number of distinct students: 2,000
+- Index accesses: $2000 \times (4 + 1) = 10,000$ blocks</p>
+<p><strong>Alternative interpretation based on problem:</strong></p>
+<p>The problem says intermediate results stored in RAM. Let's use a <strong>Hybrid Hash Join</strong> approach:</p>
+<p><strong>Final Recommended Strategy:</strong></p>
+<p><strong>Step 1: $T \bowtie C$ using Block Nested Loop</strong>
+- Outer: Course (2 blocks)
+- Inner: Transcript (200 blocks)
+- Keep joining in chunks, immediately pipeline to next join
+- Cost: 202 block accesses</p>
+<p><strong>Step 2: $(T \bowtie C) \bowtie S$ using Index Nested Loop with caching</strong>
+- Use index on Student.Id
+- Since Transcript sorted by StudentId, process in order
+- Cost: $2000 \times 5 = 10,000$ block accesses
+  (2000 distinct students, 4 index levels + 1 data block each)</p>
+<p><strong>Total Cost: $202 + 10,000 = 10,202$ block accesses</strong></p>
+<p><strong>Detailed Breakdown:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="nv">Phase</span><span class="w"> </span><span class="mi">1</span>:<span class="w"> </span><span class="nv">C</span><span class="w"> </span>⋈<span class="w"> </span><span class="nv">T</span><span class="w"> </span><span class="ss">(</span><span class="nv">BNLJ</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">C</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">outer</span><span class="ss">)</span>
+├─<span class="w"> </span><span class="nv">Read</span><span class="w"> </span><span class="nv">Course</span><span class="w"> </span><span class="nv">blocks</span>:<span class="w"> </span><span class="mi">2</span>
+├─<span class="w"> </span><span class="nv">Read</span><span class="w"> </span><span class="nv">Transcript</span>:<span class="w"> </span><span class="mi">1</span><span class="w"> </span>×<span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+└─<span class="w"> </span><span class="nv">Write</span><span class="w"> </span><span class="nv">intermediate</span><span class="w"> </span><span class="ss">(</span><span class="nv">pipelined</span><span class="ss">)</span>:<span class="w"> </span><span class="mi">0</span>
+<span class="w">   </span><span class="nv">Total</span>:<span class="w"> </span><span class="mi">202</span><span class="w"> </span><span class="nv">blocks</span>
+
+<span class="nv">Phase</span><span class="w"> </span><span class="mi">2</span>:<span class="w"> </span><span class="ss">(</span><span class="nv">C</span><span class="w"> </span>⋈<span class="w"> </span><span class="nv">T</span><span class="ss">)</span><span class="w"> </span>⋈<span class="w"> </span><span class="nv">S</span><span class="w"> </span><span class="ss">(</span><span class="nv">Index</span><span class="w"> </span><span class="nv">Nested</span><span class="w"> </span><span class="k">Loop</span><span class="ss">)</span>
+├─<span class="w"> </span><span class="nv">Distinct</span><span class="w"> </span><span class="nv">StudentIds</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nb">result</span>:<span class="w"> </span><span class="mi">2</span>,<span class="mi">000</span>
+├─<span class="w"> </span><span class="nv">Index</span><span class="w"> </span><span class="nv">traversal</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="nv">student</span>:<span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="nv">levels</span><span class="w"> </span>×<span class="w"> </span><span class="mi">2</span>,<span class="mi">000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span>,<span class="mi">000</span>
+├─<span class="w"> </span><span class="nv">Retrieve</span><span class="w"> </span><span class="nv">Student</span><span class="w"> </span><span class="nv">records</span>:<span class="w"> </span><span class="mi">1</span><span class="w"> </span>×<span class="w"> </span><span class="mi">2</span>,<span class="mi">000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>,<span class="mi">000</span>
+└─<span class="w"> </span><span class="nv">Total</span>:<span class="w"> </span><span class="mi">10</span>,<span class="mi">000</span><span class="w"> </span><span class="nv">blocks</span>
+
+<span class="nv">Grand</span><span class="w"> </span><span class="nv">Total</span>:<span class="w"> </span><span class="mi">10</span>,<span class="mi">202</span><span class="w"> </span><span class="nv">block</span><span class="w"> </span><span class="nv">accesses</span>
+</code></pre></div>
+
+<p><strong>Alternative (if we can write intermediate to disk):</strong></p>
+<p><strong>Sort-Merge Join for Phase 2:</strong>
+- Sort intermediate result: $2 \times 5120 \times \lceil \log_{22}(5120/22) \rceil$ (very expensive)
+- Merge: $5120 + 100$
+- This would be much more expensive than index-based approach</p>
+<p><strong>Answer: Index Nested Loop Join is most efficient with total cost of 10,202 block accesses</strong></p>
+<h4>(ii) Naive vs Index-based Nested Loop Join Comparison [2 marks]</h4>
+<p><strong>Naive Nested Loop Join (Tuple-based):</strong></p>
+<p><strong>Algorithm:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">t</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">T</span><span class="w"> </span>⋈<span class="w"> </span><span class="nv">C</span>:
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">s</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">S</span>:
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nv">t</span>.<span class="nv">StudentId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nv">s</span>.<span class="nv">Id</span>:
+<span class="w">            </span><span class="nv">output</span><span class="w"> </span><span class="o">&lt;</span><span class="nv">t</span>,<span class="w"> </span><span class="nv">s</span><span class="o">&gt;</span>
+</code></pre></div>
+
+<p><strong>Cost:</strong>
+- Outer loop: 51,200 tuples (all from $T \bowtie C$)
+- Inner loop: For each outer tuple, scan entire Student relation
+- Student relation: $n_S = 100$ blocks</p>
+<p><strong>Total Cost:</strong>
+$$\text{Cost}_{\text{naive}} = n_{TC} + r_{TC} \times n_S$$</p>
+<p>Where:
+- $n_{TC}$: Blocks for $T \bowtie C$ (if materialized) ≈ 5120 blocks
+- $r_{TC}$: Tuples in $T \bowtie C$ = 51,200
+- $n_S$: Student blocks = 100</p>
+<p>$$\text{Cost}_{\text{naive}} = 5120 + 51200 \times 100 = 5,125,120 \text{ block accesses}$$</p>
+<p><strong>Index-based Nested Loop Join:</strong></p>
+<p><strong>Algorithm:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">t</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">T</span><span class="w"> </span>⋈<span class="w"> </span><span class="nv">C</span>:
+<span class="w">    </span><span class="nv">use</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">find</span><span class="w"> </span><span class="nv">matching</span><span class="w"> </span><span class="nv">student</span><span class="w"> </span><span class="nv">s</span><span class="w"> </span><span class="nv">where</span><span class="w"> </span><span class="nv">s</span>.<span class="nv">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">t</span>.<span class="nv">StudentId</span>
+<span class="w">    </span><span class="nv">output</span><span class="w"> </span><span class="o">&lt;</span><span class="nv">t</span>,<span class="w"> </span><span class="nv">s</span><span class="o">&gt;</span>
+</code></pre></div>
+
+<p><strong>Cost:</strong>
+- Number of tuples: 51,200
+- But only 2,000 distinct StudentIds
+- Index lookup per distinct student: 4 (levels) + 1 (data) = 5 blocks</p>
+<p><strong>With optimization (assuming sorted by StudentId):</strong>
+$$\text{Cost}_{\text{index}} = n_{TC} + (\text{distinct StudentIds}) \times (index\_levels + 1)$$
+$$= 5120 + 2000 \times 5 = 15,120 \text{ block accesses}$$</p>
+<p><strong>Without optimization (lookup every tuple):</strong>
+$$= 5120 + 51200 \times 5 = 261,120 \text{ block accesses}$$</p>
+<p><strong>Comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Join Method</th>
+<th>Cost (block accesses)</th>
+<th>Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Naive Nested Loop</td>
+<td>5,125,120</td>
+<td>1× (baseline)</td>
+</tr>
+<tr>
+<td>Index (worst case)</td>
+<td>261,120</td>
+<td><strong>19.6×</strong> faster</td>
+</tr>
+<tr>
+<td>Index (optimized)</td>
+<td>15,120</td>
+<td><strong>339×</strong> faster</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why Index-based is Faster:</strong></p>
+<p><strong>1. Avoids Full Table Scans:</strong>
+- Naive: Scans all 100 Student blocks for each of 51,200 tuples
+- Index: Directly navigates to matching record using B+ tree</p>
+<p><strong>2. Logarithmic vs Linear Access:</strong>
+- Naive: $O(r_S)$ cost per probe (linear scan)
+- Index: $O(\log r_S)$ cost per probe (tree height)</p>
+<p><strong>3. Leverages Data Ordering:</strong>
+- Transcript sorted by StudentId
+- Consecutive tuples often have same StudentId
+- Can cache index lookups and Student records</p>
+<p><strong>4. Index Selectivity:</strong>
+- Index provides direct pointer to matching record
+- No need to compare with non-matching records</p>
+<p><strong>Mathematical Explanation:</strong></p>
+<p>For a single tuple lookup:
+- <strong>Naive:</strong> Must scan average $n_S / 2 = 50$ blocks
+- <strong>Index:</strong> $h + 1 = 5$ blocks (where $h$ = tree height)</p>
+<p><strong>Ratio:</strong> $50 / 5 = 10× $ faster per lookup</p>
+<p>Over 51,200 lookups:
+$$\text{Speedup} = \frac{51200 \times 50}{2000 \times 5} = \frac{2,560,000}{10,000} = 256×$$</p>
+<p><strong>Conclusion:</strong> Index-based Nested Loop Join is <strong>significantly faster</strong> (19-339× depending on optimization) because it eliminates full table scans by using the index structure to directly locate matching records in logarithmic time.</p>
+<hr />
+<h2>Summary</h2>
+<p>This examination covered four major areas:</p>
+<ol>
+<li><strong>Question 1 (15 marks):</strong> KNN classification, PCA dimensionality reduction, and SVD decomposition</li>
+<li><strong>Question 2 (15 marks):</strong> Statistical modeling with empirical distributions, normal distributions, and Gaussian Mixture Models</li>
+<li><strong>Question 3 (15 marks):</strong> Linear and non-linear optimization for radio programming with constrained optimization</li>
+<li><strong>Question 4 (15 marks):</strong> Database systems including blocking factors, file organizations, and multi-way join optimization</li>
+</ol>
+<p><strong>Total: 60 marks</strong></p>
+<p>All solutions include:
+- Complete mathematical formulations and derivations
+- Step-by-step explanations
+- Python code implementations
+- Practical examples and verification
+- Trade-off analyses and recommendations</p>
+<hr />
+<p><em>Solutions prepared with detailed explanations, formulas, and code for IDSS 2022-2023 examination</em></p>
+</body>
+</html>

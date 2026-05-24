@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Data Systems - Mind Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #f39c12, #3498db, #9b59b6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 5s ease infinite;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .mindmap {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            position: relative;
+        }
+
+        /* Central Node */
+        .central-node {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .central-box {
+            background: linear-gradient(135deg, #e94560, #c0392b);
+            padding: 25px 50px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .central-box h2 {
+            color: white;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Branch Container */
+        .branches {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        /* Main Branch */
+        .branch {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .branch:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* SQL/NoSQL Branch */
+        .branch.sql-nosql::before {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        .branch.sql-nosql .branch-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        /* Graph DB Branch */
+        .branch.graph-db::before {
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        }
+        .branch.graph-db .branch-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        /* Vector DB Branch */
+        .branch.vector-db::before {
+            background: linear-gradient(90deg, #27ae60, #1abc9c);
+        }
+        .branch.vector-db .branch-header {
+            background: linear-gradient(135deg, #27ae60, #1abc9c);
+        }
+
+        .branch-header {
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .branch-header .icon {
+            font-size: 1.8rem;
+        }
+
+        .branch-header h3 {
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        /* Sub-sections */
+        .sub-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid;
+            transition: all 0.3s ease;
+        }
+
+        .sub-section:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sub-section.blue { border-left-color: #3498db; }
+        .sub-section.purple { border-left-color: #9b59b6; }
+        .sub-section.green { border-left-color: #27ae60; }
+        .sub-section.orange { border-left-color: #f39c12; }
+        .sub-section.red { border-left-color: #e74c3c; }
+        .sub-section.teal { border-left-color: #1abc9c; }
+
+        .sub-section h4 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sub-section h4::before {
+            content: '◆';
+            font-size: 0.6rem;
+        }
+
+        .sub-section ul {
+            list-style: none;
+            padding-left: 15px;
+        }
+
+        .sub-section li {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            padding: 5px 0;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .sub-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #606060;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .tag.highlight {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: rgba(233, 69, 96, 0.4);
+            color: #e94560;
+        }
+
+        /* Comparison Box */
+        .comparison-box {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(155, 89, 182, 0.1));
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-box h3 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .comparison-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .comparison-item h4 {
+            color: #e94560;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .comparison-item p {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #606060;
+            font-size: 0.9rem;
+        }
+
+        .footer span {
+            color: #e94560;
+        }
+
+        /* Connecting Lines Animation */
+        .connector {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(233, 69, 96, 0.5), transparent);
+            left: 50%;
+            top: 100%;
+            height: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .branches {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .branches {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.sql { background: #3498db; }
+        .legend-dot.graph { background: #9b59b6; }
+        .legend-dot.vector { background: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Data Systems</h1>
+            <p>University of Glasgow • Week 10 • Zaiqiao Meng</p>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot sql"></div>
+                <span>SQL & NoSQL</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot graph"></div>
+                <span>Graph Databases</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot vector"></div>
+                <span>Vector Databases</span>
+            </div>
+        </div>
+
+        <div class="mindmap">
+            <div class="central-node">
+                <div class="central-box">
+                    <h2>🗄️ Data Systems Architecture</h2>
+                </div>
+            </div>
+
+            <div class="branches">
+                <!-- SQL/NoSQL Branch -->
+                <div class="branch sql-nosql">
+                    <div class="branch-header">
+                        <span class="icon">📊</span>
+                        <h3>SQL & NoSQL</h3>
+                    </div>
+
+                    <div class="sub-section blue">
+                        <h4>Relational Databases (RDBMS)</h4>
+                        <ul>
+                            <li>Tabular data organization</li>
+                            <li>Normalized for reduced redundancy</li>
+                            <li>Primary & Foreign Keys</li>
+                            <li>SQL for queries & transactions</li>
+                        </ul>
+                        <div class="tags">
+                            <span class="tag">Oracle</span>
+                            <span class="tag">PostgreSQL</span>
+                            <span class="tag">MySQL</span>
+                            <span class="tag">SQL Server</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-section orange">
+                        <h4>ACID Properties</h4>
+                        <ul>
+                            <li><strong>Atomicity:</strong> All or nothing</li>
+                            <li><strong>Consistency:</strong> Valid state transitions</li>
+                            <li><strong>Isolation:</strong> Sequential-like execution</li>
+                            <li><strong>Durability:</strong> Permanent commits</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section red">
+                        <h4>NoSQL Databases</h4>
+                        <ul>
+                            <li>Key-Value stores (Redis)</li>
+                            <li>Wide Column (Cassandra)</li>
+                            <li>Document stores (MongoDB)</li>
+                            <li>Graph & Vector databases</li>
+                        </ul>
+                        <div class="tags">
+                            <span class="tag highlight">BASE Transactions</span>
+                            <span class="tag">Eventual Consistency</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-section teal">
+                        <h4>Use Cases</h4>
+                        <ul>
+                            <li>In-memory caching</li>
+                            <li>Time series data</li>
+                            <li>Geospatial queries</li>
+                            <li>Full-text search (Elasticsearch)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Graph Database Branch -->
+                <div class="branch graph-db">
+                    <div class="branch-header">
+                        <span class="icon">🕸️</span>
+                        <h3>Graph Databases</h3>
+                    </div>
+
+                    <div class="sub-section purple">
+                        <h4>Graph Structure</h4>
+                        <ul>
+                            <li><strong>G = (V, E)</strong></li>
+                            <li>V: Set of nodes/vertices</li>
+                            <li>E: Set of edges/relations</li>
+                            <li>Directed or undirected edges</li>
+                            <li>Node & edge features/attributes</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section blue">
+                        <h4>Graph Types</h4>
+                        <ul>
+                            <li><strong>Homogeneous:</strong> Single node/edge type</li>
+                            <li><strong>Heterogeneous:</strong> Multiple types</li>
+                            <li>Used in recommendation systems</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section orange">
+                        <h4>Representations</h4>
+                        <ul>
+                            <li>Adjacency Matrix: O(|V|²) space</li>
+                            <li>Adjacency List: O(|E|) space</li>
+                            <li>Latent/Embeddings: O(|V| × D)</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section green">
+                        <h4>Downstream Tasks</h4>
+                        <ul>
+                            <li><strong>Graph-level:</strong> Property prediction</li>
+                            <li><strong>Node-level:</strong> Classification</li>
+                            <li><strong>Edge-level:</strong> Link prediction</li>
+                            <li>Community detection, Ranking</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section red">
+                        <h4>Query Languages (GQL)</h4>
+                        <ul>
+                            <li>GraphQL: APIs & microservices</li>
+                            <li>Cypher: Neo4j pattern matching</li>
+                            <li>Gremlin: Graph traversals</li>
+                            <li>SPARQL: RDF/Semantic web</li>
+                            <li>AQL: ArangoDB multi-model</li>
+                        </ul>
+                        <div class="tags">
+                            <span class="tag">Neo4j</span>
+                            <span class="tag">ArangoDB</span>
+                            <span class="tag">TigerGraph</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vector Database Branch -->
+                <div class="branch vector-db">
+                    <div class="branch-header">
+                        <span class="icon">🎯</span>
+                        <h3>Vector Databases</h3>
+                    </div>
+
+                    <div class="sub-section green">
+                        <h4>AI & Embeddings</h4>
+                        <ul>
+                            <li>High-dimensional vectors</li>
+                            <li>Search engines & RecSys</li>
+                            <li>Personalized recommendations</li>
+                            <li>Similarity-based retrieval</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section teal">
+                        <h4>RAG Architecture</h4>
+                        <ul>
+                            <li>Retrieval Augmented Generation</li>
+                            <li>External knowledge sources</li>
+                            <li>Augment LLM capabilities</li>
+                            <li>Reduce hallucinations</li>
+                        </ul>
+                        <div class="tags">
+                            <span class="tag highlight">LLM Integration</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-section blue">
+                        <h4>AKNN Search</h4>
+                        <ul>
+                            <li>Approximate K Nearest Neighbors</li>
+                            <li>Euclidean distance, Cosine similarity</li>
+                            <li>Recall = |V ∩ V*| / |V*|</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section purple">
+                        <h4>AKNN Algorithms</h4>
+                        <ul>
+                            <li><strong>Tree-based:</strong> KD-tree, R-tree</li>
+                            <li><strong>Quantization:</strong> IVF_FLAT, PQ</li>
+                            <li><strong>Graph-based:</strong> HNSW, NSG</li>
+                            <li><strong>Hashing:</strong> LSH</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section orange">
+                        <h4>Libraries & Tools</h4>
+                        <ul>
+                            <li>Facebook Faiss (GPU support)</li>
+                            <li>Microsoft SPTAG</li>
+                            <li>Spotify Annoy</li>
+                            <li>SIMD optimizations</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-section red">
+                        <h4>Vector DB Pipeline</h4>
+                        <ul>
+                            <li><strong>1. Indexing:</strong> Build search structure</li>
+                            <li><strong>2. Querying:</strong> Find nearest neighbors</li>
+                            <li><strong>3. Post-processing:</strong> Re-ranking</li>
+                        </ul>
+                        <div class="tags">
+                            <span class="tag">Pinecone</span>
+                            <span class="tag">Weaviate</span>
+                            <span class="tag">Milvus</span>
+                            <span class="tag">Chroma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Summary -->
+            <div class="comparison-box">
+                <h3>📋 Key Comparisons & Trade-offs</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <h4>SQL vs NoSQL</h4>
+                        <p>ACID vs BASE • Strong vs Eventual Consistency • Vertical vs Horizontal Scaling</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>Graph DB Advantage</h4>
+                        <p>Relationship-first queries • No JOIN overhead • Flexible schema evolution</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>Vector DB Purpose</h4>
+                        <p>Similarity search • ML/AI embeddings • Sub-linear query time</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Introduction to Data Science and Systems • <span>Week 10: Advanced Data Systems</span></p>
+        </div>
+    </div>
+</body>
+</html>

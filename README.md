@@ -10,7 +10,7 @@ Coursework, labs, notes, and projects from my Master of Science in Data Science 
 |--------|--------|----------|
 | [`BigData/`](./BigData) | Big Data | Lectures (Weeks 1–10), exercises, past papers, notes |
 | [`CyberSecurityFundamentals/`](./CyberSecurityFundamentals) | Cyber Security Fundamentals | Lecture notes (9 topics), lab group report |
-| [`Data_System/`](./Data_System) | Intelligent Data Systems | Lecture HTML notes, indexing & query processing PDFs |
+| [`DS/`](./DS) | Intelligent Data Storage & Systems | Lecture notes, Lab 3 (probabilistic inference), past papers 2019–2025 |
 | [`DeepLearning/`](./DeepLearning) | Deep Learning | Lectures, labs, Kaggle coursework, past papers |
 | [`IR/`](./IR) | Information Retrieval | Lectures, coursework 1 & 2, books, past papers |
 | [`IV/`](./IV) | Information Visualisation | Group project (Altair/Vega-Lite dashboard), tutorials |

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditional Probability - A Beginner's Guide</title>
+
+    <!-- MathJax for beautiful equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            padding: 50px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .definition-box h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+            border-left: 5px solid #f5576c;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h4 {
+            color: #f5576c;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+            border-left: 5px solid #4facfe;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .key-point h4 {
+            color: #4facfe;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .visual-example {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #667eea;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+
+        .venn-diagram {
+            text-align: center;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Conditional Probability</h1>
+        <p class="subtitle">Understanding How Information Changes Probabilities</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: The Power of Information</a></li>
+                <li><a href="#joint-probability">Joint Probability</a></li>
+                <li><a href="#marginal-probability">Marginal Probability</a></li>
+                <li><a href="#conditional-probability">Conditional Probability</a></li>
+                <li><a href="#relationships">Key Relationships</a></li>
+                <li><a href="#independence">Independence</a></li>
+                <li><a href="#examples">Real-World Examples</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: The Power of Information</h2>
+
+        <p>Imagine you're searching for a lost submarine in the ocean. Initially, it could be anywhere. But then you receive a message: "The submarine's last known location was in the northern region." Suddenly, you don't need to search the entire ocean anymore!</p>
+
+        <p><strong>This is conditional probability</strong> – how our beliefs change when we gain new information.</p>
+
+        <div class="visual-example">
+            <strong>Scenario Without Information:</strong><br>
+            Search Area: Entire Ocean (256 squares)<br>
+            Probability submarine is at any specific square: 1/256<br><br>
+
+            <strong>Scenario With Information (Northern Region):</strong><br>
+            Search Area: Northern Half (128 squares)<br>
+            Probability submarine is at any northern square: 1/128<br><br>
+
+            📊 Information doubled our probabilities in the relevant region!
+        </div>
+
+        <h2 id="joint-probability">🔗 Joint Probability</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Joint Probability</h4>
+            <p><strong>Joint probability</strong> is the probability that two (or more) events happen together simultaneously.</p>
+
+            <div class="formula">
+                \[P(A \text{ AND } B) = P(A, B)\]
+            </div>
+
+            <p>This answers: "What's the probability that both A and B occur?"</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Rolling Two Dice</h4>
+            <p>What's the probability of rolling a 3 on the first die AND a 5 on the second die?</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{First}=3, \text{Second}=5) &= P(\text{First}=3) \times P(\text{Second}=5)\\
+                &= \frac{1}{6} \times \frac{1}{6}\\
+                &= \frac{1}{36} \approx 0.028
+                \end{align}\]
+            </div>
+
+            <p>Only about 2.8% chance of getting this specific combination!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎴 Example: Drawing Cards</h4>
+            <p>You draw two cards from a deck without replacement. What's the probability the first is an Ace AND the second is a King?</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{1st Ace, 2nd King}) &= P(\text{1st Ace}) \times P(\text{2nd King | 1st Ace})\\
+                &= \frac{4}{52} \times \frac{4}{51}\\
+                &= \frac{16}{2652} \approx 0.006
+                \end{align}\]
+            </div>
+
+            <p>Notice: The second probability changes because we don't replace the first card!</p>
+        </div>
+
+        <h2 id="marginal-probability">📊 Marginal Probability</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Marginal Probability</h4>
+            <p><strong>Marginal probability</strong> is the probability of one event, regardless of other events.</p>
+
+            <div class="formula">
+                \[P(A) = \sum_{\text{all } b} P(A, B=b)\]
+            </div>
+
+            <p><strong>In words:</strong> To get the marginal probability, sum out (marginalize over) the other variable.</p>
+        </div>
+
+        <h3>Why "Marginal"?</h3>
+
+        <p>The name comes from writing probabilities in a table and summing rows/columns, writing totals in the margins:</p>
+
+        <div class="visual-example">
+            <strong>Joint Probability Table</strong><br><br>
+            <table style="margin: 10px auto; width: 80%; background: white;">
+                <tr>
+                    <th></th>
+                    <th>Rain (B)</th>
+                    <th>No Rain (¬B)</th>
+                    <th style="background: #f5576c;">Marginal P(A)</th>
+                </tr>
+                <tr>
+                    <td><strong>Traffic (A)</strong></td>
+                    <td>0.20</td>
+                    <td>0.15</td>
+                    <td style="background: #f5576c; color: white;"><strong>0.35</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>No Traffic (¬A)</strong></td>
+                    <td>0.10</td>
+                    <td>0.55</td>
+                    <td style="background: #f5576c; color: white;"><strong>0.65</strong></td>
+                </tr>
+                <tr style="background: #f5576c; color: white;">
+                    <td><strong>Marginal P(B)</strong></td>
+                    <td><strong>0.30</strong></td>
+                    <td><strong>0.70</strong></td>
+                    <td><strong>1.00</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="example-box">
+            <h4>📍 Example: Submarine Location</h4>
+            <p>The submarine is on a 4×4 grid. We have a joint probability distribution over positions [x, y].</p>
+
+            <p><strong>Question:</strong> What's the probability the x-coordinate is 2, regardless of y?</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(X=2) &= P(X=2, Y=0) + P(X=2, Y=1) + P(X=2, Y=2) + P(X=2, Y=3)\\
+                &= \sum_{y=0}^{3} P(X=2, Y=y)
+                \end{align}\]
+            </div>
+
+            <p>We sum across all possible y values to "marginalize out" the y variable.</p>
+        </div>
+
+        <h2 id="conditional-probability">🎲 Conditional Probability</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Conditional Probability</h4>
+            <p><strong>Conditional probability</strong> is the probability of one event given that another event has occurred.</p>
+
+            <div class="formula">
+                \[P(A \mid B) = \frac{P(A \text{ AND } B)}{P(B)} = \frac{P(A, B)}{P(B)}\]
+            </div>
+
+            <p>Read as: "Probability of A <strong>given</strong> B"</p>
+        </div>
+
+        <h3>Intuitive Understanding</h3>
+
+        <p>Think of conditional probability as <strong>restricting your universe</strong>:</p>
+
+        <div class="visual-example venn-diagram">
+            <strong>Venn Diagram Intuition</strong><br><br>
+
+            Total Universe = All Outcomes<br>
+            ┌─────────────────────────────────┐<br>
+            │         ┌─────────┐             │<br>
+            │    A    │  A∩B    │      B      │<br>
+            │         │         │             │<br>
+            │         └─────────┘             │<br>
+            └─────────────────────────────────┘<br><br>
+
+            When we know B happened:<br>
+            - Our universe shrinks to just B<br>
+            - We only care about the overlap A∩B<br>
+            - P(A|B) = (Size of A∩B) / (Size of B)
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Rolling a Die</h4>
+            <p>You roll a fair six-sided die. Someone tells you the result is an even number.</p>
+            <p><strong>Question:</strong> Given this information, what's the probability it's a 4?</p>
+
+            <p><strong>Without information:</strong></p>
+            <div class="formula">
+                \[P(\text{Roll}=4) = \frac{1}{6} \approx 0.167\]
+            </div>
+
+            <p><strong>With information (even number):</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Roll}=4 \mid \text{Even}) &= \frac{P(\text{Roll}=4 \text{ AND Even})}{P(\text{Even})}\\
+                &= \frac{P(\text{Roll}=4)}{P(\text{Even})}\\
+                &= \frac{1/6}{3/6}\\
+                &= \frac{1}{3} \approx 0.333
+                \end{align}\]
+            </div>
+
+            <p>The probability doubled! We went from 6 possible outcomes to 3 possible outcomes {2, 4, 6}.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🏥 Example: Medical Testing</h4>
+            <p>Consider a disease that affects 1% of the population.</p>
+            <ul>
+                <li>P(Disease) = 0.01</li>
+                <li>P(Positive Test | Disease) = 0.95 (sensitivity)</li>
+                <li>P(Negative Test | No Disease) = 0.90 (specificity)</li>
+            </ul>
+
+            <p><strong>Question:</strong> What does P(Positive Test | Disease) = 0.95 mean?</p>
+            <p><strong>Answer:</strong> Among people who <em>have</em> the disease, 95% will test positive.</p>
+
+            <p>This is very different from P(Disease | Positive Test) which we'll explore in Bayes' Rule!</p>
+        </div>
+
+        <h2 id="relationships">🔗 Key Relationships</h2>
+
+        <h3>The Chain Rule (Product Rule)</h3>
+
+        <div class="definition-box">
+            <h4>Chain Rule of Probability</h4>
+            <div class="formula">
+                \[P(A, B) = P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A)\]
+            </div>
+
+            <p><strong>In words:</strong> Joint probability = Conditional × Marginal</p>
+
+            <p>For multiple events:</p>
+            <div class="formula">
+                \[P(A, B, C) = P(A \mid B, C) \cdot P(B \mid C) \cdot P(C)\]
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>🎴 Example: Drawing Three Cards</h4>
+            <p>Probability of drawing 3 Aces in a row without replacement:</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{3 Aces}) &= P(\text{1st Ace}) \times P(\text{2nd Ace | 1st Ace}) \times P(\text{3rd Ace | 1st, 2nd Aces})\\
+                &= \frac{4}{52} \times \frac{3}{51} \times \frac{2}{50}\\
+                &= \frac{24}{132600} \approx 0.00018
+                \end{align}\]
+            </div>
+
+            <p>Very rare – less than 0.02% chance!</p>
+        </div>
+
+        <h3>Law of Total Probability</h3>
+
+        <div class="definition-box">
+            <h4>Law of Total Probability</h4>
+            <p>If events \(B_1, B_2, \ldots, B_n\) partition the sample space (mutually exclusive and exhaustive):</p>
+
+            <div class="formula">
+                \[P(A) = \sum_{i=1}^{n} P(A \mid B_i) \cdot P(B_i)\]
+            </div>
+
+            <p><strong>In words:</strong> Break down A by considering all possible "paths" through which A can occur.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🏭 Example: Factory Production</h4>
+            <p>A factory has three machines:</p>
+            <ul>
+                <li>Machine A: Produces 50% of items, 2% defective rate</li>
+                <li>Machine B: Produces 30% of items, 3% defective rate</li>
+                <li>Machine C: Produces 20% of items, 5% defective rate</li>
+            </ul>
+
+            <p><strong>Question:</strong> What's the overall probability a random item is defective?</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Defective}) &= P(D \mid A) \cdot P(A) + P(D \mid B) \cdot P(B) + P(D \mid C) \cdot P(C)\\
+                &= 0.02 \times 0.50 + 0.03 \times 0.30 + 0.05 \times 0.20\\
+                &= 0.010 + 0.009 + 0.010\\
+                &= 0.029 = 2.9\%
+                \end{align}\]
+            </div>
+        </div>
+
+        <h2 id="independence">🔓 Independence</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Statistical Independence</h4>
+            <p>Two events A and B are <strong>independent</strong> if knowing one doesn't change the probability of the other:</p>
+
+            <div class="formula">
+                \[P(A \mid B) = P(A)\]
+            </div>
+
+            <p>Equivalently:</p>
+            <div class="formula">
+                \[P(A, B) = P(A) \cdot P(B)\]
+            </div>
+
+            <p><strong>In words:</strong> The joint probability factors into the product of marginals.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Independent Events</h4>
+            <p><strong>Rolling two dice:</strong></p>
+            <ul>
+                <li>Event A: First die shows 6</li>
+                <li>Event B: Second die shows 3</li>
+            </ul>
+
+            <p>These are independent because the first die doesn't affect the second:</p>
+            <div class="formula">
+                \[\begin{align}
+                P(A, B) &= P(A) \cdot P(B)\\
+                &= \frac{1}{6} \times \frac{1}{6} = \frac{1}{36}
+                \end{align}\]
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>🎴 Example: Dependent Events</h4>
+            <p><strong>Drawing two cards without replacement:</strong></p>
+            <ul>
+                <li>Event A: First card is an Ace</li>
+                <li>Event B: Second card is an Ace</li>
+            </ul>
+
+            <p>These are NOT independent:</p>
+            <div class="formula">
+                \[\begin{align}
+                P(B \mid A) &= \frac{3}{51} \approx 0.059\\
+                P(B) &= \frac{4}{52} \approx 0.077\\
+                P(B \mid A) &\neq P(B) \quad \text{(Dependent!)}
+                \end{align}\]
+            </div>
+
+            <p>Drawing an Ace first reduces the probability of drawing an Ace second!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>⚠️ Common Misconception</h4>
+            <p><strong>Mutually Exclusive ≠ Independent</strong></p>
+
+            <p><strong>Mutually Exclusive:</strong> Events cannot both occur (if A happens, B cannot)</p>
+            <p><strong>Independent:</strong> Events don't affect each other (A happening doesn't change probability of B)</p>
+
+            <p>In fact, non-trivial mutually exclusive events are always <em>dependent</em>!</p>
+
+            <p><strong>Example:</strong> Rolling a die</p>
+            <ul>
+                <li>A = "roll is even" = {2, 4, 6}</li>
+                <li>B = "roll is odd" = {1, 3, 5}</li>
+            </ul>
+            <p>These are mutually exclusive: P(A AND B) = 0<br>
+            But if we know A occurred, P(B|A) = 0 ≠ P(B) = 1/2, so they're dependent!</p>
+        </div>
+
+        <h2 id="examples">🌍 Real-World Examples</h2>
+
+        <div class="example-box">
+            <h4>☔ Example 1: Weather and Traffic</h4>
+            <p>Based on historical data:</p>
+            <ul>
+                <li>P(Rain) = 0.30</li>
+                <li>P(Traffic Jam | Rain) = 0.60</li>
+                <li>P(Traffic Jam | No Rain) = 0.20</li>
+            </ul>
+
+            <p><strong>Question 1:</strong> What's the overall probability of a traffic jam?</p>
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Traffic}) &= P(T \mid R) \cdot P(R) + P(T \mid \neg R) \cdot P(\neg R)\\
+                &= 0.60 \times 0.30 + 0.20 \times 0.70\\
+                &= 0.18 + 0.14\\
+                &= 0.32 = 32\%
+                \end{align}\]
+            </div>
+
+            <p><strong>Question 2:</strong> You observe a traffic jam. What's the probability it's raining?</p>
+            <p><em>(This requires Bayes' Rule – see next guide!)</em></p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎓 Example 2: Student Performance</h4>
+            <p>In a class:</p>
+            <ul>
+                <li>40% of students studied hard</li>
+                <li>Of those who studied hard, 90% passed</li>
+                <li>Of those who didn't study hard, 50% passed</li>
+            </ul>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Pass}) &= P(P \mid S) \cdot P(S) + P(P \mid \neg S) \cdot P(\neg S)\\
+                &= 0.90 \times 0.40 + 0.50 \times 0.60\\
+                &= 0.36 + 0.30\\
+                &= 0.66 = 66\%
+                \end{align}\]
+            </div>
+
+            <p>66% of students pass overall.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🔍 Example 3: Submarine Search</h4>
+            <p>We have a 16×16 grid. The submarine is equally likely in any square initially.</p>
+
+            <p><strong>Initially:</strong></p>
+            <div class="formula">
+                \[P(\text{Submarine at any square}) = \frac{1}{256}\]
+            </div>
+
+            <p><strong>After learning submarine is in row y=5:</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                P(\text{Submarine at }[x, 5] \mid Y=5) &= \frac{P([x,5] \text{ AND } Y=5)}{P(Y=5)}\\
+                &= \frac{1/256}{16/256}\\
+                &= \frac{1}{16}
+                \end{align}\]
+            </div>
+
+            <p>Probability increased 16-fold in that row! Information is powerful.</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+            <ul>
+                <li><strong>Joint P(A,B):</strong> Probability both events occur</li>
+                <li><strong>Marginal P(A):</strong> Probability of A alone (sum over other variables)</li>
+                <li><strong>Conditional P(A|B):</strong> Probability of A given B occurred</li>
+                <li><strong>Chain Rule:</strong> P(A,B) = P(A|B) · P(B)</li>
+                <li><strong>Independence:</strong> P(A|B) = P(A), or equivalently P(A,B) = P(A)·P(B)</li>
+                <li><strong>Law of Total Probability:</strong> Break down by all possible conditions</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand conditional probability, you're ready for:</p>
+            <ul>
+                <li><strong>Bayes' Rule:</strong> Flipping conditionals – compute P(A|B) from P(B|A)</li>
+                <li><strong>Bayesian Inference:</strong> Updating beliefs based on evidence</li>
+                <li><strong>More Complex Scenarios:</strong> Multiple variables and sophisticated reasoning</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDSS 2024-2025 Solutions</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #003366;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h2 {
+            color: #004080;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+        h3 {
+            color: #0059b3;
+            margin-top: 20px;
+        }
+        h4 {
+            color: #0073e6;
+            margin-top: 15px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        blockquote {
+            border-left: 4px solid #0066cc;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            background-color: #e6f2ff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        strong {
+            color: #d9534f;
+            font-weight: 600;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #0066cc;
+            margin: 30px 0;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        @media print {
+            body {
+                background-color: white;
+                max-width: 100%;
+                padding: 20px;
+            }
+            pre {
+                page-break-inside: avoid;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>IDSS 2024-2025 Examination Solutions</h1>
+<p><strong>University of Glasgow</strong>
+<strong>Introduction to Data Science and Systems</strong>
+<strong>COMPSCI 5089</strong>
+<strong>Duration: 2 hours</strong>
+<strong>Total Marks: 80</strong></p>
+<hr />
+<h2>Question 1: Linear Algebra (20 marks)</h2>
+<h3>Part (a)(i): Adjacency matrix for the graph [3 marks]</h3>
+<p><strong>Given Graph:</strong></p>
+<div class="codehilite"><pre><span></span><code>    A
+   / \
+0.3   0.7 (with 1 from A to C)
+ /       \
+B         C
+|         |
+1      0.4 (from C to E)
+|         |
+D ← 0.6 ← E
+    (1 from D to E)
+</code></pre></div>
+
+<p><strong>Graph Edges:</strong>
+- A → B: weight 0.3
+- A → C: weight 0.7
+- A → C: weight 1 (appears to be same edge, so use 1)
+- B → D: weight 1
+- C → E: weight 0.4
+- C → D: weight 0.6
+- E → D: weight 1</p>
+<p><strong>Adjacency Matrix A:</strong></p>
+<p>The adjacency matrix A[i][j] represents the weight of the edge from node i to node j.</p>
+<p>Nodes order: A, B, C, D, E (indices 0, 1, 2, 3, 4)</p>
+<div class="codehilite"><pre><span></span><code>       A    B    C    D    E
+   A [  0  0.3  1.0   0    0 ]
+   B [  0   0    0   1.0   0 ]
+A= C [  0   0    0   0.6  0.4]
+   D [  0   0    0    0   1.0]
+   E [  0   0    0   1.0   0 ]
+</code></pre></div>
+
+<p><strong>Answer:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">A</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+</code></pre></div>
+
+<p>Or in matrix notation:</p>
+<div class="codehilite"><pre><span></span><code>| 0   0.3  1.0  0    0   |
+| 0   0    0    1.0  0   |
+| 0   0    0    0.6  0.4 |
+| 0   0    0    0    1.0 |
+| 0   0    0    1.0  0   |
+</code></pre></div>
+
+<hr />
+<h3>Part (a)(ii): Distribution at t = 1 [2 marks]</h3>
+<p><strong>Given initial distribution at t = 0:</strong>
+- A = 100
+- B = 10
+- C = 20
+- D = 0
+- E = 0</p>
+<p><strong>Initial state vector:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₀ = [100, 10, 20, 0, 0]ᵀ
+</code></pre></div>
+
+<p><strong>Distribution at t = 1:</strong></p>
+<p>The distribution at time t = 1 is given by:</p>
+<div class="codehilite"><pre><span></span><code>x₁ = Aᵀx₀
+</code></pre></div>
+
+<p>Note: We use Aᵀ (transpose) because the adjacency matrix A[i][j] represents edges from i to j, and we want to know what comes INTO each node.</p>
+<p><strong>Calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code>       | 0   0   0   0   0  |   | 100 |
+       | 0.3 0   0   0   0  |   |  10 |
+x₁ =   | 1.0 0   0   0   0  | × |  20 |
+       | 0   1.0 0.6 0   1.0|   |   0 |
+       | 0   0   0.4 1.0 0  |   |   0 |
+</code></pre></div>
+
+<p><strong>Computing each component:</strong></p>
+<p><strong>A (index 0):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">x₁</span><span class="o">[</span><span class="n">A</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">100</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">20</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div>
+
+<p><strong>B (index 1):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">x₁</span><span class="o">[</span><span class="n">B</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="err">×</span><span class="mi">100</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">20</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span>
+</code></pre></div>
+
+<p><strong>C (index 2):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">x₁</span><span class="o">[</span><span class="n">C</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="err">×</span><span class="mi">100</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">20</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+</code></pre></div>
+
+<p><strong>D (index 3):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">x₁</span><span class="o">[</span><span class="n">D</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">100</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="err">×</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.6</span><span class="err">×</span><span class="mi">20</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span>
+</code></pre></div>
+
+<p><strong>E (index 4):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">x₁</span><span class="o">[</span><span class="n">E</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">100</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.4</span><span class="err">×</span><span class="mi">20</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="err">×</span><span class="mi">0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span>
+</code></pre></div>
+
+<p><strong>Answer:</strong></p>
+<div class="codehilite"><pre><span></span><code>Distribution at t = 1:
+A = 0, B = 30, C = 100, D = 22, E = 8
+</code></pre></div>
+
+<p>Or in vector form: <strong>x₁ = [0, 30, 100, 22, 8]ᵀ</strong></p>
+<p><strong>Verification:</strong> Total parcels = 0 + 30 + 100 + 22 + 8 = 160 ✗</p>
+<p>Wait, this doesn't match! Initial total = 100 + 10 + 20 = 130</p>
+<p>Let me recalculate. The adjacency matrix represents TRANSITIONS, not flows. Let me reinterpret:</p>
+<p>Actually, looking at the graph again more carefully:
+- From A: 0.3 to B, 0.7 to C
+- From B: 1.0 to D
+- From C: 0.6 to D, 0.4 to E
+- From D: 1.0 to E
+- From E: 1.0 to D</p>
+<p>This suggests a <strong>transition matrix</strong> where rows sum to 1 (stochastic matrix).</p>
+<p><strong>Corrected adjacency/transition matrix:</strong></p>
+<div class="codehilite"><pre><span></span><code>       A    B    C    D    E
+   A [  0  0.3  0.7   0    0 ]
+   B [  0   0    0   1.0   0 ]
+A= C [  0   0    0   0.6  0.4]
+   D [  0   0    0    0   1.0]
+   E [  0   0    0   1.0   0 ]
+</code></pre></div>
+
+<p><strong>Recalculating x₁ = Aᵀx₀:</strong></p>
+<div class="codehilite"><pre><span></span><code>       | 0   0   0   0   0  |   | 100 |
+       | 0.3 0   0   0   0  |   |  10 |
+x₁ =   | 0.7 0   0   0   0  | × |  20 |
+       | 0   1.0 0.6 0   1.0|   |   0 |
+       | 0   0   0.4 1.0 0  |   |   0 |
+</code></pre></div>
+
+<p><strong>A:</strong> 0×100 + 0×10 + 0×20 + 0×0 + 0×0 = <strong>0</strong>
+<strong>B:</strong> 0.3×100 + 0×10 + 0×20 + 0×0 + 0×0 = <strong>30</strong>
+<strong>C:</strong> 0.7×100 + 0×10 + 0×20 + 0×0 + 0×0 = <strong>70</strong>
+<strong>D:</strong> 0×100 + 1.0×10 + 0.6×20 + 0×0 + 1.0×0 = <strong>22</strong>
+<strong>E:</strong> 0×100 + 0×10 + 0.4×20 + 1.0×0 + 0×0 = <strong>8</strong></p>
+<p><strong>Final Answer:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₁ = [A=0, B=30, C=70, D=22, E=8]ᵀ
+</code></pre></div>
+
+<p><strong>Verification:</strong> 0 + 30 + 70 + 22 + 8 = 130 ✓</p>
+<hr />
+<h3>Part (a)(iii): Calculate distribution two days ago (x₍ₜ₌₋₂₎) [2 marks]</h3>
+<p><strong>Problem:</strong> Given current distribution x₀, find distribution at t = -2 (two days ago).</p>
+<p><strong>Approach:</strong></p>
+<p>If the forward evolution is given by:</p>
+<div class="codehilite"><pre><span></span><code>xₜ₊₁ = Aᵀxₜ
+</code></pre></div>
+
+<p>Then to go backwards in time:</p>
+<div class="codehilite"><pre><span></span><code>xₜ = (Aᵀ)⁻¹xₜ₊₁
+</code></pre></div>
+
+<p><strong>Method to calculate x₍ₜ₌₋₂₎:</strong></p>
+<p><strong>Step 1:</strong> From x₀, go back to x₍₋₁₎:</p>
+<div class="codehilite"><pre><span></span><code>x₍₋₁₎ = (Aᵀ)⁻¹x₀
+</code></pre></div>
+
+<p><strong>Step 2:</strong> From x₍₋₁₎, go back to x₍₋₂₎:</p>
+<div class="codehilite"><pre><span></span><code>x₍₋₂₎ = (Aᵀ)⁻¹x₍₋₁₎ = (Aᵀ)⁻¹(Aᵀ)⁻¹x₀ = ((Aᵀ)⁻¹)²x₀ = (Aᵀ)⁻²x₀
+</code></pre></div>
+
+<p>Or equivalently:</p>
+<div class="codehilite"><pre><span></span><code>x₍₋₂₎ = (A²)⁻ᵀx₀
+</code></pre></div>
+
+<p><strong>Detailed Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Compute Aᵀ</strong> (transpose of adjacency matrix)</p>
+</li>
+<li>
+<p><strong>Compute (Aᵀ)⁻¹</strong> (inverse of transpose)</p>
+</li>
+<li>Check if Aᵀ is invertible (det(Aᵀ) ≠ 0)</li>
+<li>
+<p>If not invertible, use pseudo-inverse: (Aᵀ)⁺</p>
+</li>
+<li>
+<p><strong>Compute ((Aᵀ)⁻¹)²</strong> or <strong>(Aᵀ)⁻²</strong></p>
+</li>
+<li>
+<p><strong>Multiply:</strong> x₍₋₂₎ = (Aᵀ)⁻²x₀</p>
+</li>
+</ol>
+<p><strong>Alternative approach using forward evolution:</strong></p>
+<p>Since x₀ = (Aᵀ)²x₍₋₂₎, we need to solve:</p>
+<div class="codehilite"><pre><span></span><code>(Aᵀ)²x₍₋₂₎ = x₀
+</code></pre></div>
+
+<p>This is a linear system: <strong>Bx₍₋₂₎ = x₀</strong> where <strong>B = (Aᵀ)²</strong></p>
+<p>Can be solved using:
+- Direct matrix inversion: x₍₋₂₎ = B⁻¹x₀
+- Gaussian elimination
+- Least squares if B is not square or singular
+- Iterative methods (Jacobi, Gauss-Seidel)</p>
+<p><strong>Important Note:</strong></p>
+<p>Since A is a stochastic matrix (rows sum to 1), it may not be invertible, especially if there are "absorbing" states or the graph is not strongly connected. In such cases, the backward problem may not have a unique solution, and we would need to:
+- Use the Moore-Penrose pseudo-inverse
+- Add constraints (e.g., non-negativity, total parcels)
+- Use least squares approximation</p>
+<p><strong>Summary of approach:</strong>
+1. Compute (Aᵀ)⁻² either as ((Aᵀ)⁻¹)² or as ((Aᵀ)²)⁻¹
+2. Calculate x₍₋₂₎ = (Aᵀ)⁻²x₀
+3. If A is singular, use pseudo-inverse (Aᵀ)⁺</p>
+<hr />
+<h3>Part (a)(iv): Transform to make graph undirected [2 marks]</h3>
+<p><strong>Goal:</strong> Make the graph undirected so paths between any two nodes go both ways.</p>
+<p><strong>Method:</strong></p>
+<p>To make an adjacency matrix symmetric (undirected), we create a new matrix where if there's an edge from i to j OR from j to i, there's an edge in both directions.</p>
+<p><strong>Approach 1: Maximum Weight</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">A_undirected</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Approach 2: Average Weight</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">A_undirected</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span>
+</code></pre></div>
+
+<p><strong>Approach 3: Symmetrize by addition</strong></p>
+<div class="codehilite"><pre><span></span><code>A_undirected = (A + Aᵀ) / 2
+</code></pre></div>
+
+<p>This ensures A_undirected is symmetric: A_undirected[i][j] = A_undirected[j][i]</p>
+<p><strong>Approach 4: Binary (keep if any edge exists)</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">A_undirected</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div>
+
+<p><strong>Recommended Approach:</strong></p>
+<p>For weighted graphs, use:</p>
+<div class="codehilite"><pre><span></span><code>A_undirected = (A + Aᵀ) / 2
+</code></pre></div>
+
+<p>This creates a symmetric matrix where each edge weight is the average of the forward and backward edge weights.</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">A_undirected</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+</code></pre></div>
+
+<p>Or in matrix form:</p>
+<div class="codehilite"><pre><span></span><code>A_undirected = (A + Aᵀ) / 2
+</code></pre></div>
+
+<p><strong>Verification:</strong></p>
+<p>For any symmetric matrix S:
+- Sᵀ = S
+- S[i][j] = S[j][i] for all i, j</p>
+<p><strong>Example calculation for our matrix:</strong></p>
+<p>Original A:</p>
+<div class="codehilite"><pre><span></span><code>| 0   0.3  1.0  0    0   |
+| 0   0    0    1.0  0   |
+| 0   0    0    0.6  0.4 |
+| 0   0    0    0    1.0 |
+| 0   0    0    1.0  0   |
+</code></pre></div>
+
+<p>Aᵀ:</p>
+<div class="codehilite"><pre><span></span><code>| 0    0    0    0    0  |
+| 0.3  0    0    0    0  |
+| 1.0  0    0    0    0  |
+| 0    1.0  0.6  0    1.0|
+| 0    0    0.4  1.0  0  |
+</code></pre></div>
+
+<p>A_undirected = (A + Aᵀ)/2:</p>
+<div class="codehilite"><pre><span></span><code>| 0    0.15  0.5  0    0   |
+| 0.15 0     0    0.5  0   |
+| 0.5  0     0    0.3  0.2 |
+| 0    0.5   0.3  0    1.0 |
+| 0    0     0.2  1.0  0   |
+</code></pre></div>
+
+<p>This matrix is symmetric! ✓</p>
+<hr />
+<h3>Part (b): Steady state of A [3 marks]</h3>
+<p><strong>Definition of Steady State:</strong></p>
+<p>A steady state (or stationary distribution) π is a probability distribution that remains unchanged under the transition matrix A. Mathematically:</p>
+<div class="codehilite"><pre><span></span><code>π = Aᵀπ
+</code></pre></div>
+
+<p>Or equivalently:</p>
+<div class="codehilite"><pre><span></span><code>Aᵀπ = π
+</code></pre></div>
+
+<p>This means π is an <strong>eigenvector</strong> of Aᵀ corresponding to <strong>eigenvalue λ = 1</strong>.</p>
+<p><strong>Properties of Steady State:</strong>
+- π ≥ 0 (all elements non-negative)
+- Σᵢ πᵢ = 1 (sums to 1, probability distribution)
+- After sufficient time, the distribution converges to π regardless of initial state</p>
+<p><strong>Physical meaning:</strong> The long-term proportion of parcels at each site, independent of the starting distribution.</p>
+<hr />
+<p><strong>Method 1: Eigenvalue/Eigenvector Approach</strong></p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Find eigenvectors of Aᵀ:</strong>
+   <code>(Aᵀ - λI)v = 0</code></p>
+</li>
+<li>
+<p><strong>Find eigenvalue λ = 1:</strong>
+   Solve for v where:
+   <code>(Aᵀ - I)v = 0</code>
+   This is equivalent to:
+   <code>Aᵀv = v</code></p>
+</li>
+<li>
+<p><strong>Solve the system:</strong>
+   <code>(Aᵀ - I)π = 0</code></p>
+</li>
+</ol>
+<p>This gives us (n-1) independent equations plus the normalization constraint.</p>
+<ol>
+<li><strong>Normalize:</strong>
+   <code>π = v / ||v||₁</code>
+   where ||v||₁ = Σᵢ vᵢ (L1 norm) to ensure Σᵢ πᵢ = 1</li>
+</ol>
+<p><strong>Detailed Calculation:</strong></p>
+<p>For our matrix Aᵀ:</p>
+<div class="codehilite"><pre><span></span><code>| 0    0    0    0    0  |
+| 0.3  0    0    0    0  |
+| 0.7  0    0    0    0  |
+| 0    1.0  0.6  0    1.0|
+| 0    0    0.4  1.0  0  |
+</code></pre></div>
+
+<p>System (Aᵀ - I)π = 0:</p>
+<div class="codehilite"><pre><span></span><code>| -1   0    0    0    0  | | π₁ |   | 0 |
+| 0.3 -1    0    0    0  | | π₂ |   | 0 |
+| 0.7  0   -1    0    0  | | π₃ | = | 0 |
+| 0    1.0  0.6 -1    1.0| | π₄ |   | 0 |
+| 0    0    0.4  1.0 -1  | | π₅ |   | 0 |
+</code></pre></div>
+
+<p>From equation 1: -π₁ = 0 → π₁ = 0
+From equation 2: 0.3π₁ - π₂ = 0 → π₂ = 0
+From equation 3: 0.7π₁ - π₃ = 0 → π₃ = 0
+From equation 4: π₂ + 0.6π₃ - π₄ + π₅ = 0 → -π₄ + π₅ = 0 → π₄ = π₅
+From equation 5: 0.4π₃ + π₄ - π₅ = 0 → π₄ = π₅</p>
+<p>With normalization π₁ + π₂ + π₃ + π₄ + π₅ = 1:
+0 + 0 + 0 + π₄ + π₅ = 1
+2π₄ = 1
+π₄ = π₅ = 0.5</p>
+<p><strong>Steady state:</strong></p>
+<div class="codehilite"><pre><span></span><code>π = [0, 0, 0, 0.5, 0.5]ᵀ
+</code></pre></div>
+
+<p>This means in the long run, parcels oscillate between D and E!</p>
+<hr />
+<p><strong>Method 2: Power Iteration Method</strong></p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Start with initial distribution:</strong>
+   <code>x₀ = any valid probability distribution (e.g., uniform)</code></p>
+</li>
+<li>
+<p><strong>Iterate:</strong>
+   <code>xₜ₊₁ = Aᵀxₜ</code></p>
+</li>
+<li>
+<p><strong>Normalize after each iteration:</strong>
+   <code>xₜ₊₁ = xₜ₊₁ / ||xₜ₊₁||₁</code></p>
+</li>
+<li>
+<p><strong>Repeat until convergence:</strong>
+   <code>||xₜ₊₁ - xₜ|| &lt; ε</code></p>
+</li>
+<li>
+<p><strong>Result:</strong> π ≈ xₜ as t → ∞</p>
+</li>
+</ol>
+<p><strong>Algorithm:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_steady_state</span><span class="p">(</span><span class="n">A_transpose</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A_transpose</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>  <span class="c1"># Start with uniform distribution</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">A_transpose</span> <span class="o">@</span> <span class="n">x</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">x_new</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x_new</span><span class="p">)</span>  <span class="c1"># Normalize</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x_new</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x_new</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x_new</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+
+<p><strong>Advantages:</strong>
+- Simple to implement
+- Works for large sparse matrices
+- Numerical stability</p>
+<p><strong>Disadvantages:</strong>
+- May be slow to converge
+- Requires many iterations
+- May not converge if eigenvalue = 1 is not dominant</p>
+<hr />
+<p><strong>Comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Advantages</th>
+<th>Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eigenvalue</td>
+<td>Exact solution, theoretically sound</td>
+<td>Computationally expensive for large matrices</td>
+</tr>
+<tr>
+<td>Power Iteration</td>
+<td>Simple, works for large sparse matrices</td>
+<td>Approximate, requires many iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Both methods should give the same result: π = [0, 0, 0, 0.5, 0.5]ᵀ</strong></p>
+<hr />
+<h3>Part (c)(i): Singular values of A [3 marks]</h3>
+<p><strong>Given SVD decomposition:</strong></p>
+<div class="codehilite"><pre><span></span><code>A = UΣVᵀ
+</code></pre></div>
+
+<p>where:</p>
+<div class="codehilite"><pre><span></span><code>U = [0  1]     Σ = [1.5  0   0 ]     V = [0  1  0]
+    [1  0]         [0    0.5 0 ]         [1  0  0]
+                                          [0  0  1]
+</code></pre></div>
+
+<p><strong>Definition:</strong></p>
+<p>The <strong>singular values</strong> of matrix A are the diagonal elements of the matrix Σ in the SVD decomposition.</p>
+<p>For an m×n matrix A with SVD A = UΣVᵀ:
+- Σ is an m×n diagonal matrix
+- Diagonal elements σ₁ ≥ σ₂ ≥ ... ≥ σᵣ ≥ 0 are the singular values
+- r = rank(A) is the number of non-zero singular values</p>
+<p><strong>From the given Σ matrix:</strong></p>
+<div class="codehilite"><pre><span></span><code>Σ = [1.5  0   0 ]
+    [0    0.5 0 ]
+</code></pre></div>
+
+<p>The diagonal elements are: <strong>1.5</strong> and <strong>0.5</strong></p>
+<p><strong>Answer:</strong></p>
+<p>The singular values of A are:</p>
+<div class="codehilite"><pre><span></span><code>σ₁ = 1.5
+σ₂ = 0.5
+</code></pre></div>
+
+<p>Or in set notation: <strong>{1.5, 0.5}</strong></p>
+<p><strong>Properties:</strong>
+- Both singular values are positive (σᵢ &gt; 0)
+- Ordered in descending order: σ₁ ≥ σ₂
+- Rank of A = 2 (two non-zero singular values)
+- Condition number: κ(A) = σ₁/σ₂ = 1.5/0.5 = 3</p>
+<p><strong>Relationship to eigenvalues:</strong>
+- Singular values of A are square roots of eigenvalues of AᵀA or AAᵀ
+- σᵢ² are eigenvalues of AᵀA
+- 1.5² = 2.25 and 0.5² = 0.25 are eigenvalues of AᵀA</p>
+<p><strong>Verification:</strong></p>
+<p>We can verify by computing AᵀA:</p>
+<div class="codehilite"><pre><span></span><code>A = UΣVᵀ
+AᵀA = (VΣᵀUᵀ)(UΣVᵀ) = VΣᵀΣVᵀ
+
+ΣᵀΣ = [1.5  0  ]  [1.5  0   0 ]   [2.25  0    0  ]
+      [0    0.5]  [0    0.5 0 ] = [0     0.25 0  ]
+      [0    0  ]  [0    0   0 ]   [0     0    0  ]
+</code></pre></div>
+
+<p>Eigenvalues of AᵀA: 2.25, 0.25, 0
+Square roots: 1.5, 0.5, 0 ✓</p>
+<hr />
+<h3>Part (c)(ii): Calculate pseudo-inverse A⁺ from SVD [5 marks]</h3>
+<p><strong>Given:</strong>
+- SVD: A = UΣVᵀ
+- Hint: (AB)⁺ = B⁺A⁺
+- If A is invertible, then A⁺ = A⁻¹</p>
+<p><strong>Formula for Pseudo-inverse using SVD:</strong></p>
+<p>For A = UΣVᵀ, the Moore-Penrose pseudo-inverse is:</p>
+<div class="codehilite"><pre><span></span><code>A⁺ = VΣ⁺Uᵀ
+</code></pre></div>
+
+<p>where Σ⁺ is the pseudo-inverse of Σ.</p>
+<p><strong>Step-by-Step Derivation:</strong></p>
+<p><strong>Step 1: Understand the formula</strong></p>
+<p>Starting from A = UΣVᵀ, we want to find A⁺.</p>
+<p>Since (AB)⁺ = B⁺A⁺, we have:</p>
+<div class="codehilite"><pre><span></span><code>A = UΣVᵀ = (U)(ΣVᵀ) = (UΣ)(Vᵀ)
+</code></pre></div>
+
+<p>Using the hint:</p>
+<div class="codehilite"><pre><span></span><code>A⁺ = ((UΣ)(Vᵀ))⁺ = (Vᵀ)⁺(UΣ)⁺ = ((Vᵀ)⁺)((UΣ)⁺)
+</code></pre></div>
+
+<p><strong>Step 2: Find (Vᵀ)⁺</strong></p>
+<p>V is an orthogonal matrix (VᵀV = I), so:</p>
+<div class="codehilite"><pre><span></span><code>(Vᵀ)⁺ = (Vᵀ)⁻¹ = V
+</code></pre></div>
+
+<p><strong>Step 3: Find (UΣ)⁺</strong></p>
+<p>Using (AB)⁺ = B⁺A⁺ again:</p>
+<div class="codehilite"><pre><span></span><code>(UΣ)⁺ = Σ⁺U⁺
+</code></pre></div>
+
+<p>Since U is orthogonal (UᵀU = I):</p>
+<div class="codehilite"><pre><span></span><code>U⁺ = U⁻¹ = Uᵀ
+</code></pre></div>
+
+<p>Therefore:</p>
+<div class="codehilite"><pre><span></span><code>(UΣ)⁺ = Σ⁺Uᵀ
+</code></pre></div>
+
+<p><strong>Step 4: Combine</strong></p>
+<div class="codehilite"><pre><span></span><code>A⁺ = (Vᵀ)⁺(UΣ)⁺ = V(Σ⁺Uᵀ) = VΣ⁺Uᵀ
+</code></pre></div>
+
+<p><strong>Step 5: Compute Σ⁺</strong></p>
+<p>For a diagonal matrix Σ, the pseudo-inverse Σ⁺ is obtained by:
+1. Taking the reciprocal of each non-zero diagonal element
+2. Transposing the result</p>
+<div class="codehilite"><pre><span></span><code>Σ = [1.5  0   0 ]  (2×3 matrix)
+    [0    0.5 0 ]
+
+Σ⁺ = [1/1.5    0    ]  (3×2 matrix)
+     [0        1/0.5 ]
+     [0        0     ]
+
+Σ⁺ = [0.667    0   ]
+     [0        2   ]
+     [0        0   ]
+</code></pre></div>
+
+<p>Or more precisely:</p>
+<div class="codehilite"><pre><span></span><code>Σ⁺ = [2/3   0  ]
+     [0     2  ]
+     [0     0  ]
+</code></pre></div>
+
+<p><strong>Step 6: Compute A⁺ = VΣ⁺Uᵀ</strong></p>
+<div class="codehilite"><pre><span></span><code>V = [0  1  0]     Σ⁺ = [2/3  0 ]     Uᵀ = [0  1]
+    [1  0  0]            [0    2 ]          [1  0]
+    [0  0  1]            [0    0 ]
+
+Step 1: Compute VΣ⁺
+VΣ⁺ = [0  1  0] [2/3  0 ]   [0    2 ]
+      [1  0  0] [0    2 ] = [2/3  0 ]
+      [0  0  1] [0    0 ]   [0    0 ]
+
+Step 2: Compute (VΣ⁺)Uᵀ
+A⁺ = [0    2 ] [0  1]   [2   0]
+     [2/3  0 ] [1  0] = [0   2/3]
+     [0    0 ]          [0   0 ]
+</code></pre></div>
+
+<p><strong>Final Answer:</strong></p>
+<div class="codehilite"><pre><span></span><code>A⁺ = [2     0  ]
+     [0     2/3]
+     [0     0  ]
+</code></pre></div>
+
+<p>Or in decimal:</p>
+<div class="codehilite"><pre><span></span><code>A⁺ = [2.0   0    ]
+     [0     0.667]
+     [0     0    ]
+</code></pre></div>
+
+<p><strong>Verification:</strong></p>
+<p>We can verify A⁺ satisfies the Moore-Penrose conditions:
+1. AA⁺A = A
+2. A⁺AA⁺ = A⁺
+3. (AA⁺)ᵀ = AA⁺
+4. (A⁺A)ᵀ = A⁺A</p>
+<p>Let's check condition 1:</p>
+<p>First compute A:</p>
+<div class="codehilite"><pre><span></span><code>A = UΣVᵀ = [0  1] [1.5  0   0 ] [0  1  0]
+           [1  0] [0    0.5 0 ] [1  0  0]
+                                  [0  0  1]
+
+ΣVᵀ = [1.5  0   0 ] [0  1  0]   [0   1.5 0  ]
+      [0    0.5 0 ] [1  0  0] = [0.5 0   0  ]
+                     [0  0  1]
+
+A = [0  1] [0   1.5 0  ]   [0.5  0   0  ]
+    [1  0] [0.5 0   0  ] = [0    1.5 0  ]
+</code></pre></div>
+
+<p>So A is:</p>
+<div class="codehilite"><pre><span></span><code>A = [0.5  0   0  ]
+    [0    1.5 0  ]
+</code></pre></div>
+
+<p>Now verify AA⁺A:</p>
+<div class="codehilite"><pre><span></span><code>AA⁺ = [0.5  0   0  ] [2     0  ]   [1  0  0]
+      [0    1.5 0  ] [0     2/3] = [0  1  0]
+                      [0     0  ]
+
+(AA⁺)A = [1  0  0] [0.5  0   0  ]   [0.5  0   0  ]
+         [0  1  0] [0    1.5 0  ] = [0    1.5 0  ]
+
+This equals A! ✓
+</code></pre></div>
+
+<p><strong>Summary of Steps:</strong></p>
+<ol>
+<li>Recognize A = UΣVᵀ is the SVD</li>
+<li>Use formula: A⁺ = VΣ⁺Uᵀ</li>
+<li>Compute Σ⁺ by taking reciprocals of non-zero diagonal elements and transposing</li>
+<li>Use properties: U⁺ = Uᵀ and V⁺ = Vᵀ (orthogonal matrices)</li>
+<li>Multiply: A⁺ = VΣ⁺Uᵀ</li>
+</ol>
+<hr />
+<h2>Question 2: Optimization (20 marks)</h2>
+<h3>Part (a): Solve using normal equations [5 marks]</h3>
+<p><strong>Given:</strong></p>
+<p>Minimize: f(x) = ||Ax - b||²</p>
+<p>where:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">1  0</span><span class="o">]</span><span class="w">     </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w">     </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">x₁</span><span class="o">]</span>
+<span class="w">    </span><span class="o">[</span><span class="n">0  1</span><span class="o">]</span><span class="w">         </span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w">         </span><span class="o">[</span><span class="n">x₂</span><span class="o">]</span>
+</code></pre></div>
+
+<p><strong>Normal Equations Method:</strong></p>
+<p>The normal equations are derived by setting the gradient of the least squares cost function to zero:</p>
+<p><strong>∇f(x) = 2Aᵀ(Ax - b) = 0</strong></p>
+<p>This gives:</p>
+<div class="codehilite"><pre><span></span><code>AᵀAx = Aᵀb
+</code></pre></div>
+
+<p><strong>Step 1: Compute AᵀA</strong></p>
+<div class="codehilite"><pre><span></span><code>AᵀA = [1  0]ᵀ [1  0]   [1  0] [1  0]   [1  0]
+      [0  1]  [0  1] = [0  1] [0  1] = [0  1]
+</code></pre></div>
+
+<p><strong>AᵀA = I</strong> (identity matrix)</p>
+<p><strong>Step 2: Compute Aᵀb</strong></p>
+<div class="codehilite"><pre><span></span><code>Aᵀb = [1  0]ᵀ [1]   [1  0] [1]   [1]
+      [0  1]  [1] = [0  1] [1] = [1]
+</code></pre></div>
+
+<p><strong>Aᵀb = [1, 1]ᵀ</strong></p>
+<p><strong>Step 3: Solve AᵀAx = Aᵀb</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[1  0] [x₁]   [1]</span>
+<span class="k">[0  1] [x₂] = [1]</span>
+</code></pre></div>
+
+<p>This simplifies to:</p>
+<div class="codehilite"><pre><span></span><code>x₁ = 1
+x₂ = 1
+</code></pre></div>
+
+<p><strong>Step 4: Find (AᵀA)⁻¹</strong></p>
+<p>Since AᵀA = I:</p>
+<div class="codehilite"><pre><span></span><code>(AᵀA)⁻¹ = I⁻¹ = I
+</code></pre></div>
+
+<p><strong>Step 5: Compute x* = (AᵀA)⁻¹Aᵀb</strong></p>
+<div class="codehilite"><pre><span></span><code>x* = I × [1]   [1]
+         [1] = [1]
+</code></pre></div>
+
+<p><strong>Answer:</strong></p>
+<div class="codehilite"><pre><span></span><code>x* = [1]
+     [1]
+</code></pre></div>
+
+<p>Or x₁<em> = 1, x₂</em> = 1</p>
+<p><strong>Verification:</strong></p>
+<p>Check that Ax* = b:</p>
+<div class="codehilite"><pre><span></span><code>Ax* = [1  0] [1]   [1]
+      [0  1] [1] = [1] = b ✓
+</code></pre></div>
+
+<p>Cost function value:</p>
+<div class="codehilite"><pre><span></span><code>f(x*) = ||Ax* - b||² = ||[1,1]ᵀ - [1,1]ᵀ||² = ||[0,0]ᵀ||² = 0 ✓
+</code></pre></div>
+
+<p>The solution is exact (zero error) because the system is perfectly determined!</p>
+<hr />
+<h3>Part (b): Solve using gradient descent [5 marks]</h3>
+<p><strong>Given:</strong>
+- Initial guess: x₀ = [0, 0]ᵀ
+- Step size: α = 0.5
+- Perform 2 iterations
+- Gradient: ∇f(x) = 2Aᵀ(Ax - b)</p>
+<p><strong>Gradient Descent Update Rule:</strong></p>
+<div class="codehilite"><pre><span></span><code>xₖ₊₁ = xₖ - α∇f(xₖ)
+</code></pre></div>
+
+<p><strong>Gradient Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>∇f(x) = 2Aᵀ(Ax - b)
+</code></pre></div>
+
+<hr />
+<p><strong>Iteration 0 (Initial):</strong></p>
+<div class="codehilite"><pre><span></span><code>x₀ = [0]
+     [0]
+</code></pre></div>
+
+<hr />
+<p><strong>Iteration 1:</strong></p>
+<p><strong>Step 1: Compute Ax₀</strong></p>
+<div class="codehilite"><pre><span></span><code>Ax₀ = [1  0] [0]   [0]
+      [0  1] [0] = [0]
+</code></pre></div>
+
+<p><strong>Step 2: Compute Ax₀ - b</strong></p>
+<div class="codehilite"><pre><span></span><code>Ax₀ - b = [0] - [1]   [-1]
+          [0]   [1] = [-1]
+</code></pre></div>
+
+<p><strong>Step 3: Compute ∇f(x₀) = 2Aᵀ(Ax₀ - b)</strong></p>
+<div class="codehilite"><pre><span></span><code>∇f(x₀) = 2[1  0] [-1]   2[-1]   [-2]
+          [0  1] [-1] = 2[-1] = [-2]
+</code></pre></div>
+
+<p><strong>Step 4: Update x₁ = x₀ - α∇f(x₀)</strong></p>
+<div class="codehilite"><pre><span></span><code>x₁ = [0] - 0.5[-2]   [0] - [-1]   [1]
+     [0]       [-2] = [0]   [-1] = [1]
+</code></pre></div>
+
+<p><strong>Result after iteration 1:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₁ = [1]
+     [1]
+</code></pre></div>
+
+<hr />
+<p><strong>Iteration 2:</strong></p>
+<p><strong>Step 1: Compute Ax₁</strong></p>
+<div class="codehilite"><pre><span></span><code>Ax₁ = [1  0] [1]   [1]
+      [0  1] [1] = [1]
+</code></pre></div>
+
+<p><strong>Step 2: Compute Ax₁ - b</strong></p>
+<div class="codehilite"><pre><span></span><code>Ax₁ - b = [1] - [1]   [0]
+          [1]   [1] = [0]
+</code></pre></div>
+
+<p><strong>Step 3: Compute ∇f(x₁) = 2Aᵀ(Ax₁ - b)</strong></p>
+<div class="codehilite"><pre><span></span><code>∇f(x₁) = 2[1  0] [0]   2[0]   [0]
+          [0  1] [0] = 2[0] = [0]
+</code></pre></div>
+
+<p><strong>Step 4: Update x₂ = x₁ - α∇f(x₁)</strong></p>
+<div class="codehilite"><pre><span></span><code>x₂ = [1] - 0.5[0]   [1] - [0]   [1]
+     [1]       [0] = [1]   [0] = [1]
+</code></pre></div>
+
+<p><strong>Result after iteration 2:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₂ = [1]
+     [1]
+</code></pre></div>
+
+<hr />
+<p><strong>Summary:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Iteration</th>
+<th>x</th>
+<th>Gradient ∇f(x)</th>
+<th>Cost f(x)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>[0, 0]ᵀ</td>
+<td>[-2, -2]ᵀ</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>[1, 1]ᵀ</td>
+<td>[0, 0]ᵀ</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>[1, 1]ᵀ</td>
+<td>[0, 0]ᵀ</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Final Answer after 2 iterations:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₂ = [1]
+     [1]
+</code></pre></div>
+
+<p><strong>Observations:</strong>
+- Converged in just 1 iteration!
+- Gradient became zero after iteration 1
+- Reached optimal solution x* = [1, 1]ᵀ
+- This fast convergence happens because:
+  - A is identity matrix (perfectly conditioned)
+  - Step size α = 0.5 is optimal for this problem
+  - Problem is convex quadratic</p>
+<p><strong>Cost function values:</strong></p>
+<div class="codehilite"><pre><span></span><code>f(x₀) = ||[0,0]ᵀ - [1,1]ᵀ||² = ||[-1,-1]ᵀ||² = 1 + 1 = 2
+f(x₁) = ||[1,1]ᵀ - [1,1]ᵀ||² = ||[0,0]ᵀ||² = 0
+f(x₂) = 0
+</code></pre></div>
+
+<hr />
+<h3>Part (c): Discuss merits of SGD for least squares [4 marks]</h3>
+<p><strong>Stochastic Gradient Descent (SGD) Overview:</strong></p>
+<p>Instead of computing the gradient using ALL data points:</p>
+<div class="codehilite"><pre><span></span><code>∇f(x) = 2Aᵀ(Ax - b)  (uses all n samples)
+</code></pre></div>
+
+<p>SGD uses a random subset (mini-batch) or single sample:</p>
+<div class="codehilite"><pre><span></span><code>∇f(x) ≈ 2aᵢᵀ(aᵢx - bᵢ)  (uses one sample i)
+</code></pre></div>
+
+<p>where aᵢ is the i-th row of A and bᵢ is the i-th element of b.</p>
+<hr />
+<p><strong>Merits of SGD for Least Squares Problems:</strong></p>
+<p><strong>1. Computational Efficiency for Large Datasets</strong></p>
+<p><strong>Problem with standard GD:</strong>
+- Computing ∇f(x) = 2Aᵀ(Ax - b) requires:
+  - Matrix-vector multiplication: O(nd) operations
+  - Where n = number of samples, d = dimensions
+  - For n = 1 billion, d = 1000: 10¹² operations per iteration!</p>
+<p><strong>SGD advantage:</strong>
+- Mini-batch gradient using b samples: O(bd) operations
+- Typical b = 32, 64, 256 (much smaller than n)
+- Speedup: n/b times faster per iteration
+- Example: If n = 1,000,000 and b = 100, then 10,000× speedup!</p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>Per-iteration cost:
+- Full GD: O(nd)
+- SGD: O(bd) where b &lt;&lt; n
+</code></pre></div>
+
+<hr />
+<p><strong>2. Memory Efficiency</strong></p>
+<p><strong>Memory requirements:</strong>
+- Full batch GD: Must load entire dataset into memory
+  - Requires n × d memory
+  - For large datasets (e.g., ImageNet), this is prohibitive</p>
+<p><strong>SGD:</strong>
+- Only needs mini-batch in memory: b × d
+- Can process datasets larger than RAM
+- Enables training on limited hardware (GPUs with 16GB memory)</p>
+<hr />
+<p><strong>3. Faster Convergence (in terms of data seen)</strong></p>
+<p><strong>Surprising benefit:</strong>
+- SGD makes more frequent updates (one per mini-batch)
+- Full GD makes one update per full pass through data
+- SGD can make 1000 updates while GD makes 1 update (if n = 1000)</p>
+<p><strong>Trade-off:</strong>
+- Each SGD update is noisier (less accurate gradient)
+- But frequency compensates for noise
+- Often reaches good solution faster in wall-clock time</p>
+<p><strong>Convergence rate:</strong>
+- Full GD: O(1/k) convergence (k = iterations)
+- SGD: O(1/√k) convergence in expectation
+- But SGD iterations are much cheaper!</p>
+<hr />
+<p><strong>4. Regularization Effect (Implicit)</strong></p>
+<p><strong>Noise as regularization:</strong>
+- Gradient noise acts as regularization
+- Helps escape sharp local minima
+- Can lead to better generalization
+- Prevents overfitting to training data</p>
+<p><strong>Effect:</strong>
+- SGD tends to find "flatter" minima
+- Flatter minima generalize better to test data
+- Full GD may overfit to training data</p>
+<hr />
+<p><strong>5. Online Learning Capability</strong></p>
+<p><strong>Streaming data:</strong>
+- SGD can process data one sample at a time
+- No need to store entire dataset
+- Can adapt to changing data distributions
+- Useful for real-time applications</p>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">data_stream</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">gradient</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>6. Parallelization</strong></p>
+<p><strong>Mini-batch SGD:</strong>
+- Can parallelize gradient computation across mini-batch
+- Each GPU core processes different samples
+- Scales well to distributed systems
+- Data parallelism across multiple GPUs</p>
+<hr />
+<p><strong>Drawbacks (for completeness):</strong></p>
+<ol>
+<li><strong>Noisy convergence:</strong></li>
+<li>Solution oscillates around optimum</li>
+<li>
+<p>Need to decrease learning rate over time</p>
+</li>
+<li>
+<p><strong>Hyperparameter sensitivity:</strong></p>
+</li>
+<li>Learning rate α requires careful tuning</li>
+<li>
+<p>Mini-batch size b affects performance</p>
+</li>
+<li>
+<p><strong>Non-deterministic:</strong></p>
+</li>
+<li>Different runs give different results</li>
+<li>
+<p>Harder to reproduce results</p>
+</li>
+<li>
+<p><strong>May need more iterations:</strong></p>
+</li>
+<li>More iterations needed for high accuracy</li>
+<li>But each iteration is much cheaper</li>
+</ol>
+<hr />
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Full GD</th>
+<th>SGD</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-iteration cost</td>
+<td>O(nd)</td>
+<td>O(bd)</td>
+<td>SGD</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>O(nd)</td>
+<td>O(bd)</td>
+<td>SGD</td>
+</tr>
+<tr>
+<td>Convergence rate</td>
+<td>O(1/k)</td>
+<td>O(1/√k)</td>
+<td>GD</td>
+</tr>
+<tr>
+<td>Wall-clock time</td>
+<td>Slower</td>
+<td>Faster</td>
+<td>SGD</td>
+</tr>
+<tr>
+<td>Large datasets</td>
+<td>Prohibitive</td>
+<td>Feasible</td>
+<td>SGD</td>
+</tr>
+<tr>
+<td>Accuracy</td>
+<td>High</td>
+<td>Medium</td>
+<td>GD</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Practical Recommendation:</strong></p>
+<p>For least squares problems:
+- <strong>Small datasets (n &lt; 10,000):</strong> Use full batch GD or normal equations
+- <strong>Large datasets (n &gt; 100,000):</strong> Use mini-batch SGD
+- <strong>Huge datasets (n &gt; 1,000,000):</strong> SGD is essential
+- <strong>Online/streaming:</strong> Use SGD with single samples</p>
+<p><strong>Best practice:</strong>
+- Start with SGD for prototyping (fast)
+- Fine-tune with smaller mini-batches or full GD (accurate)
+- Use adaptive methods (Adam, RMSprop) for better convergence</p>
+<hr />
+<h3>Part (d): Solve constrained problem with Lagrange multipliers [6 marks]</h3>
+<p><strong>Problem:</strong></p>
+<p>Minimize: f(x) = ||Ax - b||²</p>
+<p>Subject to: g(x) = x₁ + x₂ - 1 = 0</p>
+<p>where:</p>
+<div class="codehilite"><pre><span></span><code>A = [1  0]     b = [1]
+    [0  1]         [1]
+</code></pre></div>
+
+<p><strong>Lagrange Multiplier Method:</strong></p>
+<p><strong>Step 1: Set up the Lagrangian</strong></p>
+<p>The Lagrangian function is:</p>
+<div class="codehilite"><pre><span></span><code>L(x, λ) = f(x) + λg(x)
+L(x, λ) = ||Ax - b||² + λ(x₁ + x₂ - 1)
+</code></pre></div>
+
+<p>Expanding f(x):</p>
+<div class="codehilite"><pre><span></span><code>f(x) = (Ax - b)ᵀ(Ax - b)
+     = (x₁ - 1)² + (x₂ - 1)²
+     = x₁² - 2x₁ + 1 + x₂² - 2x₂ + 1
+     = x₁² + x₂² - 2x₁ - 2x₂ + 2
+</code></pre></div>
+
+<p>Therefore:</p>
+<div class="codehilite"><pre><span></span><code>L(x, λ) = x₁² + x₂² - 2x₁ - 2x₂ + 2 + λ(x₁ + x₂ - 1)
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Take partial derivatives</strong></p>
+<p>For optimality, we need:</p>
+<div class="codehilite"><pre><span></span><code>∇ₓL = 0  (gradient with respect to x)
+∇λL = 0  (gradient with respect to λ)
+</code></pre></div>
+
+<p><strong>Partial derivative with respect to x₁:</strong></p>
+<div class="codehilite"><pre><span></span><code>∂L/∂x₁ = 2x₁ - 2 + λ = 0
+</code></pre></div>
+
+<p><strong>Partial derivative with respect to x₂:</strong></p>
+<div class="codehilite"><pre><span></span><code>∂L/∂x₂ = 2x₂ - 2 + λ = 0
+</code></pre></div>
+
+<p><strong>Partial derivative with respect to λ:</strong></p>
+<div class="codehilite"><pre><span></span><code>∂L/∂λ = x₁ + x₂ - 1 = 0
+</code></pre></div>
+
+<hr />
+<p><strong>Step 3: Solve the system of equations</strong></p>
+<p>We have three equations:</p>
+<div class="codehilite"><pre><span></span><code>(1)  2x₁ - 2 + λ = 0  →  2x₁ + λ = 2
+(2)  2x₂ - 2 + λ = 0  →  2x₂ + λ = 2
+(3)  x₁ + x₂ = 1
+</code></pre></div>
+
+<p>From equations (1) and (2):</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">2</span><span class="n">x₁</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span>
+<span class="mf">2</span><span class="n">x₂</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span>
+</code></pre></div>
+
+<p>Subtracting:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">2</span><span class="n">x₁</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2</span><span class="n">x₂</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span>
+<span class="n">x₁</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x₂</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 4: Use the constraint</strong></p>
+<p>Substituting x₁ = x₂ into equation (3):</p>
+<div class="codehilite"><pre><span></span><code>x₁ + x₂ = 1
+x₁ + x₁ = 1
+2x₁ = 1
+x₁ = 1/2
+</code></pre></div>
+
+<p>Therefore:</p>
+<div class="codehilite"><pre><span></span><code>x₂ = 1/2
+</code></pre></div>
+
+<hr />
+<p><strong>Step 5: Find λ</strong></p>
+<p>Substituting back into equation (1):</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">2</span><span class="n">x₁</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span>
+<span class="mf">2</span><span class="p">(</span><span class="mf">1</span><span class="o">/</span><span class="mf">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span>
+<span class="mf">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span>
+<span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 6: Solution</strong></p>
+<p><strong>Optimal solution:</strong></p>
+<div class="codehilite"><pre><span></span><code>x* = [1/2]  = [0.5]
+     [1/2]    [0.5]
+
+λ* = 1
+</code></pre></div>
+
+<hr />
+<p><strong>Verification:</strong></p>
+<p><strong>Check constraint:</strong></p>
+<div class="codehilite"><pre><span></span><code>x₁* + x₂* = 0.5 + 0.5 = 1 ✓
+</code></pre></div>
+
+<p><strong>Check KKT conditions:</strong></p>
+<div class="codehilite"><pre><span></span><code>∇f(x*) + λ*∇g(x*) = 0
+
+∇f(x*) = 2Aᵀ(Ax* - b) = 2[1  0] ([1  0] [0.5] - [1])
+                           [0  1]  [0  1] [0.5]   [1]
+
+                       = 2[1  0] ([0.5] - [1])
+                           [0  1]  [0.5]   [1]
+
+                       = 2[1  0] [-0.5]   2[-0.5]   [-1]
+                           [0  1] [-0.5] = 2[-0.5] = [-1]
+
+∇g(x*) = [1]
+         [1]
+
+∇f(x*) + λ*∇g(x*) = [-1] + 1[1]   [-1] + [1]   [0]
+                     [-1]    [1] = [-1]   [1] = [0] ✓
+</code></pre></div>
+
+<p><strong>Cost function at constrained optimum:</strong></p>
+<div class="codehilite"><pre><span></span><code>f(x*) = ||Ax* - b||²
+      = ||[0.5, 0.5]ᵀ - [1, 1]ᵀ||²
+      = ||[-0.5, -0.5]ᵀ||²
+      = 0.25 + 0.25
+      = 0.5
+</code></pre></div>
+
+<p><strong>Compare with unconstrained optimum:</strong>
+- Unconstrained: x<em> = [1, 1]ᵀ, f(x</em>) = 0
+- Constrained: x<em> = [0.5, 0.5]ᵀ, f(x</em>) = 0.5
+- Cost increased due to constraint</p>
+<hr />
+<p><strong>Summary of Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Form Lagrangian:</strong> L(x, λ) = f(x) + λg(x)</p>
+</li>
+<li>
+<p><strong>Take gradients:</strong></p>
+</li>
+<li>∇ₓL = ∇f(x) + λ∇g(x) = 0</li>
+<li>
+<p>∇λL = g(x) = 0</p>
+</li>
+<li>
+<p><strong>Solve system of equations:</strong></p>
+</li>
+<li>From ∇ₓL = 0: relationship between variables</li>
+<li>From ∇λL = 0: constraint equation</li>
+<li>
+<p>Solve simultaneously</p>
+</li>
+<li>
+<p><strong>Verify:</strong></p>
+</li>
+<li>Check constraint is satisfied</li>
+<li>
+<p>Check KKT conditions</p>
+</li>
+<li>
+<p><strong>Interpret λ:</strong></p>
+</li>
+<li>λ* = 1 is the "shadow price"</li>
+<li>If constraint relaxed by Δ (x₁ + x₂ = 1 + Δ), cost decreases by approximately λ*Δ</li>
+</ol>
+<hr />
+<p><strong>General Matrix Form (for arbitrary A, b):</strong></p>
+<p><strong>Lagrangian:</strong></p>
+<div class="codehilite"><pre><span></span><code>L(x, λ) = (Ax - b)ᵀ(Ax - b) + λ(cᵀx - d)
+</code></pre></div>
+
+<p>where constraint is cᵀx = d (in our case, c = [1, 1]ᵀ, d = 1)</p>
+<p><strong>KKT Conditions:</strong></p>
+<div class="codehilite"><pre><span></span><code>∇ₓL = 2AᵀAx - 2Aᵀb + λc = 0
+∇λL = cᵀx - d = 0
+</code></pre></div>
+
+<p><strong>System to solve:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[2AᵀA   c ] [x]   [2Aᵀb]</span>
+<span class="k">[cᵀ     0 ] [λ] = [d   ]</span>
+</code></pre></div>
+
+<p>This is a saddle point system that can be solved using:
+- Direct methods (Gaussian elimination)
+- Iterative methods (GMRES, conjugate gradients)
+- Schur complement approach</p>
+<hr />
+<h2>Question 3: Probabilities (20 marks)</h2>
+<h3>Part (a)(i): Parametrization of normal distribution [2 marks]</h3>
+<p><strong>Problem:</strong></p>
+<p>We have 100 users, each with gaze location (x, y) where:
+- x, y ∈ [0, 1]
+- (0, 0) = top left corner
+- (1, 1) = bottom right corner</p>
+<p>Assume gaze locations are normally distributed.</p>
+<p><strong>Model:</strong></p>
+<p>The gaze location is a 2D random variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">x</span><span class="o">]</span><span class="w">  </span><span class="err">∈</span><span class="w"> </span><span class="n">ℝ²</span>
+<span class="w">    </span><span class="o">[</span><span class="n">y</span><span class="o">]</span>
+</code></pre></div>
+
+<p>For a 2D normal distribution (bivariate normal):</p>
+<div class="codehilite"><pre><span></span><code>g ~ N(μ, Σ)
+</code></pre></div>
+
+<p>where:
+- <strong>μ</strong> is the mean vector (location parameter)
+- <strong>Σ</strong> is the covariance matrix (shape/spread parameter)</p>
+<hr />
+<p><strong>Parameters:</strong></p>
+<p><strong>1. Mean vector μ:</strong></p>
+<div class="codehilite"><pre><span></span><code>μ = [μₓ]  ∈ ℝ²
+    [μᵧ]
+</code></pre></div>
+
+<p><strong>Dimensionality:</strong> 2 elements (2D vector)</p>
+<p><strong>Interpretation:</strong>
+- μₓ = expected x-coordinate of gaze
+- μᵧ = expected y-coordinate of gaze
+- Center of the distribution on the webpage</p>
+<hr />
+<p><strong>2. Covariance matrix Σ:</strong></p>
+<div class="codehilite"><pre><span></span><code>Σ = [σₓ²      σₓᵧ  ]  ∈ ℝ²ˣ²
+    [σₓᵧ      σᵧ²  ]
+</code></pre></div>
+
+<p><strong>Dimensionality:</strong> 2×2 = 4 elements, but only 3 are independent (symmetric matrix)</p>
+<p><strong>Components:</strong>
+- <strong>σₓ²</strong> : variance of x (spread in horizontal direction)
+- <strong>σᵧ²</strong> : variance of y (spread in vertical direction)
+- <strong>σₓᵧ</strong> : covariance between x and y (correlation)</p>
+<p><strong>Properties:</strong>
+- Σ must be positive semi-definite
+- Σ is symmetric: Σ = Σᵀ
+- For valid covariance: σₓ² ≥ 0, σᵧ² ≥ 0, σₓ²σᵧ² ≥ σₓᵧ²</p>
+<hr />
+<p><strong>Correlation:</strong></p>
+<p>Related to covariance by:</p>
+<div class="codehilite"><pre><span></span><code>ρ = σₓᵧ / (σₓσᵧ)  where -1 ≤ ρ ≤ 1
+</code></pre></div>
+
+<p>Can also parametrize with correlation:</p>
+<div class="codehilite"><pre><span></span><code>Σ = [σₓ²        ρσₓσᵧ  ]
+    [ρσₓσᵧ      σᵧ²     ]
+</code></pre></div>
+
+<hr />
+<p><strong>Summary:</strong></p>
+<p><strong>Total parameters: 5 (but 3 independent in covariance)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Symbol</th>
+<th>Dimension</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean vector</td>
+<td>μ</td>
+<td>2 × 1</td>
+<td>Center of distribution</td>
+</tr>
+<tr>
+<td>Covariance matrix</td>
+<td>Σ</td>
+<td>2 × 2</td>
+<td>Shape and orientation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Independent parameters: 2 (mean) + 3 (covariance) = 5</strong></p>
+<ul>
+<li>μₓ, μᵧ (2 parameters)</li>
+<li>σₓ², σᵧ², σₓᵧ (3 parameters)</li>
+</ul>
+<p>Or equivalently:
+- μₓ, μᵧ (2 parameters)
+- σₓ², σᵧ², ρ (3 parameters)</p>
+<hr />
+<p><strong>Probability Density Function:</strong></p>
+<div class="codehilite"><pre><span></span><code>p(g | μ, Σ) = (1/(2π|Σ|^(1/2))) exp(-1/2 (g - μ)ᵀΣ⁻¹(g - μ))
+</code></pre></div>
+
+<p>where |Σ| is the determinant of Σ.</p>
+<hr />
+<h3>Part (a)(ii): Estimate parameters from D [3 marks]</h3>
+<p><strong>Given:</strong>
+- Database D with 100 gaze locations
+- Each record: gᵢ = [xᵢ, yᵢ]ᵀ for i = 1, 2, ..., 100</p>
+<p><strong>Goal:</strong> Estimate μ and Σ</p>
+<hr />
+<p><strong>Method: Maximum Likelihood Estimation (MLE)</strong></p>
+<p>For a normal distribution, MLE gives the sample mean and sample covariance.</p>
+<hr />
+<p><strong>Step 1: Estimate Mean Vector μ̂</strong></p>
+<p><strong>Formula:</strong></p>
+<div class="codehilite"><pre><span></span><code>μ̂ = (1/N) Σᵢ₌₁ᴺ gᵢ
+</code></pre></div>
+
+<p>where N = 100 (number of users)</p>
+<p><strong>Component-wise:</strong></p>
+<div class="codehilite"><pre><span></span><code>μ̂ₓ = (1/100) Σᵢ₌₁¹⁰⁰ xᵢ  (average x-coordinate)
+
+μ̂ᵧ = (1/100) Σᵢ₌₁¹⁰⁰ yᵢ  (average y-coordinate)
+</code></pre></div>
+
+<p><strong>Result:</strong></p>
+<div class="codehilite"><pre><span></span><code>μ̂ = [μ̂ₓ]
+    [μ̂ᵧ]
+</code></pre></div>
+
+<p><strong>Example calculation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Data: D is 100×2 array</span>
+<span class="c1"># D[i] = [x_i, y_i]</span>
+
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># mu_hat = [mean(x), mean(y)]</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Estimate Covariance Matrix Σ̂</strong></p>
+<p><strong>Formula (unbiased estimator):</strong></p>
+<div class="codehilite"><pre><span></span><code>Σ̂ = (1/(N-1)) Σᵢ₌₁ᴺ (gᵢ - μ̂)(gᵢ - μ̂)ᵀ
+</code></pre></div>
+
+<p><strong>Expanding:</strong></p>
+<div class="codehilite"><pre><span></span><code>Σ̂ = [σ̂ₓ²      σ̂ₓᵧ  ]
+    [σ̂ₓᵧ      σ̂ᵧ²  ]
+</code></pre></div>
+
+<p>where:</p>
+<p><strong>Variance of x:</strong></p>
+<div class="codehilite"><pre><span></span><code>σ̂ₓ² = (1/(N-1)) Σᵢ₌₁ᴺ (xᵢ - μ̂ₓ)²
+</code></pre></div>
+
+<p><strong>Variance of y:</strong></p>
+<div class="codehilite"><pre><span></span><code>σ̂ᵧ² = (1/(N-1)) Σᵢ₌₁ᴺ (yᵢ - μ̂ᵧ)²
+</code></pre></div>
+
+<p><strong>Covariance:</strong></p>
+<div class="codehilite"><pre><span></span><code>σ̂ₓᵧ = (1/(N-1)) Σᵢ₌₁ᴺ (xᵢ - μ̂ₓ)(yᵢ - μ̂ᵧ)
+</code></pre></div>
+
+<p><strong>Note:</strong> We use N-1 (Bessel's correction) for unbiased estimation.</p>
+<hr />
+<p><strong>Matrix Form:</strong></p>
+<p>Define centered data matrix:</p>
+<div class="codehilite"><pre><span></span><code>G_centered = [g₁ - μ̂, g₂ - μ̂, ..., gₙ - μ̂]ᵀ  (100×2 matrix)
+</code></pre></div>
+
+<p>Then:</p>
+<div class="codehilite"><pre><span></span><code>Σ̂ = (1/(N-1)) G_centeredᵀ G_centered
+</code></pre></div>
+
+<hr />
+<p><strong>Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Step 1: Estimate mean</span>
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Shape: (2,)</span>
+
+<span class="c1"># Step 2: Center the data</span>
+<span class="n">D_centered</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">mu_hat</span>  <span class="c1"># Broadcasting: (100,2) - (2,)</span>
+
+<span class="c1"># Step 3: Estimate covariance</span>
+<span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># np.cov expects features as rows</span>
+<span class="c1"># or manually:</span>
+<span class="n">Sigma_hat</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">99</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">D_centered</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">D_centered</span><span class="p">)</span>
+
+<span class="c1"># Result:</span>
+<span class="c1"># mu_hat = [mean_x, mean_y]</span>
+<span class="c1"># Sigma_hat = [[var_x, cov_xy],</span>
+<span class="c1">#              [cov_xy, var_y]]</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Alternative: Using scipy:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
+
+<span class="c1"># Fit normal distribution</span>
+<span class="n">mu_hat</span><span class="p">,</span> <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="c1"># Create distribution</span>
+<span class="n">rv</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu_hat</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma_hat</span><span class="p">)</span>
+
+<span class="c1"># Evaluate probability of new gaze location</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">rv</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary of Estimation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Estimator</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean μ</td>
+<td>Sample mean</td>
+<td>μ̂ = (1/N) Σᵢ gᵢ</td>
+</tr>
+<tr>
+<td>Covariance Σ</td>
+<td>Sample covariance</td>
+<td>Σ̂ = (1/(N-1)) Σᵢ (gᵢ-μ̂)(gᵢ-μ̂)ᵀ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Properties of MLE for Normal Distribution:</strong>
+- Unbiased: E[μ̂] = μ, E[Σ̂] = Σ
+- Consistent: μ̂ → μ, Σ̂ → Σ as N → ∞
+- Efficient: Achieves Cramér-Rao lower bound
+- Closed-form solution (no iterative optimization needed)</p>
+<hr />
+<h3>Part (b)(i): When normal assumption is wrong [2 marks]</h3>
+<p><strong>When Normal Distribution is Obviously Wrong:</strong></p>
+<p><strong>1. Multi-modal Distribution (Multiple Clusters)</strong></p>
+<p><strong>Scenario:</strong>
+Users look at multiple distinct regions of the page:
+- Product image (top left)
+- Price tag (center)
+- "Buy" button (bottom right)</p>
+<p><strong>What you'd see in data:</strong>
+- Multiple clusters of gaze locations
+- 2 or 3 peaks in density
+- Not a single elliptical blob</p>
+<p><strong>How to identify:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Visual inspection</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># Multiple separated clusters visible</span>
+</code></pre></div>
+
+<p><strong>Statistical test:</strong>
+- Dip test for unimodality
+- Hartigan's dip statistic
+- Visual: histogram or KDE plot shows multiple peaks</p>
+<p><strong>Issue with normal:</strong>
+- Normal distribution is unimodal (single peak)
+- Cannot capture multiple hotspots
+- Will just average across all clusters</p>
+<hr />
+<p><strong>2. Non-Elliptical Shapes</strong></p>
+<p><strong>Scenario:</strong>
+Users scan in patterns:
+- Reading pattern: left-to-right, top-to-bottom (L or Z shape)
+- F-pattern: horizontal lines at top, vertical line on left
+- Circular regions around images</p>
+<p><strong>What you'd see:</strong>
+- Elongated non-elliptical regions
+- Banana-shaped or crescent-shaped distributions
+- Sharp boundaries (e.g., no one looks outside page bounds)</p>
+<p><strong>How to identify:</strong>
+- Scatter plot shows non-elliptical shape
+- High skewness or kurtosis
+- Jarque-Bera test rejects normality</p>
+<hr />
+<p><strong>3. Boundary Effects</strong></p>
+<p><strong>Scenario:</strong>
+Coordinates bounded to [0, 1] × [0, 1]</p>
+<p><strong>Issue:</strong>
+- Normal distribution has support on all of ℝ²
+- Normal allows negative values or values &gt; 1
+- Truncation at boundaries violates normality</p>
+<p><strong>How to identify:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Check for clustering at boundaries</span>
+<span class="n">boundary_gazes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">)</span> <span class="o">|</span>
+                        <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">boundary_gazes</span> <span class="o">&gt;</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Boundary effects present!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>4. Heavy Tails or Outliers</strong></p>
+<p><strong>Scenario:</strong>
+- Occasional "distracted" users look at random locations
+- Outliers far from main gaze area</p>
+<p><strong>How to identify:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Q-Q plot (Quantile-Quantile)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+<span class="n">stats</span><span class="o">.</span><span class="n">probplot</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dist</span><span class="o">=</span><span class="s2">&quot;norm&quot;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># If normal, points lie on straight line</span>
+<span class="c1"># Deviations at tails indicate non-normality</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Statistical Tests for Normality:</strong></p>
+<p><strong>1. Shapiro-Wilk Test:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">shapiro</span>
+
+<span class="n">stat</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">shapiro</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># Test x-coordinate</span>
+<span class="k">if</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reject normality assumption&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>2. Anderson-Darling Test:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">anderson</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">anderson</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">statistic</span> <span class="o">&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">critical_values</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># 5% significance</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reject normality&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>3. Visual Inspection:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Scatter plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Marginal histograms</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># x distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># y distribution</span>
+
+<span class="c1"># 2D KDE plot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_kde</span>
+<span class="n">kde</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="c1"># Plot shows multiple peaks → not normal</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary:</strong></p>
+<p>Normal distribution is wrong when:
+1. <strong>Multiple clusters</strong> (multi-modal)
+2. <strong>Non-elliptical shapes</strong> (non-Gaussian patterns)
+3. <strong>Boundary effects</strong> (truncation, bounded domain)
+4. <strong>Heavy tails / outliers</strong> (extreme values)</p>
+<p><strong>How to identify:</strong>
+- Visual: scatter plot, histogram, Q-Q plot
+- Statistical: Shapiro-Wilk, Anderson-Darling, Jarque-Bera tests
+- Domain knowledge: Known patterns (F-pattern, Z-pattern)</p>
+<hr />
+<h3>Part (b)(ii): Alternative model and parametrization [3 marks]</h3>
+<p><strong>Alternative Model: Gaussian Mixture Model (GMM)</strong></p>
+<p><strong>Motivation:</strong>
+If data has multiple clusters (e.g., users look at 3 key regions), use a mixture of Gaussians.</p>
+<hr />
+<p><strong>Model Definition:</strong></p>
+<p>A GMM with K components:</p>
+<div class="codehilite"><pre><span></span><code>p(g) = Σₖ₌₁ᴷ πₖ N(g | μₖ, Σₖ)
+</code></pre></div>
+
+<p>where:
+- <strong>K</strong> = number of components (clusters)
+- <strong>πₖ</strong> = mixing coefficient (weight) for component k
+- <strong>N(g | μₖ, Σₖ)</strong> = multivariate normal distribution for component k</p>
+<p><strong>Constraint:</strong> Σₖ₌₁ᴷ πₖ = 1 and πₖ ≥ 0</p>
+<hr />
+<p><strong>Parametrization:</strong></p>
+<p>For K components in 2D:</p>
+<p><strong>1. Mixing Coefficients π:</strong></p>
+<div class="codehilite"><pre><span></span><code>π = [π₁, π₂, ..., πₖ]ᵀ
+</code></pre></div>
+
+<p><strong>Dimensionality:</strong> K elements, but K-1 independent (due to constraint Σπₖ = 1)</p>
+<p><strong>Interpretation:</strong>
+- πₖ = prior probability that gaze belongs to cluster k
+- Σₖ πₖ = 1</p>
+<hr />
+<p><strong>2. Mean Vectors μₖ:</strong></p>
+<p>For each component k:</p>
+<div class="codehilite"><pre><span></span><code>μₖ = [μₖₓ]  ∈ ℝ²
+     [μₖᵧ]
+</code></pre></div>
+
+<p><strong>Dimensionality:</strong> K × 2 = 2K elements</p>
+<p><strong>Interpretation:</strong>
+- Center of each cluster
+- μ₁ might be product image location
+- μ₂ might be price location
+- μ₃ might be buy button location</p>
+<hr />
+<p><strong>3. Covariance Matrices Σₖ:</strong></p>
+<p>For each component k:</p>
+<div class="codehilite"><pre><span></span><code>Σₖ = [σₖₓ²      σₖₓᵧ  ]  ∈ ℝ²ˣ²
+     [σₖₓᵧ      σₖᵧ²  ]
+</code></pre></div>
+
+<p><strong>Dimensionality:</strong> K × 3 independent parameters = 3K</p>
+<p>(Each covariance matrix has 3 independent parameters in 2D)</p>
+<hr />
+<p><strong>Total Parameters:</strong></p>
+<p>For K components in 2D:
+- <strong>Mixing coefficients:</strong> K - 1 independent
+- <strong>Means:</strong> 2K parameters
+- <strong>Covariances:</strong> 3K parameters</p>
+<p><strong>Total: (K-1) + 2K + 3K = 6K - 1 parameters</strong></p>
+<p><strong>Example for K = 3:</strong>
+- Mixing: 2 parameters (π₁, π₂, with π₃ = 1 - π₁ - π₂)
+- Means: 6 parameters (μ₁ₓ, μ₁ᵧ, μ₂ₓ, μ₂ᵧ, μ₃ₓ, μ₃ᵧ)
+- Covariances: 9 parameters (3 per component)
+- <strong>Total: 17 parameters</strong></p>
+<hr />
+<p><strong>Simplification Options:</strong></p>
+<p><strong>1. Diagonal Covariances (σₓᵧ = 0):</strong></p>
+<div class="codehilite"><pre><span></span><code>Σₖ = [σₖₓ²    0   ]
+     [0       σₖᵧ² ]
+</code></pre></div>
+
+<p>Parameters per component: 2 (instead of 3)
+Total: 3K - 1 parameters</p>
+<p><strong>2. Spherical Covariances (σₓ² = σᵧ² = σ², σₓᵧ = 0):</strong></p>
+<div class="codehilite"><pre><span></span><code>Σₖ = σₖ²I = [σₖ²   0  ]
+            [0     σₖ² ]
+</code></pre></div>
+
+<p>Parameters per component: 1
+Total: 4K - 1 parameters</p>
+<p><strong>3. Tied Covariances (all components share same Σ):</strong>
+All Σₖ = Σ
+Total: K - 1 + 2K + 3 = 3K + 2 parameters</p>
+<hr />
+<p><strong>Summary Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Parameters</th>
+<th>Total (K=3, d=2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single Gaussian</td>
+<td>μ (d), Σ (d(d+1)/2)</td>
+<td>5</td>
+</tr>
+<tr>
+<td>GMM (full covariance)</td>
+<td>(K-1) + Kd + Kd(d+1)/2</td>
+<td>17</td>
+</tr>
+<tr>
+<td>GMM (diagonal cov)</td>
+<td>(K-1) + Kd + Kd</td>
+<td>11</td>
+</tr>
+<tr>
+<td>GMM (spherical cov)</td>
+<td>(K-1) + Kd + K</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Probability Density:</strong></p>
+<div class="codehilite"><pre><span></span><code>p(g | θ) = Σₖ₌₁ᴷ πₖ (1/(2π|Σₖ|^(1/2))) exp(-1/2 (g-μₖ)ᵀΣₖ⁻¹(g-μₖ))
+</code></pre></div>
+
+<p>where θ = {π₁, ..., πₖ, μ₁, ..., μₖ, Σ₁, ..., Σₖ}</p>
+<hr />
+<p><strong>Cluster Assignment:</strong></p>
+<p>For a given gaze g, the responsibility (posterior probability) of cluster k is:</p>
+<div class="codehilite"><pre><span></span><code>γₖ(g) = P(k | g) = (πₖ N(g|μₖ,Σₖ)) / (Σⱼ πⱼ N(g|μⱼ,Σⱼ))
+</code></pre></div>
+
+<hr />
+<h3>Part (b)(iii): Estimate GMM parameters [3 marks]</h3>
+<p><strong>Method: Expectation-Maximization (EM) Algorithm</strong></p>
+<p>Since we have latent variables (cluster assignments), we use EM for maximum likelihood estimation.</p>
+<hr />
+<p><strong>EM Algorithm for GMM:</strong></p>
+<p><strong>Initialization:</strong>
+1. Choose K (number of components)
+2. Initialize parameters θ⁽⁰⁾ = {π, μ, Σ}</p>
+<p>Common initialization methods:
+- Random initialization
+- <strong>K-means clustering</strong> (recommended)
+- K-means++ for better starting points</p>
+<hr />
+<p><strong>Iterate until convergence:</strong></p>
+<p><strong>E-Step (Expectation):</strong></p>
+<p>For each data point gᵢ and component k, compute responsibility:</p>
+<div class="codehilite"><pre><span></span><code>γᵢₖ = P(k | gᵢ) = (πₖ N(gᵢ|μₖ,Σₖ)) / (Σⱼ₌₁ᴷ πⱼ N(gᵢ|μⱼ,Σⱼ))
+</code></pre></div>
+
+<p><strong>Interpretation:</strong>
+- γᵢₖ = probability that gaze i belongs to cluster k
+- Soft assignment (vs hard assignment in k-means)
+- Σₖ γᵢₖ = 1 for each i</p>
+<p><strong>Matrix form:</strong>
+Γ is 100×K matrix where Γ[i,k] = γᵢₖ</p>
+<hr />
+<p><strong>M-Step (Maximization):</strong></p>
+<p>Update parameters to maximize expected log-likelihood:</p>
+<p><strong>1. Update mixing coefficients:</strong></p>
+<div class="codehilite"><pre><span></span><code>πₖ = (1/N) Σᵢ₌₁ᴺ γᵢₖ = N_k / N
+</code></pre></div>
+
+<p>where N_k = Σᵢ γᵢₖ is the effective number of points in cluster k</p>
+<p><strong>Interpretation:</strong> Proportion of data assigned to cluster k</p>
+<hr />
+<p><strong>2. Update means:</strong></p>
+<div class="codehilite"><pre><span></span><code>μₖ = (Σᵢ₌₁ᴺ γᵢₖ gᵢ) / (Σᵢ₌₁ᴺ γᵢₖ) = (Σᵢ γᵢₖ gᵢ) / N_k
+</code></pre></div>
+
+<p><strong>Interpretation:</strong> Weighted average of data points, weighted by responsibility</p>
+<hr />
+<p><strong>3. Update covariances:</strong></p>
+<div class="codehilite"><pre><span></span><code>Σₖ = (Σᵢ₌₁ᴺ γᵢₖ (gᵢ - μₖ)(gᵢ - μₖ)ᵀ) / (Σᵢ₌₁ᴺ γᵢₖ)
+   = (Σᵢ γᵢₖ (gᵢ - μₖ)(gᵢ - μₖ)ᵀ) / N_k
+</code></pre></div>
+
+<p><strong>Interpretation:</strong> Weighted covariance, weighted by responsibility</p>
+<hr />
+<p><strong>Convergence:</strong></p>
+<p>Stop when:</p>
+<div class="codehilite"><pre><span></span><code>|log L(θ⁽ᵗ⁾) - log L(θ⁽ᵗ⁻¹⁾)| &lt; ε
+</code></pre></div>
+
+<p>where log L is the log-likelihood:</p>
+<div class="codehilite"><pre><span></span><code>log L(θ) = Σᵢ₌₁ᴺ log(Σₖ₌₁ᴷ πₖ N(gᵢ|μₖ,Σₖ))
+</code></pre></div>
+
+<p>Typical: ε = 10⁻⁶ or max 100-500 iterations</p>
+<hr />
+<p><strong>Complete Algorithm:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="n">Algorithm</span><span class="o">:</span><span class="w"> </span><span class="n">EM</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">GMM</span>
+
+<span class="n">Input</span><span class="o">:</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="n">g₁</span><span class="o">,</span><span class="w"> </span><span class="o">...,</span><span class="w"> </span><span class="n">gₙ</span><span class="o">},</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">components</span><span class="w"> </span><span class="n">K</span>
+<span class="n">Output</span><span class="o">:</span><span class="w"> </span><span class="n">Parameters</span><span class="w"> </span><span class="err">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="err">π</span><span class="o">,</span><span class="w"> </span><span class="err">μ</span><span class="o">,</span><span class="w"> </span><span class="err">Σ</span><span class="o">}</span>
+
+<span class="mi">1</span><span class="o">.</span><span class="w"> </span><span class="n">INITIALIZATION</span><span class="o">:</span>
+<span class="w">   </span><span class="n">Run</span><span class="w"> </span><span class="n">K</span><span class="o">-</span><span class="n">means</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="err">μₖ</span>
+<span class="w">   </span><span class="n">Set</span><span class="w"> </span><span class="err">πₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">K</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">k</span>
+<span class="w">   </span><span class="n">Set</span><span class="w"> </span><span class="err">Σₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="o">(</span><span class="n">identity</span><span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">k</span>
+
+<span class="mi">2</span><span class="o">.</span><span class="w"> </span><span class="n">REPEAT</span><span class="w"> </span><span class="n">until</span><span class="w"> </span><span class="n">convergence</span><span class="o">:</span>
+
+<span class="w">   </span><span class="n">E</span><span class="o">-</span><span class="n">STEP</span><span class="o">:</span>
+<span class="w">   </span><span class="n">For</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">K</span><span class="o">:</span>
+<span class="w">       </span><span class="n">Compute</span><span class="w"> </span><span class="err">γᵢₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="err">πₖ</span><span class="w"> </span><span class="n">N</span><span class="o">(</span><span class="n">gᵢ</span><span class="o">|</span><span class="err">μₖ</span><span class="o">,</span><span class="err">Σₖ</span><span class="o">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="o">(</span><span class="err">Σⱼ</span><span class="w"> </span><span class="err">πⱼ</span><span class="w"> </span><span class="n">N</span><span class="o">(</span><span class="n">gᵢ</span><span class="o">|</span><span class="err">μⱼ</span><span class="o">,</span><span class="err">Σⱼ</span><span class="o">))</span>
+
+<span class="w">   </span><span class="n">M</span><span class="o">-</span><span class="n">STEP</span><span class="o">:</span>
+<span class="w">   </span><span class="n">For</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">K</span><span class="o">:</span>
+<span class="w">       </span><span class="n">N_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">Σᵢ</span><span class="w"> </span><span class="err">γᵢₖ</span>
+
+<span class="w">       </span><span class="err">πₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N_k</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N</span>
+
+<span class="w">       </span><span class="err">μₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="err">Σᵢ</span><span class="w"> </span><span class="err">γᵢₖ</span><span class="w"> </span><span class="n">gᵢ</span><span class="o">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N_k</span>
+
+<span class="w">       </span><span class="err">Σₖ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="err">Σᵢ</span><span class="w"> </span><span class="err">γᵢₖ</span><span class="w"> </span><span class="o">(</span><span class="n">gᵢ</span><span class="o">-</span><span class="err">μₖ</span><span class="o">)(</span><span class="n">gᵢ</span><span class="o">-</span><span class="err">μₖ</span><span class="o">)</span><span class="err">ᵀ</span><span class="o">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N_k</span>
+
+<span class="w">   </span><span class="n">Compute</span><span class="w"> </span><span class="n">log</span><span class="o">-</span><span class="n">likelihood</span><span class="o">:</span>
+<span class="w">       </span><span class="n">log</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">Σᵢ</span><span class="w"> </span><span class="n">log</span><span class="o">(</span><span class="err">Σₖ</span><span class="w"> </span><span class="err">πₖ</span><span class="w"> </span><span class="n">N</span><span class="o">(</span><span class="n">gᵢ</span><span class="o">|</span><span class="err">μₖ</span><span class="o">,</span><span class="err">Σₖ</span><span class="o">))</span>
+
+<span class="w">   </span><span class="n">If</span><span class="w"> </span><span class="o">|</span><span class="n">log</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">log</span><span class="w"> </span><span class="n">L_old</span><span class="o">|</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="err">ε</span><span class="o">:</span>
+<span class="w">       </span><span class="n">BREAK</span>
+
+<span class="mi">3</span><span class="o">.</span><span class="w"> </span><span class="n">RETURN</span><span class="w"> </span><span class="err">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="err">π</span><span class="o">,</span><span class="w"> </span><span class="err">μ</span><span class="o">,</span><span class="w"> </span><span class="err">Σ</span><span class="o">}</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Python Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
+
+<span class="c1"># Fit GMM with K=3 components</span>
+<span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span>
+    <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">covariance_type</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span>  <span class="c1"># &#39;full&#39;, &#39;tied&#39;, &#39;diag&#39;, &#39;spherical&#39;</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span>  <span class="c1"># Run 10 times, keep best</span>
+<span class="p">)</span>
+
+<span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+<span class="c1"># Extract parameters</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span>  <span class="c1"># Mixing coefficients, shape: (3,)</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span>  <span class="c1"># Means, shape: (3, 2)</span>
+<span class="n">Sigma</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span>  <span class="c1"># Covariances, shape: (3, 2, 2)</span>
+
+<span class="c1"># Predict cluster assignments</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>  <span class="c1"># Hard assignment</span>
+<span class="n">responsibilities</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>  <span class="c1"># Soft assignment, shape: (100, 3)</span>
+
+<span class="c1"># Evaluate new gaze location</span>
+<span class="n">log_prob</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">score_samples</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]])</span>  <span class="c1"># Log probability</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_prob</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Model Selection (Choosing K):</strong></p>
+<p>How many components K?</p>
+<p><strong>1. Bayesian Information Criterion (BIC):</strong></p>
+<div class="codehilite"><pre><span></span><code>BIC = -2 log L + p log N
+</code></pre></div>
+
+<p>Choose K that minimizes BIC</p>
+<p><strong>2. Akaike Information Criterion (AIC):</strong></p>
+<div class="codehilite"><pre><span></span><code>AIC = -2 log L + 2p
+</code></pre></div>
+
+<p>Choose K that minimizes AIC</p>
+<p><strong>3. Cross-validation:</strong>
+Split data, train on train set, evaluate on validation set</p>
+<p><strong>4. Elbow method:</strong>
+Plot log-likelihood vs K, look for "elbow"</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
+
+<span class="n">bic_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">aic_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">K_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">K</span> <span class="ow">in</span> <span class="n">K_range</span><span class="p">:</span>
+    <span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+    <span class="n">bic_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmm</span><span class="o">.</span><span class="n">bic</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">aic_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmm</span><span class="o">.</span><span class="n">aic</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+
+<span class="n">optimal_K</span> <span class="o">=</span> <span class="n">K_range</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">bic_scores</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal K: </span><span class="si">{</span><span class="n">optimal_K</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Advantages of EM:</strong>
+- Guaranteed to converge (to local optimum)
+- Each iteration increases log-likelihood
+- Handles soft assignments naturally</p>
+<p><strong>Disadvantages:</strong>
+- Sensitive to initialization (use k-means++)
+- Can get stuck in local optima (run multiple times)
+- Requires choosing K</p>
+<hr />
+<h3>Part (c): Probability of buying given gaze location [7 marks]</h3>
+<p><strong>Problem:</strong></p>
+<p>Given:
+- 100 users with gaze locations gᵢ
+- 25 bought something (class B = "buy")
+- 75 did not buy (class ¬B = "no buy")</p>
+<p>Find: P(Buy | gaze at g₀)</p>
+<hr />
+<p><strong>Approach: Bayes' Theorem</strong></p>
+<p>We want to compute:</p>
+<div class="codehilite"><pre><span></span><code>P(B | g₀) = P(g₀ | B) P(B) / P(g₀)
+</code></pre></div>
+
+<p>where:
+- P(B | g₀) = probability of buying given gaze at g₀ (posterior)
+- P(g₀ | B) = likelihood of gaze g₀ given buyer
+- P(B) = prior probability of buying
+- P(g₀) = evidence (marginal probability of gaze g₀)</p>
+<hr />
+<p><strong>Step-by-Step Procedure:</strong></p>
+<p><strong>Step 1: Estimate Class Priors</strong></p>
+<p><strong>Prior probability of buying:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(B) = N_B / N = 25 / 100 = 0.25
+</code></pre></div>
+
+<p><strong>Prior probability of not buying:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(¬B) = N_¬B / N = 75 / 100 = 0.75
+</code></pre></div>
+
+<p>where:
+- N_B = 25 (number of buyers)
+- N_¬B = 75 (number of non-buyers)
+- N = 100 (total users)</p>
+<hr />
+<p><strong>Step 2: Split Data by Class</strong></p>
+<p>Create two datasets:</p>
+<p><strong>D_B:</strong> Gaze locations of buyers
+- Contains 25 gaze locations
+- D_B = {gᵢ : user i bought}</p>
+<p><strong>D_¬B:</strong> Gaze locations of non-buyers
+- Contains 75 gaze locations
+- D_¬B = {gᵢ : user i did not buy}</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Assume &#39;bought&#39; is boolean array indicating who bought</span>
+<span class="n">D_buyers</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">bought</span><span class="p">]</span>  <span class="c1"># Shape: (25, 2)</span>
+<span class="n">D_non_buyers</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="o">~</span><span class="n">bought</span><span class="p">]</span>  <span class="c1"># Shape: (75, 2)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 3: Estimate Class-Conditional Distributions</strong></p>
+<p>Fit separate normal distributions for each class:</p>
+<p><strong>For buyers:</strong></p>
+<div class="codehilite"><pre><span></span><code>g | B ~ N(μ_B, Σ_B)
+</code></pre></div>
+
+<p>Estimate parameters:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">μ̂</span><span class="n">_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">N_B</span><span class="p">)</span><span class="w"> </span><span class="err">Σᵢ∈</span><span class="n">B</span><span class="w"> </span><span class="n">gᵢ</span><span class="w">  </span><span class="p">(</span><span class="n">mean</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">buyers</span><span class="s1">&#39; gazes)</span>
+
+<span class="err">Σ̂</span><span class="n">_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">N_B</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="err">Σᵢ∈</span><span class="n">B</span><span class="w"> </span><span class="p">(</span><span class="n">gᵢ</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="err">μ̂</span><span class="n">_B</span><span class="p">)(</span><span class="n">gᵢ</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="err">μ̂</span><span class="n">_B</span><span class="p">)</span><span class="err">ᵀ</span><span class="w">  </span><span class="p">(</span><span class="n">covariance</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">buyers</span><span class="s1">&#39; gazes)</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">mu_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D_buyers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Shape: (2,)</span>
+<span class="n">Sigma_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D_buyers</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># Shape: (2, 2)</span>
+</code></pre></div>
+
+<p><strong>For non-buyers:</strong></p>
+<div class="codehilite"><pre><span></span><code>g | ¬B ~ N(μ_¬B, Σ_¬B)
+</code></pre></div>
+
+<p>Estimate parameters:</p>
+<div class="codehilite"><pre><span></span><code>μ̂_¬B = (1/N_¬B) Σᵢ∈¬B gᵢ
+
+Σ̂_¬B = (1/(N_¬B-1)) Σᵢ∈¬B (gᵢ - μ̂_¬B)(gᵢ - μ̂_¬B)ᵀ
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">mu_not_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D_non_buyers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Sigma_not_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D_non_buyers</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 4: Compute Likelihoods</strong></p>
+<p>For a new gaze location g₀:</p>
+<p><strong>Likelihood for buyers:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(g₀ | B) = N(g₀ | μ̂_B, Σ̂_B)
+          = (1/(2π|Σ̂_B|^(1/2))) exp(-1/2 (g₀-μ̂_B)ᵀΣ̂_B⁻¹(g₀-μ̂_B))
+</code></pre></div>
+
+<p><strong>Likelihood for non-buyers:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(g₀ | ¬B) = N(g₀ | μ̂_¬B, Σ̂_¬B)
+           = (1/(2π|Σ̂_¬B|^(1/2))) exp(-1/2 (g₀-μ̂_¬B)ᵀΣ̂_¬B⁻¹(g₀-μ̂_¬B))
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
+
+<span class="c1"># Create distributions</span>
+<span class="n">rv_B</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu_B</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma_B</span><span class="p">)</span>
+<span class="n">rv_not_B</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu_not_B</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma_not_B</span><span class="p">)</span>
+
+<span class="c1"># Compute likelihoods</span>
+<span class="n">P_g0_given_B</span> <span class="o">=</span> <span class="n">rv_B</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">g0</span><span class="p">)</span>
+<span class="n">P_g0_given_not_B</span> <span class="o">=</span> <span class="n">rv_not_B</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">g0</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 5: Compute Evidence (Marginal Probability)</strong></p>
+<p>By law of total probability:</p>
+<div class="codehilite"><pre><span></span><code>P(g₀) = P(g₀ | B)P(B) + P(g₀ | ¬B)P(¬B)
+</code></pre></div>
+
+<p>Substituting values:</p>
+<div class="codehilite"><pre><span></span><code>P(g₀) = P(g₀ | B) × 0.25 + P(g₀ | ¬B) × 0.75
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">P_g0</span> <span class="o">=</span> <span class="n">P_g0_given_B</span> <span class="o">*</span> <span class="mf">0.25</span> <span class="o">+</span> <span class="n">P_g0_given_not_B</span> <span class="o">*</span> <span class="mf">0.75</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Step 6: Apply Bayes' Theorem</strong></p>
+<p><strong>Posterior probability of buying:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(B | g₀) = P(g₀ | B) P(B) / P(g₀)
+          = (P(g₀ | B) × 0.25) / (P(g₀ | B) × 0.25 + P(g₀ | ¬B) × 0.75)
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">P_B_given_g0</span> <span class="o">=</span> <span class="p">(</span><span class="n">P_g0_given_B</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span> <span class="o">/</span> <span class="n">P_g0</span>
+</code></pre></div>
+
+<p><strong>Posterior probability of not buying:</strong></p>
+<div class="codehilite"><pre><span></span><code>P(¬B | g₀) = P(g₀ | ¬B) P(¬B) / P(g₀)
+           = (P(g₀ | ¬B) × 0.75) / P_g0
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">P_not_B_given_g0</span> <span class="o">=</span> <span class="p">(</span><span class="n">P_g0_given_not_B</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span> <span class="o">/</span> <span class="n">P_g0</span>
+</code></pre></div>
+
+<p><strong>Verification:</strong> P(B | g₀) + P(¬B | g₀) = 1 ✓</p>
+<hr />
+<p><strong>Complete Implementation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span>
+
+<span class="c1"># Step 1: Prior probabilities</span>
+<span class="n">N_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bought</span><span class="p">)</span>  <span class="c1"># 25</span>
+<span class="n">N_not_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">bought</span><span class="p">)</span>  <span class="c1"># 75</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bought</span><span class="p">)</span>  <span class="c1"># 100</span>
+
+<span class="n">P_B</span> <span class="o">=</span> <span class="n">N_B</span> <span class="o">/</span> <span class="n">N</span>  <span class="c1"># 0.25</span>
+<span class="n">P_not_B</span> <span class="o">=</span> <span class="n">N_not_B</span> <span class="o">/</span> <span class="n">N</span>  <span class="c1"># 0.75</span>
+
+<span class="c1"># Step 2: Split data</span>
+<span class="n">D_buyers</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">bought</span><span class="p">]</span>
+<span class="n">D_non_buyers</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="o">~</span><span class="n">bought</span><span class="p">]</span>
+
+<span class="c1"># Step 3: Estimate class-conditional distributions</span>
+<span class="n">mu_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D_buyers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Sigma_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D_buyers</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">mu_not_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">D_non_buyers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Sigma_not_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">D_non_buyers</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="c1"># Create distributions</span>
+<span class="n">rv_B</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu_B</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma_B</span><span class="p">)</span>
+<span class="n">rv_not_B</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu_not_B</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma_not_B</span><span class="p">)</span>
+
+<span class="c1"># Step 4: For new gaze location g0</span>
+<span class="n">g0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>  <span class="c1"># Example gaze location</span>
+
+<span class="c1"># Compute likelihoods</span>
+<span class="n">P_g0_given_B</span> <span class="o">=</span> <span class="n">rv_B</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">g0</span><span class="p">)</span>
+<span class="n">P_g0_given_not_B</span> <span class="o">=</span> <span class="n">rv_not_B</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">g0</span><span class="p">)</span>
+
+<span class="c1"># Step 5: Compute evidence</span>
+<span class="n">P_g0</span> <span class="o">=</span> <span class="n">P_g0_given_B</span> <span class="o">*</span> <span class="n">P_B</span> <span class="o">+</span> <span class="n">P_g0_given_not_B</span> <span class="o">*</span> <span class="n">P_not_B</span>
+
+<span class="c1"># Step 6: Compute posterior</span>
+<span class="n">P_B_given_g0</span> <span class="o">=</span> <span class="p">(</span><span class="n">P_g0_given_B</span> <span class="o">*</span> <span class="n">P_B</span><span class="p">)</span> <span class="o">/</span> <span class="n">P_g0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Probability of buying given gaze at </span><span class="si">{</span><span class="n">g0</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">P_B_given_g0</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Interpretation:</strong></p>
+<p><strong>Example results:</strong></p>
+<p>If g₀ = [0.8, 0.3] (near "Buy" button):
+- μ_B might be close to [0.8, 0.3]
+- μ_¬B might be far from [0.8, 0.3]
+- P(g₀ | B) &gt;&gt; P(g₀ | ¬B)
+- <strong>P(B | g₀) ≈ 0.8</strong> (high probability of buying)</p>
+<p>If g₀ = [0.1, 0.9] (bottom left, away from content):
+- μ_B far from [0.1, 0.9]
+- μ_¬B might be closer
+- P(g₀ | B) &lt;&lt; P(g₀ | ¬B)
+- <strong>P(B | g₀) ≈ 0.1</strong> (low probability of buying)</p>
+<hr />
+<p><strong>Alternative: Sklearn Implementation</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.discriminant_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticDiscriminantAnalysis</span>
+
+<span class="c1"># Fit QDA (equivalent to Gaussian Bayes classifier)</span>
+<span class="n">qda</span> <span class="o">=</span> <span class="n">QuadraticDiscriminantAnalysis</span><span class="p">()</span>
+<span class="n">qda</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">bought</span><span class="p">)</span>  <span class="c1"># bought is boolean array</span>
+
+<span class="c1"># Predict probability</span>
+<span class="n">prob_buy</span> <span class="o">=</span> <span class="n">qda</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">([</span><span class="n">g0</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># P(B | g0)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P(Buy | g0): </span><span class="si">{</span><span class="n">prob_buy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Summary of Approach:</strong></p>
+<ol>
+<li><strong>Estimate priors:</strong> P(B) = 25/100, P(¬B) = 75/100</li>
+<li><strong>Split data:</strong> Separate buyers' gazes from non-buyers' gazes</li>
+<li><strong>Estimate likelihoods:</strong> Fit N(μ_B, Σ_B) and N(μ_¬B, Σ_¬B)</li>
+<li><strong>Compute evidence:</strong> P(g₀) = Σ P(g₀|class)P(class)</li>
+<li><strong>Apply Bayes:</strong> P(B|g₀) = P(g₀|B)P(B) / P(g₀)</li>
+<li><strong>Interpret:</strong> High P(B|g₀) means gaze at g₀ indicates likely purchase</li>
+</ol>
+<p><strong>This is Gaussian Naive Bayes classification (without naive assumption about feature independence)</strong></p>
+<hr />
+<h2>Question 4: Databases (20 marks)</h2>
+<h3>Part (a)(i): Calculate number of blocks [6 marks]</h3>
+<p><strong>Given Data:</strong></p>
+<p><strong>Course (C) Relation:</strong>
+- Schema: Course(Id, Description, Credits)
+- Attributes:
+  - Id: 4 bytes (primary key)
+  - Description: 256 bytes
+  - Credits: 1 byte
+- Total Records: r_C = 32</p>
+<p><strong>Transcript (T) Relation:</strong>
+- Schema: Transcript(StudentId, CourseId, Mark)
+- Attributes:
+  - StudentId: 4 bytes
+  - CourseId: 4 bytes (foreign key to Course.Id)
+  - Mark: 8 bytes (double precision)
+- Primary Key: (StudentId, CourseId)
+- Total Records: r_T = 51,200</p>
+<p><strong>Block size:</strong> 4096 bytes</p>
+<hr />
+<p><strong>Step 1: Calculate Record Sizes</strong></p>
+<p><strong>Course record size:</strong></p>
+<div class="codehilite"><pre><span></span><code>R_C = sizeof(Id) + sizeof(Description) + sizeof(Credits)
+    = 4 + 256 + 1
+    = 261 bytes
+</code></pre></div>
+
+<p><strong>Transcript record size:</strong></p>
+<div class="codehilite"><pre><span></span><code>R_T = sizeof(StudentId) + sizeof(CourseId) + sizeof(Mark)
+    = 4 + 4 + 8
+    = 16 bytes
+</code></pre></div>
+
+<hr />
+<p><strong>Step 2: Calculate Blocking Factors</strong></p>
+<p>The blocking factor is the number of records that fit in one block.</p>
+<p><strong>Blocking factor for Course:</strong></p>
+<div class="codehilite"><pre><span></span><code>bfr_C = floor(Block size / R_C)
+      = floor(4096 / 261)
+      = floor(15.69...)
+      = 15 records per block
+</code></pre></div>
+
+<p><strong>Blocking factor for Transcript:</strong></p>
+<div class="codehilite"><pre><span></span><code>bfr_T = floor(Block size / R_T)
+      = floor(4096 / 16)
+      = floor(256)
+      = 256 records per block
+</code></pre></div>
+
+<hr />
+<p><strong>Step 3: Calculate Number of Blocks</strong></p>
+<p><strong>Number of blocks for Course:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_C = ceil(r_C / bfr_C)
+    = ceil(32 / 15)
+    = ceil(2.13...)
+    = 3 blocks
+</code></pre></div>
+
+<p><strong>Number of blocks for Transcript:</strong></p>
+<div class="codehilite"><pre><span></span><code>n_T = ceil(r_T / bfr_T)
+    = ceil(51200 / 256)
+    = ceil(200)
+    = 200 blocks
+</code></pre></div>
+
+<hr />
+<p><strong>Answer:</strong></p>
+<p><strong>Course relation:</strong> 3 blocks
+<strong>Transcript relation:</strong> 200 blocks</p>
+<hr />
+<p><strong>Verification:</strong></p>
+<p><strong>Course:</strong>
+- 2 blocks hold: 2 × 15 = 30 records
+- 3rd block holds: 32 - 30 = 2 records
+- Total: 3 blocks needed ✓</p>
+<p><strong>Transcript:</strong>
+- 200 blocks hold: 200 × 256 = 51,200 records
+- Exactly fits! ✓</p>
+<hr />
+<p><strong>Python Notation:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="c1"># Course</span>
+<span class="n">R_C</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 261 bytes</span>
+<span class="n">bfr_C</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mi">4096</span> <span class="o">/</span> <span class="n">R_C</span><span class="p">)</span>  <span class="c1"># 15</span>
+<span class="n">n_C</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mi">32</span> <span class="o">/</span> <span class="n">bfr_C</span><span class="p">)</span>  <span class="c1"># 3</span>
+
+<span class="c1"># Transcript</span>
+<span class="n">R_T</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span>  <span class="c1"># 16 bytes</span>
+<span class="n">bfr_T</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mi">4096</span> <span class="o">/</span> <span class="n">R_T</span><span class="p">)</span>  <span class="c1"># 256</span>
+<span class="n">n_T</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mi">51200</span> <span class="o">/</span> <span class="n">bfr_T</span><span class="p">)</span>  <span class="c1"># 200</span>
+</code></pre></div>
+
+<p>Or using notation from hint:</p>
+<div class="codehilite"><pre><span></span><code>n_C = ceil(32 / floor(4096 / 261)) = ceil(32 / 15) = 3
+n_T = ceil(51200 / floor(4096 / 16)) = ceil(51200 / 256) = 200
+</code></pre></div>
+
+<hr />
+<h3>Part (a)(ii): Selection cardinality of join [2 marks]</h3>
+<p><strong>Query:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+</code></pre></div>
+
+<p><strong>Given:</strong>
+- r_C = 32 courses
+- r_T = 51,200 transcript records
+- Assumption: Courses uniformly enrolled by all students</p>
+<hr />
+<p><strong>Selection Cardinality:</strong></p>
+<p>The selection cardinality is the <strong>number of tuples in the result</strong> of the join.</p>
+<p><strong>Analysis:</strong></p>
+<p>Each transcript record (StudentId, CourseId, Mark) references exactly one course (via CourseId).</p>
+<p>Since CourseId in T is a foreign key to Id in C:
+- Every transcript record matches exactly one course record
+- No transcript records are dropped (assuming referential integrity)</p>
+<p><strong>Result size:</strong></p>
+<div class="codehilite"><pre><span></span><code>|C ⋈ T| = |T| = 51,200 tuples
+</code></pre></div>
+
+<hr />
+<p><strong>Why?</strong></p>
+<p><strong>Foreign key relationship:</strong>
+- Each T record has CourseId that references C.Id
+- This is a many-to-one relationship: many transcripts per course
+- Join: T.CourseId = C.Id</p>
+<p><strong>Uniform enrollment assumption:</strong>
+- Each course appears equally often in transcripts
+- Number of transcripts per course: 51,200 / 32 = 1,600</p>
+<p><strong>Join result:</strong>
+- Each of 51,200 transcript records joins with its course
+- Result has 51,200 tuples
+- Each tuple has attributes from both C and T</p>
+<hr />
+<p><strong>Formal Calculation:</strong></p>
+<p><strong>Average transcripts per course:</strong></p>
+<div class="codehilite"><pre><span></span><code>avg_transcripts_per_course = r_T / r_C = 51,200 / 32 = 1,600
+</code></pre></div>
+
+<p><strong>Join cardinality:</strong></p>
+<div class="codehilite"><pre><span></span><code>|C ⋈ T| = r_T = 51,200
+</code></pre></div>
+
+<p>Because each transcript joins with exactly one course.</p>
+<hr />
+<p><strong>Alternatively (using selectivity):</strong></p>
+<p><strong>Selectivity of join:</strong></p>
+<div class="codehilite"><pre><span></span><code>Selectivity = |C ⋈ T| / (|C| × |T|)
+            = 51,200 / (32 × 51,200)
+            = 1 / 32
+</code></pre></div>
+
+<p>This matches the intuition: each T record matches 1 out of 32 C records.</p>
+<hr />
+<p><strong>Answer:</strong></p>
+<p><strong>Selection cardinality: 51,200 tuples</strong></p>
+<hr />
+<p><strong>Summary:</strong>
+- Foreign key join: each T record matches exactly one C record
+- No duplicates created (1-to-many relationship from C to T)
+- Result size equals size of T (the "many" side)</p>
+<hr />
+<h3>Part (a)(iii): How selectivity helps query process [2 marks]</h3>
+<p><strong>Selectivity Definition:</strong></p>
+<p>Selectivity is the fraction of tuples that satisfy a condition:</p>
+<div class="codehilite"><pre><span></span><code>Selectivity = (Number of tuples satisfying condition) / (Total number of tuples)
+</code></pre></div>
+
+<p>For joins:</p>
+<div class="codehilite"><pre><span></span><code>Join selectivity = |R ⋈ S| / (|R| × |S|)
+</code></pre></div>
+
+<hr />
+<p><strong>How Selectivity Helps in Query Processing:</strong></p>
+<p><strong>1. Cardinality Estimation</strong></p>
+<p><strong>Purpose:</strong> Predict size of intermediate results</p>
+<p><strong>Why important:</strong>
+- Query optimizer needs to estimate cost of different execution plans
+- Cost depends on size of intermediate results
+- Selectivity helps estimate: |result| ≈ selectivity × |input|</p>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Mark</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">90</span>
+</code></pre></div>
+
+<p>If selectivity = 0.1:
+- Estimated result size: 0.1 × 51,200 = 5,120 tuples
+- Helps decide whether to use index or table scan</p>
+<hr />
+<p><strong>2. Join Order Optimization</strong></p>
+<p><strong>Purpose:</strong> Decide which join to perform first in multi-join queries</p>
+<p><strong>Strategy:</strong> Perform most selective joins first to minimize intermediate result sizes</p>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+<span class="w">          </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Students</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">StudentId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">Id</span>
+</code></pre></div>
+
+<p>Query optimizer uses selectivity to decide:
+- Option A: (C ⋈ T) ⋈ S
+- Option B: (T ⋈ S) ⋈ C</p>
+<p>Choose option with smallest intermediate result.</p>
+<hr />
+<p><strong>3. Access Method Selection</strong></p>
+<p><strong>Purpose:</strong> Choose between index scan, table scan, or hash join</p>
+<p><strong>Decision based on selectivity:</strong></p>
+<p><strong>Low selectivity (&lt; 0.05):</strong>
+- Few tuples qualify
+- Use index scan (if index available)
+- Faster to lookup specific tuples</p>
+<p><strong>High selectivity (&gt; 0.2):</strong>
+- Many tuples qualify
+- Use table scan
+- Overhead of index not worth it</p>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">CourseId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+</code></pre></div>
+
+<p>Selectivity = 1,600 / 51,200 = 0.031 (low)
+→ Use index on CourseId</p>
+<hr />
+<p><strong>4. Memory Allocation</strong></p>
+<p><strong>Purpose:</strong> Allocate appropriate buffer sizes</p>
+<p><strong>Why important:</strong>
+- If join result is small (high selectivity filter), use less memory
+- If result is large, allocate more memory or use disk-based algorithms</p>
+<p><strong>Example:</strong>
+- Hash join: size hash table based on estimated join cardinality
+- If selectivity predicts small result, use in-memory hash table
+- If large result, use partitioned hash join with disk</p>
+<hr />
+<p><strong>5. Parallelization Decisions</strong></p>
+<p><strong>Purpose:</strong> Decide whether to parallelize operation</p>
+<p><strong>Based on selectivity:</strong>
+- High cardinality (low selectivity) → parallelize
+- Low cardinality → sequential might be faster (less overhead)</p>
+<hr />
+<p><strong>Concrete Example:</strong></p>
+<p><strong>Query:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Course</span><span class="w"> </span><span class="k">C</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">Transcript</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">CourseId</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">C</span><span class="p">.</span><span class="n">Credits</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span>
+</code></pre></div>
+
+<p><strong>Without selectivity info:</strong>
+- Optimizer might choose (C ⋈ T) then filter by Credits
+- Produces 51,200 tuples, then filters</p>
+<p><strong>With selectivity info:</strong>
+- If selectivity of "Credits &gt; 3" is 0.25 (25% of courses)
+- Optimizer chooses: filter C first (8 courses), then join with T
+- Produces only 8 × 1,600 = 12,800 tuples
+- <strong>Much more efficient!</strong></p>
+<hr />
+<p><strong>Summary:</strong></p>
+<p>Selectivity helps query processing by:</p>
+<ol>
+<li><strong>Estimating result sizes</strong> → better cost estimation</li>
+<li><strong>Optimizing join order</strong> → minimize intermediate results</li>
+<li><strong>Choosing access methods</strong> → index vs table scan</li>
+<li><strong>Allocating resources</strong> → memory, buffers, parallelization</li>
+<li><strong>Reducing I/O</strong> → fewer blocks to read/write</li>
+</ol>
+<p><strong>Bottom line:</strong> Selectivity enables the query optimizer to choose the most efficient execution plan, significantly improving query performance.</p>
+<hr />
+<h3>Part (b)(i): Database choice for music streaming [6 marks]</h3>
+<p><strong>Problem:</strong></p>
+<p>Store and query song data with:
+- High-dimensional feature vectors
+- Acoustic attributes
+- Artist information
+- ML model embeddings
+- Need efficient retrieval and recommendation</p>
+<hr />
+<p><strong>Recommended Database Types:</strong></p>
+<p><strong>1. Vector Database (Primary Recommendation)</strong></p>
+<p><strong>Examples:</strong> Pinecone, Weaviate, Milvus, Qdrant, FAISS</p>
+<p><strong>Why?</strong></p>
+<p><strong>Perfect for:</strong>
+- High-dimensional embeddings from ML models
+- Similarity search (find similar songs)
+- Approximate nearest neighbor (ANN) search
+- Cosine similarity, Euclidean distance queries</p>
+<p><strong>Features:</strong>
+- Optimized for vector operations
+- Built-in similarity search algorithms (HNSW, IVF)
+- Fast ANN queries: O(log n) instead of O(n)
+- Handles dimensions from 100 to 1000+</p>
+<p><strong>Example query:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Find songs similar to current song</span>
+<span class="n">similar_songs</span> <span class="o">=</span> <span class="n">vector_db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+    <span class="n">embedding</span><span class="o">=</span><span class="n">current_song_embedding</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Justification:</strong>
+- Recommendation requires finding similar songs based on embeddings
+- Vector DBs designed specifically for this use case
+- Traditional RDBMS very slow for high-dim similarity search
+- Can handle billions of vectors efficiently</p>
+<hr />
+<p><strong>2. Document Database (Complementary)</strong></p>
+<p><strong>Examples:</strong> MongoDB, CouchDB, DynamoDB</p>
+<p><strong>Why?</strong></p>
+<p><strong>Perfect for:</strong>
+- Flexible schema (songs have varying attributes)
+- Nested documents (artist info, album data)
+- JSON-like storage
+- Easy to add new fields</p>
+<p><strong>Example document:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;song_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bohemian Rhapsody&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;artist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Queen&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;artist_001&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;genre&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Rock&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Progressive Rock&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;acoustic_features&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;tempo&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">144</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bb major&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;energy&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;danceability&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.45</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;embedding&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.23</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.45</span><span class="p">,</span><span class="w"> </span><span class="mf">0.67</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">  </span><span class="c1">// 512-dim vector</span>
+<span class="w">  </span><span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">354000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1975</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Justification:</strong>
+- Song metadata is heterogeneous and evolving
+- Artist info naturally nested
+- Document model more natural than relational
+- Easy to query by specific attributes</p>
+<hr />
+<p><strong>3. Hybrid Approach (Best Solution)</strong></p>
+<p><strong>Combination:</strong> Vector DB + Document/Relational DB</p>
+<p><strong>Architecture:</strong></p>
+<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────┐
+│      Application Layer              │
+└─────────────────────────────────────┘
+          │                  │
+          │                  │
+          ▼                  ▼
+┌──────────────────┐  ┌──────────────┐
+│   Vector DB      │  │  Document DB │
+│  (Embeddings)    │  │  (Metadata)  │
+│                  │  │              │
+│  - song_id       │  │  - song_id   │
+│  - embedding     │  │  - title     │
+│  [512-dim vec]   │  │  - artist    │
+│                  │  │  - features  │
+└──────────────────┘  └──────────────┘
+</code></pre></div>
+
+<p><strong>Workflow:</strong></p>
+<ol>
+<li><strong>Store embeddings:</strong> Vector DB (Pinecone)</li>
+<li><strong>Store metadata:</strong> Document DB (MongoDB)</li>
+<li><strong>Recommendation query:</strong>
+   <code>a. Query vector DB for similar embeddings → get song_ids
+   b. Query document DB for metadata of those song_ids
+   c. Return rich song information to user</code></li>
+</ol>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Step 1: Find similar songs by embedding</span>
+<span class="n">similar_song_ids</span> <span class="o">=</span> <span class="n">vector_db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+    <span class="n">embedding</span><span class="o">=</span><span class="n">current_song_embedding</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 2: Get metadata</span>
+<span class="n">songs</span> <span class="o">=</span> <span class="n">mongo_db</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;song_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">similar_song_ids</span><span class="p">}})</span>
+
+<span class="c1"># Step 3: Filter by user preferences (e.g., genre, artist)</span>
+<span class="n">recommended</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">songs</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;artist&#39;</span><span class="p">][</span><span class="s1">&#39;genre&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">user_prefs</span><span class="p">]</span>
+</code></pre></div>
+
+<hr />
+<p><strong>4. Additional Database Types to Consider:</strong></p>
+<p><strong>Graph Database (Neo4j, AWS Neptune):</strong></p>
+<p><strong>Use case:</strong> Artist relationships, playlist graphs</p>
+<div class="codehilite"><pre><span></span><code><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="p">[</span><span class="o">:</span><span class="n">LIKES</span><span class="p">]</span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">Song</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="p">[</span><span class="o">:</span><span class="n">BY</span><span class="p">]</span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">Artist</span><span class="p">)</span>
+<span class="w">                     </span><span class="o">|</span>
+<span class="w">                     </span><span class="err">└</span><span class="o">-</span><span class="p">[</span><span class="o">:</span><span class="n">SIMILAR_TO</span><span class="p">]</span><span class="o">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">Song</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Benefits:</strong>
+- Model complex relationships
+- Find paths (users who like X also like Y)
+- Collaborative filtering</p>
+<p><strong>When to use:</strong>
+- Social features (friend recommendations)
+- Complex recommendation logic
+- Artist influence networks</p>
+<hr />
+<p><strong>Search Engine (Elasticsearch):</strong></p>
+<p><strong>Use case:</strong> Text search for song titles, artists, lyrics</p>
+<p><strong>Benefits:</strong>
+- Full-text search with ranking
+- Fuzzy matching ("bohemian rapsody" → "Bohemian Rhapsody")
+- Aggregations (top artists, genres)</p>
+<p><strong>When to use:</strong>
+- User searches for songs by name
+- Auto-complete suggestions
+- Analytics dashboards</p>
+<hr />
+<p><strong>Comparison Table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Database Type</th>
+<th>Use Case</th>
+<th>Advantages</th>
+<th>Query Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Vector DB</strong></td>
+<td>Similarity search, embeddings</td>
+<td>Fast ANN, optimized for vectors</td>
+<td>Find songs similar to X</td>
+</tr>
+<tr>
+<td><strong>Document DB</strong></td>
+<td>Metadata, flexible schema</td>
+<td>Easy evolution, nested data</td>
+<td>Get all rock songs</td>
+</tr>
+<tr>
+<td><strong>Relational DB</strong></td>
+<td>Transactional data, user accounts</td>
+<td>ACID, joins, integrity</td>
+<td>User playlists, subscriptions</td>
+</tr>
+<tr>
+<td><strong>Graph DB</strong></td>
+<td>Relationships, social</td>
+<td>Path queries, recommendations</td>
+<td>Users who like X also like Y</td>
+</tr>
+<tr>
+<td><strong>Search Engine</strong></td>
+<td>Text search, autocomplete</td>
+<td>Full-text, fuzzy, analytics</td>
+<td>Search "queen bohemian"</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Final Recommendation:</strong></p>
+<p><strong>Primary:</strong> <strong>Vector Database (Pinecone, Milvus)</strong> for embeddings and similarity search</p>
+<p><strong>Secondary:</strong> <strong>Document Database (MongoDB)</strong> for song metadata</p>
+<p><strong>Optional:</strong>
+- Relational DB (PostgreSQL) for user accounts, transactions
+- Graph DB (Neo4j) for social features
+- Search Engine (Elasticsearch) for text search</p>
+<p><strong>Justification:</strong>
+- Vector DB: Essential for ML-based recommendations (core requirement)
+- Document DB: Flexible for evolving music metadata
+- Hybrid approach: Combines strengths of both
+- Scalable: Each database handles what it does best</p>
+<hr />
+<h3>Part (b)(ii): Store and index song data [4 marks]</h3>
+<p><strong>Data Model:</strong></p>
+<p>Each song has:
+- <strong>Metadata:</strong> title, artist, album, genre, duration
+- <strong>Acoustic features:</strong> tempo, key, energy, danceability (low-dim, 10-50 features)
+- <strong>Embedding:</strong> ML-generated vector (high-dim, 128-512 dimensions)</p>
+<hr />
+<p><strong>Storage Strategy:</strong></p>
+<p><strong>1. Vector Database Storage</strong></p>
+<p><strong>Store embeddings in vector DB:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Using Pinecone</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pinecone</span>
+
+<span class="c1"># Initialize</span>
+<span class="n">pinecone</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">environment</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">pinecone</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="s2">&quot;songs&quot;</span><span class="p">)</span>
+
+<span class="c1"># Insert song embedding</span>
+<span class="n">index</span><span class="o">.</span><span class="n">upsert</span><span class="p">([</span>
+    <span class="p">(</span>
+        <span class="s2">&quot;song_123&quot;</span><span class="p">,</span>  <span class="c1"># song_id (primary key)</span>
+        <span class="n">embedding_vector</span><span class="p">,</span>  <span class="c1"># [512-dim float array]</span>
+        <span class="p">{</span>  <span class="c1"># metadata (optional, for filtering)</span>
+            <span class="s2">&quot;genre&quot;</span><span class="p">:</span> <span class="s2">&quot;rock&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;artist_id&quot;</span><span class="p">:</span> <span class="s2">&quot;artist_001&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2020</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+</code></pre></div>
+
+<p><strong>Key decisions:</strong></p>
+<p><strong>Dimension:</strong> 128-512 (trade-off: quality vs speed)
+- Higher dim: Better representation, slower queries
+- Lower dim: Faster, might lose information
+- Recommendation: 256-384 dimensions</p>
+<p><strong>Metric:</strong> Cosine similarity (most common for song embeddings)
+- Cosine: Measures angle (good for normalized vectors)
+- Euclidean: Measures distance (good for spatial data)
+- Dot product: Fast, works for normalized vectors</p>
+<hr />
+<p><strong>2. Document Database Storage</strong></p>
+<p><strong>Store metadata in MongoDB:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// MongoDB collection: songs</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;song_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Song Title&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;artist&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;artist_001&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Artist Name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;genres&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Rock&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Alternative&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="s2">&quot;album&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;album_456&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Album Title&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;year&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2020</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="s2">&quot;acoustic_features&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;tempo&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">120.5</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;C major&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;energy&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;danceability&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;valence&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.7</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="s2">&quot;duration_ms&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">240000</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;popularity&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">85</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;explicit&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;upbeat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;summer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;driving&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Indexing Strategy:</strong></p>
+<p><strong>1. Vector Index (in Vector DB)</strong></p>
+<p><strong>Index type:</strong> HNSW (Hierarchical Navigable Small World)</p>
+<p><strong>Why HNSW?</strong>
+- Best balance of speed and accuracy
+- O(log n) query time
+- High recall (&gt;95%)
+- Standard for vector DBs</p>
+<p><strong>Configuration:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Pinecone</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">pinecone</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;songs&quot;</span><span class="p">,</span>
+    <span class="n">dimension</span><span class="o">=</span><span class="mi">384</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
+    <span class="n">pod_type</span><span class="o">=</span><span class="s2">&quot;p1.x1&quot;</span>  <span class="c1"># Performance pod</span>
+<span class="p">)</span>
+
+<span class="c1"># Milvus</span>
+<span class="n">collection</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span>
+    <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+    <span class="n">index_params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;metric_type&quot;</span><span class="p">:</span> <span class="s2">&quot;COSINE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;index_type&quot;</span><span class="p">:</span> <span class="s2">&quot;HNSW&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;efConstruction&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Parameters:</strong>
+- <strong>M:</strong> Number of connections per layer (default: 16)
+  - Higher M: Better recall, more memory
+- <strong>efConstruction:</strong> Controls build quality
+  - Higher: Better index, slower build
+- <strong>ef:</strong> Controls search quality (query time)
+  - Higher: Better recall, slower queries</p>
+<p><strong>Alternative indices:</strong></p>
+<p><strong>IVF (Inverted File Index):</strong>
+- Faster build, slightly lower recall
+- Good for very large datasets (&gt;10M songs)</p>
+<p><strong>LSH (Locality Sensitive Hashing):</strong>
+- Probabilistic, very fast
+- Lower recall, good for approximate search</p>
+<hr />
+<p><strong>2. Secondary Indices (in Document DB)</strong></p>
+<p><strong>Index on frequently queried fields:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// MongoDB indices</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span><span class="s2">&quot;artist.id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">});</span><span class="w">  </span><span class="c1">// Fast artist lookup</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span><span class="s2">&quot;genre&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">});</span><span class="w">  </span><span class="c1">// Filter by genre</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span><span class="s2">&quot;year&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">});</span><span class="w">  </span><span class="c1">// Filter by year</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span><span class="s2">&quot;popularity&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">});</span><span class="w">  </span><span class="c1">// Sort by popularity</span>
+
+<span class="c1">// Compound index for complex queries</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span>
+<span class="w">  </span><span class="s2">&quot;artist.id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;year&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;popularity&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span>
+<span class="p">});</span>
+
+<span class="c1">// Text index for search</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">songs</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">({</span>
+<span class="w">  </span><span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;artist.name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Retrieval Strategy:</strong></p>
+<p><strong>Scenario 1: Pure Similarity Search</strong></p>
+<p>"Find songs similar to song X"</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Query vector DB</span>
+<span class="n">similar_songs</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+    <span class="n">vector</span><span class="o">=</span><span class="n">song_x_embedding</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="mi">2015</span><span class="p">}}</span>  <span class="c1"># Optional metadata filter</span>
+<span class="p">)</span>
+
+<span class="c1"># Get full metadata from MongoDB</span>
+<span class="n">song_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">hit</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">similar_songs</span><span class="p">]</span>
+<span class="n">full_data</span> <span class="o">=</span> <span class="n">mongo_db</span><span class="o">.</span><span class="n">songs</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">song_ids</span><span class="p">}})</span>
+</code></pre></div>
+
+<p><strong>Query time:</strong> ~10-50ms for 1M songs</p>
+<hr />
+<p><strong>Scenario 2: Hybrid Search</strong></p>
+<p>"Find upbeat rock songs similar to song X from 2020+"</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Step 1: Metadata pre-filter (MongoDB)</span>
+<span class="n">candidate_ids</span> <span class="o">=</span> <span class="n">mongo_db</span><span class="o">.</span><span class="n">songs</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;genre&quot;</span><span class="p">:</span> <span class="s2">&quot;Rock&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;acoustic_features.energy&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gt&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">},</span>  <span class="c1"># Upbeat</span>
+    <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">}</span>
+<span class="p">})</span>
+
+<span class="c1"># Step 2: Similarity search (Vector DB) with pre-filter</span>
+<span class="n">similar_songs</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+    <span class="n">vector</span><span class="o">=</span><span class="n">song_x_embedding</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">candidate_ids</span><span class="p">}}</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Scenario 3: Recommendation Pipeline</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="nv">User</span><span class="w"> </span><span class="nv">plays</span><span class="w"> </span><span class="nv">song</span><span class="w"> </span>→<span class="w"> </span><span class="nv">Get</span><span class="w"> </span><span class="nv">embedding</span><span class="w"> </span>→
+<span class="w">  </span>↓
+<span class="nv">Find</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="nv">similar</span><span class="w"> </span><span class="nv">songs</span><span class="w"> </span><span class="ss">(</span><span class="nv">Vector</span><span class="w"> </span><span class="nv">DB</span><span class="ss">)</span><span class="w"> </span>→
+<span class="w">  </span>↓
+<span class="nv">Filter</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">preferences</span><span class="w"> </span><span class="ss">(</span><span class="nv">MongoDB</span><span class="ss">)</span>:
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nv">Exclude</span><span class="w"> </span><span class="nv">explicit</span><span class="w"> </span><span class="nv">content</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nv">Match</span><span class="w"> </span><span class="nv">preferred</span><span class="w"> </span><span class="nv">genres</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nv">Recency</span><span class="w"> </span><span class="nv">bias</span><span class="w"> </span><span class="ss">(</span><span class="nv">recent</span><span class="w"> </span><span class="nv">songs</span><span class="w"> </span><span class="nv">ranked</span><span class="w"> </span><span class="nv">higher</span><span class="ss">)</span><span class="w"> </span>→
+<span class="w">  </span>↓
+<span class="nv">Re</span><span class="o">-</span><span class="nv">rank</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">popularity</span><span class="o">/</span><span class="nv">freshness</span><span class="w"> </span>→
+<span class="w">  </span>↓
+<span class="k">Return</span><span class="w"> </span><span class="nv">top</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="nv">recommendations</span>
+</code></pre></div>
+
+<hr />
+<p><strong>Optimization Techniques:</strong></p>
+<p><strong>1. Pre-filtering vs Post-filtering:</strong></p>
+<p><strong>Pre-filtering (recommended):</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Filter candidates first, then similarity search</span>
+<span class="n">similar</span> <span class="o">=</span> <span class="n">vector_db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+    <span class="n">vector</span><span class="o">=</span><span class="n">emb</span><span class="p">,</span>
+    <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;genre&quot;</span><span class="p">:</span> <span class="s2">&quot;rock&quot;</span><span class="p">}</span>  <span class="c1"># Vector DB does filtering</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Post-filtering:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Get similar, then filter</span>
+<span class="n">similar</span> <span class="o">=</span> <span class="n">vector_db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">emb</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">similar</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;genre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;rock&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+<p><strong>Trade-off:</strong>
+- Pre-filtering: Faster, but requires metadata in vector DB
+- Post-filtering: More flexible, but wasteful</p>
+<hr />
+<p><strong>2. Caching:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Cache popular song recommendations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">redis</span>
+
+<span class="n">redis_client</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_recommendations</span><span class="p">(</span><span class="n">song_id</span><span class="p">):</span>
+    <span class="c1"># Check cache</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="n">redis_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rec:</span><span class="si">{</span><span class="n">song_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cached</span><span class="p">)</span>
+
+    <span class="c1"># Compute recommendations</span>
+    <span class="n">recs</span> <span class="o">=</span> <span class="n">compute_recommendations</span><span class="p">(</span><span class="n">song_id</span><span class="p">)</span>
+
+    <span class="c1"># Cache for 1 hour</span>
+    <span class="n">redis_client</span><span class="o">.</span><span class="n">setex</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;rec:</span><span class="si">{</span><span class="n">song_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="mi">3600</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">recs</span>
+</code></pre></div>
+
+<hr />
+<p><strong>3. Sharding:</strong></p>
+<p>For very large catalogs (&gt;100M songs):</p>
+<p><strong>Partition by genre:</strong>
+- Create separate vector indices per genre
+- Rock index, Pop index, Classical index
+- Query only relevant genre index</p>
+<p><strong>Partition by popularity:</strong>
+- Hot index: Popular songs (fast, in-memory)
+- Cold index: Rare songs (disk-based, slower)</p>
+<hr />
+<p><strong>Summary:</strong></p>
+<p><strong>Storage:</strong>
+- Embeddings → Vector DB (Pinecone/Milvus)
+- Metadata → Document DB (MongoDB)</p>
+<p><strong>Indexing:</strong>
+- HNSW index for embeddings (cosine similarity)
+- B-tree indices on genre, artist, year in MongoDB
+- Text index for song/artist search</p>
+<p><strong>Retrieval:</strong>
+- Hybrid search: Pre-filter with metadata, then similarity search
+- Cache popular recommendations
+- Shard by genre for very large datasets</p>
+<p><strong>Result:</strong> Fast (&lt;50ms), accurate recommendations with rich filtering</p>
+<hr />
+<h2>End of Solutions</h2>
+<p><strong>Summary:</strong>
+- <strong>Question 1 (20 marks):</strong> Linear Algebra - adjacency matrices, transitions, steady state, SVD, pseudo-inverse
+- <strong>Question 2 (20 marks):</strong> Optimization - normal equations, gradient descent, SGD, Lagrange multipliers
+- <strong>Question 3 (20 marks):</strong> Probabilities - normal distributions, GMM, parameter estimation, Bayesian inference
+- <strong>Question 4 (20 marks):</strong> Databases - block calculations, join cardinality, vector databases, music streaming</p>
+<p><strong>Total: 80 marks</strong></p>
+<hr />
+<p><strong>Prepared by: AI Assistant</strong>
+<strong>Date: November 25, 2025</strong>
+<strong>For: IDSS 2024-2025 Examination</strong></p>
+</body>
+</html>

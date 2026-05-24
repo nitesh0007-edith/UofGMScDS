@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization & Stochastic Hill Climbing - A Beginner's Guide</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; color: #2c3e50; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.1); padding: 50px; }
+        h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 1.2em; margin-bottom: 40px; font-style: italic; }
+        h2 { color: #34495e; font-size: 2em; margin-top: 50px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #667eea; }
+        h3 { color: #34495e; font-size: 1.5em; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 20px; font-size: 1.1em; text-align: justify; }
+        .definition-box { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 5px solid #667eea; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .definition-box h4 { color: #667eea; font-size: 1.3em; margin-bottom: 15px; }
+        .example-box { background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%); border-left: 5px solid #f5576c; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .example-box h4 { color: #f5576c; font-size: 1.3em; margin-bottom: 15px; }
+        .key-point { background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%); border-left: 5px solid #4facfe; padding: 25px; margin: 30px 0; border-radius: 10px; }
+        .key-point h4 { color: #4facfe; font-size: 1.3em; margin-bottom: 15px; }
+        .formula { background: #f8f9fa; padding: 25px; margin: 25px 0; border-radius: 10px; border: 2px dashed #667eea; text-align: center; font-size: 1.2em; }
+        ul, ol { margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; font-size: 1.05em; }
+        .visual-example { background: #ecf0f1; padding: 20px; margin: 25px 0; border-radius: 10px; font-family: 'Courier New', monospace; }
+        .toc { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 30px 0; }
+        .toc h3 { color: #667eea; margin-top: 0; }
+        .toc a { color: #3498db; text-decoration: none; transition: color 0.3s; }
+        .toc a:hover { color: #667eea; }
+        .print-button { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 25px; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); transition: transform 0.3s; z-index: 1000; }
+        .print-button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6); }
+        @media print { body { background: white; } .container { box-shadow: none; } .print-button { display: none; } }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Optimization & Stochastic Hill Climbing</h1>
+        <p class="subtitle">Finding the Best Solution</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction: The Optimization Problem</a></li>
+                <li><a href="#basics">Optimization Basics</a></li>
+                <li><a href="#hill-climbing">Hill Climbing Algorithm</a></li>
+                <li><a href="#simulated-annealing">Simulated Annealing</a></li>
+                <li><a href="#applications">Applications</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 Introduction: The Optimization Problem</h2>
+
+        <p>Many problems in probability and statistics boil down to <strong>optimization</strong>:</p>
+
+        <ul>
+            <li>Find the MLE (maximize likelihood)</li>
+            <li>Minimize prediction error</li>
+            <li>Choose the best search strategy</li>
+            <li>Find optimal parameter values</li>
+        </ul>
+
+        <div class="visual-example">
+            <strong>The Core Problem:</strong><br><br>
+
+            Given a function f(x), find x* such that:<br>
+            f(x*) is maximum (or minimum)<br><br>
+
+            Example: Finding the peak of a mountain!
+        </div>
+
+        <h2 id="basics">📊 Optimization Basics</h2>
+
+        <div class="definition-box">
+            <h4>Optimization Problem</h4>
+            <p>Find the value that maximizes (or minimizes) an objective function:</p>
+
+            <div class="formula">
+                \[x^* = \arg\max_{x} f(x)\]
+            </div>
+
+            <p>Read as: "The value of x that maximizes f(x)"</p>
+
+            <p><strong>Equivalent for minimization:</strong></p>
+            <div class="formula">
+                \[\arg\min_{x} f(x) = \arg\max_{x} -f(x)\]
+            </div>
+        </div>
+
+        <h3>Local vs Global Optima</h3>
+
+        <div class="key-point">
+            <h4>⚠️ Critical Distinction</h4>
+
+            <p><strong>Local Maximum:</strong> Best in the neighborhood</p>
+            <ul>
+                <li>\(f(x^*) \geq f(x)\) for all x near \(x^*\)</li>
+                <li>Like a hilltop</li>
+            </ul>
+
+            <p><strong>Global Maximum:</strong> Best everywhere</p>
+            <ul>
+                <li>\(f(x^*) \geq f(x)\) for ALL x</li>
+                <li>The highest mountain peak</li>
+            </ul>
+
+            <div class="visual-example">
+                Landscape Analogy:<br><br>
+
+                        Peak3<br>
+                   Peak1     |     Peak2 (Global Max)<br>
+                    /\       |      /\<br>
+                   /  \      |     /  \<br>
+                  /    \_____|____/    \<br>
+                 /                      \<br>
+                /_________________________\<br><br>
+
+                Local maxima: Peak1, Peak2, Peak3<br>
+                Global maximum: Peak2
+            </div>
+        </div>
+
+        <h3>Gradient-Based Methods</h3>
+
+        <div class="definition-box">
+            <h4>Gradient Descent/Ascent</h4>
+            <p>Use the derivative to find the direction of steepest change:</p>
+
+            <div class="formula">
+                \[x_{t+1} = x_t + \alpha \nabla f(x_t)\]
+            </div>
+
+            <p>Where:</p>
+            <ul>
+                <li>\(\alpha\) = learning rate (step size)</li>
+                <li>\(\nabla f\) = gradient (derivative)</li>
+            </ul>
+
+            <p><strong>Problem:</strong> Can get stuck in local optima!</p>
+        </div>
+
+        <h2 id="hill-climbing">⛰️ Hill Climbing Algorithm</h2>
+
+        <div class="definition-box">
+            <h4>Stochastic Hill Climbing</h4>
+            <p>Iteratively move to better neighboring solutions with randomness:</p>
+
+            <div class="visual-example">
+                <strong>Algorithm:</strong><br><br>
+
+                1. Start at random position x<br>
+                2. Repeat:<br>
+                   a. Generate random neighbor x'<br>
+                   b. If f(x') > f(x):<br>
+                      Move to x' (accept improvement)<br>
+                   c. Otherwise:<br>
+                      Stay at x (reject worse solution)<br>
+                3. Until convergence or max iterations
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>🏔️ Example: Finding Maximum</h4>
+
+            <p><strong>Function:</strong> \(f(x) = -(x-3)^2 + 10\) (parabola, max at x=3)</p>
+
+            <div class="visual-example">
+                Iteration 0: x = 0.5, f(x) = 3.75<br>
+                Try neighbor: x' = 1.2<br>
+                f(x') = 6.76 > 3.75 ✓ Accept!<br><br>
+
+                Iteration 1: x = 1.2, f(x) = 6.76<br>
+                Try neighbor: x' = 2.0<br>
+                f(x') = 9.0 > 6.76 ✓ Accept!<br><br>
+
+                Iteration 2: x = 2.0, f(x) = 9.0<br>
+                Try neighbor: x' = 2.8<br>
+                f(x') = 9.96 > 9.0 ✓ Accept!<br><br>
+
+                Iteration 3: x = 2.8, f(x) = 9.96<br>
+                Try neighbor: x' = 3.1<br>
+                f(x') = 9.99 > 9.96 ✓ Accept!<br><br>
+
+                ...converges to x ≈ 3
+            </div>
+        </div>
+
+        <div class="key-point">
+            <h4>📊 Strengths and Weaknesses</h4>
+
+            <p><strong>Strengths:</strong></p>
+            <ul>
+                <li>Simple to implement</li>
+                <li>No gradient needed</li>
+                <li>Works for discrete spaces</li>
+            </ul>
+
+            <p><strong>Weaknesses:</strong></p>
+            <ul>
+                <li>Gets stuck in local optima</li>
+                <li>Sensitive to starting point</li>
+                <li>Can't escape plateaus</li>
+            </ul>
+        </div>
+
+        <h2 id="simulated-annealing">🔥 Simulated Annealing</h2>
+
+        <div class="definition-box">
+            <h4>Simulated Annealing</h4>
+            <p>Enhanced hill climbing that can escape local optima by occasionally accepting worse solutions!</p>
+
+            <p><strong>Key Idea:</strong> Accept worse solutions with probability that decreases over time (like cooling metal)</p>
+        </div>
+
+        <div class="definition-box">
+            <h4>Algorithm</h4>
+
+            <div class="visual-example">
+                <strong>Simulated Annealing:</strong><br><br>
+
+                1. Start at random x, set temperature T = T₀<br>
+                2. Repeat:<br>
+                   a. Generate neighbor x'<br>
+                   b. Calculate Δf = f(x') - f(x)<br>
+                   c. If Δf > 0:<br>
+                      Accept (move to x')<br>
+                   d. Else:<br>
+                      Accept with probability exp(Δf/T)<br>
+                   e. Decrease temperature: T = α·T<br>
+                3. Until T ≈ 0 or convergence
+            </div>
+
+            <p><strong>Acceptance Probability:</strong></p>
+            <div class="formula">
+                \[P(\text{accept worse}) = \exp\left(\frac{f(x') - f(x)}{T}\right)\]
+            </div>
+
+            <p>Where T is the "temperature" parameter</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🌡️ Temperature Schedule</h4>
+
+            <p><strong>High Temperature (early):</strong></p>
+            <ul>
+                <li>Accept worse solutions frequently</li>
+                <li>Explore broadly</li>
+                <li>Can escape local optima</li>
+            </ul>
+
+            <p><strong>Low Temperature (late):</strong></p>
+            <ul>
+                <li>Rarely accept worse solutions</li>
+                <li>Exploit current region</li>
+                <li>Fine-tune solution</li>
+            </ul>
+
+            <p><strong>Cooling Schedule:</strong></p>
+            <div class="formula">
+                \[T_t = T_0 \cdot \alpha^t \quad \text{where } 0 < \alpha < 1\]
+            </div>
+            <p>Common: \(\alpha = 0.95\) (5% cooling per step)</p>
+        </div>
+
+        <div class="example-box">
+            <h4>❄️ Example: Escaping Local Optimum</h4>
+
+            <p><strong>Function:</strong> Multiple peaks with local maxima</p>
+
+            <div class="visual-example">
+                Current: x = 2, f(x) = 8 (local max)<br>
+                Neighbor: x' = 2.5, f(x') = 6 (worse!)<br>
+                Δf = 6 - 8 = -2<br><br>
+
+                Temperature T = 5:<br>
+                P(accept) = exp(-2/5) = exp(-0.4) ≈ 0.67<br>
+                → 67% chance of accepting!<br><br>
+
+                Temperature T = 1:<br>
+                P(accept) = exp(-2/1) = exp(-2) ≈ 0.14<br>
+                → Only 14% chance<br><br>
+
+                Temperature T = 0.1:<br>
+                P(accept) = exp(-2/0.1) = exp(-20) ≈ 0.000002<br>
+                → Almost never accept
+            </div>
+
+            <p>Early on, we might accept this worse move and discover the global optimum elsewhere!</p>
+        </div>
+
+        <h2 id="applications">🌍 Applications</h2>
+
+        <div class="example-box">
+            <h4>🔍 Application 1: Submarine Search Strategy</h4>
+
+            <p><strong>Optimize:</strong> Search order to maximize probability of finding submarine</p>
+
+            <p><strong>Approach:</strong></p>
+            <ol>
+                <li>Represent strategy as sequence of squares</li>
+                <li>Objective: Expected search time</li>
+                <li>Use simulated annealing to find good ordering</li>
+                <li>Accept worse strategies early to explore</li>
+            </ol>
+
+            <p>Handles complex, discrete optimization problem!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🗺️ Application 2: Traveling Salesman Problem</h4>
+
+            <p><strong>Problem:</strong> Visit n cities with minimum total distance</p>
+
+            <p><strong>Classic simulated annealing application:</strong></p>
+            <ul>
+                <li>State = tour (permutation of cities)</li>
+                <li>Neighbor = swap two cities</li>
+                <li>Objective = total distance</li>
+                <li>Can escape local optima to find better tours</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>📊 Application 3: Model Fitting</h4>
+
+            <p><strong>When MLE has no closed form:</strong></p>
+
+            <ul>
+                <li>Use optimization to maximize likelihood</li>
+                <li>Hill climbing for simple landscapes</li>
+                <li>Simulated annealing for multimodal likelihoods</li>
+            </ul>
+
+            <p>Example: Fitting mixture models with multiple components</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🧬 Application 4: Protein Folding</h4>
+
+            <p>Find 3D structure that minimizes energy:</p>
+
+            <ul>
+                <li>Energy landscape extremely complex</li>
+                <li>Millions of local minima</li>
+                <li>Simulated annealing mimics physical process</li>
+                <li>High temp = unfolded, low temp = folded</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>🎮 Application 5: Game AI</h4>
+
+            <p><strong>Optimize game-playing strategies:</strong></p>
+
+            <ul>
+                <li>State = current position</li>
+                <li>Objective = win probability</li>
+                <li>Neighbors = possible moves</li>
+                <li>Hill climbing for move selection</li>
+            </ul>
+        </div>
+
+        <h3>Convergence Criteria</h3>
+
+        <div class="key-point">
+            <h4>🛑 When to Stop</h4>
+
+            <p><strong>Common stopping conditions:</strong></p>
+
+            <ol>
+                <li><strong>Max iterations:</strong> Run for N steps</li>
+                <li><strong>No improvement:</strong> f(x) unchanged for k iterations</li>
+                <li><strong>Small changes:</strong> |f(x_{t+1}) - f(x_t)| < ε</li>
+                <li><strong>Temperature:</strong> T < threshold (simulated annealing)</li>
+                <li><strong>Time limit:</strong> Stop after T seconds</li>
+            </ol>
+
+            <p>Often use combination of multiple criteria!</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+
+            <p><strong>Optimization:</strong></p>
+            <div class="formula">
+                \[x^* = \arg\max_{x} f(x)\]
+            </div>
+
+            <p><strong>Hill Climbing:</strong></p>
+            <ul>
+                <li>Always accept better solutions</li>
+                <li>Simple but gets stuck in local optima</li>
+                <li>No gradient needed</li>
+            </ul>
+
+            <p><strong>Simulated Annealing:</strong></p>
+            <div class="formula">
+                \[P(\text{accept worse}) = \exp\left(\frac{\Delta f}{T}\right)\]
+            </div>
+            <ul>
+                <li>Occasionally accept worse solutions</li>
+                <li>Can escape local optima</li>
+                <li>Temperature controls exploration/exploitation</li>
+            </ul>
+
+            <p><strong>Key Trade-off:</strong></p>
+            <ul>
+                <li><strong>Exploration:</strong> Search broadly for global optimum</li>
+                <li><strong>Exploitation:</strong> Refine current solution</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>You've completed the probability learning journey! Next steps:</p>
+            <ul>
+                <li><strong>Advanced Optimization:</strong> Genetic algorithms, particle swarm</li>
+                <li><strong>Bayesian Optimization:</strong> Use probability models to guide search</li>
+                <li><strong>Reinforcement Learning:</strong> Learn optimal policies</li>
+                <li><strong>Neural Networks:</strong> Optimize millions of parameters</li>
+            </ul>
+
+            <p style="margin-top: 30px; text-align: center; font-size: 1.3em; color: #667eea;">
+                <strong>🎉 Congratulations on completing all 8 guides!</strong>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

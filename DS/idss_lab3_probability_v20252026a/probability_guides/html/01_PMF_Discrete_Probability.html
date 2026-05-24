@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Mass Functions (PMF) - A Beginner's Guide</title>
+
+    <!-- MathJax for beautiful equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            padding: 50px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .definition-box h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+            border-left: 5px solid #f5576c;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h4 {
+            color: #f5576c;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+            border-left: 5px solid #4facfe;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .key-point h4 {
+            color: #4facfe;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .visual-example {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #667eea;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+
+        .mjx-math {
+            font-size: 1.2em !important;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <div class="container">
+        <h1>Probability Mass Functions (PMF)</h1>
+        <p class="subtitle">Understanding Discrete Probability - A Beginner's Guide</p>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">What is Probability?</a></li>
+                <li><a href="#random-variables">Understanding Random Variables</a></li>
+                <li><a href="#pmf">Probability Mass Function (PMF)</a></li>
+                <li><a href="#properties">Properties of Valid PMFs</a></li>
+                <li><a href="#computing">Computing Probabilities</a></li>
+                <li><a href="#expected-value">Expected Value</a></li>
+                <li><a href="#examples">Real-World Examples</a></li>
+            </ol>
+        </div>
+
+        <h2 id="introduction">🎯 What is Probability?</h2>
+
+        <p>Probability is the language we use to talk about uncertainty. In everyday life, we constantly deal with situations where we don't know exactly what will happen:</p>
+
+        <ul>
+            <li>Will it rain tomorrow?</li>
+            <li>Will I roll a 6 on this die?</li>
+            <li>Where is my lost phone?</li>
+        </ul>
+
+        <p>Probability gives us a way to measure how likely different outcomes are, using numbers between 0 and 1:</p>
+
+        <div class="visual-example">
+            <strong>Probability Scale</strong><br><br>
+            0.0 ─────── 0.5 ─────── 1.0<br>
+            Impossible   Even Odds   Certain
+        </div>
+
+        <div class="example-box">
+            <h4>🌟 Real-World Example: Finding a Lost Submarine</h4>
+            <p>Imagine a submarine is lost somewhere in the ocean. We divide the ocean into a grid of squares. The submarine is definitely in one of these squares, but we don't know which one.</p>
+
+            <p><strong>Key Questions:</strong></p>
+            <ul>
+                <li>How likely is the submarine in square [5, 7]?</li>
+                <li>Which squares should we search first?</li>
+                <li>How do we update our beliefs after searching some squares?</li>
+            </ul>
+
+            <p>This is exactly what probability theory helps us answer!</p>
+        </div>
+
+        <h2 id="random-variables">🎲 Random Variables</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Random Variable</h4>
+            <p>A <strong>random variable</strong> is a variable whose value is determined by chance. We use capital letters like \(X\), \(Y\), or \(Z\) to denote random variables.</p>
+        </div>
+
+        <h3>Types of Random Variables</h3>
+
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Examples</th>
+            </tr>
+            <tr>
+                <td><strong>Discrete</strong></td>
+                <td>Can only take specific, countable values</td>
+                <td>Rolling a die: {1, 2, 3, 4, 5, 6}<br>Number of students in a class</td>
+            </tr>
+            <tr>
+                <td><strong>Continuous</strong></td>
+                <td>Can take any value in a range</td>
+                <td>Temperature: 20.5°C, 20.51°C, ...<br>Height of a person</td>
+            </tr>
+        </table>
+
+        <p>In this guide, we focus on <strong>discrete random variables</strong>.</p>
+
+        <div class="example-box">
+            <h4>🎲 Example: Rolling a Fair Die</h4>
+            <p>Let \(X\) be the outcome of rolling a fair six-sided die.</p>
+            <ul>
+                <li><strong>Sample Space:</strong> \(X \in \{1, 2, 3, 4, 5, 6\}\)</li>
+                <li><strong>Each outcome is equally likely:</strong> \(P(X=1) = P(X=2) = \cdots = P(X=6) = \frac{1}{6}\)</li>
+            </ul>
+        </div>
+
+        <h2 id="pmf">📊 Probability Mass Function (PMF)</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Probability Mass Function</h4>
+            <p>A <strong>Probability Mass Function (PMF)</strong> tells us the probability that a discrete random variable equals each specific value.</p>
+
+            <div class="formula">
+                \[f_X(x) = P(X = x)\]
+            </div>
+
+            <p>This reads as: "The PMF of \(X\) evaluated at \(x\) equals the probability that \(X\) equals \(x\)"</p>
+        </div>
+
+        <h3>Visualizing a PMF</h3>
+
+        <p>Think of a PMF as a map that shows how "probability mass" is distributed across all possible outcomes. Higher values mean that outcome is more likely.</p>
+
+        <div class="visual-example">
+            <strong>PMF for a Fair Die</strong><br><br>
+            Outcome:  1     2     3     4     5     6<br>
+            P(X):    1/6   1/6   1/6   1/6   1/6   1/6<br>
+                     ▮     ▮     ▮     ▮     ▮     ▮
+        </div>
+
+        <div class="visual-example">
+            <strong>PMF for a Loaded Die (more likely to roll 6)</strong><br><br>
+            Outcome:  1     2     3     4     5     6<br>
+            P(X):    1/10  1/10  1/10  1/10  1/10  1/2<br>
+                     ▮     ▮     ▮     ▮     ▮     ▮▮▮▮▮
+        </div>
+
+        <h2 id="properties">✅ Properties of Valid PMFs</h2>
+
+        <p>For a function to be a valid PMF, it must satisfy TWO essential properties:</p>
+
+        <div class="definition-box">
+            <h4>Property 1: Non-negativity</h4>
+            <p>All probabilities must be between 0 and 1:</p>
+            <div class="formula">
+                \[0 \leq P(X = x) \leq 1 \quad \text{for all } x\]
+            </div>
+            <p><strong>Why?</strong> Probability of 0 means impossible, 1 means certain. Nothing can be "more than certain" or "less than impossible"!</p>
+        </div>
+
+        <div class="definition-box">
+            <h4>Property 2: Normalization</h4>
+            <p>All probabilities must sum to 1:</p>
+            <div class="formula">
+                \[\sum_{\text{all } x} P(X = x) = 1\]
+            </div>
+            <p><strong>Why?</strong> Something must happen! One of the possible outcomes must occur, so the total probability is 100% = 1.0</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎯 Example: Checking if a PMF is Valid</h4>
+
+            <p><strong>Example 1 - Valid PMF:</strong></p>
+            <p>For a random variable \(X \in \{A, B, C\}\):</p>
+            <ul>
+                <li>\(P(X = A) = 0.2\)</li>
+                <li>\(P(X = B) = 0.3\)</li>
+                <li>\(P(X = C) = 0.5\)</li>
+            </ul>
+            <p>✓ All values between 0 and 1<br>
+               ✓ Sum = 0.2 + 0.3 + 0.5 = 1.0<br>
+               <strong>This IS a valid PMF!</strong></p>
+
+            <p><strong>Example 2 - Invalid PMF:</strong></p>
+            <p>For a random variable \(Y \in \{1, 2, 3\}\):</p>
+            <ul>
+                <li>\(P(Y = 1) = 0.4\)</li>
+                <li>\(P(Y = 2) = 0.5\)</li>
+                <li>\(P(Y = 3) = 0.3\)</li>
+            </ul>
+            <p>✓ All values between 0 and 1<br>
+               ✗ Sum = 0.4 + 0.5 + 0.3 = 1.2 ≠ 1.0<br>
+               <strong>This is NOT valid! Probabilities exceed 100%</strong></p>
+        </div>
+
+        <h2 id="computing">🧮 Computing Probabilities</h2>
+
+        <h3>Single Outcome</h3>
+
+        <p>To find the probability of a single outcome, simply look it up in the PMF:</p>
+
+        <div class="formula">
+            \[P(X = 3) = f_X(3)\]
+        </div>
+
+        <h3>Multiple Outcomes (Events)</h3>
+
+        <p>An <strong>event</strong> is a set of outcomes. To find the probability of an event, <strong>sum</strong> the probabilities of all outcomes in that event.</p>
+
+        <div class="formula">
+            \[P(X \in \{a, b, c\}) = P(X=a) + P(X=b) + P(X=c)\]
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Probability of Rolling an Even Number</h4>
+            <p>Let \(X\) be the outcome of a fair die roll.</p>
+            <p><strong>Event:</strong> Rolling an even number = \(\{2, 4, 6\}\)</p>
+
+            <div class="formula">
+                \[\begin{align}
+                P(\text{even}) &= P(X=2) + P(X=4) + P(X=6)\\
+                &= \frac{1}{6} + \frac{1}{6} + \frac{1}{6}\\
+                &= \frac{3}{6} = \frac{1}{2} = 0.5
+                \end{align}\]
+            </div>
+
+            <p>So there's a 50% chance of rolling an even number!</p>
+        </div>
+
+        <h3>Complementary Probability</h3>
+
+        <p>The probability of an event NOT happening is 1 minus the probability it happens:</p>
+
+        <div class="formula">
+            \[P(\text{NOT } A) = 1 - P(A)\]
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Probability of NOT Rolling a 6</h4>
+
+            <div class="formula">
+                \[\begin{align}
+                P(X \neq 6) &= 1 - P(X = 6)\\
+                &= 1 - \frac{1}{6}\\
+                &= \frac{5}{6} \approx 0.833
+                \end{align}\]
+            </div>
+        </div>
+
+        <h2 id="expected-value">📈 Expected Value</h2>
+
+        <div class="definition-box">
+            <h4>Definition: Expected Value</h4>
+            <p>The <strong>expected value</strong> (or mean) is the average outcome if we repeated the random process many, many times.</p>
+
+            <div class="formula">
+                \[E[X] = \sum_{\text{all } x} x \cdot P(X = x)\]
+            </div>
+
+            <p><strong>In words:</strong> Multiply each possible value by its probability, then sum everything up.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example: Expected Value of a Die Roll</h4>
+
+            <div class="formula">
+                \[\begin{align}
+                E[X] &= 1 \cdot P(X=1) + 2 \cdot P(X=2) + \cdots + 6 \cdot P(X=6)\\
+                &= 1 \cdot \frac{1}{6} + 2 \cdot \frac{1}{6} + 3 \cdot \frac{1}{6} + 4 \cdot \frac{1}{6} + 5 \cdot \frac{1}{6} + 6 \cdot \frac{1}{6}\\
+                &= \frac{1 + 2 + 3 + 4 + 5 + 6}{6}\\
+                &= \frac{21}{6} = 3.5
+                \end{align}\]
+            </div>
+
+            <p><strong>Important!</strong> The expected value doesn't have to be a possible outcome. You can't roll 3.5, but on average, you get 3.5 per roll.</p>
+        </div>
+
+        <div class="key-point">
+            <h4>💡 Key Insight</h4>
+            <p>For a function of a random variable, the expected value is:</p>
+            <div class="formula">
+                \[E[f(X)] = \sum_{\text{all } x} f(x) \cdot P(X = x)\]
+            </div>
+            <p><strong>Warning:</strong> In general, \(E[f(X)] \neq f(E[X])\)</p>
+            <p>You must apply the function FIRST, then compute the expectation!</p>
+        </div>
+
+        <div class="example-box">
+            <h4>🎯 Example: Expected Value of \(X^2\) for a Die Roll</h4>
+
+            <p><strong>Method 1 (WRONG):</strong> \(E[X]^2\)</p>
+            <div class="formula">
+                \[E[X]^2 = (3.5)^2 = 12.25 \quad \text{❌ Incorrect!}\]
+            </div>
+
+            <p><strong>Method 2 (CORRECT):</strong> \(E[X^2]\)</p>
+            <div class="formula">
+                \[\begin{align}
+                E[X^2] &= 1^2 \cdot \frac{1}{6} + 2^2 \cdot \frac{1}{6} + 3^2 \cdot \frac{1}{6} + 4^2 \cdot \frac{1}{6} + 5^2 \cdot \frac{1}{6} + 6^2 \cdot \frac{1}{6}\\
+                &= \frac{1 + 4 + 9 + 16 + 25 + 36}{6}\\
+                &= \frac{91}{6} \approx 15.17 \quad \text{✓ Correct!}
+                \end{align}\]
+            </div>
+        </div>
+
+        <h2 id="examples">🌍 Real-World Examples</h2>
+
+        <div class="example-box">
+            <h4>🎰 Example 1: Lottery Ticket</h4>
+            <p>You buy a lottery ticket for $1. There are three possible outcomes:</p>
+            <ul>
+                <li>Win $100 with probability 0.001 (0.1%)</li>
+                <li>Win $10 with probability 0.01 (1%)</li>
+                <li>Win nothing with probability 0.989 (98.9%)</li>
+            </ul>
+
+            <p><strong>Is this a valid PMF?</strong></p>
+            <div class="formula">
+                \[0.001 + 0.01 + 0.989 = 1.0 \quad \text{✓ Yes!}\]
+            </div>
+
+            <p><strong>What's the expected winnings?</strong></p>
+            <div class="formula">
+                \[\begin{align}
+                E[\text{Winnings}] &= 100 \cdot 0.001 + 10 \cdot 0.01 + 0 \cdot 0.989\\
+                &= 0.10 + 0.10 + 0\\
+                &= \$0.20
+                \end{align}\]
+            </div>
+            <p>On average, you win 20 cents per ticket. Since tickets cost $1, you lose 80 cents on average! 📉</p>
+        </div>
+
+        <div class="example-box">
+            <h4>👨‍👩‍👧 Example 2: Family Size</h4>
+            <p>In a certain town, the distribution of number of children per family is:</p>
+            <table>
+                <tr>
+                    <th>Number of Children</th>
+                    <th>Probability</th>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0.30</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0.25</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0.25</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>0.15</td>
+                </tr>
+                <tr>
+                    <td>4 or more</td>
+                    <td>0.05</td>
+                </tr>
+            </table>
+
+            <p><strong>Questions:</strong></p>
+
+            <p>1. What's the probability a randomly selected family has at least 2 children?</p>
+            <div class="formula">
+                \[\begin{align}
+                P(X \geq 2) &= P(X=2) + P(X=3) + P(X \geq 4)\\
+                &= 0.25 + 0.15 + 0.05\\
+                &= 0.45 = 45\%
+                \end{align}\]
+            </div>
+
+            <p>2. What's the expected number of children per family (treating "4 or more" as exactly 4)?</p>
+            <div class="formula">
+                \[\begin{align}
+                E[X] &= 0 \cdot 0.30 + 1 \cdot 0.25 + 2 \cdot 0.25 + 3 \cdot 0.15 + 4 \cdot 0.05\\
+                &= 0 + 0.25 + 0.50 + 0.45 + 0.20\\
+                &= 1.40 \text{ children}
+                \end{align}\]
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>🎲 Example 3: Rolling Two Dice</h4>
+            <p>When you roll two dice and add them, what's the PMF of the sum?</p>
+
+            <p>The sum can range from 2 (rolling 1+1) to 12 (rolling 6+6). But not all sums are equally likely!</p>
+
+            <table>
+                <tr>
+                    <th>Sum</th>
+                    <th>Ways to Get It</th>
+                    <th>Probability</th>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>(1,1)</td>
+                    <td>1/36</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>(1,2), (2,1)</td>
+                    <td>2/36</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>(1,3), (2,2), (3,1)</td>
+                    <td>3/36</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>(1,4), (2,3), (3,2), (4,1)</td>
+                    <td>4/36</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>(1,5), (2,4), (3,3), (4,2), (5,1)</td>
+                    <td>5/36</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)</td>
+                    <td>6/36</td>
+                </tr>
+            </table>
+            <p><em>...and so on (symmetric pattern continues for 8-12)</em></p>
+
+            <p><strong>Most likely sum:</strong> 7 with probability 6/36 = 1/6 ≈ 16.7%</p>
+        </div>
+
+        <div class="key-point">
+            <h4>🎓 Summary: Key Takeaways</h4>
+            <ul>
+                <li><strong>PMF:</strong> Maps each possible value to its probability</li>
+                <li><strong>Valid PMF:</strong> All probabilities in [0,1] and sum to 1</li>
+                <li><strong>Events:</strong> Sum probabilities of outcomes in the event</li>
+                <li><strong>Expected Value:</strong> Weighted average using probabilities</li>
+                <li><strong>Important:</strong> \(E[f(X)] \neq f(E[X])\) in general</li>
+            </ul>
+        </div>
+
+        <div class="definition-box">
+            <h4>🚀 What's Next?</h4>
+            <p>Now that you understand PMFs, you're ready to learn about:</p>
+            <ul>
+                <li><strong>Conditional Probability:</strong> How probabilities change when we gain information</li>
+                <li><strong>Bayes' Rule:</strong> Updating beliefs based on evidence</li>
+                <li><strong>Joint Distributions:</strong> Multiple random variables together</li>
+                <li><strong>Common Distributions:</strong> Binomial, Poisson, Geometric, and more</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Print keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
