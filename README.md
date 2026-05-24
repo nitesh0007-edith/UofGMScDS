@@ -10,10 +10,10 @@ Coursework, labs, notes, and projects from my Master of Science in Data Science 
 |--------|--------|----------|
 | [`BigData/`](./BigData) | Big Data | Lectures (Weeks 1–10), exercises, past papers, notes |
 | [`CyberSecurityFundamentals/`](./CyberSecurityFundamentals) | Cyber Security Fundamentals | Lecture notes (9 topics), lab group report |
-| [`DS/`](./DS) | Intelligent Data Storage & Systems | Lecture notes, Lab 3 (probabilistic inference), past papers 2019–2025 |
+| [`DS/`](./DS) | Introduction to Data Science & Systems (IDSS) | Lecture notes, Lab 3 (probabilistic inference), past papers 2019–2025 |
 | [`DeepLearning/`](./DeepLearning) | Deep Learning | Lectures, labs, Kaggle coursework, past papers |
-| [`IR/`](./IR) | Information Retrieval | Lectures, coursework 1 & 2, books, past papers |
-| [`IV/`](./IV) | Information Visualisation | Group project (Altair/Vega-Lite dashboard), tutorials |
+| [`IR/`](./IR) | Information Retrieval (IR) | Lectures, coursework 1 & 2, books, past papers |
+| [`IV/`](./IV) | Information Visualisation (IV) | Group project (Altair/Vega-Lite dashboard), tutorials |
 | [`MLAI/`](./MLAI%20) | Machine Learning & AI for Data Science | Lectures, ECG explainability project, PCA 3D shape analysis |
 | [`ProgSD/`](./ProgSD) | Programming for Software Development | Java exam solutions (2019–2025), Python labs |
 | [`RPS/`](./RPS) | Research and Professional Skills | Weekly lecture PDFs, past papers, study notes |
