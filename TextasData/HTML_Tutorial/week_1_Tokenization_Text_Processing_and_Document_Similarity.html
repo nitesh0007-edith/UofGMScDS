@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text as Data - Interactive Tutorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav li a {
+            text-decoration: none;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: block;
+            font-weight: 600;
+        }
+
+        nav li a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .interactive-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 5px solid #4CAF50;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .formula {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 20px 0;
+            font-size: 1.2em;
+            text-align: center;
+            font-family: 'Georgia', serif;
+        }
+
+        .example {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #28a745;
+            margin: 20px 0;
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .token {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .set-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .set-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            border: 2px solid #2196F3;
+        }
+
+        .set-box h4 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .result-box {
+            background: #c8e6c9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #4CAF50;
+        }
+
+        .venn-diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .venn-svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .info-box strong {
+            color: #1976D2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #764ba2;
+            color: white;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .set-container {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text as Data: Interactive Tutorial</h1>
+            <p>Master Tokenization, Text Processing & Document Similarity</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#tokenization">Tokenization</a></li>
+                <li><a href="#regex">Regex</a></li>
+                <li><a href="#preprocessing">Preprocessing</a></li>
+                <li><a href="#ngrams">N-grams</a></li>
+                <li><a href="#sets">Set Operations</a></li>
+                <li><a href="#similarity">Similarity Measures</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <section id="intro">
+                <h2>Introduction to Text as Data</h2>
+                <div class="card">
+                    <p>Welcome to this interactive tutorial on <strong>Text as Data</strong>! In this course, we'll explore how to process, analyze, and extract meaningful insights from textual data.</p>
+
+                    <h3>What You'll Learn</h3>
+                    <ul>
+                        <li>How to break text into tokens (words, characters, or phrases)</li>
+                        <li>Regular expressions (regex) for advanced text pattern matching and extraction</li>
+                        <li>Text preprocessing techniques: stopwords removal, stemming, and lemmatization</li>
+                        <li>Working with N-grams for capturing context</li>
+                        <li>Set theory operations for text analysis</li>
+                        <li>Document similarity measures (Jaccard & Overlap Coefficient)</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <strong>Why is this important?</strong> Text analysis is fundamental for search engines, recommendation systems, plagiarism detection, sentiment analysis, and many other applications in Natural Language Processing (NLP).
+                </div>
+            </section>
+
+            <!-- Tokenization Section -->
+            <section id="tokenization">
+                <h2>Tokenization: Breaking Text into Pieces</h2>
+
+                <div class="card">
+                    <p><strong>Tokenization</strong> is the process of splitting text into smaller units called <em>tokens</em>. These tokens can be words, characters, or even sentences.</p>
+
+                    <h3>Why Tokenize?</h3>
+                    <p>Before we can analyze text computationally, we need to break it down into manageable pieces. Think of it like breaking a sentence into individual LEGO blocks that we can count, compare, and analyze.</p>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Try It Yourself: Tokenization Demo</h3>
+                    <div class="input-group">
+                        <label for="tokenInput">Enter your text:</label>
+                        <textarea id="tokenInput" rows="4" placeholder="Example: IRN BRU is made in Scotland from girders">IRN BRU is made in Scotland from girders</textarea>
+                    </div>
+
+                    <button onclick="tokenizeWhitespace()">Whitespace Tokenization</button>
+                    <button onclick="tokenizePunctuation()">Remove Punctuation</button>
+                    <button onclick="tokenizeLowercase()">Lowercase Tokens</button>
+                    <button onclick="tokenizeAll()">All Steps Combined</button>
+
+                    <div id="tokenOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="example">
+                    <h4>Example: Processing "IRN BRU is made in Scotland from girders"</h4>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Original Text:</strong> "IRN BRU is made in Scotland from girders"
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Whitespace Split:</strong> ["IRN", "BRU", "is", "made", "in", "Scotland", "from", "girders"]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Lowercase:</strong> ["irn", "bru", "is", "made", "in", "scotland", "from", "girders"]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Remove Stopwords:</strong> ["irn", "bru", "made", "scotland", "girders"]
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Common Tokenization Methods:</strong>
+                    <ul>
+                        <li><strong>Whitespace:</strong> Split on spaces, tabs, newlines</li>
+                        <li><strong>Punctuation-based:</strong> Remove or split on punctuation marks</li>
+                        <li><strong>Rule-based:</strong> Use complex rules (e.g., spaCy tokenizer)</li>
+                        <li><strong>Subword:</strong> Break words into smaller units (e.g., WordPiece, BPE)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Regular Expressions Section -->
+            <section id="regex">
+                <h2>Regular Expressions (Regex) for Text Processing</h2>
+
+                <div class="card">
+                    <p><strong>Regular Expressions</strong> (regex) are powerful patterns used to match, search, and manipulate text. They are essential tools for tokenization and text processing in NLP.</p>
+
+                    <h3>Why Use Regex?</h3>
+                    <ul>
+                        <li>Flexible and powerful pattern matching</li>
+                        <li>Find and extract specific patterns (emails, URLs, phone numbers)</li>
+                        <li>Clean and normalize text data</li>
+                        <li>Advanced tokenization beyond simple whitespace splitting</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Basic Regex Syntax</h3>
+                    <table>
+                        <tr>
+                            <th>Pattern</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                            <th>Matches</th>
+                        </tr>
+                        <tr>
+                            <td><code>.</code></td>
+                            <td>Any single character</td>
+                            <td><code>c.t</code></td>
+                            <td>cat, cot, cut</td>
+                        </tr>
+                        <tr>
+                            <td><code>*</code></td>
+                            <td>0 or more repetitions</td>
+                            <td><code>ca*t</code></td>
+                            <td>ct, cat, caat</td>
+                        </tr>
+                        <tr>
+                            <td><code>+</code></td>
+                            <td>1 or more repetitions</td>
+                            <td><code>ca+t</code></td>
+                            <td>cat, caat (not ct)</td>
+                        </tr>
+                        <tr>
+                            <td><code>?</code></td>
+                            <td>0 or 1 occurrence</td>
+                            <td><code>colou?r</code></td>
+                            <td>color, colour</td>
+                        </tr>
+                        <tr>
+                            <td><code>^</code></td>
+                            <td>Start of string</td>
+                            <td><code>^The</code></td>
+                            <td>The (at start)</td>
+                        </tr>
+                        <tr>
+                            <td><code>$</code></td>
+                            <td>End of string</td>
+                            <td><code>end$</code></td>
+                            <td>end (at end)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[abc]</code></td>
+                            <td>Character class</td>
+                            <td><code>[aeiou]</code></td>
+                            <td>Any vowel</td>
+                        </tr>
+                        <tr>
+                            <td><code>[^abc]</code></td>
+                            <td>Negated class</td>
+                            <td><code>[^0-9]</code></td>
+                            <td>Non-digit</td>
+                        </tr>
+                        <tr>
+                            <td><code>\d</code></td>
+                            <td>Digit [0-9]</td>
+                            <td><code>\d{3}</code></td>
+                            <td>123, 456</td>
+                        </tr>
+                        <tr>
+                            <td><code>\w</code></td>
+                            <td>Word character [a-zA-Z0-9_]</td>
+                            <td><code>\w+</code></td>
+                            <td>word123</td>
+                        </tr>
+                        <tr>
+                            <td><code>\s</code></td>
+                            <td>Whitespace</td>
+                            <td><code>\s+</code></td>
+                            <td>spaces, tabs</td>
+                        </tr>
+                        <tr>
+                            <td><code>\b</code></td>
+                            <td>Word boundary</td>
+                            <td><code>\bcat\b</code></td>
+                            <td>cat (whole word)</td>
+                        </tr>
+                        <tr>
+                            <td><code>(abc)</code></td>
+                            <td>Capturing group</td>
+                            <td><code>(the|a)</code></td>
+                            <td>the or a</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Interactive Regex Tester</h3>
+                    <div class="input-group">
+                        <label for="regexPattern">Regex Pattern:</label>
+                        <input type="text" id="regexPattern" placeholder="Enter regex pattern (e.g., \w+)" value="\w+">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regexText">Test Text:</label>
+                        <textarea id="regexText" rows="4" placeholder="Enter text to test">The quick brown fox jumps over the lazy dog. Email: test@example.com</textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="regexGlobal" checked> Global (g) - Find all matches
+                        </label>
+                        <label>
+                            <input type="checkbox" id="regexCaseInsensitive"> Case insensitive (i)
+                        </label>
+                        <label>
+                            <input type="checkbox" id="regexMultiline"> Multiline (m)
+                        </label>
+                    </div>
+
+                    <button onclick="testRegex()">Test Regex</button>
+                    <button onclick="loadRegexExample(1)">Example: Words</button>
+                    <button onclick="loadRegexExample(2)">Example: Emails</button>
+                    <button onclick="loadRegexExample(3)">Example: Numbers</button>
+                    <button onclick="loadRegexExample(4)">Example: URLs</button>
+
+                    <div id="regexOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Common Regex Patterns for NLP</h3>
+                    <table>
+                        <tr>
+                            <th>Task</th>
+                            <th>Pattern</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Words</strong></td>
+                            <td><code>\w+</code></td>
+                            <td>Match sequences of word characters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sentences</strong></td>
+                            <td><code>[A-Z][^.!?]*[.!?]</code></td>
+                            <td>Match sentences ending with punctuation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email</strong></td>
+                            <td><code>\b[\w.-]+@[\w.-]+\.\w+\b</code></td>
+                            <td>Match email addresses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>URL</strong></td>
+                            <td><code>https?://[^\s]+</code></td>
+                            <td>Match web URLs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phone</strong></td>
+                            <td><code>\d{3}[-.]?\d{3}[-.]?\d{4}</code></td>
+                            <td>Match phone numbers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hashtags</strong></td>
+                            <td><code>#\w+</code></td>
+                            <td>Match Twitter/social media hashtags</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mentions</strong></td>
+                            <td><code>@\w+</code></td>
+                            <td>Match social media mentions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Numbers</strong></td>
+                            <td><code>-?\d+\.?\d*</code></td>
+                            <td>Match integers and decimals</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Punctuation</strong></td>
+                            <td><code>[^\w\s]</code></td>
+                            <td>Match all punctuation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Whitespace</strong></td>
+                            <td><code>\s+</code></td>
+                            <td>Match one or more spaces</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example">
+                    <h4>Example: Tokenizing with Regex</h4>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Input Text:</strong> "Email me at john.doe@university.ac.uk or visit https://example.com"
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Pattern <code>\w+</code>:</strong><br>
+                        Matches: ["Email", "me", "at", "john", "doe", "university", "ac", "uk", "or", "visit", "https", "example", "com"]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Pattern <code>\b[\w.-]+@[\w.-]+\.\w+\b</code>:</strong><br>
+                        Matches: ["john.doe@university.ac.uk"]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Pattern <code>https?://[^\s]+</code>:</strong><br>
+                        Matches: ["https://example.com"]
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Regex-Based Tokenizer</h3>
+                    <div class="input-group">
+                        <label for="regexTokenText">Enter text to tokenize:</label>
+                        <textarea id="regexTokenText" rows="4" placeholder="Enter text">Check out https://example.com or email me@test.com! #NLP rocks @username</textarea>
+                    </div>
+
+                    <button onclick="tokenizeWithRegex('words')">Extract Words</button>
+                    <button onclick="tokenizeWithRegex('emails')">Extract Emails</button>
+                    <button onclick="tokenizeWithRegex('urls')">Extract URLs</button>
+                    <button onclick="tokenizeWithRegex('hashtags')">Extract Hashtags</button>
+                    <button onclick="tokenizeWithRegex('mentions')">Extract Mentions</button>
+                    <button onclick="tokenizeWithRegex('numbers')">Extract Numbers</button>
+
+                    <div id="regexTokenOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Regex in Python:</strong>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto;">
+<code style="color: #f8f8f2;">import re
+
+# Find all words
+text = "Hello, world! 123"
+words = re.findall(r'\w+', text)
+# Result: ['Hello', 'world', '123']
+
+# Find all email addresses
+emails = re.findall(r'\b[\w.-]+@[\w.-]+\.\w+\b', text)
+
+# Split on whitespace
+tokens = re.split(r'\s+', text)
+
+# Replace patterns
+cleaned = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
+</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Regex for Advanced Tokenization</h3>
+                    <p>Unlike simple <code>split()</code>, regex allows you to:</p>
+                    <ul>
+                        <li><strong>Keep punctuation attached:</strong> Match "can't" as one token</li>
+                        <li><strong>Handle contractions:</strong> Recognize "don't", "I'm", "you'll"</li>
+                        <li><strong>Extract entities:</strong> Find all dates, numbers, or special patterns</li>
+                        <li><strong>Context-aware splitting:</strong> Split on spaces but not within quotes</li>
+                    </ul>
+
+                    <div class="example">
+                        <strong>Example: Contractions</strong><br>
+                        Pattern: <code>\w+'\w+|\w+</code><br>
+                        Text: "I can't believe it's working!"<br>
+                        Tokens: ["I", "can't", "believe", "it's", "working"]
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Practice Tips:</strong>
+                    <ul>
+                        <li>Start simple and build complexity gradually</li>
+                        <li>Use online regex testers (regex101.com, regexr.com) for testing</li>
+                        <li>Test your patterns on diverse examples</li>
+                        <li>Remember: regex can be slow on very large texts</li>
+                        <li>For production NLP, consider using spaCy or NLTK tokenizers</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Text Preprocessing Section -->
+            <section id="preprocessing">
+                <h2>Text Preprocessing</h2>
+
+                <div class="card">
+                    <h3>Stopwords Removal</h3>
+                    <p><strong>Stopwords</strong> are common words (like "the", "is", "in") that often don't carry significant meaning for analysis. Removing them can help focus on important content.</p>
+
+                    <div class="example">
+                        <strong>Example Stopwords:</strong> a, an, the, is, are, in, on, at, to, from, with, by, for, of, etc.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Stemming</h3>
+                    <p><strong>Stemming</strong> reduces words to their root form by removing suffixes. It's fast but can be imprecise.</p>
+
+                    <div class="formula">
+                        fishing → fish<br>
+                        fished → fish<br>
+                        fisher → fish
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Porter Stemmer Rules (Examples):</strong>
+                        <ul>
+                            <li>SSES → SS (caresses → caress)</li>
+                            <li>IES → I (ponies → poni)</li>
+                            <li>SS → SS (caress → caress)</li>
+                            <li>S → (cats → cat)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Lemmatization</h3>
+                    <p><strong>Lemmatization</strong> uses vocabulary and morphological analysis to return the base or dictionary form (lemma) of a word. It's more accurate but slower than stemming.</p>
+
+                    <div class="formula">
+                        better → good<br>
+                        running → run<br>
+                        was → be
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Try It: Stemming vs Lemmatization</h3>
+                    <div class="input-group">
+                        <label for="stemInput">Enter words (comma-separated):</label>
+                        <input type="text" id="stemInput" placeholder="running, better, fishing, studies, was" value="running, better, fishing, studies, was">
+                    </div>
+
+                    <button onclick="demonstrateStemming()">Apply Stemming</button>
+                    <button onclick="demonstrateLemmatization()">Apply Lemmatization</button>
+
+                    <div id="stemOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Comparison Table</h3>
+                    <table>
+                        <tr>
+                            <th>Technique</th>
+                            <th>Speed</th>
+                            <th>Accuracy</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Stemming</strong></td>
+                            <td>Fast</td>
+                            <td>Moderate</td>
+                            <td>studies → studi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lemmatization</strong></td>
+                            <td>Slower</td>
+                            <td>High</td>
+                            <td>studies → study</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- N-grams Section -->
+            <section id="ngrams">
+                <h2>N-grams: Capturing Context</h2>
+
+                <div class="card">
+                    <p>An <strong>N-gram</strong> is a contiguous sequence of N items (characters or words) from a text.</p>
+
+                    <h3>Types of N-grams:</h3>
+                    <ul>
+                        <li><strong>Unigram (1-gram):</strong> Single tokens</li>
+                        <li><strong>Bigram (2-gram):</strong> Pairs of consecutive tokens</li>
+                        <li><strong>Trigram (3-gram):</strong> Triples of consecutive tokens</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <h4>Example: "The quick brown fox"</h4>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Word Unigrams:</strong> [the, quick, brown, fox]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Word Bigrams:</strong> [the quick, quick brown, brown fox]
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Word Trigrams:</strong> [the quick brown, quick brown fox]
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>N-gram Generator</h3>
+                    <div class="input-group">
+                        <label for="ngramInput">Enter your text:</label>
+                        <input type="text" id="ngramInput" placeholder="The quick brown fox" value="The quick brown fox">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ngramSize">N-gram size:</label>
+                        <input type="number" id="ngramSize" min="1" max="5" value="2">
+                    </div>
+
+                    <button onclick="generateNgrams('word')">Word N-grams</button>
+                    <button onclick="generateNgrams('char')">Character N-grams</button>
+
+                    <div id="ngramOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Why use N-grams?</strong> N-grams capture context and word relationships. They're useful for:
+                    <ul>
+                        <li>Language modeling and text generation</li>
+                        <li>Spelling correction</li>
+                        <li>Text classification</li>
+                        <li>Finding similar documents</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Set Operations Section -->
+            <section id="sets">
+                <h2>Set Operations for Text Analysis</h2>
+
+                <div class="card">
+                    <p>Once we have tokens, we can treat documents as <strong>sets of unique tokens</strong> and apply set theory operations.</p>
+
+                    <h3>Basic Set Operations:</h3>
+                    <table>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Symbol</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Union</strong></td>
+                            <td>X ∪ Y</td>
+                            <td>All elements in either set</td>
+                            <td>{1,2} ∪ {2,3} = {1,2,3}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intersection</strong></td>
+                            <td>X ∩ Y</td>
+                            <td>Elements in both sets</td>
+                            <td>{1,2} ∩ {2,3} = {2}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Difference</strong></td>
+                            <td>X \ Y</td>
+                            <td>Elements in X but not in Y</td>
+                            <td>{1,2} \ {2,3} = {1}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cardinality</strong></td>
+                            <td>|X|</td>
+                            <td>Number of elements</td>
+                            <td>|{1,2,3}| = 3</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Interactive Set Operations</h3>
+                    <div class="set-container">
+                        <div class="set-box">
+                            <h4>Document A</h4>
+                            <input type="text" id="setA" placeholder="cat dog bird" value="cat dog bird">
+                        </div>
+                        <div class="set-box">
+                            <h4>Document B</h4>
+                            <input type="text" id="setB" placeholder="dog bird fish" value="dog bird fish">
+                        </div>
+                    </div>
+
+                    <button onclick="calculateSetOps()">Calculate Set Operations</button>
+
+                    <div id="setOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="example">
+                    <h4>Example: IRN BRU Documents</h4>
+                    <p><strong>Document 1:</strong> "IRN BRU is made in Scotland from girders"</p>
+                    <p><strong>Document 2:</strong> "IRN BRU is a Scottish soft drink"</p>
+
+                    <div class="set-container">
+                        <div class="set-box">
+                            <h4>Set A (Doc 1)</h4>
+                            <p>{irn, bru, made, scotland, girders}</p>
+                        </div>
+                        <div class="set-box">
+                            <h4>Set B (Doc 2)</h4>
+                            <p>{irn, bru, scottish, soft, drink}</p>
+                        </div>
+                    </div>
+
+                    <div class="result-box">
+                        <strong>Intersection (A ∩ B):</strong> {irn, bru} → 2 common words<br>
+                        <strong>Union (A ∪ B):</strong> {irn, bru, made, scotland, girders, scottish, soft, drink} → 8 unique words<br>
+                        <strong>Difference (A \ B):</strong> {made, scotland, girders} → 3 words
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Similarity Section -->
+            <section id="similarity">
+                <h2>Document Similarity Measures</h2>
+
+                <div class="card">
+                    <p>How do we measure how similar two documents are? We can use set-based similarity measures!</p>
+                </div>
+
+                <div class="card">
+                    <h3>1. Overlap Coefficient</h3>
+                    <p>Measures the overlap between two sets relative to the smaller set.</p>
+
+                    <div class="formula">
+                        Overlap(X, Y) = |X ∩ Y| / min(|X|, |Y|)
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Interpretation:</strong>
+                        <ul>
+                            <li>Range: 0 to 1</li>
+                            <li>1 = Perfect overlap (smaller set is subset of larger)</li>
+                            <li>0 = No common elements</li>
+                            <li>Good for comparing documents of different lengths</li>
+                        </ul>
+                    </div>
+
+                    <div class="example">
+                        <h4>Example Calculation:</h4>
+                        <p><strong>Set A:</strong> {irn, bru, made, scotland, girders} → |A| = 5</p>
+                        <p><strong>Set B:</strong> {irn, bru, scottish, soft, drink} → |B| = 5</p>
+                        <p><strong>A ∩ B:</strong> {irn, bru} → |A ∩ B| = 2</p>
+                        <p><strong>Overlap:</strong> 2 / min(5, 5) = 2/5 = <span class="highlight">0.4 or 40%</span></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2. Jaccard Similarity</h3>
+                    <p>Measures the size of intersection relative to the size of union.</p>
+
+                    <div class="formula">
+                        Jaccard(X, Y) = |X ∩ Y| / |X ∪ Y|
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Interpretation:</strong>
+                        <ul>
+                            <li>Range: 0 to 1</li>
+                            <li>1 = Identical sets</li>
+                            <li>0 = No common elements</li>
+                            <li>Most commonly used similarity measure</li>
+                        </ul>
+                    </div>
+
+                    <div class="example">
+                        <h4>Example Calculation:</h4>
+                        <p><strong>Set A:</strong> {irn, bru, made, scotland, girders} → |A| = 5</p>
+                        <p><strong>Set B:</strong> {irn, bru, scottish, soft, drink} → |B| = 5</p>
+                        <p><strong>A ∩ B:</strong> {irn, bru} → |A ∩ B| = 2</p>
+                        <p><strong>A ∪ B:</strong> {irn, bru, made, scotland, girders, scottish, soft, drink} → |A ∪ B| = 8</p>
+                        <p><strong>Jaccard:</strong> 2 / 8 = <span class="highlight">0.25 or 25%</span></p>
+                    </div>
+                </div>
+
+                <div class="interactive-box">
+                    <h3>Document Similarity Calculator</h3>
+                    <div class="input-group">
+                        <label for="doc1">Document 1:</label>
+                        <textarea id="doc1" rows="3" placeholder="Enter first document">IRN BRU is made in Scotland from girders</textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="doc2">Document 2:</label>
+                        <textarea id="doc2" rows="3" placeholder="Enter second document">IRN BRU is a Scottish soft drink</textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="removePunctuation" checked> Remove punctuation
+                        </label>
+                        <label>
+                            <input type="checkbox" id="toLowerCase" checked> Convert to lowercase
+                        </label>
+                        <label>
+                            <input type="checkbox" id="removeStopwords"> Remove stopwords
+                        </label>
+                    </div>
+
+                    <button onclick="calculateSimilarity()">Calculate Similarity</button>
+                    <button onclick="loadExample(1)">Load Example 1</button>
+                    <button onclick="loadExample(2)">Load Example 2</button>
+
+                    <div id="similarityOutput" class="output" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>When to Use Each Measure?</h3>
+                    <table>
+                        <tr>
+                            <th>Measure</th>
+                            <th>Best For</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Overlap</strong></td>
+                            <td>Documents of very different lengths</td>
+                            <td>Not penalized by length differences</td>
+                            <td>May overestimate similarity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Jaccard</strong></td>
+                            <td>General purpose, similar-length docs</td>
+                            <td>Symmetric, intuitive, widely used</td>
+                            <td>Sensitive to document length</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example">
+                    <h4>Real-World Applications:</h4>
+                    <ul>
+                        <li><strong>Plagiarism Detection:</strong> Find similar documents in a corpus</li>
+                        <li><strong>Search Engines:</strong> Rank documents by relevance to query</li>
+                        <li><strong>Recommendation Systems:</strong> Suggest similar articles or products</li>
+                        <li><strong>Duplicate Detection:</strong> Identify near-duplicate web pages</li>
+                        <li><strong>Document Clustering:</strong> Group similar documents together</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary Section -->
+            <section id="summary">
+                <h2>Summary & Key Takeaways</h2>
+
+                <div class="card">
+                    <h3>What We've Learned:</h3>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Tokenization:</strong> Breaking text into manageable pieces (tokens)
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Regular Expressions:</strong> Powerful pattern matching for text extraction and manipulation
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Preprocessing:</strong> Cleaning text with stopword removal, stemming, and lemmatization
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>N-grams:</strong> Capturing context with sequences of tokens
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Set Operations:</strong> Using union, intersection, and difference for text analysis
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">6</span>
+                        <strong>Similarity Measures:</strong> Quantifying document similarity with Overlap and Jaccard coefficients
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Next Steps:</strong>
+                    <ul>
+                        <li>Practice with real datasets</li>
+                        <li>Explore advanced NLP libraries (spaCy, NLTK, Transformers)</li>
+                        <li>Learn about vector-based similarity (TF-IDF, word embeddings)</li>
+                        <li>Build your own text analysis projects!</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3>Remember:</h3>
+                    <p style="font-size: 1.2em;">Text analysis is both an art and a science. The techniques you choose depend on your specific task, data, and goals. Experiment, evaluate, and iterate!</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Interactive Tutorial for Text as Data | University of Glasgow</p>
+            <p>Built with HTML, CSS, and JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tokenization Functions
+        function tokenizeWhitespace() {
+            const text = document.getElementById('tokenInput').value;
+            const tokens = text.split(/\s+/).filter(t => t.length > 0);
+            displayTokens(tokens, 'Whitespace Tokenization');
+        }
+
+        function tokenizePunctuation() {
+            const text = document.getElementById('tokenInput').value;
+            const cleaned = text.replace(/[^\w\s]/g, '');
+            const tokens = cleaned.split(/\s+/).filter(t => t.length > 0);
+            displayTokens(tokens, 'Tokenization (Punctuation Removed)');
+        }
+
+        function tokenizeLowercase() {
+            const text = document.getElementById('tokenInput').value;
+            const cleaned = text.toLowerCase().replace(/[^\w\s]/g, '');
+            const tokens = cleaned.split(/\s+/).filter(t => t.length > 0);
+            displayTokens(tokens, 'Tokenization (Lowercase)');
+        }
+
+        function tokenizeAll() {
+            const text = document.getElementById('tokenInput').value;
+            const stopwords = new Set(['is', 'are', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'from', 'of', 'for', 'with', 'by']);
+
+            const cleaned = text.toLowerCase().replace(/[^\w\s]/g, '');
+            let tokens = cleaned.split(/\s+/).filter(t => t.length > 0);
+            tokens = tokens.filter(t => !stopwords.has(t));
+
+            displayTokens(tokens, 'Full Processing (Lowercase, No Punctuation, No Stopwords)');
+        }
+
+        function displayTokens(tokens, title) {
+            const output = document.getElementById('tokenOutput');
+            let html = `<strong>${title}</strong><br><br>`;
+            html += `<strong>Total Tokens:</strong> ${tokens.length}<br><br>`;
+            html += '<div>';
+            tokens.forEach(token => {
+                html += `<span class="token">${token}</span>`;
+            });
+            html += '</div>';
+            output.innerHTML = html;
+            output.style.display = 'block';
+        }
+
+        // Regex Functions
+        function testRegex() {
+            try {
+                const pattern = document.getElementById('regexPattern').value;
+                const text = document.getElementById('regexText').value;
+                const global = document.getElementById('regexGlobal').checked;
+                const caseInsensitive = document.getElementById('regexCaseInsensitive').checked;
+                const multiline = document.getElementById('regexMultiline').checked;
+
+                let flags = '';
+                if (global) flags += 'g';
+                if (caseInsensitive) flags += 'i';
+                if (multiline) flags += 'm';
+
+                const regex = new RegExp(pattern, flags);
+                const matches = text.match(regex);
+
+                let html = '<strong>Regex Test Results:</strong><br><br>';
+                html += `<strong>Pattern:</strong> <code>${pattern}</code><br>`;
+                html += `<strong>Flags:</strong> ${flags || 'none'}<br><br>`;
+
+                if (matches && matches.length > 0) {
+                    html += `<strong>Matches Found:</strong> ${matches.length}<br><br>`;
+                    html += '<div>';
+                    matches.forEach((match, index) => {
+                        html += `<span class="token">${match}</span>`;
+                    });
+                    html += '</div><br>';
+
+                    // Highlight matches in text
+                    html += '<strong>Text with Highlights:</strong><br>';
+                    let highlightedText = text;
+                    matches.forEach(match => {
+                        highlightedText = highlightedText.replace(new RegExp(escapeRegex(match), 'g'), `<span class="highlight">${match}</span>`);
+                    });
+                    html += `<div style="background: white; padding: 15px; border-radius: 8px; margin-top: 10px;">${highlightedText}</div>`;
+                } else {
+                    html += '<strong style="color: #e74c3c;">No matches found</strong>';
+                }
+
+                document.getElementById('regexOutput').innerHTML = html;
+                document.getElementById('regexOutput').style.display = 'block';
+            } catch (error) {
+                document.getElementById('regexOutput').innerHTML = `<strong style="color: #e74c3c;">Error:</strong> ${error.message}`;
+                document.getElementById('regexOutput').style.display = 'block';
+            }
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function loadRegexExample(num) {
+            if (num === 1) {
+                document.getElementById('regexPattern').value = '\\w+';
+                document.getElementById('regexText').value = 'The quick brown fox jumps over the lazy dog.';
+            } else if (num === 2) {
+                document.getElementById('regexPattern').value = '\\b[\\w.-]+@[\\w.-]+\\.\\w+\\b';
+                document.getElementById('regexText').value = 'Contact us at info@example.com or support@company.co.uk for help.';
+            } else if (num === 3) {
+                document.getElementById('regexPattern').value = '-?\\d+\\.?\\d*';
+                document.getElementById('regexText').value = 'The temperature was -5.5 degrees and the price was 42.99 dollars.';
+            } else if (num === 4) {
+                document.getElementById('regexPattern').value = 'https?://[^\\s]+';
+                document.getElementById('regexText').value = 'Visit https://www.example.com or http://github.com for more info.';
+            }
+        }
+
+        function tokenizeWithRegex(type) {
+            const text = document.getElementById('regexTokenText').value;
+            let pattern, title;
+
+            switch(type) {
+                case 'words':
+                    pattern = /\w+/g;
+                    title = 'Words';
+                    break;
+                case 'emails':
+                    pattern = /\b[\w.-]+@[\w.-]+\.\w+\b/g;
+                    title = 'Email Addresses';
+                    break;
+                case 'urls':
+                    pattern = /https?:\/\/[^\s]+/g;
+                    title = 'URLs';
+                    break;
+                case 'hashtags':
+                    pattern = /#\w+/g;
+                    title = 'Hashtags';
+                    break;
+                case 'mentions':
+                    pattern = /@\w+/g;
+                    title = 'Mentions';
+                    break;
+                case 'numbers':
+                    pattern = /-?\d+\.?\d*/g;
+                    title = 'Numbers';
+                    break;
+            }
+
+            const matches = text.match(pattern);
+            const output = document.getElementById('regexTokenOutput');
+
+            let html = `<strong>Extracted ${title}:</strong><br><br>`;
+            html += `<strong>Pattern:</strong> <code>${pattern.source}</code><br><br>`;
+
+            if (matches && matches.length > 0) {
+                html += `<strong>Found:</strong> ${matches.length} match(es)<br><br>`;
+                html += '<div>';
+                matches.forEach(match => {
+                    html += `<span class="token">${match}</span>`;
+                });
+                html += '</div>';
+            } else {
+                html += '<strong style="color: #e74c3c;">No matches found</strong>';
+            }
+
+            output.innerHTML = html;
+            output.style.display = 'block';
+        }
+
+        // Stemming and Lemmatization (Simplified)
+        const stemmingRules = {
+            'running': 'run',
+            'better': 'better',
+            'fishing': 'fish',
+            'studies': 'studi',
+            'was': 'was',
+            'ponies': 'poni',
+            'caresses': 'caress',
+            'cats': 'cat',
+            'running': 'run',
+            'walking': 'walk',
+            'talked': 'talk'
+        };
+
+        const lemmaRules = {
+            'running': 'run',
+            'better': 'good',
+            'fishing': 'fish',
+            'studies': 'study',
+            'was': 'be',
+            'ponies': 'pony',
+            'caresses': 'caress',
+            'cats': 'cat',
+            'walking': 'walk',
+            'talked': 'talk'
+        };
+
+        function demonstrateStemming() {
+            const input = document.getElementById('stemInput').value;
+            const words = input.split(',').map(w => w.trim().toLowerCase());
+
+            let html = '<strong>Stemming Results:</strong><br><br>';
+            html += '<table style="width:100%"><tr><th>Original</th><th>Stemmed</th></tr>';
+
+            words.forEach(word => {
+                const stemmed = stemmingRules[word] || word.replace(/ing$|ed$|s$/g, '');
+                html += `<tr><td>${word}</td><td>${stemmed}</td></tr>`;
+            });
+
+            html += '</table>';
+            document.getElementById('stemOutput').innerHTML = html;
+            document.getElementById('stemOutput').style.display = 'block';
+        }
+
+        function demonstrateLemmatization() {
+            const input = document.getElementById('stemInput').value;
+            const words = input.split(',').map(w => w.trim().toLowerCase());
+
+            let html = '<strong>Lemmatization Results:</strong><br><br>';
+            html += '<table style="width:100%"><tr><th>Original</th><th>Lemma</th></tr>';
+
+            words.forEach(word => {
+                const lemma = lemmaRules[word] || word;
+                html += `<tr><td>${word}</td><td>${lemma}</td></tr>`;
+            });
+
+            html += '</table>';
+            document.getElementById('stemOutput').innerHTML = html;
+            document.getElementById('stemOutput').style.display = 'block';
+        }
+
+        // N-grams Generation
+        function generateNgrams(type) {
+            const text = document.getElementById('ngramInput').value;
+            const n = parseInt(document.getElementById('ngramSize').value);
+
+            let items;
+            if (type === 'word') {
+                items = text.toLowerCase().split(/\s+/);
+            } else {
+                items = text.replace(/\s/g, '').split('');
+            }
+
+            const ngrams = [];
+            for (let i = 0; i <= items.length - n; i++) {
+                ngrams.push(items.slice(i, i + n).join(type === 'word' ? ' ' : ''));
+            }
+
+            const output = document.getElementById('ngramOutput');
+            let html = `<strong>${n}-grams (${type}):</strong><br><br>`;
+            html += `<strong>Total:</strong> ${ngrams.length}<br><br>`;
+            html += '<div>';
+            ngrams.forEach(ngram => {
+                html += `<span class="token">${ngram}</span>`;
+            });
+            html += '</div>';
+            output.innerHTML = html;
+            output.style.display = 'block';
+        }
+
+        // Set Operations
+        function calculateSetOps() {
+            const textA = document.getElementById('setA').value.toLowerCase();
+            const textB = document.getElementById('setB').value.toLowerCase();
+
+            const setA = new Set(textA.split(/\s+/).filter(t => t.length > 0));
+            const setB = new Set(textB.split(/\s+/).filter(t => t.length > 0));
+
+            const intersection = new Set([...setA].filter(x => setB.has(x)));
+            const union = new Set([...setA, ...setB]);
+            const differenceAB = new Set([...setA].filter(x => !setB.has(x)));
+            const differenceBA = new Set([...setB].filter(x => !setA.has(x)));
+
+            let html = '<strong>Set Analysis:</strong><br><br>';
+            html += `<div class="result-box">`;
+            html += `<strong>Set A:</strong> {${[...setA].join(', ')}}<br>`;
+            html += `<strong>|A| = ${setA.size}</strong><br><br>`;
+            html += `<strong>Set B:</strong> {${[...setB].join(', ')}}<br>`;
+            html += `<strong>|B| = ${setB.size}</strong><br><br>`;
+            html += `<strong>Intersection (A ∩ B):</strong> {${[...intersection].join(', ')}}<br>`;
+            html += `<strong>|A ∩ B| = ${intersection.size}</strong><br><br>`;
+            html += `<strong>Union (A ∪ B):</strong> {${[...union].join(', ')}}<br>`;
+            html += `<strong>|A ∪ B| = ${union.size}</strong><br><br>`;
+            html += `<strong>Difference (A \\ B):</strong> {${[...differenceAB].join(', ')}}<br>`;
+            html += `<strong>|A \\ B| = ${differenceAB.size}</strong><br><br>`;
+            html += `<strong>Difference (B \\ A):</strong> {${[...differenceBA].join(', ')}}<br>`;
+            html += `<strong>|B \\ A| = ${differenceBA.size}</strong>`;
+            html += `</div>`;
+
+            document.getElementById('setOutput').innerHTML = html;
+            document.getElementById('setOutput').style.display = 'block';
+        }
+
+        // Document Similarity
+        function preprocessText(text, options) {
+            let processed = text;
+
+            if (options.removePunctuation) {
+                processed = processed.replace(/[^\w\s]/g, '');
+            }
+
+            if (options.toLowerCase) {
+                processed = processed.toLowerCase();
+            }
+
+            let tokens = processed.split(/\s+/).filter(t => t.length > 0);
+
+            if (options.removeStopwords) {
+                const stopwords = new Set(['is', 'are', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'from', 'of', 'for', 'with', 'by', 'as']);
+                tokens = tokens.filter(t => !stopwords.has(t));
+            }
+
+            return tokens;
+        }
+
+        function calculateSimilarity() {
+            const text1 = document.getElementById('doc1').value;
+            const text2 = document.getElementById('doc2').value;
+
+            const options = {
+                removePunctuation: document.getElementById('removePunctuation').checked,
+                toLowerCase: document.getElementById('toLowerCase').checked,
+                removeStopwords: document.getElementById('removeStopwords').checked
+            };
+
+            const tokens1 = preprocessText(text1, options);
+            const tokens2 = preprocessText(text2, options);
+
+            const set1 = new Set(tokens1);
+            const set2 = new Set(tokens2);
+
+            const intersection = new Set([...set1].filter(x => set2.has(x)));
+            const union = new Set([...set1, ...set2]);
+
+            const overlapCoef = intersection.size / Math.min(set1.size, set2.size);
+            const jaccardSim = intersection.size / union.size;
+
+            let html = '<strong>Document Similarity Analysis:</strong><br><br>';
+
+            html += '<div class="step">';
+            html += '<span class="step-number">1</span>';
+            html += `<strong>Document 1 Tokens:</strong> [${tokens1.join(', ')}]<br>`;
+            html += `<strong>Unique tokens:</strong> {${[...set1].join(', ')}}<br>`;
+            html += `<strong>Count: |A| = ${set1.size}</strong>`;
+            html += '</div>';
+
+            html += '<div class="step">';
+            html += '<span class="step-number">2</span>';
+            html += `<strong>Document 2 Tokens:</strong> [${tokens2.join(', ')}]<br>`;
+            html += `<strong>Unique tokens:</strong> {${[...set2].join(', ')}}<br>`;
+            html += `<strong>Count: |B| = ${set2.size}</strong>`;
+            html += '</div>';
+
+            html += '<div class="step">';
+            html += '<span class="step-number">3</span>';
+            html += `<strong>Intersection (A ∩ B):</strong> {${[...intersection].join(', ')}}<br>`;
+            html += `<strong>Count: |A ∩ B| = ${intersection.size}</strong>`;
+            html += '</div>';
+
+            html += '<div class="step">';
+            html += '<span class="step-number">4</span>';
+            html += `<strong>Union (A ∪ B):</strong> {${[...union].join(', ')}}<br>`;
+            html += `<strong>Count: |A ∪ B| = ${union.size}</strong>`;
+            html += '</div>';
+
+            html += '<div class="result-box">';
+            html += '<h3>Similarity Scores:</h3>';
+            html += `<strong>Overlap Coefficient:</strong><br>`;
+            html += `${intersection.size} / min(${set1.size}, ${set2.size}) = ${intersection.size} / ${Math.min(set1.size, set2.size)} = <span class="highlight">${overlapCoef.toFixed(4)} (${(overlapCoef * 100).toFixed(2)}%)</span><br><br>`;
+            html += `<strong>Jaccard Similarity:</strong><br>`;
+            html += `${intersection.size} / ${union.size} = <span class="highlight">${jaccardSim.toFixed(4)} (${(jaccardSim * 100).toFixed(2)}%)</span>`;
+            html += '</div>';
+
+            document.getElementById('similarityOutput').innerHTML = html;
+            document.getElementById('similarityOutput').style.display = 'block';
+        }
+
+        function loadExample(num) {
+            if (num === 1) {
+                document.getElementById('doc1').value = "IRN BRU is made in Scotland from girders";
+                document.getElementById('doc2').value = "IRN BRU is a Scottish soft drink";
+            } else if (num === 2) {
+                document.getElementById('doc1').value = "The quick brown fox jumps over the lazy dog";
+                document.getElementById('doc2').value = "The lazy dog was jumped over by a quick brown fox";
+            }
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2020-2021 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning & Artificial Intelligence for Data Scientists</h1>
+        <h2>Past Paper 2020-2021 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 90 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer all of the 3 questions
+        </div>
+
+        <!-- QUESTION 1: REGRESSION ON OLYMPIC DATA -->
+        <h2>Question 1: Linear Regression on Olympic Data (20 marks)</h2>
+
+        <div class="question">
+            <p>Considering linear regression on the Olympic data in Figure 1.</p>
+            <p><em>[Figure shows Olympic 100m winning times vs years from 1896 to 2020, with times decreasing from ~12s to ~10s]</em></p>
+        </div>
+
+        <div class="question">
+            <h3>(a) Target, Attribute, and Rescaling <span class="marks">[6 marks]</span></h3>
+            <p>We want to predict Olympic years from 100m winning times. What should be the target value and attribute? When solving this regression task with a polynomial regression model, how would you rescale the attributes? Why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p><strong>Target:</strong> years <strong>[1 mark]</strong></p>
+            <p><strong>Attribute:</strong> winning times <strong>[1 mark]</strong></p>
+
+            <p><strong>Rescaling approach:</strong> A reasonable solution with sufficient details. For example:</p>
+            <p><strong>Standardization (Whiting):</strong> \(x' = \frac{x - \text{mean}(x)}{\text{std}(x)}\) <strong>[2 marks]</strong></p>
+
+            <p><strong>Why rescale:</strong> A reasonable explanation of what the solution can do. For example: Whiting/standardization makes sure the attribute is in a standard range (typically mean=0, std=1), preventing numerical issues with polynomial terms. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Additional Rescaling Methods:</strong>
+                <ul>
+                    <li><strong>Min-Max Scaling:</strong> \(x' = \frac{x - \min(x)}{\max(x) - \min(x)}\) → scales to [0,1]</li>
+                    <li><strong>Mean Normalization:</strong> \(x' = \frac{x - \text{mean}(x)}{\max(x) - \min(x)}\)</li>
+                </ul>
+                <p><strong>Why rescaling is crucial:</strong> When predicting years from times (e.g., times in range 9.5-12 seconds), polynomial features like x², x³ grow large. Rescaling keeps values manageable and prevents:
+                    <ul>
+                        <li>Numerical overflow in polynomial computations</li>
+                        <li>Ill-conditioned matrices (Φ^TΦ becomes nearly singular)</li>
+                        <li>Gradient descent convergence issues</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Prediction with Fitted Models <span class="marks">[4 marks]</span></h3>
+            <p>Based on what you have learned from fitting linear regression models (with polynomial or RBF) to the relationship between years and winning times, predict which year may produce winning time 9s and 13s, explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>Answer should include reasonable estimation of years that may produce winning time 9s and 13s <strong>[2 marks]</strong>, using arguments from existing data and model (could be polynomial or RBF) <strong>[2 marks]</strong>.</p>
+
+            <p><strong>Example Answer:</strong></p>
+            <p>For example, polynomial order of 3 might be a good fit to the data:</p>
+            <ul>
+                <li><strong>9s winning time:</strong> The model is likely to predict this after 2040 (extrapolating the decreasing trend)</li>
+                <li><strong>13s winning time:</strong> This could be before 1860 (extrapolating backwards from early Olympic data)</li>
+            </ul>
+
+            <div class="note">
+                <strong>Reasoning:</strong>
+                <p>Looking at the Olympic data trend:</p>
+                <ul>
+                    <li>Times have been steadily decreasing from ~12s (1896) to ~10s (2020)</li>
+                    <li>The rate of improvement is slowing down (approaching physical limits)</li>
+                    <li>A cubic polynomial can capture this decreasing, flattening trend</li>
+                    <li>Extrapolating forward: 9s would require significant future improvement (2040+)</li>
+                    <li>Extrapolating backward: 13s fits the trend if Olympics existed pre-1860</li>
+                </ul>
+                <p><strong>Alternative with RBF:</strong> RBF basis functions would interpolate well within data range but are less reliable for extrapolation outside the training data range.</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) RBF with Data Points as Centers <span class="marks">[5 marks]</span></h3>
+            <p>The radial basis function (RBF):</p>
+            <p>\[h_{n,k} = \exp\left(-\frac{\sum_{d=1}^{D}(x_{n,d} - \mu_{d,k})^2}{2s^2}\right), \quad n=1,\ldots,N; \quad k=1,\ldots,K\]</p>
+            <p>is a popular basis function. The parameter \(\mu_{d,k}\) is often set to be a data point \(x_{i,d}\), \(i=1,\ldots,N\). Outline the strength and risk of this setup for \(\mu_{d,k}\), and how would you mitigate the risk.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p><strong>Strength:</strong> Flexibility <strong>[1 mark]</strong></p>
+            <p><strong>Risk:</strong> Numerical stability and overfitting <strong>[2 marks]</strong></p>
+            <p><strong>Mitigation:</strong> Use fewer centers or add small value to the diagonal of X^TX, using regularization <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong>
+
+                <p><strong>Strength (Flexibility):</strong></p>
+                <ul>
+                    <li>Using data points as centers means K=N (one RBF per data point)</li>
+                    <li>This makes the model extremely flexible - can fit any pattern</li>
+                    <li>Each training point gets its own basis function</li>
+                    <li>Can achieve perfect interpolation of training data</li>
+                </ul>
+
+                <p><strong>Risks:</strong></p>
+                <ul>
+                    <li><strong>Overfitting:</strong> With K=N basis functions, model can fit noise perfectly. Training error → 0 but test error very high</li>
+                    <li><strong>Numerical Instability:</strong> Design matrix Φ (N×N) can become ill-conditioned or singular. Matrix Φ^TΦ may not be invertible</li>
+                    <li><strong>Computational Cost:</strong> N² parameters to estimate, expensive for large datasets</li>
+                </ul>
+
+                <p><strong>Mitigation Strategies:</strong></p>
+                <ul>
+                    <li><strong>Use fewer centers (K < N):</strong> Select subset of data points (e.g., K-means clustering to find representative centers)</li>
+                    <li><strong>Regularization:</strong> Add Ridge (L2) or Lasso (L1) penalty to prevent large weights</li>
+                    <li><strong>Add to diagonal:</strong> Φ^TΦ + εI where ε is small (e.g., 0.001) ensures invertibility</li>
+                    <li><strong>Cross-validation:</strong> Choose optimal number of centers K and width parameter s</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Fourier Basis Functions <span class="marks">[5 marks]</span></h3>
+            <p>In addition to the polynomial function and RBF, linear regression can be generalized using other basis functions. One of the most widely used example is the Fourier analysis. Let's consider the following linear regression model:</p>
+            <p>\[t_n = \sum_{j} A_j \cos(jx_n + \theta_j)\]</p>
+            <p>What is the basis function of choice here? How would you deal with the unknown parameters \(A_j\) and \(\theta_j\)? (Hint: you might find the following trigonometry identity useful, \(\cos(a + b) = \cos(a)\cos(b) + \sin(a)\sin(b)\)).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Solution 1 [3 marks total]:</strong></p>
+            <p>Basis function: \(\cos(jx_n + \theta_j)\) <strong>[1 mark]</strong></p>
+            <p>\(A_j\) is the regression parameter, use cross-validation for \(\theta_j\) <strong>[2 marks]</strong></p>
+
+            <p><strong>Solution 2 [Full marks - 5 marks]:</strong></p>
+            <p>Apply the trigonometric identity \(\cos(a + b) = \cos(a)\cos(b) + \sin(a)\sin(b)\):</p>
+            <p>\[\cos(jx_n + \theta_j) = \cos(jx_n)\cos(\theta_j) + \sin(jx_n)\sin(\theta_j)\]</p>
+            <p>This gives us <strong>two basis functions:</strong> \(\cos(jx_n)\) and \(\sin(jx_n)\)</p>
+            <p>\(\theta_j\) becomes part of the linear regression parameters (absorbed into weights), the same as \(A_j\).</p>
+
+            <div class="note">
+                <strong>Detailed Explanation of Solution 2:</strong>
+
+                <p><strong>Rewriting the model:</strong></p>
+                <p>\[t_n = \sum_j A_j[\cos(jx_n)\cos(\theta_j) + \sin(jx_n)\sin(\theta_j)]\]</p>
+                <p>\[= \sum_j [A_j\cos(\theta_j)]\cos(jx_n) + [A_j\sin(\theta_j)]\sin(jx_n)\]</p>
+                <p>\[= \sum_j w_j^{(c)}\cos(jx_n) + w_j^{(s)}\sin(jx_n)\]</p>
+
+                <p>where \(w_j^{(c)} = A_j\cos(\theta_j)\) and \(w_j^{(s)} = A_j\sin(\theta_j)\)</p>
+
+                <p><strong>Key Insight:</strong> Now both \(w_j^{(c)}\) and \(w_j^{(s)}\) are linear regression parameters! We can learn them directly using ordinary least squares. No need to separately optimize \(A_j\) and \(\theta_j\).</p>
+
+                <p><strong>Fourier Basis Functions:</strong></p>
+                <ul>
+                    <li>Basis functions: \(\{\cos(jx), \sin(jx)\}\) for \(j=1,2,3,\ldots\)</li>
+                    <li>Can represent any periodic function (Fourier series)</li>
+                    <li>Useful for seasonal data, time series, signal processing</li>
+                    <li>Each frequency j captures different wavelength patterns</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Logistic Regression Likelihood <span class="marks">[4 marks]</span></h3>
+            <p>The likelihood of logistic regression is:</p>
+            <p>\[p(t_n|\mathbf{w}, \mathbf{x}_n) = g(\mathbf{w}^T\mathbf{x}_n)^{t_n}(1 - g(\mathbf{w}^T\mathbf{x}_n))^{1-t_n}\]</p>
+            <p>where \(g(a) = \frac{1}{1+\exp(-a)}\). Use an example of a few data points to explain how the likelihood function tells how well the parameter \(\mathbf{w}\) fits the data.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Marking Scheme:</strong></p>
+            <p>The example needs to have more than one pair of \(t_n\) and \(x_n\) <strong>[1 mark]</strong>, demonstrating how to construct joint data likelihood <strong>[1 mark]</strong>. It should also include a parameter estimate representing a good fit and a parameter estimate representing a bad fit <strong>[2 marks]</strong>.</p>
+
+            <div class="note">
+                <strong>Example Solution:</strong>
+
+                <p><strong>Dataset (3 points):</strong></p>
+                <table>
+                    <tr>
+                        <th>Point</th>
+                        <th>Feature x_n</th>
+                        <th>Label t_n</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2.0</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>1.5</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>-1.0</td>
+                        <td>0</td>
+                    </tr>
+                </table>
+
+                <p><strong>Joint Likelihood (product of individual likelihoods):</strong></p>
+                <p>\[L(\mathbf{w}) = p(t_1,t_2,t_3|\mathbf{w}) = \prod_{n=1}^{3} p(t_n|\mathbf{w},x_n)\]</p>
+
+                <p><strong>Good Parameter (w=2):</strong></p>
+                <ul>
+                    <li>Point 1: \(g(2 \times 2) = g(4) = 0.98\) → \(p(t_1=1) = 0.98\) ✓ High probability</li>
+                    <li>Point 2: \(g(2 \times 1.5) = g(3) = 0.95\) → \(p(t_2=1) = 0.95\) ✓ High probability</li>
+                    <li>Point 3: \(g(2 \times (-1)) = g(-2) = 0.12\) → \(p(t_3=0) = 1-0.12 = 0.88\) ✓ High probability</li>
+                    <li><strong>Joint Likelihood:</strong> \(L = 0.98 \times 0.95 \times 0.88 = 0.82\) (HIGH)</li>
+                </ul>
+
+                <p><strong>Bad Parameter (w=-1):</strong></p>
+                <ul>
+                    <li>Point 1: \(g(-1 \times 2) = g(-2) = 0.12\) → \(p(t_1=1) = 0.12\) ✗ Low probability</li>
+                    <li>Point 2: \(g(-1 \times 1.5) = g(-1.5) = 0.18\) → \(p(t_2=1) = 0.18\) ✗ Low probability</li>
+                    <li>Point 3: \(g(-1 \times (-1)) = g(1) = 0.73\) → \(p(t_3=0) = 1-0.73 = 0.27\) ✗ Low probability</li>
+                    <li><strong>Joint Likelihood:</strong> \(L = 0.12 \times 0.18 \times 0.27 = 0.0058\) (VERY LOW)</li>
+                </ul>
+
+                <p><strong>Conclusion:</strong> Higher likelihood = better fit. Maximum likelihood estimation (MLE) finds w that maximizes L(w), which corresponds to parameters that make the observed labels most probable given the features.</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Identifying Regularization Types <span class="marks">[6 marks]</span></h3>
+            <p>The following matrix contains estimated parameter values from three types of logistic regression models. The model type is indicated by the columns. The parameter of each feature is placed in the corresponding row. Give your best estimate of what each model is and explain why.</p>
+
+            <pre>
+        Model 1             Model 2             Model 3
+[  1.08381535e+01   1.19648635e+01   1.11285803e+01]
+[ -0.00000000e+00  -1.29443055e+01  -3.29359603e-01]
+[ -0.00000000e+00   5.79522897e+01  -1.94725736e-01]
+[ -1.16126582e-01  -1.09582035e+02  -9.64898104e-02]
+[ -1.59001968e-02   6.23248849e+01  -1.87327081e-02]
+[ -0.00000000e+00   7.48519704e+01   3.32402164e-02]
+[  1.38119952e-03  -1.46955431e+02   4.50182751e-02]
+[  3.22128802e-03   1.04735797e+02   9.53751777e-03]
+[  1.61616847e-04  -3.88035781e+01  -3.60588365e-02]
+[ -8.65262203e-05   7.43343695e+00   1.40369595e-02]
+[ -7.74413350e-05  -5.82870289e-01  -1.62830483e-03]
+            </pre>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+
+            <p><strong>Model 1:</strong> L1-regularised logistic regression (Lasso) <strong>[2 marks]</strong></p>
+            <p><strong>Why:</strong> Some parameters are exactly zeros (rows 2, 3, 6 show -0.00000000e+00). This is the signature of L1 regularization, which performs automatic feature selection by setting some weights to exactly zero.</p>
+
+            <p><strong>Model 2:</strong> Logistic polynomial regression (no regularization) <strong>[2 marks]</strong></p>
+            <p><strong>Why:</strong> Some parameter values are very big in absolute value (e.g., -1.46955431e+02, 1.04735797e+02). Without regularization and with polynomial features, weights can grow arbitrarily large to fit the training data, indicating overfitting.</p>
+
+            <p><strong>Model 3:</strong> L2-regularised logistic regression (Ridge) <strong>[2 marks]</strong></p>
+            <p><strong>Why:</strong> Compared to Model 1, most parameters are much smaller in absolute value (all values < 1.2). L2 regularization shrinks all weights toward zero without making them exactly zero, creating smaller but non-zero parameters.</p>
+
+            <div class="note">
+                <strong>Detailed Comparison:</strong>
+
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Model 1 (L1/Lasso)</th>
+                        <th>Model 2 (Unregularized)</th>
+                        <th>Model 3 (L2/Ridge)</th>
+                    </tr>
+                    <tr>
+                        <td>Bias</td>
+                        <td>10.84</td>
+                        <td>11.96</td>
+                        <td>11.13</td>
+                    </tr>
+                    <tr>
+                        <td>Feature 2</td>
+                        <td><strong>0.00</strong> (zero!)</td>
+                        <td>-12.94</td>
+                        <td>-0.33</td>
+                    </tr>
+                    <tr>
+                        <td>Feature 3</td>
+                        <td><strong>0.00</strong> (zero!)</td>
+                        <td>57.95</td>
+                        <td>-0.19</td>
+                    </tr>
+                    <tr>
+                        <td>Feature 7</td>
+                        <td>0.0014</td>
+                        <td><strong>-146.96</strong> (huge!)</td>
+                        <td>0.045</td>
+                    </tr>
+                </table>
+
+                <p><strong>Key Observations:</strong></p>
+                <ul>
+                    <li><strong>Lasso (L1):</strong> 3 out of 11 features have exactly zero weights (sparse solution)</li>
+                    <li><strong>Unregularized:</strong> Weights span 3 orders of magnitude (-146 to +104), sign of overfitting</li>
+                    <li><strong>Ridge (L2):</strong> All weights are small, controlled magnitude, better generalization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Prediction Effects <span class="marks">[4 marks]</span></h3>
+            <p>Compare the effect on prediction of the three logistic models in (b).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>With the same \(x_n\) <strong>[1 mark]</strong>, L1- and L2-regularised logistic regression are likely to produce lower probability of being the positive class <strong>[2 marks]</strong>, they have better generality with unseen data <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong>
+
+                <p><strong>Effect on Predictions:</strong></p>
+                <ul>
+                    <li><strong>Model 2 (Unregularized):</strong>
+                        <ul>
+                            <li>Very large weights → very large \(w^T x\) values (both positive and negative)</li>
+                            <li>Sigmoid of large positive values → probability ≈ 1 (very confident)</li>
+                            <li>Sigmoid of large negative values → probability ≈ 0 (very confident)</li>
+                            <li>Overconfident predictions, poor calibration</li>
+                            <li>Overfits training data, poor test performance</li>
+                        </ul>
+                    </li>
+                    <li><strong>Model 1 (L1/Lasso) and Model 3 (L2/Ridge):</strong>
+                        <ul>
+                            <li>Smaller weights → moderate \(w^T x\) values</li>
+                            <li>Probabilities less extreme, more in middle range (0.2-0.8)</li>
+                            <li>Less confident but better calibrated</li>
+                            <li>Better generalization to unseen data</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <p><strong>Example:</strong> For a test point with features x:</p>
+                <ul>
+                    <li>Model 2 might predict: P(y=1) = 0.999 or 0.001 (overconfident)</li>
+                    <li>Model 1/3 might predict: P(y=1) = 0.75 or 0.25 (more reasonable)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Falsely Labeled Data AUC <span class="marks">[6 marks total]</span></h3>
+            <p>Let's consider a binary classifier trained on a falsely labeled dataset. The issue is all positive (1) and negative (0) labels are swapped during training. The classifier outputs in the table below:</p>
+
+            <table>
+                <tr>
+                    <th>Correct label</th>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>False label during training</th>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>Probability of being the <em>positive</em> class</th>
+                    <td>0.9</td>
+                    <td>0.8</td>
+                    <td>0.7</td>
+                    <td>?</td>
+                    <td>0.2</td>
+                    <td>0.1</td>
+                </tr>
+            </table>
+
+            <p><strong>(i)</strong> What would be the AUC (computed with the correct labels) when the classifier is perfectly trained on the false data? And why? <span class="marks">[2 marks]</span></p>
+
+            <p><strong>(ii)</strong> Provide the range of possible values for the missing output (labeled '?') that would be produced by the classifier in (i). Explain why. <span class="marks">[2 marks]</span></p>
+
+            <p><strong>(iii)</strong> What would be the AUC (computed with the correct labels) of a random classifier trained on the falsely labeled data? Why? <span class="marks">[2 marks]</span></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) AUC = 0: [2 marks]</strong></p>
+            <p><strong>Answer:</strong> 0</p>
+            <p><strong>Explanation:</strong> Perfect AUC on false labels is 1. Correct label is 1-1=0. Or arguing using the definition of AUC: the probability of a positive example having classification score higher than a negative one. Since labels are swapped, all true positives get low scores and all true negatives get high scores, so AUC with correct labels is 0 (worst possible).</p>
+
+            <div class="note">
+                <strong>Detailed Reasoning:</strong>
+                <p>If the classifier is perfectly trained on FALSE labels:</p>
+                <ul>
+                    <li>False label 1 (true label 0) → High scores (0.9, 0.8, 0.7)</li>
+                    <li>False label 0 (true label 1) → Low scores (?, 0.2, 0.1)</li>
+                </ul>
+                <p>With CORRECT labels:</p>
+                <ul>
+                    <li>True label 0 → High scores (0.9, 0.8, 0.7) ✗ Should be low!</li>
+                    <li>True label 1 → Low scores (?, 0.2, 0.1) ✗ Should be high!</li>
+                </ul>
+                <p>Result: Classifier ranks ALL negatives above ALL positives → AUC = 0</p>
+            </div>
+
+            <p><strong>(ii) Range: [0, 0.7): [2 marks]</strong></p>
+            <p><strong>Answer:</strong> [0, 0.7)</p>
+            <p><strong>Explanation:</strong> All numbers ensure that all positive data (based on false label, i.e., true negatives) have higher score than any negative data (based on false label, i.e., true positives). For perfect training on false labels, the missing value must be less than 0.7 (the lowest score of false positives).</p>
+
+            <div class="note">
+                <strong>Why [0, 0.7)?</strong>
+                <p>For perfect classification on FALSE labels:</p>
+                <ul>
+                    <li>All false label 1 (correct label 0) must have scores ≥ any false label 0 (correct label 1)</li>
+                    <li>Lowest score for false label 1: 0.7</li>
+                    <li>Highest score for false label 0: 0.2</li>
+                    <li>Missing value (false label 0) must be < 0.7 to maintain perfect separation</li>
+                    <li>Can be anywhere in [0, 0.7) including 0.2 (same as next point)</li>
+                </ul>
+            </div>
+
+            <p><strong>(iii) AUC = 0.5: [2 marks]</strong></p>
+            <p><strong>Answer:</strong> 0.5</p>
+            <p><strong>Explanation:</strong> Random classifier will have 0.5 AUC on false labels, 1-0.5 is still 0.5.</p>
+
+            <div class="note">
+                <strong>Why 0.5?</strong>
+                <p>A random classifier produces random scores regardless of labels:</p>
+                <ul>
+                    <li>AUC on false labels = 0.5 (random performance)</li>
+                    <li>Swapping labels doesn't change random scores</li>
+                    <li>AUC on correct labels = 0.5 (still random)</li>
+                    <li>Key insight: Label swapping inverts perfect classifiers (1→0, 0→1) but doesn't affect random classifiers (0.5→0.5)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUESTION 3: CLUSTERING -->
+        <h2>Question 3: Clustering (20 marks)</h2>
+
+        <div class="question">
+            <p><em>Figures in this question were taken from the sklearn clustering tutorial: https://scikit-learn.org/stable/modules/clustering.html</em></p>
+        </div>
+
+        <div class="question">
+            <h3>(a) Concentric Circles Clustering <span class="marks">[6 marks]</span></h3>
+            <p>Describe clustering results of K-means and Gaussian Mixture in figure 2. Hint: answer should address parameters estimation, initial conditions and selecting the number of clusters.</p>
+            <p><em>[Figure 2 shows: (A) K-means and (B) GMM both splitting concentric circles roughly vertically into two halves, with each cluster containing parts of both inner circle and outer ring]</em></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Marking Scheme:</strong> 3 marks each for K-means and GMM</p>
+            <p>Answer should address: parameters estimation [1], initial conditions [1], and selecting the number of clusters [1].</p>
+
+            <p><strong>Example Solution:</strong></p>
+
+            <p><strong>K-means (Figure 2A):</strong></p>
+            <ul>
+                <li><strong>Parameters:</strong> Two cluster centers are located somewhere between the two rings (closer to the inner ring) <strong>[1]</strong></li>
+                <li><strong>Initial conditions:</strong> It's hard to determine what initial conditions might have been used. Many splits are possible. <strong>[1]</strong></li>
+                <li><strong>Model selection:</strong> Difficult to do model selection for the same reason (Many splits are equally good) <strong>[1]</strong></li>
+            </ul>
+
+            <p><strong>GMM (Figure 2B):</strong></p>
+            <ul>
+                <li><strong>Parameters:</strong> The means are also located somewhere between the two rings. The two covariance matrices and mixing weights should be almost identical between the two components <strong>[1]</strong></li>
+                <li><strong>Initial conditions:</strong> Similar to K-means, there are many equally good solutions for GMM. Specific initial condition is hard to determine <strong>[1]</strong></li>
+                <li><strong>Model selection:</strong> Similar to K-means, model selection is hard due to multiple good solutions in each number of cluster setting <strong>[1]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Why Both Fail on Concentric Circles:</strong>
+                <ul>
+                    <li><strong>K-means:</strong> Assumes spherical clusters. Can only create convex, linear boundaries. Splits the circles vertically or horizontally, not radially.</li>
+                    <li><strong>GMM:</strong> While more flexible than K-means (elliptical clusters), still struggles with non-convex shapes like rings. With K=2, creates two elongated elliptical clusters.</li>
+                    <li><strong>Result:</strong> Both methods group some points from inner circle with some from outer ring in each cluster - not the desired separation.</li>
+                    <li><strong>Solution:</strong> Need kernel methods (kernel K-means with RBF) or non-parametric methods (DBSCAN, spectral clustering)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Separating Concentric Circles with GMM <span class="marks">[4 marks]</span></h3>
+            <p>Suppose we want to avoid any data point from the inner ring being assigned to the same cluster with any data point from the outer ring. Outline two approaches to achieve this goal with the Gaussian mixture model? Hint: You don't have to use just 2 clusters.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+
+            <p><strong>Approach 1:</strong></p>
+            <ul>
+                <li>Project the data onto a different space <strong>[1 mark]</strong></li>
+                <li>where data points in the inner ring are well separated from the data points in the outer ring <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Approach 2:</strong></p>
+            <ul>
+                <li>Restrict variance of each component to be small <strong>[1 mark]</strong></li>
+                <li>and use more clusters <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><em>Marks for any other sensible approaches</em></p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong>
+
+                <p><strong>Approach 1: Feature Space Transformation (Kernel Method)</strong></p>
+                <ul>
+                    <li>Use RBF kernel to map to higher dimensional space</li>
+                    <li>Add radial coordinate: \(r = \sqrt{x^2 + y^2}\) as a feature</li>
+                    <li>In this new space, inner and outer rings have different r values</li>
+                    <li>GMM can easily separate them based on r</li>
+                    <li>Example: inner ring (r ≈ 0.3), outer ring (r ≈ 0.8)</li>
+                </ul>
+
+                <p><strong>Approach 2: Many Small Clusters</strong></p>
+                <ul>
+                    <li>Instead of K=2, use K=10 or K=20 small Gaussian components</li>
+                    <li>Constrain each component to have small, similar covariance (almost spherical)</li>
+                    <li>Each small cluster captures a local region</li>
+                    <li>Post-process: merge clusters - all in inner ring = cluster A, all in outer ring = cluster B</li>
+                    <li>This is similar to over-clustering then hierarchical grouping</li>
+                </ul>
+
+                <p><strong>Other Sensible Approaches:</strong></p>
+                <ul>
+                    <li>Hierarchical GMM: First fit 2 components for rough split, then fit sub-GMMs within each</li>
+                    <li>Constrained GMM: Add constraints that force components to have non-overlapping support</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Diagonal Clusters <span class="marks">[6 marks]</span></h3>
+            <p>Describe clustering results of K-means and Gaussian Mixture in figure 3. Hint: answer should address parameters estimation, initial conditions and selecting the number of clusters.</p>
+            <p><em>[Figure 3 shows: Three elongated diagonal clusters. (A) K-means separates them vertically, (B) GMM correctly identifies the three diagonal clusters]</em></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Marking Scheme:</strong> 3 marks each for K-means and GMM</p>
+            <p>Answer should address: parameters estimation [1], initial conditions [1], and selecting the number of clusters [1].</p>
+
+            <p><strong>Example Solution:</strong></p>
+
+            <p><strong>K-means (Figure 3A):</strong></p>
+            <ul>
+                <li><strong>Parameters:</strong> Three cluster centers are vertically distributed <strong>[1]</strong></li>
+                <li><strong>Initial conditions:</strong> Initial cluster centers may also have been vertically distributed while others are possible <strong>[1]</strong></li>
+                <li><strong>Model selection:</strong> A cross-validation on clustering number might prefer the number of clusters larger than 3 <strong>[1]</strong></li>
+            </ul>
+
+            <p><strong>GMM (Figure 3B):</strong></p>
+            <ul>
+                <li><strong>Parameters:</strong> Three highly Gaussian-like distributed data. Different means but similar covariance matrices and mixing weights <strong>[1]</strong></li>
+                <li><strong>Initial conditions:</strong> In this case, the optimal solution is quite clear, therefore, GMM should be same with multiple initials with only the identity of the clusters changing <strong>[1]</strong></li>
+                <li><strong>Model selection:</strong> Cross-validation or Marginal likelihood should favor a 3 cluster solution <strong>[1]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Why GMM Succeeds and K-means Fails:</strong>
+
+                <p><strong>Data Characteristics:</strong></p>
+                <ul>
+                    <li>Three elongated, diagonal clusters</li>
+                    <li>Each cluster is Gaussian with diagonal orientation</li>
+                    <li>Clusters have similar size and density</li>
+                </ul>
+
+                <p><strong>K-means (Fails):</strong></p>
+                <ul>
+                    <li>Assumes spherical clusters (same variance in all directions)</li>
+                    <li>Creates vertical Voronoi boundaries</li>
+                    <li>Splits diagonal clusters incorrectly</li>
+                    <li>Each K-means cluster contains parts of multiple true clusters</li>
+                    <li>Cannot capture the elongated, oriented structure</li>
+                </ul>
+
+                <p><strong>GMM (Succeeds):</strong></p>
+                <ul>
+                    <li>Each component can have different covariance matrix Σ_k</li>
+                    <li>Covariance matrices capture elongation and orientation</li>
+                    <li>Can model diagonal orientation via off-diagonal elements of Σ</li>
+                    <li>Perfectly separates the three diagonal clusters</li>
+                    <li>Model selection clearly prefers K=3</li>
+                </ul>
+
+                <p><strong>Lesson:</strong> When clusters have different shapes/orientations, GMM is superior to K-means. K-means only works well for spherical, similarly-sized clusters.</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Achieving GMM Results with K-means <span class="marks">[4 marks]</span></h3>
+            <p>Suppose Figure 3 (B) represents the results we want. Outline one approach to achieve this goal with K-means. Hint: Sufficient details of the approach are required to get full marks.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>Kernel K-means <strong>[2 marks]</strong></p>
+            <p>Details on how to kernelize K-means: using the kernel trick on the distance <strong>[1 mark]</strong> and only update the assignments <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Explanation of Kernel K-means:</strong>
+
+                <p><strong>Key Idea:</strong></p>
+                <p>Use kernel trick to implicitly map data to higher-dimensional space where diagonal clusters become more separable.</p>
+
+                <p><strong>Distance Computation in Kernel K-means:</strong></p>
+                <p>Standard K-means distance: \(\|x_i - \mu_k\|^2\)</p>
+                <p>In feature space: \(\|\phi(x_i) - \mu_k\|^2\) where \(\mu_k = \frac{1}{|C_k|}\sum_{j \in C_k}\phi(x_j)\)</p>
+
+                <p>Using kernel trick:</p>
+                <p>\[\|\phi(x_i) - \mu_k\|^2 = K(x_i,x_i) - \frac{2}{|C_k|}\sum_{j \in C_k}K(x_i,x_j) + \frac{1}{|C_k|^2}\sum_{j,l \in C_k}K(x_j,x_l)\]</p>
+
+                <p><strong>Algorithm:</strong></p>
+                <ol>
+                    <li>Choose kernel (e.g., RBF: \(K(x,x') = \exp(-\gamma\|x-x'\|^2)\))</li>
+                    <li>Compute kernel matrix K for all pairs of points</li>
+                    <li>Initialize cluster assignments randomly</li>
+                    <li>Repeat:
+                        <ul>
+                            <li>For each point i, compute kernel distance to each cluster k</li>
+                            <li>Assign point i to cluster with minimum kernel distance</li>
+                            <li>Update cluster assignments (no explicit centroid update!)</li>
+                        </ul>
+                    </li>
+                    <li>Stop when assignments converge</li>
+                </ol>
+
+                <p><strong>Why This Works for Diagonal Clusters:</strong></p>
+                <ul>
+                    <li>RBF kernel can capture local similarity patterns</li>
+                    <li>Points within same diagonal cluster have high similarity (high K value)</li>
+                    <li>Points in different clusters have low similarity (low K value)</li>
+                    <li>Kernel space makes clusters more "spherical" and separable</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Duration: 90 minutes | Remember to show all working in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

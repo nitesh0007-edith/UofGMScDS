@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lec 3: Access Control — CSF M</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --blue: #58a6ff; --green: #3fb950; --orange: #d29922;
+    --red: #f85149; --purple: #bc8cff; --cyan: #39d353;
+    --yellow: #e3b341;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border); padding: 0.6rem 1.5rem; z-index: 100;
+    display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  nav span { color: var(--blue); font-weight: 700; margin-right: 0.8rem; font-size: 0.95rem; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.8rem; padding: 0.3rem 0.7rem;
+    border-radius: 20px; transition: all 0.2s; border: 1px solid transparent; }
+  nav a:hover { color: var(--text); border-color: var(--border); background: var(--surface2); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .hero { text-align: center; padding: 3rem 1rem 2rem;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%); }
+  .hero h1 { font-size: 2.4rem; background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+  .hero p { color: var(--muted); font-size: 1rem; }
+  .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+  .badge { padding: 0.25rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--blue); border: 1px solid rgba(88,166,255,0.3); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .badge-orange { background: rgba(210,153,34,0.15); color: var(--orange); border: 1px solid rgba(210,153,34,0.3); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+
+  /* SECTIONS */
+  .section { margin: 2.5rem 0; }
+  h2 { font-size: 1.5rem; color: var(--blue); border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  h3 { font-size: 1.15rem; color: var(--purple); margin: 1.5rem 0 0.8rem; }
+  h4 { font-size: 1rem; color: var(--yellow); margin: 1rem 0 0.5rem; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem 1.5rem; margin: 1rem 0; }
+  .card-blue { border-left: 4px solid var(--blue); }
+  .card-green { border-left: 4px solid var(--green); }
+  .card-orange { border-left: 4px solid var(--orange); }
+  .card-red { border-left: 4px solid var(--red); }
+  .card-purple { border-left: 4px solid var(--purple); }
+  .card-cyan { border-left: 4px solid var(--cyan); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  /* DEFINITION BOX */
+  .def-box { background: linear-gradient(135deg, rgba(88,166,255,0.05), rgba(188,140,255,0.05));
+    border: 1px solid rgba(88,166,255,0.2); border-radius: 10px; padding: 1rem 1.5rem; margin: 1rem 0; }
+  .def-box .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--blue); font-weight: 700; margin-bottom: 0.3rem; }
+
+  /* CODE */
+  pre, code { font-family: 'Cascadia Code', 'Consolas', monospace; }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.85rem; margin: 0.8rem 0; }
+  code { background: rgba(88,166,255,0.1); color: var(--blue); padding: 0.1rem 0.35rem;
+    border-radius: 4px; font-size: 0.88em; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
+  th { background: var(--surface2); color: var(--blue); padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border); text-align: left; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 0.55rem 0.8rem; border: 1px solid var(--border); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  tr:hover td { background: rgba(88,166,255,0.05); }
+
+  /* DIAGRAM */
+  .diagram { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.5rem; margin: 1rem 0; text-align: center; overflow-x: auto; }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
+  .flow-box { background: var(--surface); border: 2px solid var(--blue); border-radius: 8px;
+    padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; color: var(--blue); }
+  .flow-arrow { color: var(--muted); font-size: 1.4rem; margin: 0 0.2rem; }
+  .flow-box.green { border-color: var(--green); color: var(--green); }
+  .flow-box.orange { border-color: var(--orange); color: var(--orange); }
+  .flow-box.purple { border-color: var(--purple); color: var(--purple); }
+  .flow-box.red { border-color: var(--red); color: var(--red); }
+
+  /* ACCORDION */
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    margin: 0.6rem 0; overflow: hidden; }
+  details[open] { border-color: var(--blue); }
+  summary { padding: 0.8rem 1.2rem; cursor: pointer; font-weight: 600; color: var(--text);
+    list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: '▶'; color: var(--blue); font-size: 0.7rem; transition: transform 0.2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  .details-body { padding: 0 1.2rem 1rem; border-top: 1px solid var(--border); }
+
+  /* QUIZ */
+  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem 1.5rem; margin: 1rem 0; }
+  .quiz-q { font-weight: 600; margin-bottom: 0.8rem; color: var(--text); }
+  .quiz-q .qnum { color: var(--blue); }
+  .options label { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.5rem 0.7rem;
+    border-radius: 6px; cursor: pointer; margin: 0.3rem 0; border: 1px solid transparent;
+    transition: all 0.15s; font-size: 0.92rem; }
+  .options label:hover { background: rgba(88,166,255,0.07); border-color: var(--border); }
+  .options input[type=radio] { accent-color: var(--blue); margin-top: 0.2rem; flex-shrink: 0; }
+  .check-btn { background: var(--blue); color: var(--bg); border: none; padding: 0.45rem 1.1rem;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.88rem; margin-top: 0.5rem; transition: opacity 0.2s; }
+  .check-btn:hover { opacity: 0.85; }
+  .feedback { margin-top: 0.7rem; padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.88rem;
+    display: none; font-weight: 500; }
+  .feedback.correct { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+  /* STEP BOX */
+  .steps { counter-reset: step; }
+  .step { counter-increment: step; display: flex; gap: 1rem; margin: 0.8rem 0; align-items: flex-start; }
+  .step::before { content: counter(step); background: var(--blue); color: var(--bg);
+    width: 1.6rem; height: 1.6rem; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+  /* COMPARISON */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+  .compare-col { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+  .compare-col h4 { margin-top: 0; }
+
+  /* HIGHLIGHT */
+  .highlight { background: rgba(227,179,65,0.12); border: 1px solid rgba(227,179,65,0.3);
+    border-radius: 6px; padding: 0.6rem 1rem; margin: 0.6rem 0; color: var(--yellow); font-size: 0.9rem; }
+  .highlight-red { background: rgba(248,81,73,0.1); border-color: rgba(248,81,73,0.3); color: var(--red); }
+  .highlight-green { background: rgba(63,185,80,0.1); border-color: rgba(63,185,80,0.3); color: var(--green); }
+  .highlight-blue { background: rgba(88,166,255,0.1); border-color: rgba(88,166,255,0.3); color: var(--blue); }
+
+  /* MATRIX VIZ */
+  .matrix-table { border-collapse: collapse; margin: 0.5rem auto; }
+  .matrix-table th { background: var(--surface2); }
+  .matrix-table td { min-width: 120px; }
+  .has-access { color: var(--green); font-weight: 600; }
+  .no-access { color: var(--muted); }
+
+  /* RBAC TREE */
+  .tree { font-family: monospace; font-size: 0.88rem; color: var(--text); padding: 1rem; }
+
+  /* PROGRESS BAR */
+  .progress-bar { background: var(--surface2); border-radius: 4px; height: 8px; margin: 0.3rem 0; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width 0.5s; }
+
+  /* EXAM CARD */
+  .exam-card { background: linear-gradient(135deg, rgba(88,166,255,0.05), rgba(188,140,255,0.05));
+    border: 1px solid rgba(88,166,255,0.25); border-radius: 12px; padding: 1.5rem; margin: 1.2rem 0; }
+  .exam-card .marks { background: var(--orange); color: var(--bg); font-size: 0.72rem;
+    font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; }
+  .solution-box { background: var(--surface2); border-left: 3px solid var(--green); border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem; margin-top: 0.8rem; display: none; }
+  .show-sol-btn { background: transparent; border: 1px solid var(--green); color: var(--green);
+    padding: 0.3rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.82rem;
+    margin-top: 0.6rem; transition: all 0.2s; }
+  .show-sol-btn:hover { background: rgba(63,185,80,0.1); }
+
+  /* ANIMATION */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.5s ease; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .pulse { animation: pulse 2s infinite; }
+
+  /* TAG */
+  .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin: 0.1rem; }
+  .tag-blue { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .tag-green { background: rgba(63,185,80,0.15); color: var(--green); }
+  .tag-red { background: rgba(248,81,73,0.15); color: var(--red); }
+  .tag-orange { background: rgba(210,153,34,0.15); color: var(--orange); }
+  .tag-purple { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+  ul, ol { padding-left: 1.5rem; }
+  li { margin: 0.3rem 0; }
+  p { margin: 0.5rem 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span>CSF M · Lec 3</span>
+  <a href="#overview">Overview</a>
+  <a href="#basics">Basics</a>
+  <a href="#dac">DAC</a>
+  <a href="#rbac">RBAC</a>
+  <a href="#abac">ABAC</a>
+  <a href="#comparison">Compare</a>
+  <a href="#tutorials">Tutorials</a>
+  <a href="#exam">Exam Q&A</a>
+  <a href="#practice">Practice</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Access Control</h1>
+  <p>COMPSCI5063: Cyber Security Fundamentals (M) · Week 3 · University of Glasgow</p>
+  <div class="badges">
+    <span class="badge badge-blue">DAC</span>
+    <span class="badge badge-purple">RBAC</span>
+    <span class="badge badge-orange">ABAC</span>
+    <span class="badge badge-green">Exam Ready</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ==================== OVERVIEW ==================== -->
+<div class="section" id="overview">
+  <h2>📋 Lecture Overview</h2>
+
+  <div class="def-box">
+    <div class="label">Core Definition</div>
+    <p><strong>Access Control</strong> implements a security policy that specifies <em>who or what</em> (e.g., a process) may have access to each specific system resource and the <em>type of access</em> that is permitted in each instance.</p>
+  </div>
+
+  <h3>Access Control in a Broader Context</h3>
+  <p>An access control mechanism mediates between a <strong>user</strong> (or a process executing on behalf of a user) and <strong>system resources</strong>.</p>
+
+  <div class="diagram">
+    <div class="flow">
+      <div class="flow-box">User / Process</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">Authentication</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box orange">Access Control</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">System Resources</div>
+    </div>
+    <p style="color:var(--muted);font-size:0.8rem;margin-top:0.8rem">
+      Security Administrator manages the Authorization Database · Audit logs all actions
+    </p>
+  </div>
+
+  <div class="grid3">
+    <div class="card card-blue">
+      <h4>🔐 Authentication</h4>
+      <p>Verification that the credentials of a user or entity are valid.</p>
+      <span class="tag tag-blue">Who are you?</span>
+    </div>
+    <div class="card card-green">
+      <h4>✅ Authorization</h4>
+      <p>Granting of a right or permission to access a specific resource.</p>
+      <span class="tag tag-green">What can you do?</span>
+    </div>
+    <div class="card card-orange">
+      <h4>📝 Audit</h4>
+      <p>Independent review and examination of system records and activities.</p>
+      <span class="tag tag-orange">What did you do?</span>
+    </div>
+  </div>
+
+  <div class="highlight-blue highlight">
+    💡 Resources under access control: Applications, Operating Systems, Firewalls, Routers, Files, Databases
+  </div>
+</div>
+
+<!-- ==================== BASICS ==================== -->
+<div class="section" id="basics">
+  <h2>🧱 Basic Elements</h2>
+
+  <div class="grid3">
+    <div class="card card-blue">
+      <h4>📦 Object</h4>
+      <p>A resource to which access is controlled. An entity used to contain and/or receive information.</p>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">Examples: files, pages, mailboxes, databases</p>
+    </div>
+    <div class="card card-purple">
+      <h4>👤 Subject</h4>
+      <p>An entity capable of accessing objects.</p>
+      <ul style="font-size:0.88rem;margin-top:0.5rem">
+        <li><span class="tag tag-blue">Owner</span> Creator / sysadmin</li>
+        <li><span class="tag tag-purple">Group</span> Membership grants access</li>
+        <li><span class="tag tag-orange">World</span> Least amount of access</li>
+      </ul>
+    </div>
+    <div class="card card-green">
+      <h4>🔑 Access Rights</h4>
+      <p>Ways in which a subject may access an object.</p>
+    </div>
+  </div>
+
+  <h3>Access Rights Explained</h3>
+  <table>
+    <thead><tr><th>Right</th><th>Description</th><th>Includes</th></tr></thead>
+    <tbody>
+      <tr><td><code>Read</code></td><td>View information in system resources</td><td>Copy, print</td></tr>
+      <tr><td><code>Write</code></td><td>Add, modify, or delete data</td><td>Includes read</td></tr>
+      <tr><td><code>Execute</code></td><td>Run specified programs</td><td>—</td></tr>
+      <tr><td><code>Delete</code></td><td>Delete system resources</td><td>Files, records, programs</td></tr>
+      <tr><td><code>Create</code></td><td>Create new files, records, or fields</td><td>—</td></tr>
+      <tr><td><code>Search</code></td><td>List files in a directory</td><td>Directory traversal</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The Four Access Control Policies</h3>
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>DAC — Discretionary Access Control</h4>
+      <p>Based on the <strong>identity</strong> of the requestor and access rules. Entities can enable others to access resources.</p>
+      <span class="tag tag-blue">Identity-based</span>
+    </div>
+    <div class="card card-orange">
+      <h4>MAC — Mandatory Access Control</h4>
+      <p>Access decisions made by the <strong>system's security policy</strong>, not by users. Users cannot change permissions.</p>
+      <span class="tag tag-orange">System-enforced</span>
+    </div>
+    <div class="card card-purple">
+      <h4>RBAC — Role-Based Access Control</h4>
+      <p>Based on the <strong>roles</strong> that users have within the system.</p>
+      <span class="tag tag-purple">Role-based</span>
+    </div>
+    <div class="card card-green">
+      <h4>ABAC — Attribute-Based Access Control</h4>
+      <p>Based on <strong>attributes</strong> of users, resources, and environment.</p>
+      <span class="tag tag-green">Attribute-based</span>
+    </div>
+  </div>
+
+  <div class="highlight">
+    ⚠️ These policies are NOT mutually exclusive. A system can employ two or all three simultaneously for different resource classes.
+  </div>
+</div>
+
+<!-- ==================== DAC ==================== -->
+<div class="section" id="dac">
+  <h2>🗂️ Discretionary Access Control (DAC)</h2>
+
+  <div class="def-box">
+    <div class="label">DAC Definition</div>
+    <p>Controls access based on the <strong>identity</strong> of the requestor and access rules (authorizations) stating what requestors are (or are not) allowed to do. An entity may grant access rights to another entity by its own volition.</p>
+  </div>
+
+  <h3>Access Matrix</h3>
+  <p>The fundamental DAC data structure — a 2D matrix of subjects × objects.</p>
+
+  <div class="diagram">
+    <h4 style="color:var(--muted);margin-bottom:1rem">Access Matrix Example</h4>
+    <div style="overflow-x:auto">
+    <table class="matrix-table">
+      <thead>
+        <tr><th>Subject ↓ / Object →</th><th>File 1</th><th>File 2</th><th>File 3</th><th>File 4</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--blue)">User A</strong></td>
+          <td class="has-access">Own, Read, Write</td>
+          <td class="no-access">—</td>
+          <td class="has-access">Own, Read, Write</td>
+          <td class="no-access">—</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--purple)">User B</strong></td>
+          <td class="has-access">Read</td>
+          <td class="has-access">Own, Read, Write</td>
+          <td class="has-access">Write</td>
+          <td class="has-access">Read</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green)">User C</strong></td>
+          <td class="has-access">Read, Write</td>
+          <td class="has-access">Read</td>
+          <td class="no-access">—</td>
+          <td class="has-access">Own, Read, Write</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <h3>DAC Implementations</h3>
+  <div class="compare">
+    <div class="compare-col">
+      <h4 style="color:var(--blue)">📋 Access Control Lists (ACLs)</h4>
+      <p><span class="tag tag-blue">Derived from columns</span></p>
+      <p style="margin-top:0.5rem">Lists users and their permitted access rights for each resource.</p>
+      <pre>File 1 → [A: Own/R/W, B: Read, C: R/W]
+File 2 → [B: Own/R/W, C: Read]
+File 3 → [A: Own/R/W, B: Write]
+File 4 → [B: Read, C: Own/R/W]</pre>
+      <p style="color:var(--green);font-size:0.85rem">✅ Easy to find who has what rights to a resource</p>
+      <p style="color:var(--green);font-size:0.85rem">✅ Can have default/public entries</p>
+      <p style="color:var(--red);font-size:0.85rem">❌ Hard to find all rights of a specific user</p>
+    </div>
+    <div class="compare-col">
+      <h4 style="color:var(--purple)">🎟️ Capability Tickets</h4>
+      <p><span class="tag tag-purple">Derived from rows</span></p>
+      <p style="margin-top:0.5rem">Specifies authorized objects and operations for a particular user.</p>
+      <pre>User A → [F1: Own/R/W, F3: Own/R/W]
+User B → [F1: R, F2: Own/R/W, F3: W, F4: R]
+User C → [F1: R/W, F2: R, F4: Own/R/W]</pre>
+      <p style="color:var(--green);font-size:0.85rem">✅ Easy to determine all rights of a user</p>
+      <p style="color:var(--red);font-size:0.85rem">❌ Hard to find all users with specific resource rights</p>
+      <p style="color:var(--red);font-size:0.85rem">❌ Tickets can be loaned — security risk</p>
+    </div>
+  </div>
+
+  <h3>Ticket Security Solutions</h3>
+  <div class="grid2">
+    <div class="card card-orange">
+      <h4>Solution 1: OS-Managed Storage</h4>
+      <p>The OS holds all tickets on behalf of users in a region of memory <strong>inaccessible to users</strong>.</p>
+    </div>
+    <div class="card card-orange">
+      <h4>Solution 2: Unforgeable Token</h4>
+      <p>Include an unforgeable token (large random password or <strong>cryptographic MAC</strong>) in the capability.</p>
+    </div>
+  </div>
+
+  <h3>Authorization Table (Alternative Representation)</h3>
+  <p>One row per access right per subject per resource. Can be sorted by subject (= capability list) or by object (= ACL).</p>
+
+  <details>
+    <summary>View Authorization Table Example</summary>
+    <div class="details-body">
+      <table>
+        <thead><tr><th>Subject</th><th>Access Mode</th><th>Object</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>Own</td><td>File 1</td></tr>
+          <tr><td>A</td><td>Read</td><td>File 1</td></tr>
+          <tr><td>A</td><td>Write</td><td>File 1</td></tr>
+          <tr><td>A</td><td>Own</td><td>File 3</td></tr>
+          <tr><td>B</td><td>Read</td><td>File 1</td></tr>
+          <tr><td>B</td><td>Own</td><td>File 2</td></tr>
+          <tr><td>B</td><td>Write</td><td>File 3</td></tr>
+          <tr><td>C</td><td>Read/Write</td><td>File 1</td></tr>
+          <tr><td>C</td><td>Own/Read/Write</td><td>File 4</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">✅ Easily implemented as a relational database table</p>
+    </div>
+  </details>
+
+  <h3>Extended Access Control Matrix</h3>
+  <p>The DAC model extends the matrix to include not just files, but also <strong>processes</strong> and <strong>disk drives</strong> as objects.</p>
+
+  <div class="card card-blue">
+    <h4>Protection State</h4>
+    <p>A set of information, at a given point in time, that specifies the access rights for each subject with respect to each object.</p>
+    <div class="steps" style="margin-top:0.8rem">
+      <div class="step"><span>Representing the protection state — using extended access matrix</span></div>
+      <div class="step"><span>Enforcing access rights — through access controllers</span></div>
+      <div class="step"><span>Allowing subjects to alter the protection state — through defined rules</span></div>
+    </div>
+  </div>
+
+  <h3>DAC System Commands (Rules)</h3>
+  <table>
+    <thead><tr><th>Rule</th><th>Command by S₀</th><th>Authorization Required</th><th>Operation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>R1</strong></td><td>transfer {α*} to S, X</td><td>α* ∈ A[S₀, X]</td><td>Store {α*} in A[S, X]</td></tr>
+      <tr><td><strong>R2</strong></td><td>grant {α*} to S, X</td><td>'owner' ∈ A[S₀,X] AND 'control' ∈ A[S₀,S]</td><td>Store {α*} in A[S, X]</td></tr>
+      <tr><td><strong>R3</strong></td><td>delete α from S, X</td><td>'owner' ∈ A[S₀,X] OR 'control' ∈ A[S₀,S]</td><td>Delete α from A[S, X]</td></tr>
+      <tr><td><strong>R4</strong></td><td>w ← read S, X</td><td>'control' ∈ A[S₀,S] OR 'owner' ∈ A[S₀,X]</td><td>Copy A[S, X] into w</td></tr>
+      <tr><td><strong>R5</strong></td><td>create object X</td><td>None</td><td>Add column for X; store 'owner' in A[S₀,X]</td></tr>
+      <tr><td><strong>R6</strong></td><td>destroy object X</td><td>'owner' ∈ A[S₀,X]</td><td>Delete column for X from A</td></tr>
+      <tr><td><strong>R7</strong></td><td>create subject S</td><td>None</td><td>Add row for S; store 'control' in A[S,S]</td></tr>
+      <tr><td><strong>R8</strong></td><td>destroy subject S</td><td>'owner' ∈ A[S₀,S]</td><td>Delete row for S; execute destroy object S</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight">
+    🔑 The <strong>copy flag (*)</strong> — if S₀ has α* in A[S₀, X], it can transfer this right with or without the copy flag to another subject. Without *, the right cannot be further transferred.
+  </div>
+
+  <h3>Worked Example: R1 Transfer</h3>
+  <div class="card card-cyan">
+    <p><strong>Scenario:</strong> Lecturer (S1) wants to give Students (S2) read access to the Grade File (F1)</p>
+    <div class="steps">
+      <div class="step"><strong>Command:</strong> <code>transfer {read} to S₂, F₁</code></div>
+      <div class="step"><strong>Authorization Check:</strong> Does A[S₁, F₁] contain <code>read*</code>? → <span style="color:var(--green)">YES</span></div>
+      <div class="step"><strong>Operation:</strong> Store <code>read</code> in A[S₂, F₁]</div>
+      <div class="step"><strong>Result:</strong> Students now have read access to the grade file ✅</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RBAC ==================== -->
+<div class="section" id="rbac">
+  <h2>🏢 Role-Based Access Control (RBAC)</h2>
+
+  <div class="def-box">
+    <div class="label">RBAC Definition</div>
+    <p>Controls access based on the <strong>roles</strong> that users have within the system and rules stating what accesses are allowed for users in given roles — rather than user identity as in DAC.</p>
+  </div>
+
+  <h3>RBAC vs DAC: Administrative Overhead</h3>
+
+  <div class="card card-red">
+    <h4>DAC: N Job Positions → Complexity</h4>
+    <p>For N job positions each with Uᵢ users and Pᵢ permissions:</p>
+    <div class="diagram" style="padding:1rem">
+      \[ \text{Total relationships} = \sum_{i=1}^{N} (U_i \times P_i) \]
+    </div>
+    <p style="color:var(--red)">❌ Multiplicative — grows very quickly</p>
+  </div>
+
+  <div class="card card-green">
+    <h4>RBAC: Additive Complexity</h4>
+    <div class="diagram" style="padding:1rem">
+      \[ \text{Total relationships} = \sum_{i=1}^{N} (U_i + P_i) \]
+    </div>
+    <p style="color:var(--green)">✅ Additive — much more manageable</p>
+  </div>
+
+  <div class="diagram">
+    <h4 style="color:var(--muted);margin-bottom:1rem">RBAC Two-Level Matrix</h4>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">Users → Roles (upper) then Roles → Objects (lower)</p>
+    <div class="flow" style="margin-bottom:1rem">
+      <div class="flow-box">Users (U₁...Um)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box orange">Roles (R₁...Rₙ)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">Permissions / Objects</div>
+    </div>
+    <p style="color:var(--muted);font-size:0.8rem">Many-to-many: Users↔Roles AND Roles↔Permissions</p>
+  </div>
+
+  <h3>RBAC Model Family</h3>
+
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>RBAC₀ — Base Model</h4>
+      <span class="tag tag-blue">Minimum requirement</span>
+      <ul style="margin-top:0.5rem;font-size:0.88rem">
+        <li><strong>User:</strong> Individual with a user ID</li>
+        <li><strong>Role:</strong> Job function name (flat, no inheritance)</li>
+        <li><strong>Permission:</strong> Approval of access mode (= privilege)</li>
+        <li><strong>Session:</strong> Mapping between user and activated roles</li>
+      </ul>
+    </div>
+    <div class="card card-purple">
+      <h4>RBAC₁ — Role Hierarchies</h4>
+      <span class="tag tag-purple">Adds inheritance</span>
+      <p style="margin-top:0.5rem;font-size:0.88rem">Higher roles inherit all access rights of subordinate roles. Multiple roles can inherit from the same subordinate.</p>
+    </div>
+    <div class="card card-orange">
+      <h4>RBAC₂ — Constraints</h4>
+      <span class="tag tag-orange">Adds business rules</span>
+      <p style="margin-top:0.5rem;font-size:0.88rem">Rules restricting how roles can be assigned, activated, or combined.</p>
+    </div>
+    <div class="card card-green">
+      <h4>RBAC₃ — Consolidated</h4>
+      <span class="tag tag-green">Everything</span>
+      <p style="margin-top:0.5rem;font-size:0.88rem">Includes both hierarchies (RBAC₁) and constraints (RBAC₂).</p>
+    </div>
+  </div>
+
+  <h3>RBAC₁: Role Hierarchy Example</h3>
+  <div class="diagram">
+    <div class="tree">
+<pre style="color:var(--text);text-align:left;display:inline-block">
+                     <span style="color:var(--blue)">Director</span>
+                    /         \
+        <span style="color:var(--purple)">Project Lead 1</span>       <span style="color:var(--purple)">Project Lead 2</span>
+         /        \             /        \
+<span style="color:var(--green)">Production     Quality     Production     Quality</span>
+<span style="color:var(--green)">Engineer 1    Engineer 1   Engineer 2    Engineer 2</span>
+         \        /             \        /
+          <span style="color:var(--orange)">Engineer 1</span>               <span style="color:var(--orange)">Engineer 2</span>
+                   \             /
+                  <span style="color:var(--yellow)">Engineering Dept</span>
+</pre>
+    </div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:0.5rem">Higher role inherits ALL rights of subordinate roles → overlapping access rights</p>
+  </div>
+
+  <h3>RBAC₂: Three Types of Constraints</h3>
+
+  <details>
+    <summary>1. Mutually Exclusive Roles</summary>
+    <div class="details-body">
+      <p style="margin-top:0.8rem"><strong>Purpose:</strong> Increase difficulty of collusion — enforces separation of duties.</p>
+      <div class="grid2">
+        <div>
+          <h4>Rules:</h4>
+          <ul>
+            <li>A user can only be assigned to <strong>one role</strong> in the set</li>
+            <li>Any permission can be granted to <strong>only one role</strong> in the set</li>
+          </ul>
+        </div>
+        <div class="card card-red">
+          <h4>Example</h4>
+          <p>A user cannot simultaneously hold both the "Approver" and "Requester" roles for financial transactions.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>2. Cardinality Constraints</summary>
+    <div class="details-body" style="padding-top:0.8rem">
+      <div class="grid3">
+        <div class="card card-orange">
+          <h4>Max users per role</h4>
+          <p style="font-size:0.88rem">Example: "No more than <strong>3</strong> users can have the Administrator role"</p>
+        </div>
+        <div class="card card-orange">
+          <h4>Max roles per user</h4>
+          <p style="font-size:0.88rem">Example: "A user can have no more than <strong>5</strong> roles"</p>
+        </div>
+        <div class="card card-orange">
+          <h4>Max roles per permission</h4>
+          <p style="font-size:0.88rem">Example: "'Delete User' permission can be granted to no more than <strong>2</strong> roles"</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>3. Prerequisite Roles</summary>
+    <div class="details-body" style="padding-top:0.8rem">
+      <p>To be assigned role R₂, a user must already have role R₁.</p>
+      <div class="card card-purple">
+        <h4>Example</h4>
+        <p>A user assigned to <strong>Project Lead</strong> must already hold at least the subordinate <strong>Production Engineer</strong> AND <strong>Quality Engineer</strong> roles — ensuring sufficient expertise.</p>
+      </div>
+    </div>
+  </details>
+
+  <h3>RBAC₀: Key Properties</h3>
+  <div class="highlight-blue highlight">
+    💡 The many-to-many relationships between users↔roles and roles↔permissions provide <strong>flexibility and granularity</strong> not found in conventional DAC. Without this, users may be granted more access than needed (principle of least privilege is harder to enforce).
+  </div>
+</div>
+
+<!-- ==================== ABAC ==================== -->
+<div class="section" id="abac">
+  <h2>🎯 Attribute-Based Access Control (ABAC)</h2>
+
+  <div class="def-box">
+    <div class="label">ABAC Definition</div>
+    <p>Controls access based on <strong>attributes</strong> of the users (subjects), the resources to be accessed (objects), and current environmental conditions. Provides <strong>flexibility and expressive power</strong> for fine-grained access control.</p>
+  </div>
+
+  <h3>Three Types of Attributes</h3>
+  <div class="grid3">
+    <div class="card card-blue">
+      <h4>👤 Subject Attributes</h4>
+      <p>Identity and characteristics of the subject.</p>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:0.5rem">Examples: name, organization, job title, clearance level, department, location, age</p>
+    </div>
+    <div class="card card-purple">
+      <h4>📄 Object Attributes</h4>
+      <p>Extracted from metadata of the object.</p>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:0.5rem">Examples: title, date, author, classification, creation date, owner, file type</p>
+    </div>
+    <div class="card card-green">
+      <h4>🌍 Environment Attributes</h4>
+      <p>Operational/situational context. NOT tied to subject or object.</p>
+      <p style="color:var(--muted);font-size:0.82rem;margin-top:0.5rem">Examples: current date/time, network security level, virus activity, location, device type</p>
+    </div>
+  </div>
+
+  <div class="highlight">
+    🔍 <strong>Clearance:</strong> A status granted to an individual indicating they are authorised to access classified/sensitive information up to a certain level (e.g., official, secret, top secret).
+  </div>
+
+  <h3>ABAC Logical Architecture</h3>
+  <div class="diagram">
+    <div class="flow" style="flex-direction:column;gap:0.5rem">
+      <div class="flow-box" style="width:200px">Subject requests access</div>
+      <div class="flow-arrow">↓</div>
+      <div style="background:var(--surface);border:2px solid var(--orange);border-radius:10px;padding:1rem 2rem;text-align:center">
+        <div style="color:var(--orange);font-weight:700;margin-bottom:0.5rem">Access Control Mechanism</div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;font-size:0.8rem">
+          <span class="tag tag-blue">Access Control Policy</span>
+          <span class="tag tag-purple">Subject Attributes</span>
+          <span class="tag tag-green">Object Attributes</span>
+          <span class="tag tag-orange">Environmental Conditions</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div style="display:flex;gap:2rem">
+        <div class="flow-box green" style="width:120px">GRANT ✅</div>
+        <div class="flow-box red" style="width:120px">DENY ❌</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>ABAC Mathematical Policy</h3>
+
+  <div class="card card-blue">
+    <h4>Notation</h4>
+    <div class="diagram" style="padding:0.8rem">
+      \[ \text{ATTR}(s) \subseteq SA_1 \times SA_2 \times \cdots \times SA_K \]
+      \[ \text{ATTR}(o) \subseteq OA_1 \times OA_2 \times \cdots \times OA_M \]
+      \[ \text{ATTR}(e) \subseteq EA_1 \times EA_2 \times \cdots \times EA_N \]
+    </div>
+  </div>
+
+  <div class="card card-purple">
+    <h4>General Policy Rule</h4>
+    <div class="diagram" style="padding:0.8rem">
+      \[ \text{can\_access}(s, o, e) \leftarrow f(\text{ATTR}(s), \text{ATTR}(o), \text{ATTR}(e)) \]
+    </div>
+    <p style="font-size:0.88rem">If f evaluates to <strong style="color:var(--green)">TRUE</strong> → access GRANTED. If <strong style="color:var(--red)">FALSE</strong> → access DENIED.</p>
+  </div>
+
+  <h3>ABAC Practical Example: Online Entertainment Store</h3>
+
+  <div class="card card-orange">
+    <h4>Policy: Age-based Movie Access</h4>
+    <table>
+      <thead><tr><th>Movie Rating</th><th>Users Allowed</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-red">R</span></td><td>Age ≥ 17</td></tr>
+        <tr><td><span class="tag tag-orange">PG-13</span></td><td>Age ≥ 13</td></tr>
+        <tr><td><span class="tag tag-green">G</span></td><td>Everyone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col">
+      <h4 style="color:var(--orange)">RBAC Approach</h4>
+      <p><strong>Roles:</strong> Adult, Juvenile, Child</p>
+      <p><strong>Permissions:</strong> view-R, view-PG13, view-G</p>
+      <p><strong>Assignment:</strong> Adult→all, Juvenile→PG13+G, Child→G</p>
+      <p style="color:var(--red);margin-top:0.5rem;font-size:0.85rem">❌ Manual assignment tasks required</p>
+    </div>
+    <div class="compare-col">
+      <h4 style="color:var(--green)">ABAC Approach — Policy Rule R1</h4>
+      <div class="diagram" style="padding:0.5rem;text-align:left">
+        \[ \text{can\_access}(u, m, e) \leftarrow \]
+        \[ (\text{Age}(u) \geq 17 \wedge \text{Rating}(m) \in \{R, PG\text{-}13, G\}) \]
+        \[ \vee (\text{Age}(u) \geq 13 \wedge \text{Age}(u) < 17 \wedge \text{Rating}(m) \in \{PG\text{-}13, G\}) \]
+        \[ \vee (\text{Age}(u) < 13 \wedge \text{Rating}(m) = G) \]
+      </div>
+      <p style="color:var(--green);font-size:0.85rem">✅ No manual role assignment needed</p>
+    </div>
+  </div>
+
+  <h3>ABAC Scalability: Adding Premium/Regular Users</h3>
+
+  <div class="card card-red">
+    <h4>RBAC Complexity Growth (Exponential!)</h4>
+    <div class="diagram" style="padding:0.8rem">
+      \[ \text{Roles needed} = \prod_{k=1}^{K} \text{Range}(SA_k) \]
+      \[ \text{Permissions needed} = \prod_{m=1}^{M} \text{Range}(OA_m) \]
+    </div>
+    <p style="color:var(--red);font-size:0.88rem">Adding membership type (Premium/Regular) would DOUBLE roles and permissions.</p>
+  </div>
+
+  <div class="card card-green">
+    <h4>ABAC: Just Add a New Rule (Linear!)</h4>
+    <div class="diagram" style="padding:0.8rem;text-align:left">
+      \[ \textbf{R2:} \quad \text{can\_access}(u, m, e) \leftarrow \]
+      \[ (\text{Membership}(u) = \text{Premium}) \vee (\text{Membership}(u) = \text{Regular} \wedge \text{MovieType}(m) = \text{Old}) \]
+      \[ \textbf{R3:} \quad \text{can\_access}(u, m, e) \leftarrow R1 \wedge R2 \]
+    </div>
+    <p style="color:var(--green);font-size:0.88rem">✅ Efficient — no exponential role explosion</p>
+  </div>
+
+  <h3>Environmental Attributes: The ABAC Advantage</h3>
+  <div class="card card-cyan">
+    <h4>Example: Promotional Period Access</h4>
+    <p>Regular users can view new releases during promotional periods:</p>
+    <div class="diagram" style="padding:0.8rem;text-align:left">
+      \[ \text{can\_access}(u, m, e) \leftarrow \]
+      \[ \text{Membership}(u) = \text{Regular} \wedge \text{MovieType}(m) = \text{New} \wedge \text{Date}(e) \in \text{PromoPeriod} \]
+    </div>
+    <p style="color:var(--orange);font-size:0.85rem">⚠️ Very difficult to express in RBAC — ABAC handles this naturally!</p>
+  </div>
+</div>
+
+<!-- ==================== COMPARISON ==================== -->
+<div class="section" id="comparison">
+  <h2>⚖️ Comparison: DAC vs RBAC vs ABAC</h2>
+  <table>
+    <thead>
+      <tr><th>Feature</th><th style="color:var(--blue)">DAC</th><th style="color:var(--purple)">RBAC</th><th style="color:var(--green)">ABAC</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Based on</td><td>Identity of requestor</td><td>Role of user</td><td>Attributes of user/object/environment</td></tr>
+      <tr><td>Granularity</td><td>Per-user per-resource</td><td>Per-role per-resource</td><td>Fine-grained (any combination)</td></tr>
+      <tr><td>Complexity</td><td>Simple</td><td>Moderate</td><td>High</td></tr>
+      <tr><td>Performance</td><td>Fast</td><td>Fast</td><td>Slower (policy evaluation)</td></tr>
+      <tr><td>Flexibility</td><td>Low</td><td>Medium</td><td>Very High</td></tr>
+      <tr><td>Dynamic conditions</td><td>❌</td><td>❌</td><td>✅ (environment attributes)</td></tr>
+      <tr><td>Admin overhead</td><td>U×P per job</td><td>U+P per job</td><td>Minimal (rules not roles)</td></tr>
+      <tr><td>Scalability</td><td>Poor</td><td>Good</td><td>Excellent</td></tr>
+      <tr><td>Use case</td><td>OS file systems</td><td>Enterprise systems</td><td>Cloud, IoT, healthcare</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight">
+    🏆 <strong>Exam tip:</strong> ABAC is most flexible and scalable but has a complexity/performance tradeoff. RBAC reduces admin overhead compared to DAC (additive vs multiplicative). None are mutually exclusive.
+  </div>
+</div>
+
+<!-- ==================== TUTORIALS ==================== -->
+<div class="section" id="tutorials">
+  <h2>🔬 Tutorial Problems & Solutions</h2>
+
+  <h3>Tutorial 3, Q1: DAC Access Matrix — Directed Graph</h3>
+  <div class="exam-card">
+    <p><strong>Given Access Matrix:</strong></p>
+    <table>
+      <thead><tr><th></th><th>File 1</th><th>File 2</th><th>File 3</th><th>File 4</th></tr></thead>
+      <tbody>
+        <tr><td>User A</td><td>Own, R, W</td><td>—</td><td>Own, R, W</td><td>—</td></tr>
+        <tr><td>User B</td><td>Read</td><td>Own, R, W</td><td>Write</td><td>Read</td></tr>
+        <tr><td>User C</td><td>R, W</td><td>Read</td><td>—</td><td>Own, R, W</td></tr>
+      </tbody>
+    </table>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Solution</button>
+    <div class="solution-box">
+      <p><strong>Directed Graph:</strong> Each subject and object is a node. A directed edge from subject → object carries the access right label.</p>
+      <pre>
+A ──[Own,R,W]──→ F1
+A ──[Own,R,W]──→ F3
+B ──[Read]──────→ F1
+B ──[Own,R,W]──→ F2
+B ──[Write]────→ F3
+B ──[Read]──────→ F4
+C ──[R,W]───────→ F1
+C ──[Read]──────→ F2
+C ──[Own,R,W]──→ F4
+      </pre>
+      <p><strong>Part c:</strong> One-to-one correspondence: Each cell A[s,o] in the matrix maps to exactly one directed edge (or absence of edge) in the graph.</p>
+    </div>
+  </div>
+
+  <h3>Tutorial 3, Q2: DAC vs RBAC Relationships</h3>
+  <div class="exam-card">
+    <p><strong>For N job positions, each with Uᵢ users and Pᵢ permissions:</strong></p>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Solution</button>
+    <div class="solution-box">
+      <div class="compare">
+        <div>
+          <h4>DAC (user-permission pairs):</h4>
+          <div class="diagram" style="padding:0.5rem">
+            \[ \sum_{i=1}^{N} (U_i \times P_i) \]
+          </div>
+          <p style="font-size:0.85rem">Must define each user's access to each resource directly.</p>
+        </div>
+        <div>
+          <h4>RBAC (user-role + role-permission):</h4>
+          <div class="diagram" style="padding:0.5rem">
+            \[ \sum_{i=1}^{N} (U_i + P_i) \]
+          </div>
+          <p style="font-size:0.85rem">Only need user→role and role→permission links.</p>
+        </div>
+      </div>
+      <p><strong>Numerical example:</strong> N=3 positions, each with U=10 users, P=50 permissions:</p>
+      <ul>
+        <li>DAC: 10×50 + 10×50 + 10×50 = <strong>1,500 relationships</strong></li>
+        <li>RBAC: (10+50)×3 = <strong>180 relationships</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Tutorial: VAX/VMS Four Processor Access Modes</h3>
+  <div class="exam-card">
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Answer</button>
+    <div class="solution-box">
+      <table>
+        <thead><tr><th>Mode</th><th>What it executes</th><th>Privilege level</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kernel</strong></td><td>Kernel of VMS OS (memory management, I/O, interrupts)</td><td>Highest</td></tr>
+          <tr><td><strong>Executive</strong></td><td>OS service calls (file/record management)</td><td>High</td></tr>
+          <tr><td><strong>Supervisor</strong></td><td>Other OS services (user command responses)</td><td>Medium</td></tr>
+          <tr><td><strong>User</strong></td><td>User programs (compilers, editors, debuggers)</td><td>Lowest</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:0.8rem"><strong>Advantage of 4 modes vs 2:</strong> Finer-grained access control and memory protection — OS components can be isolated from each other, not just from user code. Principle of least privilege enforced at each level.</p>
+    </div>
+  </div>
+
+  <h3>Tutorial: UNIX File Permission Vulnerability</h3>
+  <div class="exam-card">
+    <p><strong>File: mode 644 in directory: mode 730. What's the vulnerability?</strong></p>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Solution</button>
+    <div class="solution-box">
+      <pre>Directory 730 = Owner: rwx (7), Group: wx (3), Others: --- (0)
+File 644     = Owner: rw- (6), Group: r-- (4), Others: r-- (4)</pre>
+      <p><strong>Vulnerability:</strong> Group members have <strong>write (w)</strong> permission on the <em>directory</em> (mode 3 = wx). Write permission on a directory allows <strong>removing or renaming</strong> entries in it. So group members can <strong>delete the file</strong> from the directory even though they can only read (not write) the file itself.</p>
+      <p style="margin-top:0.5rem"><strong>Key insight:</strong> File permissions and directory permissions are independent. Deleting a file requires write permission on the <em>containing directory</em>, not on the file itself.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EXAM Q&A ==================== -->
+<div class="section" id="exam">
+  <h2>📝 Exam Questions & Model Answers</h2>
+
+  <div class="highlight-blue highlight">
+    📅 Exam: May 2025 · 1 hour · Open book · 40 marks total
+  </div>
+
+  <!-- Q1 -->
+  <h3>Q1: URL Session ID Vulnerability <span class="marks" style="background:var(--orange);color:var(--bg);font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:12px;font-weight:700;margin-left:0.5rem">5 marks</span></h3>
+  <div class="exam-card">
+    <div class="quiz-q">A website called Travelsafe uses URL session IDs (e.g., <code>https://travelsafe.com/booking?sessionid=abc123</code>). Describe a potential vulnerability and corresponding defence mechanisms.</div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Model Answer</button>
+    <div class="solution-box">
+      <h4>Vulnerability: Session Hijacking / Session Fixation</h4>
+      <ul>
+        <li><strong>Exposure in URLs:</strong> Session IDs in URLs appear in browser history, server logs, referrer headers, and are visible to shoulder surfers.</li>
+        <li><strong>Session Hijacking:</strong> Attacker who obtains the session ID can impersonate the authenticated user without knowing their credentials.</li>
+        <li><strong>Session Fixation:</strong> Attacker sets a known session ID before the user logs in — after login, attacker uses the same ID.</li>
+        <li><strong>Bookmarking Risk:</strong> Users may bookmark URLs containing session IDs, which could be shared accidentally.</li>
+      </ul>
+      <h4>Defence Mechanisms:</h4>
+      <ul>
+        <li>Store session IDs in <strong>HttpOnly, Secure cookies</strong> (not URLs)</li>
+        <li><strong>Regenerate session ID</strong> after login (prevents fixation)</li>
+        <li>Use <strong>HTTPS/TLS</strong> to encrypt all communication</li>
+        <li>Implement <strong>session timeout</strong> after inactivity</li>
+        <li>Validate session against client IP or User-Agent</li>
+        <li>Use cryptographically random, high-entropy session IDs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <h3>Q2: Single Sign-On (SSO) <span class="marks" style="background:var(--orange);color:var(--bg);font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:12px;font-weight:700;margin-left:0.5rem">7 marks</span></h3>
+  <div class="exam-card">
+    <div class="quiz-q">Part 1: Advantages and disadvantages of SSO vs traditional multi-login. Part 2: Impact on CIA + Authenticity, Accountability, Non-repudiation.</div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Model Answer</button>
+    <div class="solution-box">
+      <h4>Advantages of SSO:</h4>
+      <ul>
+        <li>Single credential to manage → users use stronger passwords</li>
+        <li>Reduced password fatigue and reuse across services</li>
+        <li>Faster access to multiple applications</li>
+        <li>Centralised authentication → easier to revoke access</li>
+        <li>Reduced IT support (fewer password resets)</li>
+      </ul>
+      <h4>Disadvantages of SSO:</h4>
+      <ul>
+        <li><strong>Single point of failure:</strong> If SSO is compromised, all services are compromised</li>
+        <li>If SSO server goes down, users cannot access any service</li>
+        <li>Requires high security for the SSO infrastructure itself</li>
+      </ul>
+      <h4>Impact on Security Properties:</h4>
+      <table>
+        <thead><tr><th>Property</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Confidentiality</strong></td><td>↑ Fewer passwords → less credential reuse. But single point compromises all.</td></tr>
+          <tr><td><strong>Integrity</strong></td><td>↑ Centralised auth reduces impersonation risk</td></tr>
+          <tr><td><strong>Authenticity</strong></td><td>↑ Stronger authentication at SSO point (e.g., MFA)</td></tr>
+          <tr><td><strong>Accountability</strong></td><td>↑ Centralised logs track all access events in one place</td></tr>
+          <tr><td><strong>Non-repudiation</strong></td><td>↑ Clear audit trail — user cannot deny actions tied to their SSO session</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <h3>Q3: Block Cipher — ECB & CBC Mode <span class="marks" style="background:var(--orange);color:var(--bg);font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:12px;font-weight:700;margin-left:0.5rem">13 marks</span></h3>
+  <div class="exam-card">
+    <div class="quiz-q">
+      Block cipher with 4-bit blocks (hexadecimal). Permutation table:
+      <pre>m  | 0 1 2 3 4 5 6 7 8 9 a b c d e f
+EK | 1 b 5 c 7 e 2 a 4 9 f d 0 3 6 8</pre>
+      <p>(a) ECB: Decrypt <code>187b06</code> &nbsp; (b) CBC: Decrypt <code>301be</code> with IV=1 &nbsp; (c) Why is ECB insecure?</p>
+    </div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Full Solution</button>
+    <div class="solution-box">
+      <h4>(a) ECB Decryption of 187b06</h4>
+      <p>ECB: each block encrypted/decrypted independently. First build the inverse table (swap m ↔ EK):</p>
+      <pre>EK | 0 1 2 3 4 5 6 7 8 9 a b c d e f
+m  | c 0 6 d 8 2 e 4 f 9 7 1 3 5 b a</pre>
+      <p>Ciphertext <code>187b06</code> → blocks: <code>1</code>, <code>8</code>, <code>7</code>, <code>b</code>, <code>0</code>, <code>6</code></p>
+      <ul>
+        <li>DK(1) = 0</li>
+        <li>DK(8) = f</li>
+        <li>DK(7) = 4</li>
+        <li>DK(b) = 1</li>
+        <li>DK(0) = c</li>
+        <li>DK(6) = e</li>
+      </ul>
+      <p><strong>Plaintext: 0f41ce</strong></p>
+
+      <hr>
+      <h4>(b) CBC Decryption of 301be, IV = 1</h4>
+      <p>CBC decryption: Pᵢ = DK(Cᵢ) XOR Cᵢ₋₁ (where C₀ = IV)</p>
+      <p>Ciphertext blocks: C₁=3, C₂=0, C₃=1, C₄=b, C₅=e</p>
+      <ul>
+        <li>P₁ = DK(3) XOR IV = d XOR 1 = <strong>c</strong></li>
+        <li>P₂ = DK(0) XOR C₁ = c XOR 3 = <strong>f</strong></li>
+        <li>P₃ = DK(1) XOR C₂ = 0 XOR 0 = <strong>0</strong></li>
+        <li>P₄ = DK(b) XOR C₃ = 1 XOR 1 = <strong>0</strong></li>
+        <li>P₅ = DK(e) XOR C₄ = b XOR b = <strong>0</strong></li>
+      </ul>
+      <p><strong>Plaintext: cf000</strong></p>
+
+      <hr>
+      <h4>(c) Why ECB is Insecure (7 marks)</h4>
+      <ul>
+        <li><strong>Identical plaintext blocks → identical ciphertext blocks:</strong> An attacker can detect repeated patterns in the ciphertext, revealing structure in the plaintext.</li>
+        <li><strong>Dictionary attack:</strong> Attacker can build a table of plaintext→ciphertext mappings and look up blocks.</li>
+        <li><strong>Block replay/substitution:</strong> Attacker can rearrange or substitute ciphertext blocks — each decrypts independently, so reordering blocks produces predictable output.</li>
+        <li><strong>No diffusion across blocks:</strong> Each block is isolated.</li>
+      </ul>
+      <p><strong>Secure alternative:</strong> CBC (Cipher Block Chaining)</p>
+      <ul>
+        <li>Each ciphertext block is XORed with the previous ciphertext block before encryption</li>
+        <li>Same plaintext blocks produce different ciphertext blocks (if position differs)</li>
+        <li>Uses an Initialization Vector (IV) for the first block</li>
+        <li>Errors propagate — tampering is detectable</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <h3>Q4: RSA Cryptography <span class="marks" style="background:var(--orange);color:var(--bg);font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:12px;font-weight:700;margin-left:0.5rem">15 marks</span></h3>
+  <div class="exam-card">
+    <div class="quiz-q">
+      (a) Find the RSA private key d given e=17, n=1763. Show all steps. (10 marks)<br>
+      (b) Given 2⁸ encryptions/second and 16-bit key, calculate brute-force attack time. What happens if key size doubles? (5 marks)
+    </div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Full Solution</button>
+    <div class="solution-box">
+      <h4>(a) Finding RSA Private Key</h4>
+      <div class="steps">
+        <div class="step">
+          <div><strong>Factor n:</strong> n = 1763. Try primes: 41 × 43 = 1763 ✅<br>So p = 41, q = 43</div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>Compute φ(n):</strong>
+            \[ \phi(n) = (p-1)(q-1) = 40 \times 42 = 1680 \]
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>Find d such that e·d ≡ 1 (mod φ(n)):</strong><br>
+            Need d where 17d ≡ 1 (mod 1680)<br>
+            Use Extended Euclidean Algorithm on gcd(17, 1680):
+            <pre>
+1680 = 98×17 + 14
+17   = 1×14  + 3
+14   = 4×3   + 2
+3    = 1×2   + 1
+2    = 2×1   + 0   → gcd = 1</pre>
+            Back-substitution:
+            <pre>
+1 = 3 - 1×2
+1 = 3 - 1×(14 - 4×3) = 5×3 - 14
+1 = 5×(17-14) - 14 = 5×17 - 6×14
+1 = 5×17 - 6×(1680 - 98×17) = 593×17 - 6×1680</pre>
+            So d = 593. Verify: 17 × 593 = 10081 = 6×1680 + 1 ✅
+          </div>
+        </div>
+        <div class="step">
+          <div><strong>Private key d = 593</strong></div>
+        </div>
+      </div>
+
+      <hr>
+      <h4>(b) Brute Force Analysis</h4>
+      <div class="card card-orange" style="margin-top:0.5rem">
+        <p><strong>16-bit key space:</strong> 2¹⁶ = 65,536 possible keys</p>
+        <p><strong>Speed:</strong> 2⁸ = 256 encryptions/second</p>
+        <div class="diagram" style="padding:0.5rem">
+          \[ \text{Max time} = \frac{2^{16}}{2^8} = 2^8 = 256 \text{ seconds} \approx 4.3 \text{ minutes} \]
+        </div>
+        <p><strong>Average time</strong> (half key space): 128 seconds ≈ 2 minutes</p>
+        <p><strong>Practical conclusion:</strong> A 16-bit key is <span style="color:var(--red)">completely insecure</span> — trivially broken.</p>
+      </div>
+      <div class="card card-green" style="margin-top:0.5rem">
+        <p><strong>If key size doubles to 32-bit:</strong></p>
+        <div class="diagram" style="padding:0.5rem">
+          \[ \text{Max time} = \frac{2^{32}}{2^8} = 2^{24} \approx 16.7 \text{ million seconds} \approx 194 \text{ days} \]
+        </div>
+        <p><strong>Key insight:</strong> Doubling the key size doesn't double the time — it <strong>squares it</strong> (adds one bit doubles the search space). This is why modern keys are 128-256 bits.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional exam topics -->
+  <h3>Past-Style: ACL vs Capability Ticket Trade-offs</h3>
+  <div class="exam-card">
+    <div class="quiz-q">Explain the difference between ACLs and capability tickets in DAC. What are the advantages and disadvantages of each? When would you prefer one over the other?</div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Model Answer</button>
+    <div class="solution-box">
+      <table>
+        <thead><tr><th>Aspect</th><th>ACL</th><th>Capability Ticket</th></tr></thead>
+        <tbody>
+          <tr><td>Derived from</td><td>Columns of access matrix</td><td>Rows of access matrix</td></tr>
+          <tr><td>Indexed by</td><td>Object (resource)</td><td>Subject (user)</td></tr>
+          <tr><td>Best query</td><td>"Who has access to File X?"</td><td>"What can User A access?"</td></tr>
+          <tr><td>Revocation</td><td>Easy — modify the ACL for the resource</td><td>Hard — tickets are distributed</td></tr>
+          <tr><td>Security risk</td><td>Lower</td><td>Higher — tickets can be loaned/forged</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:0.8rem"><strong>Prefer ACL when:</strong> You need to control and audit who has access to specific resources (e.g., file system).</p>
+      <p><strong>Prefer Capability Tickets when:</strong> You need fast per-user access queries, e.g., distributed systems where checking back against a central ACL is too slow.</p>
+    </div>
+  </div>
+
+  <h3>Past-Style: RBAC Constraint Question</h3>
+  <div class="exam-card">
+    <div class="quiz-q">A hospital system has roles: Doctor, Nurse, Pharmacist, Billing_Clerk. Design constraints using RBAC₂ to prevent fraud and enforce separation of duties.</div>
+    <button class="show-sol-btn" onclick="toggleSol(this)">Show Model Answer</button>
+    <div class="solution-box">
+      <h4>1. Mutually Exclusive Roles (Separation of Duties):</h4>
+      <ul>
+        <li>A user cannot simultaneously be a <strong>Doctor AND Billing_Clerk</strong> (prevent self-billing fraud)</li>
+        <li>A user cannot be <strong>Pharmacist AND Doctor</strong> (prevent self-prescribing)</li>
+      </ul>
+      <h4>2. Cardinality Constraints:</h4>
+      <ul>
+        <li>Maximum 2 users can have <strong>System_Admin</strong> role (limit attack surface)</li>
+        <li>Each user can have at most 3 roles (prevent privilege accumulation)</li>
+      </ul>
+      <h4>3. Prerequisite Roles:</h4>
+      <ul>
+        <li>To be assigned <strong>Senior_Doctor</strong>, user must already have <strong>Doctor</strong> role</li>
+        <li>To be assigned <strong>Head_Nurse</strong>, user must already have <strong>Nurse</strong> role</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PRACTICE QUESTIONS ==================== -->
+<div class="section" id="practice">
+  <h2>🎯 Practice Quiz</h2>
+  <p style="color:var(--muted);margin-bottom:1rem">Test yourself — all questions based on exam patterns.</p>
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q1.</span> Which of the following represents an ACL (Access Control List) correctly?</div>
+    <div class="options" id="q1">
+      <label><input type="radio" name="q1" value="a"> A. A list of objects and their permitted access rights for each subject</label>
+      <label><input type="radio" name="q1" value="b"> B. A list of subjects and their permitted access rights derived from rows of the access matrix</label>
+      <label><input type="radio" name="q1" value="c"> C. A list for each resource of users and their permitted access rights, derived from columns of the access matrix</label>
+      <label><input type="radio" name="q1" value="d"> D. A flat list of all permissions in the system regardless of users or resources</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1','c','ACL = derived from COLUMNS of access matrix. For each object/resource, it lists which subjects have what rights.')">Check</button>
+    <div class="feedback" id="q1-feedback"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q2.</span> In RBAC₂, which constraint prevents a single user from holding both the "Approver" and "Requester" roles simultaneously?</div>
+    <div class="options" id="q2">
+      <label><input type="radio" name="q2" value="a"> A. Cardinality constraint</label>
+      <label><input type="radio" name="q2" value="b"> B. Prerequisite role constraint</label>
+      <label><input type="radio" name="q2" value="c"> C. Mutually exclusive roles constraint</label>
+      <label><input type="radio" name="q2" value="d"> D. Role hierarchy constraint</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q2','c','Mutually exclusive roles enforce separation of duties — a user can only hold ONE role in the mutually exclusive set.')">Check</button>
+    <div class="feedback" id="q2-feedback"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q3.</span> Which ABAC attribute type would represent "current time is 2am" or "network is classified as insecure"?</div>
+    <div class="options" id="q3">
+      <label><input type="radio" name="q3" value="a"> A. Subject attribute</label>
+      <label><input type="radio" name="q3" value="b"> B. Object attribute</label>
+      <label><input type="radio" name="q3" value="c"> C. Environmental attribute</label>
+      <label><input type="radio" name="q3" value="d"> D. Permission attribute</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q3','c','Environmental attributes describe the operational/situational context — NOT associated with a specific subject or object. Examples: time, location, network security level.')">Check</button>
+    <div class="feedback" id="q3-feedback"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q4.</span> RBAC₁ adds which feature over RBAC₀?</div>
+    <div class="options" id="q4">
+      <label><input type="radio" name="q4" value="a"> A. Separation of duties via mutually exclusive roles</label>
+      <label><input type="radio" name="q4" value="b"> B. Role hierarchies with inheritance</label>
+      <label><input type="radio" name="q4" value="c"> C. Attribute-based policy rules</label>
+      <label><input type="radio" name="q4" value="d"> D. Mandatory access control integration</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q4','b','RBAC₁ adds role hierarchies. Higher roles inherit all access rights of subordinate roles. RBAC₂ adds constraints (including mutually exclusive roles). RBAC₃ = both.')">Check</button>
+    <div class="feedback" id="q4-feedback"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q5.</span> In DAC, which rule (R1-R8) allows a subject to transfer an access right to another subject (with copy flag)?</div>
+    <div class="options" id="q5">
+      <label><input type="radio" name="q5" value="a"> A. R2 — grant</label>
+      <label><input type="radio" name="q5" value="b"> B. R5 — create object</label>
+      <label><input type="radio" name="q5" value="c"> C. R1 — transfer</label>
+      <label><input type="radio" name="q5" value="d"> D. R4 — read</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q5','c','R1 = transfer {α*} to S, X. Requires α* ∈ A[S₀, X]. Copies the right (with or without copy flag) to another subject. R2 = grant, which requires owner+control permissions.')">Check</button>
+    <div class="feedback" id="q5-feedback"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q6.</span> Why does ABAC scale better than RBAC when adding new attribute dimensions?</div>
+    <div class="options" id="q6">
+      <label><input type="radio" name="q6" value="a"> A. ABAC uses faster hardware</label>
+      <label><input type="radio" name="q6" value="b"> B. RBAC role count grows multiplicatively (product of attribute ranges), while ABAC uses conjunctive policy rules that grow linearly</label>
+      <label><input type="radio" name="q6" value="c"> C. ABAC does not use permissions at all</label>
+      <label><input type="radio" name="q6" value="d"> D. RBAC cannot handle more than 10 roles</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q6','b','RBAC role count = product of all attribute ranges (exponential). ABAC just adds new conjunctive rules — one rule per new policy condition. Roles needed in RBAC = ∏Range(SAk).')">Check</button>
+    <div class="feedback" id="q6-feedback"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q7.</span> In the context of access control, what is a "session" in RBAC₀?</div>
+    <div class="options" id="q7">
+      <label><input type="radio" name="q7" value="a"> A. A database connection</label>
+      <label><input type="radio" name="q7" value="b"> B. A mapping between a user and an activated subset of the roles assigned to that user</label>
+      <label><input type="radio" name="q7" value="c"> C. A log of all access attempts made by a user</label>
+      <label><input type="radio" name="q7" value="d"> D. A time-limited password</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q7','b','A session in RBAC₀ = mapping between a user and an activated SUBSET of their assigned roles. Users activate only the roles they need (principle of least privilege).')">Check</button>
+    <div class="feedback" id="q7-feedback"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q8.</span> ECB mode is insecure primarily because:</div>
+    <div class="options" id="q8">
+      <label><input type="radio" name="q8" value="a"> A. It uses a weak encryption key</label>
+      <label><input type="radio" name="q8" value="b"> B. Identical plaintext blocks always produce identical ciphertext blocks, revealing patterns</label>
+      <label><input type="radio" name="q8" value="c"> C. It requires an Initialization Vector which can be guessed</label>
+      <label><input type="radio" name="q8" value="d"> D. It uses XOR which is easily reversible</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q8','b','ECB encrypts each block independently. Same plaintext → same ciphertext, revealing data patterns. CBC solves this by XORing each block with the previous ciphertext block before encryption.')">Check</button>
+    <div class="feedback" id="q8-feedback"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q9.</span> In UNIX, deleting a file from a directory requires write permission on:</div>
+    <div class="options" id="q9">
+      <label><input type="radio" name="q9" value="a"> A. The file itself</label>
+      <label><input type="radio" name="q9" value="b"> B. The file's owner</label>
+      <label><input type="radio" name="q9" value="c"> C. The containing directory</label>
+      <label><input type="radio" name="q9" value="d"> D. The root directory</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q9','c','Write permission on a DIRECTORY allows adding/removing entries in it. File permissions and directory permissions are independent — this is the Tutorial vulnerability: group can remove a file they cannot modify.')">Check</button>
+    <div class="feedback" id="q9-feedback"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q10.</span> The copy flag (*) in DAC access rights means:</div>
+    <div class="options" id="q10">
+      <label><input type="radio" name="q10" value="a"> A. The right can be used to copy files</label>
+      <label><input type="radio" name="q10" value="b"> B. The right holder can transfer (grant) this right to other subjects</label>
+      <label><input type="radio" name="q10" value="c"> C. The right is duplicated across all objects</label>
+      <label><input type="radio" name="q10" value="d"> D. The right can only be used once</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q10','b','Copy flag (*) means the subject can grant/transfer this access right to other subjects (R1: transfer). Without *, the subject can use the right but cannot pass it on.')">Check</button>
+    <div class="feedback" id="q10-feedback"></div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="section">
+  <h2>📌 Exam Cheat Sheet</h2>
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>DAC Key Points</h4>
+      <ul style="font-size:0.88rem">
+        <li>Identity-based, owner can grant access</li>
+        <li>Access matrix → ACL (columns) or Capability Tickets (rows)</li>
+        <li>Authorization table = relational DB equivalent</li>
+        <li>8 system commands R1-R8 with copy flag (*)</li>
+        <li>Extended matrix: files + processes + disks</li>
+      </ul>
+    </div>
+    <div class="card card-purple">
+      <h4>RBAC Key Points</h4>
+      <ul style="font-size:0.88rem">
+        <li>RBAC₀: flat roles, many-to-many U↔R and R↔P</li>
+        <li>RBAC₁: role hierarchies (inheritance)</li>
+        <li>RBAC₂: constraints (mutually exclusive, cardinality, prerequisite)</li>
+        <li>RBAC₃ = RBAC₁ + RBAC₂</li>
+        <li>Admin cost: Σ(U+P) vs Σ(U×P) in DAC</li>
+      </ul>
+    </div>
+    <div class="card card-green">
+      <h4>ABAC Key Points</h4>
+      <ul style="font-size:0.88rem">
+        <li>Three attribute types: Subject, Object, Environment</li>
+        <li>Policy rules: can_access(s,o,e) ← f(ATTR(s), ATTR(o), ATTR(e))</li>
+        <li>RBAC roles grow as ∏Range(SAk) — exponential</li>
+        <li>ABAC: just add conjunctive rules — linear</li>
+        <li>Tradeoff: flexibility vs complexity/performance</li>
+      </ul>
+    </div>
+    <div class="card card-orange">
+      <h4>Definitions to Memorise</h4>
+      <ul style="font-size:0.88rem">
+        <li><strong>Subject:</strong> entity that accesses objects</li>
+        <li><strong>Object:</strong> resource being accessed</li>
+        <li><strong>ACL:</strong> per-resource list of users+rights (columns)</li>
+        <li><strong>Capability:</strong> per-user list of objects+rights (rows)</li>
+        <li><strong>Protection state:</strong> snapshot of all access rights at a point in time</li>
+        <li><strong>Clearance:</strong> authorisation level for classified info</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+function toggleSol(btn) {
+  const box = btn.nextElementSibling;
+  if (box.style.display === 'block') {
+    box.style.display = 'none';
+    btn.textContent = 'Show Solution';
+  } else {
+    box.style.display = 'block';
+    btn.textContent = 'Hide Solution';
+  }
+}
+
+function checkQ(qid, correct, explanation) {
+  const selected = document.querySelector(`input[name="${qid}"]:checked`);
+  const feedback = document.getElementById(`${qid}-feedback`);
+  if (!selected) {
+    feedback.style.display = 'block';
+    feedback.className = 'feedback wrong';
+    feedback.textContent = 'Please select an answer first.';
+    return;
+  }
+  feedback.style.display = 'block';
+  if (selected.value === correct) {
+    feedback.className = 'feedback correct';
+    feedback.innerHTML = `✅ Correct! ${explanation}`;
+  } else {
+    const correctLetter = correct.toUpperCase();
+    feedback.className = 'feedback wrong';
+    feedback.innerHTML = `❌ Incorrect. The correct answer is <strong>${correctLetter}</strong>. ${explanation}`;
+  }
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

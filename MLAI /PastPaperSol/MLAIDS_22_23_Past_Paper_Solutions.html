@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2022-2023 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2022-2023 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Polynomial Basis Functions <span class="marks">[6 marks]</span></h3>
+            <p>Consider fitting a polynomial regression model to predict house prices based on the size (in square meters).</p>
+            <p>(i) Write the polynomial basis function expansion for a cubic polynomial (degree 3). [2 marks]</p>
+            <p>(ii) How many parameters need to be learned? [2 marks]</p>
+            <p>(iii) What problem might occur if we use a very high degree polynomial without regularization? [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Cubic Polynomial Basis Function:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\phi(x) = [1, x, x^2, x^3]^T\]</p>
+                <p>The model is: \(y = w_0 + w_1x + w_2x^2 + w_3x^3\)</p>
+            </div>
+
+            <p><strong>(ii) Number of Parameters:</strong> <strong>[2 marks]</strong></p>
+            <p><strong>Answer: 4 parameters</strong> (w₀, w₁, w₂, w₃)</p>
+            <p>For a polynomial of degree d, we need (d+1) parameters including the bias term.</p>
+
+            <p><strong>(iii) Problem with High Degree Polynomial:</strong> <strong>[2 marks]</strong></p>
+            <p><strong>Overfitting:</strong> The model will fit the training data very closely, including noise and random fluctuations. This leads to:</p>
+            <ul>
+                <li>Very low training error but high test error (poor generalization)</li>
+                <li>The curve will oscillate wildly between data points</li>
+                <li>The model becomes too sensitive to small variations in the training data</li>
+            </ul>
+
+            <div class="note">
+                <strong>Solution:</strong> Use regularization (Ridge or Lasso) to constrain the magnitude of the polynomial coefficients, or use cross-validation to select an appropriate degree.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Ridge Regression Matrix Form <span class="marks">[8 marks]</span></h3>
+            <p>Given a dataset with N=4 training examples and D=2 features (plus bias), the design matrix is:</p>
+            <p>\[\Phi = \begin{bmatrix} 1 & 1 & 2 \\ 1 & 2 & 3 \\ 1 & 3 & 4 \\ 1 & 4 & 5 \end{bmatrix}, \quad y = \begin{bmatrix} 3 \\ 5 \\ 7 \\ 9 \end{bmatrix}\]</p>
+            <p>(i) What are the dimensions of Φᵀ Φ? [2 marks]</p>
+            <p>(ii) Write the Ridge regression solution for weights w. [3 marks]</p>
+            <p>(iii) If λ=0, what solution do we get? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Dimensions of Φᵀ Φ:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Φ has dimensions 4×3 (N=4 rows, D+1=3 columns including bias)</li>
+                <li>Φᵀ has dimensions 3×4</li>
+                <li><strong>Φᵀ Φ has dimensions 3×3</strong></li>
+            </ul>
+
+            <p><strong>(ii) Ridge Regression Solution:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[w = (\Phi^T\Phi + \lambda I)^{-1}\Phi^T y\]</p>
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>λ is the regularization parameter <strong>[1 mark]</strong></li>
+                <li>I is the 3×3 identity matrix <strong>[1 mark]</strong></li>
+                <li>The solution requires inverting a 3×3 matrix <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(iii) When λ = 0:</strong> <strong>[3 marks]</strong></p>
+            <p>When λ = 0, the Ridge regression becomes Ordinary Least Squares (OLS): <strong>[1 mark]</strong></p>
+            <div class="formula-box">
+                <p>\[w = (\Phi^T\Phi)^{-1}\Phi^T y\]</p>
+            </div>
+            <strong>[2 marks]</strong>
+            <p>This is the standard least squares solution with no regularization penalty.</p>
+
+            <div class="note">
+                <strong>Important:</strong> When λ=0, if ΦᵀΦ is not invertible (singular), the solution doesn't exist. Ridge regression with λ>0 ensures ΦᵀΦ + λI is always invertible.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Model Selection <span class="marks">[6 marks]</span></h3>
+            <p>You are comparing three models on a dataset:</p>
+            <ul>
+                <li>Model A: Training error = 0.2, Validation error = 0.25</li>
+                <li>Model B: Training error = 0.05, Validation error = 0.4</li>
+                <li>Model C: Training error = 0.15, Validation error = 0.18</li>
+            </ul>
+            <p>(i) Which model would you select and why? [3 marks]</p>
+            <p>(ii) Which model shows signs of overfitting? Explain. [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Model Selection:</strong> <strong>[3 marks]</strong></p>
+            <p><strong>Select Model C</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Reasoning:</strong></p>
+            <ul>
+                <li>Model C has the lowest validation error (0.18), which is the best indicator of generalization performance <strong>[1 mark]</strong></li>
+                <li>It also shows a small gap between training (0.15) and validation error (0.18), indicating good balance <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(ii) Overfitting Analysis:</strong> <strong>[3 marks]</strong></p>
+            <p><strong>Model B shows clear signs of overfitting</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>Model B has very low training error (0.05) but much higher validation error (0.4) <strong>[1 mark]</strong></li>
+                <li>The large gap (0.35) between training and validation error indicates the model has learned the training data too well, including noise, and fails to generalize to new data <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Summary:</strong>
+                <ul>
+                    <li><strong>Model A:</strong> Reasonable performance, slight overfitting (gap of 0.05)</li>
+                    <li><strong>Model B:</strong> Severe overfitting (gap of 0.35)</li>
+                    <li><strong>Model C:</strong> Best generalization, minimal overfitting (gap of 0.03) ✓</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Logistic Regression Gradient <span class="marks">[8 marks]</span></h3>
+            <p>For logistic regression with sigmoid function σ(z) = 1/(1+e⁻ᶻ):</p>
+            <p>(i) Write the prediction function for a single data point x. [2 marks]</p>
+            <p>(ii) Write the negative log-likelihood (loss) for a single data point (x, y). [3 marks]</p>
+            <p>(iii) State the derivative of the sigmoid function. [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Prediction Function:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[p(y=1|x) = \sigma(w^Tx) = \frac{1}{1+e^{-w^Tx}}\]</p>
+            </div>
+
+            <p><strong>(ii) Negative Log-Likelihood (Cross-Entropy Loss):</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[L(w) = -[y \log(\sigma(w^Tx)) + (1-y)\log(1-\sigma(w^Tx))]\]</p>
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>y is the true label (0 or 1) <strong>[1 mark]</strong></li>
+                <li>σ(wᵀx) is the predicted probability <strong>[1 mark]</strong></li>
+                <li>The formula handles both classes: when y=1, only the first term matters; when y=0, only the second term matters <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(iii) Derivative of Sigmoid:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\frac{d\sigma(z)}{dz} = \sigma(z)(1-\sigma(z))\]</p>
+            </div>
+            <strong>[3 marks]</strong>
+
+            <div class="note">
+                <strong>Useful Property:</strong> The derivative of the sigmoid has a simple form that only depends on σ(z) itself. This makes gradient computation efficient. At z=0, σ(0)=0.5, so the derivative is 0.5×0.5 = 0.25 (maximum value).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) SVM with RBF Kernel <span class="marks">[6 marks]</span></h3>
+            <p>Consider an SVM with RBF (Gaussian) kernel: K(x, x') = exp(-γ||x-x'||²)</p>
+            <p>(i) What does the parameter γ control? [3 marks]</p>
+            <p>(ii) What happens when γ is very large vs. very small? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Role of Parameter γ:</strong> <strong>[3 marks]</strong></p>
+            <p>γ (gamma) controls the "reach" or influence of individual training examples: <strong>[1 mark]</strong></p>
+            <ul>
+                <li>It determines how far the influence of a single training example extends <strong>[1 mark]</strong></li>
+                <li>It controls the smoothness of the decision boundary (related to the width of the Gaussian) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(ii) Effect of γ Values:</strong> <strong>[3 marks]</strong></p>
+
+            <p><strong>Large γ (e.g., γ=100):</strong></p>
+            <ul>
+                <li>Each training example has a narrow area of influence (only nearby points matter)</li>
+                <li>Creates complex, wiggly decision boundaries</li>
+                <li><strong>Risk of overfitting</strong> - model is too sensitive to individual points</li>
+            </ul>
+            <strong>[1.5 marks]</strong>
+
+            <p><strong>Small γ (e.g., γ=0.01):</strong></p>
+            <ul>
+                <li>Each training example has a wide area of influence (distant points matter)</li>
+                <li>Creates smooth, simple decision boundaries</li>
+                <li><strong>Risk of underfitting</strong> - model may be too simple to capture patterns</li>
+            </ul>
+            <strong>[1.5 marks]</strong>
+
+            <div class="note">
+                <strong>Practical Tip:</strong> Use cross-validation to find the optimal γ. Common values to try: [0.001, 0.01, 0.1, 1, 10, 100]. γ = 1/(n_features) is often a good starting point.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Evaluation Metrics <span class="marks">[6 marks]</span></h3>
+            <p>You are building a spam email classifier. You have 1000 emails: 100 are spam, 900 are not spam.</p>
+            <p>Your classifier predicts:</p>
+            <ul>
+                <li>80 spam emails correctly as spam</li>
+                <li>20 spam emails incorrectly as not spam</li>
+                <li>50 non-spam emails incorrectly as spam</li>
+                <li>850 non-spam emails correctly as not spam</li>
+            </ul>
+            <p>(i) Calculate Precision and Recall. [4 marks]</p>
+            <p>(ii) Which metric is more important for this application? [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Given Information:</strong></p>
+            <ul>
+                <li>True Positives (TP) = 80 (spam correctly identified)</li>
+                <li>False Negatives (FN) = 20 (spam missed)</li>
+                <li>False Positives (FP) = 50 (non-spam incorrectly marked as spam)</li>
+                <li>True Negatives (TN) = 850 (non-spam correctly identified)</li>
+            </ul>
+
+            <p><strong>(i) Precision and Recall Calculation:</strong> <strong>[4 marks]</strong></p>
+
+            <p><strong>Precision:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Precision} = \frac{TP}{TP + FP} = \frac{80}{80 + 50} = \frac{80}{130} \approx 0.615 \text{ or } 61.5\%\]</p>
+            </div>
+            <p>Interpretation: When the classifier predicts spam, it's correct 61.5% of the time.</p>
+
+            <p><strong>Recall:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Recall} = \frac{TP}{TP + FN} = \frac{80}{80 + 20} = \frac{80}{100} = 0.8 \text{ or } 80\%\]</p>
+            </div>
+            <p>Interpretation: The classifier correctly identifies 80% of all spam emails.</p>
+
+            <p><strong>(ii) More Important Metric:</strong> <strong>[2 marks]</strong></p>
+            <p><strong>Precision is more important for spam filtering</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Reasoning:</strong> False positives (legitimate emails marked as spam) are more costly than false negatives (spam in inbox). Users would be more frustrated if important emails are incorrectly sent to spam folder than if some spam reaches their inbox. <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Trade-off:</strong> In practice, spam filters are often tuned to favor precision over recall. It's better to let some spam through than to risk losing important emails. However, the exact balance depends on user preferences and the application context.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Objective Function <span class="marks">[6 marks]</span></h3>
+            <p>(i) Write the objective function that K-means minimizes. [3 marks]</p>
+            <p>(ii) Explain why K-means is not guaranteed to find the global optimum. [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) K-means Objective Function:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[J = \sum_{k=1}^{K} \sum_{x_i \in C_k} \|x_i - \mu_k\|^2\]</p>
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>K is the number of clusters <strong>[1 mark]</strong></li>
+                <li>C_k is the set of data points assigned to cluster k <strong>[1 mark]</strong></li>
+                <li>μ_k is the centroid (mean) of cluster k <strong>[1 mark]</strong></li>
+            </ul>
+            <p>This is the within-cluster sum of squares, measuring how compact the clusters are.</p>
+
+            <p><strong>(ii) Why Not Guaranteed Global Optimum:</strong> <strong>[3 marks]</strong></p>
+            <p>K-means uses an iterative optimization procedure (Lloyd's algorithm) that is guaranteed to converge, but only to a local minimum, not necessarily the global minimum. <strong>[1.5 marks]</strong></p>
+            <p>The final result depends on the initial centroid positions. Different initializations can lead to different local minima with different objective function values. <strong>[1.5 marks]</strong></p>
+
+            <div class="note">
+                <strong>Solution:</strong> Run K-means multiple times with different random initializations and select the result with the lowest objective function value. K-means++ initialization also helps by choosing initial centroids that are far apart.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) EM Algorithm for GMM <span class="marks">[8 marks]</span></h3>
+            <p>For a Gaussian Mixture Model with K=2 components in 1D:</p>
+            <p>(i) List all the parameters that need to be estimated. [3 marks]</p>
+            <p>(ii) In the E-step, what quantity do we calculate? [2 marks]</p>
+            <p>(iii) In the M-step, how do we update the mean μ_k? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Parameters to Estimate:</strong> <strong>[3 marks]</strong></p>
+            <p>For K=2 components in 1D, we need to estimate:</p>
+            <ul>
+                <li><strong>Means:</strong> μ₁, μ₂ (2 parameters) <strong>[1 mark]</strong></li>
+                <li><strong>Variances:</strong> σ₁², σ₂² (2 parameters) <strong>[1 mark]</strong></li>
+                <li><strong>Mixing coefficients:</strong> π₁, π₂ where π₁ + π₂ = 1 (effectively 1 free parameter) <strong>[1 mark]</strong></li>
+            </ul>
+            <p>Total: 5 parameters (though only 4 are free due to the constraint on mixing coefficients)</p>
+
+            <p><strong>(ii) E-step Calculation:</strong> <strong>[2 marks]</strong></p>
+            <p>In the E-step, we calculate the <strong>responsibilities</strong> r_ik: <strong>[1 mark]</strong></p>
+            <div class="formula-box">
+                <p>\[r_{ik} = \frac{\pi_k \mathcal{N}(x_i|\mu_k, \sigma_k^2)}{\sum_{j=1}^{2} \pi_j \mathcal{N}(x_i|\mu_j, \sigma_j^2)}\]</p>
+            </div>
+            <p>These represent the posterior probability that point x_i belongs to component k. <strong>[1 mark]</strong></p>
+
+            <p><strong>(iii) M-step Mean Update:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\mu_k = \frac{\sum_{i=1}^{N} r_{ik} x_i}{\sum_{i=1}^{N} r_{ik}}\]</p>
+            </div>
+            <strong>[2 marks]</strong>
+            <p>This is a weighted average of all data points, where the weights are the responsibilities. Points with higher responsibility for cluster k contribute more to its mean. <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Intuition:</strong> Unlike K-means which uses hard assignments (each point fully belongs to one cluster), GMM uses soft assignments (each point partially belongs to all clusters). The mean is updated using a weighted average where weights reflect how much each point "belongs" to that cluster.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) PCA Computation <span class="marks">[6 marks]</span></h3>
+            <p>Given a centered data matrix X (N×D) where N=100 samples and D=5 features:</p>
+            <p>(i) How do you compute the covariance matrix? What are its dimensions? [3 marks]</p>
+            <p>(ii) After PCA, you want to project the data onto the first 2 principal components. What is the dimension of the projected data? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Covariance Matrix Computation:</strong> <strong>[3 marks]</strong></p>
+            <p>Since the data is already centered (mean subtracted), the covariance matrix is: <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[C = \frac{1}{N}X^TX = \frac{1}{100}X^TX\]</p>
+            </div>
+
+            <p><strong>Dimensions:</strong> <strong>[1.5 marks]</strong></p>
+            <ul>
+                <li>X is 100×5</li>
+                <li>Xᵀ is 5×100</li>
+                <li><strong>C is 5×5</strong> (square matrix with dimensions D×D)</li>
+            </ul>
+
+            <p><strong>(ii) Projected Data Dimensions:</strong> <strong>[3 marks]</strong></p>
+            <p>To project onto the first 2 principal components:</p>
+            <ul>
+                <li>We select the 2 eigenvectors corresponding to the 2 largest eigenvalues <strong>[1 mark]</strong></li>
+                <li>Form a projection matrix U with dimensions 5×2 (original dimension × number of components) <strong>[1 mark]</strong></li>
+                <li>Projected data: Z = XU has dimensions <strong>100×2</strong> (N × number of components) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Dimensionality Reduction:</strong> We've reduced from 5 dimensions to 2 dimensions (60% reduction) while retaining the directions of maximum variance in the data. This can be useful for visualization and computational efficiency.
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Best of luck with your studies!</p>
+        </div>
+    </div>
+</body>
+</html>

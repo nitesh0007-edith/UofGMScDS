@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD4 Exam 2017 - Solutions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #6d28d908 0%, #8b5cf608 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 40%, #8b5cf6 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #6d28d9; color: white; transform: translateY(-1px); }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #4c1d95; }
+  .q-marks {
+    background: linear-gradient(135deg, #4c1d95, #8b5cf6);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #6d28d9;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #4c1d95;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #6d28d9, #8b5cf6);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #4c1d95; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #93c5fd;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #1e40af; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #1e3a8a; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #92400e; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #4c1d95; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #8b5cf6; background: #f5f3ff; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #4c1d95; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #7c3aed;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #4c1d95, #6d28d9);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #4c1d95; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>BD4 Exam 2017 — Solutions</h1>
+  <div class="subtitle">University of Glasgow — H Level Summer Diet</div>
+  <div class="badge-row">
+    <span class="badge">60 Marks</span>
+    <span class="badge">6 Questions</span>
+    <span class="badge">10 Marks Each</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — RDBMS Drawbacks</a>
+    <a href="#q2" class="nav-link">Q2 — HDFS Metadata</a>
+    <a href="#q3" class="nav-link">Q3 — YARN Entities</a>
+    <a href="#q4" class="nav-link">Q4 — Recoverability</a>
+    <a href="#q5" class="nav-link">Q5 — MR1 vs MR2</a>
+    <a href="#q6" class="nav-link">Q6 — HBase Location</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — Drawbacks of RDBMS for Big Data</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Discuss the drawbacks of using a traditional RDBMS approach for Big Data applications. Address both normalization and consistency/transactional concerns.
+    </div>
+
+    <div class="answer-section">
+      <h4>a) The Normalization Problem <span class="marks-badge">5 marks</span></h4>
+
+      <p>Relational databases are fundamentally built on the principle of <strong>normalization</strong> — the practice of decomposing data into many smaller tables, each representing a single entity or relationship, linked together by foreign keys. In a traditional setting with modest data sizes, this is elegant and eliminates redundancy. However, when data grows to big data scale, normalization becomes a serious liability.</p>
+
+      <p>The core issue is that big data applications typically need to retrieve attributes that are <strong>spread across many normalized tables</strong>. To reassemble a complete picture, the database must perform expensive <strong>multi-way JOIN operations</strong>. JOINs are notoriously expensive and resource-hungry operations even on moderately sized tables — they require comparing rows across tables, often with complex indexing and temporary storage. When tables grow to billions of rows, the cost of these JOINs becomes utterly <strong>intolerable</strong>.</p>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: The E-Commerce Product Page</h5>
+        <p>Consider an e-commerce platform like Amazon. In a normalized RDBMS, you would have separate tables for <strong>Users</strong>, <strong>Orders</strong>, <strong>Products</strong>, <strong>Reviews</strong>, and <strong>Shipping</strong>. To render a single product page that shows the product details, all its reviews, buyer information for each review, and related order stats, the database must perform a <strong>5-way JOIN</strong> across all these tables. At Amazon's scale (hundreds of millions of products, billions of reviews), this JOIN would take minutes or even hours — completely unacceptable for a page that needs to load in milliseconds. This is why Amazon built DynamoDB (a NoSQL database) instead of relying on an RDBMS.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>Why NoSQL Avoids This</h5>
+        <p>NoSQL databases like HBase, Cassandra, and MongoDB use <strong>denormalized</strong> data models where related data is stored together in a single row or document. Instead of JOINing 5 tables, all the data for a product page lives in one place — a single read retrieves everything. The trade-off is data redundancy, but at big data scale, storage is cheap while computation (JOINs) is expensive.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>b) The Consistency / ACID Transaction Problem <span class="marks-badge">5 marks</span></h4>
+
+      <p>The second major drawback of RDBMS is its insistence on <strong>strong consistency through ACID transactions</strong> (Atomicity, Consistency, Isolation, Durability). ACID guarantees that every transaction is processed reliably — either all operations in a transaction succeed, or none do. While this sounds desirable, enforcing ACID in a distributed environment requires two extremely expensive mechanisms:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Distributed concurrency control:</strong> Guards against conflicts when multiple users access the same data simultaneously. Requires locks, timestamps, or multi-version protocols across all nodes — all of which add significant overhead.</li>
+        <li><strong>Distributed commit protocols:</strong> Guards against partial failures using protocols like Two-Phase Commit (2PC). Every participating node must agree before a transaction commits. If any node fails or is slow, the entire transaction is blocked.</li>
+      </ul>
+
+      <p>The critical insight is that <strong>many big data applications simply do not need transaction grouping</strong>. They can tolerate slight inconsistencies for a brief period in exchange for much higher performance and availability.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>ACID Model (RDBMS)</h5>
+          <p><strong>Atomicity:</strong> All or nothing.<br>
+          <strong>Consistency:</strong> Always valid state.<br>
+          <strong>Isolation:</strong> Transactions don't interfere.<br>
+          <strong>Durability:</strong> Committed = permanent.<br>
+          Best for: Banking, financial systems.</p>
+        </div>
+        <div class="comparison-card highlight">
+          <h5>BASE Model (NoSQL)</h5>
+          <p><strong>Basically Available:</strong> System always responds.<br>
+          <strong>Soft state:</strong> State may change over time.<br>
+          <strong>Eventually consistent:</strong> Will converge.<br>
+          <br>
+          Best for: Social media, streaming, analytics.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: Netflix vs Banking</h5>
+        <p>When Netflix updates your "Continue Watching" list, it does not need ACID transactions. If your watch history takes 2 seconds to propagate across all servers, nobody notices or cares — eventual consistency is perfectly fine. But when you transfer $500 from savings to checking at a bank, the system absolutely must guarantee that the money leaves one account and arrives in the other atomically. There is no acceptable "eventually consistent" state where the money is in neither account. This is why banks use RDBMS with ACID, while Netflix uses NoSQL with BASE.</p>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>Common exam pitfall:</strong> Do not say RDBMS is "bad" — it is excellent for applications that genuinely need ACID. The drawback is that it enforces this expensive guarantee even for applications that do not need it, wasting resources at big data scale.</p>
+      </div>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>For 10 marks, spend roughly equal time on both drawbacks (~5 marks each). For normalization: mention normalized tables, foreign keys, multi-way JOINs, and that JOINs are expensive at scale. For consistency: mention ACID, distributed concurrency control, distributed commit protocols, and the BASE alternative. Give a concrete example for each.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — HDFS Global and Local Metadata</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Describe the global and local metadata that HDFS maintains per file. Who maintains each type?
+    </div>
+
+    <div class="answer-section">
+      <h4>Overview</h4>
+      <p>HDFS maintains two distinct levels of metadata for every file in the system. The <strong>global metadata</strong> is maintained centrally by the NameNode and provides the "big picture" — where everything is and who can access it. The <strong>local metadata</strong> is maintained independently by each DataNode and provides the "ground truth" — the actual condition and size of the data blocks physically stored on that node. Together, these two levels allow HDFS to efficiently manage, locate, and verify files across a cluster of thousands of machines.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>a) Global Metadata — Maintained by the NameNode <span class="marks-badge">5 marks</span></h4>
+
+      <p>The NameNode is the central authority of the HDFS cluster, and it maintains three critical categories of global metadata:</p>
+
+      <ol class="step-list">
+        <li><strong>Access restrictions:</strong> The NameNode stores the permissions and access control information for each file and directory. When a client requests to read, write, or delete a file, the NameNode checks these restrictions first to honour or deny the request. This is analogous to the security policy in a traditional file system.</li>
+        <li><strong>Location information:</strong> For every file, the NameNode knows exactly which DataNodes store which blocks and where the replicas of each block are located. This is the mapping that makes it possible for a client to read data — without it, the client would have no idea which machine in the cluster holds the data it needs.</li>
+        <li><strong>Namespace state:</strong> The NameNode maintains the complete filename tree — every directory, every file, and the hierarchical structure that connects them. This is the equivalent of a traditional filesystem's directory structure, but for a distributed system spanning thousands of nodes.</li>
+      </ol>
+
+      <div class="concept-box">
+        <h5>Key Insight: Why Global Metadata is In-Memory</h5>
+        <p>The NameNode keeps all of this metadata in RAM for fast access. This means every file operation (open, create, delete, list) is served from memory without disk I/O. The downside is that this limits the total number of files HDFS can manage to what fits in the NameNode's memory — typically a few hundred million files.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>b) Local Metadata — Maintained by Each DataNode <span class="marks-badge">5 marks</span></h4>
+
+      <p>Each DataNode independently tracks metadata about the blocks it physically stores on its local disks:</p>
+
+      <table>
+        <tr><th>Local Metadata</th><th>Purpose</th><th>Who Uses It</th></tr>
+        <tr>
+          <td><strong>File sizes</strong></td>
+          <td>The actual size (in bytes) of each block stored locally. DataNodes periodically communicate this to the NameNode.</td>
+          <td>The NameNode uses aggregated size information for <strong>global space management</strong> — knowing how much total capacity is used and available across the cluster.</td>
+        </tr>
+        <tr>
+          <td><strong>File checksums</strong></td>
+          <td>A cryptographic checksum computed for each stored block. This is a fingerprint that uniquely identifies the correct content of the block.</td>
+          <td>Used for <strong>corruption detection and recovery</strong>. When a client reads a block, it can verify the checksum to ensure the data has not been silently corrupted on disk. If corruption is detected, the system can retrieve a healthy replica from another DataNode.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy: The Warehouse Chain</h5>
+      <p>Think of HDFS as a national warehouse chain. The <strong>NameNode is the headquarters (HQ)</strong> — it knows the complete catalog of all products (namespace), which warehouse stores which products and where the backup copies are (location info), and who is authorized to access what (access restrictions). Each <strong>DataNode is a local warehouse</strong> — it tracks the weight/size of each crate it stores (file sizes) and performs quality checks on each item (checksums). The warehouses report their local stats back to HQ periodically so the head office can manage the global supply chain effectively.</p>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>Important distinction:</strong> The NameNode does NOT store the actual data blocks — it only stores metadata about them. The DataNodes store the actual data. If the NameNode crashes, you lose the map to the data (recoverable from checkpoints/journals), not the data itself.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>Clearly separate your answer into global (NameNode) and local (DataNode) sections. For global: name all three types (access restrictions, location information, namespace state). For local: name both types (file sizes, file checksums) and explain why each matters. Mention that sizes are communicated to NN for space management and checksums are for corruption detection.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — MapReduce2 (YARN) Entities and Roles</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Describe the main entities involved in a MapReduce2 (YARN) execution and their roles.
+    </div>
+
+    <div class="answer-section">
+      <h4>Overview: Why YARN Exists</h4>
+      <p>MapReduce2 (also known as YARN — Yet Another Resource Negotiator) was introduced to solve a fundamental architectural flaw in MapReduce1: the JobTracker was responsible for <strong>both</strong> resource management and job execution, making it a bottleneck and single point of failure. YARN decouples these two concerns into separate entities, enabling better scalability and the ability to run frameworks beyond just MapReduce.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Five Key Entities <span class="marks-badge">2 marks each</span></h4>
+
+      <table>
+        <tr><th>Entity</th><th>Scope</th><th>Primary Role</th></tr>
+        <tr><td><strong>Client</strong></td><td>External</td><td>Submits MapReduce jobs to the cluster</td></tr>
+        <tr><td><strong>Resource Manager (RM)</strong></td><td>Cluster-wide (1 per cluster)</td><td>Allocates resources (containers), schedules execution</td></tr>
+        <tr><td><strong>Node Manager (NM)</strong></td><td>Per-node (1 per machine)</td><td>Launches and monitors containers on its node</td></tr>
+        <tr><td><strong>Application Master (AM)</strong></td><td>Per-job (1 per job)</td><td>Manages the job, coordinates tasks, negotiates for resources</td></tr>
+        <tr><td><strong>HDFS</strong></td><td>Cluster-wide</td><td>Provides distributed I/O for job input and output</td></tr>
+      </table>
+    </div>
+
+    <div class="answer-section">
+      <h4>Detailed Role Breakdown</h4>
+
+      <p><strong>The Client</strong> is the entry point. A user or application packages a MapReduce job (specifying the Mapper class, Reducer class, input/output paths) and submits it to the Resource Manager. The client then monitors the job's progress and retrieves results upon completion.</p>
+
+      <p><strong>The Resource Manager (RM)</strong> is the ultimate authority for allocating cluster resources. It maintains a global view of all available resources (CPU, memory) across all nodes and decides how to distribute <strong>containers</strong> — the fundamental unit of resource allocation in YARN. A container is essentially a reserved slice of a node's CPU and memory. The RM has two main components: a Scheduler (which decides how to allocate resources) and an Applications Manager (which accepts job submissions and launches the first container for each job's Application Master).</p>
+
+      <p><strong>Node Managers (NMs)</strong> are the per-machine agents responsible for the physical work. Each NM manages the resources on its specific node — it launches containers as instructed by the RM, monitors their resource usage (CPU, memory), and reports back to the RM. If a container exceeds its allocated resources, the NM can kill it.</p>
+
+      <p><strong>The Application Master (AM)</strong> is the most interesting entity in YARN. There is one AM <em>per job</em>, and it acts as the job-specific coordinator. The AM negotiates with the Resource Manager to obtain containers for its map and reduce tasks, then works with the Node Managers to launch and monitor those tasks. If a task fails, the AM can request a new container and retry. The AM essentially takes over the job-management role that was previously handled by the monolithic JobTracker in MR1.</p>
+
+      <p><strong>HDFS</strong> provides the distributed storage layer. Map tasks read their input splits from HDFS, intermediate shuffle data is stored locally, and reduce tasks write their final output back to HDFS.</p>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy: Film Production</h5>
+      <p>Think of running a YARN job like producing a film. The <strong>Client</strong> is the producer who commissions the film and says "I want this movie made." The <strong>Resource Manager</strong> is the film studio — it controls all the sound stages, cameras, and equipment, and decides which production gets what resources. The <strong>Node Managers</strong> are the stage managers at each sound stage — they set up the equipment and make sure each stage is running properly. The <strong>Application Master</strong> is the director — they manage the creative process, coordinate the actors and crew, and negotiate with the studio for more resources when needed. <strong>HDFS</strong> is the film archive where raw footage is stored and final edits are saved.</p>
+    </div>
+
+    <div class="concept-box">
+      <h5>The Key Architectural Insight</h5>
+      <p>The fundamental principle of YARN is <strong>separation of concerns</strong>. Resource management (RM + NM) is completely decoupled from job execution (AM + YarnChild). This means the RM never needs to understand the semantics of MapReduce — it just allocates containers. This is why YARN can run Spark, Tez, Flink, and other frameworks alongside MapReduce, all sharing the same cluster resources.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>For 10 marks with 5 entities at 2 marks each, name each entity clearly and give its role in 1-2 sentences. The AM is the most important to explain well — emphasize it is per-job and takes over the JT's job management role. Mention that the RM/NM pair handles resource management while AM handles job execution.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 4 ===================== -->
+  <div class="question-card" id="q4">
+    <div class="q-header">
+      <span class="q-title">Question 4 — Recoverability: WAL, Journals, Checkpoints, Backup Nodes</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Explain the principles of recoverability in distributed systems, covering write-ahead logging, journals, checkpoints, and backup nodes.
+    </div>
+
+    <div class="answer-section">
+      <h4>The Recoverability Problem</h4>
+      <p>In any distributed system, critical state (like the HDFS namespace or an HBase region's metadata) is kept <strong>in memory</strong> for fast access. But memory is volatile — a power failure, crash, or hardware fault can destroy it instantly. The recoverability problem is: how do we ensure that no data is permanently lost when this happens? The solution uses <strong>three complementary resources</strong> that work together to make recovery possible.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Three Recovery Resources <span class="marks-badge">2 marks each</span></h4>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>1. Image (In-Memory State)</h5>
+          <p>The <strong>Image</strong> is the live, in-memory data structure holding the current state of the system. In HDFS, this is the complete namespace — every file, directory, block mapping, and permission. It is kept in RAM because memory access is orders of magnitude faster than disk access. However, RAM is <strong>volatile</strong>: if the machine crashes or loses power, the Image is destroyed completely.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>2. Checkpoint (Periodic Snapshot)</h5>
+          <p>A <strong>Checkpoint</strong> is a periodic dump of the entire in-memory Image to stable storage (disk). Think of it as a "save game" — a complete snapshot of the system's state at a specific moment in time. Checkpoints are created at regular intervals (e.g., every hour). They provide a known-good state that the system can return to after a crash.</p>
+        </div>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card highlight" style="grid-column: 1 / -1;">
+          <h5>3. Journal / WAL (Write-Ahead Log)</h5>
+          <p>The <strong>Journal</strong> (also called the EditLog or Write-Ahead Log) records every single mutation that occurs between checkpoints. Crucially, operations are saved to the Journal <strong>BEFORE</strong> they are applied to the in-memory Image — this is the "write-ahead" principle. This ordering guarantee is critical: it means that even if the system crashes mid-operation, the Journal on disk contains a record of what was about to happen. Every file creation, deletion, rename, or permission change is logged here before execution.</p>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>The WAL principle is non-negotiable:</strong> Operations are ALWAYS written to the Journal on stable storage FIRST, and only THEN applied to the in-memory Image. If you reverse this order, a crash after applying but before logging means the operation is lost — violating recoverability.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Recovery Process <span class="marks-badge">2 marks</span></h4>
+
+      <p>When the system crashes and restarts, recovery follows a simple but powerful two-step process:</p>
+
+      <ol class="step-list">
+        <li><strong>Load the last Checkpoint:</strong> Read the most recent checkpoint file from disk into memory. This restores the system to the state it was in when that checkpoint was created — which might be minutes or hours old.</li>
+        <li><strong>Replay the Journal:</strong> Read the Journal file and re-apply every recorded operation on top of the loaded checkpoint, in order. This "fast-forwards" the state from the checkpoint time to the exact moment of the crash.</li>
+      </ol>
+
+      <p>After these two steps, the in-memory Image is fully reconstructed to its pre-crash state, and the system can resume normal operations.</p>
+
+      <div class="concept-box">
+        <h5>Why This Works</h5>
+        <p>Because the Journal records every mutation (thanks to the write-ahead principle), and the Checkpoint captures a complete snapshot, the combination of the two is equivalent to the full state. No operation is ever lost, even if the crash happens between checkpoints.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Backup Node <span class="marks-badge">2 marks</span></h4>
+
+      <p>A <strong>Backup Node</strong> provides an additional layer of safety by storing replicas of the Image, Journal, and/or Checkpoints on a completely separate machine. If the primary node's disk is destroyed (not just a crash, but actual hardware failure), the system can still recover from the Backup Node's copies. The Backup Node receives a continuous stream of Journal entries from the primary node and maintains its own up-to-date copy of the Image, so it can take over quickly if needed.</p>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy: The Chef's Recipe System</h5>
+      <p>Imagine a head chef at a restaurant who keeps all recipes in their head (<strong>Image</strong> — volatile memory). Every month, they print out a complete recipe book (<strong>Checkpoint</strong> — periodic snapshot to stable storage). Every day, they write down any recipe changes or new recipes in a logbook (<strong>Journal</strong> — write-ahead log). If the chef gets amnesia (crash!), recovery is straightforward: read the last printed recipe book (load checkpoint), then read through the daily logbook to apply all changes since the book was printed (replay journal). The <strong>Backup Node</strong> is like giving a copy of everything to a sous-chef at a different restaurant — if the original restaurant burns down, the sous-chef has everything needed to continue.</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>Quick Reference</h5>
+      <p>Image = volatile in-memory state (fast but fragile) | Checkpoint = periodic disk snapshot (the safety net) | Journal/WAL = log of all changes between checkpoints (write BEFORE apply) | Recovery = load checkpoint + replay journal | Backup Node = remote replica of everything for disaster recovery.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 5 ===================== -->
+  <div class="question-card" id="q5">
+    <div class="q-header">
+      <span class="q-title">Question 5 — MapReduce1 vs MapReduce2: Differences and Similarities</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Compare and contrast MapReduce1 and MapReduce2 (YARN) architectures, highlighting key differences and similarities.
+    </div>
+
+    <div class="answer-section">
+      <h4>MapReduce1 Architecture <span class="marks-badge">3 marks</span></h4>
+
+      <p>MapReduce1 was the original Hadoop execution framework with a relatively simple architecture consisting of four entities:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Client:</strong> Submits MapReduce jobs to the cluster.</li>
+        <li><strong>JobTracker (JT):</strong> The central daemon that handles <em>both</em> resource management and job execution. It decides which TaskTracker gets which task, monitors progress, and handles failures.</li>
+        <li><strong>TaskTrackers (TT):</strong> Run on each cluster node. They execute map and reduce tasks as instructed by the JobTracker and report status back.</li>
+        <li><strong>HDFS:</strong> Provides distributed storage for input and output data.</li>
+      </ul>
+
+      <p>The fundamental problem with MR1 is that the JobTracker is a <strong>monolithic component</strong> that conflates two very different responsibilities: managing cluster resources (which nodes have capacity) and managing individual jobs (which tasks should run where). This makes the JT a bottleneck — it must track every task of every job, limiting scalability to around 4,000 nodes. It also means the cluster can <strong>only run MapReduce</strong> workloads.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>MapReduce2 (YARN) Architecture <span class="marks-badge">4 marks</span></h4>
+
+      <p>YARN fundamentally restructures the system by <strong>decoupling resource management from job execution</strong>:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Resource Manager (RM):</strong> Takes over the resource management role from the JobTracker. It maintains a global view of cluster resources and allocates <strong>containers</strong> (units of CPU + memory) to applications.</li>
+        <li><strong>Node Managers (NM):</strong> Replace TaskTrackers. Each NM manages resources on its specific node — launching containers, monitoring usage, and reporting to the RM.</li>
+        <li><strong>Application Master (AM):</strong> This is the key innovation. Each job gets its own AM, which takes over the <em>job management</em> role from the old JobTracker. The AM negotiates with the RM for containers, works with NMs to launch tasks, and monitors task progress. If a task fails, the AM handles the retry.</li>
+        <li><strong>YarnChild:</strong> The actual processes running inside containers, executing map or reduce tasks.</li>
+      </ul>
+    </div>
+
+    <div class="answer-section">
+      <h4>Side-by-Side Comparison</h4>
+
+      <table>
+        <tr><th>Aspect</th><th>MapReduce1</th><th>MapReduce2 (YARN)</th></tr>
+        <tr><td><strong>Resource Management</strong></td><td>JobTracker (centralized)</td><td>Resource Manager + Node Managers</td></tr>
+        <tr><td><strong>Job Management</strong></td><td>JobTracker (same entity!)</td><td>Application Master (per-job)</td></tr>
+        <tr><td><strong>Execution Units</strong></td><td>Fixed map/reduce slots on TaskTrackers</td><td>Flexible containers (CPU + memory)</td></tr>
+        <tr><td><strong>Supported Frameworks</strong></td><td>MapReduce only</td><td>Any framework (MR, Spark, Tez, Flink, etc.)</td></tr>
+        <tr><td><strong>Scalability</strong></td><td>~4,000 nodes</td><td>~10,000+ nodes</td></tr>
+        <tr><td><strong>Fault Isolation</strong></td><td>JT failure kills all jobs</td><td>AM failure affects only that job</td></tr>
+        <tr><td><strong>Backward Compatibility</strong></td><td>N/A</td><td>Fully backward-compatible with MR1 apps</td></tr>
+      </table>
+    </div>
+
+    <div class="answer-section">
+      <h4>Key Similarities</h4>
+      <p>Despite the architectural differences, MR2 preserves important continuity with MR1:</p>
+      <ul class="bullet-list">
+        <li>Both use HDFS as the underlying distributed storage layer.</li>
+        <li>Both support the same MapReduce programming model (map phase, shuffle, reduce phase).</li>
+        <li>MR2 is <strong>fully backwards compatible</strong> — existing MR1 applications can run on YARN without modification.</li>
+        <li>Both rely on data locality — scheduling tasks on nodes where the input data physically resides.</li>
+      </ul>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy: School Administration</h5>
+      <p><strong>MR1</strong> is like a school where one teacher does both class management AND teaching — they assign classrooms, manage timetables, AND teach every subject. When the school grows, this single teacher becomes overwhelmed. <strong>MR2</strong> is like hiring a separate administrator who handles room bookings and timetables (Resource Manager), while individual teachers (Application Masters) focus purely on teaching their specific subject. The school can now also offer music, art, and drama (Spark, Tez, Flink) — not just maths (MapReduce). The administrator does not need to understand each subject; they just allocate rooms and equipment.</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>One-Line Summary</h5>
+      <p>MR1 = monolithic JobTracker (resource + job management combined, MR only). MR2/YARN = decoupled RM/NM for resources + per-job AM for execution, supporting any framework, fully backward-compatible.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 6 ===================== -->
+  <div class="question-card" id="q6">
+    <div class="q-header">
+      <span class="q-title">Question 6 — HBase Data Item Location Procedure</span>
+      <span class="q-marks">10 marks</span>
+    </div>
+    <div class="q-text">
+      Describe the procedure by which a client locates a specific data item in HBase, including all components involved and the RegionServer-HDFS interaction.
+    </div>
+
+    <div class="answer-section">
+      <h4>Architecture Components <span class="marks-badge">2 marks</span></h4>
+
+      <p>The HBase data location procedure involves five key components working together:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Client:</strong> The application that wants to read or write a specific row in an HBase table.</li>
+        <li><strong>ZooKeeper (ZK):</strong> A distributed coordination service that acts as the starting point for all data lookups — it knows where the META table lives.</li>
+        <li><strong>META Table:</strong> A special HBase table that maps every region (a contiguous range of row keys) to the RegionServer currently hosting it. It is the master directory of the entire HBase cluster.</li>
+        <li><strong>HBase Master:</strong> Manages the cluster (assigns regions to RegionServers, handles failover), but is NOT involved in the data path for reads/writes.</li>
+        <li><strong>RegionServers (RS):</strong> The workhorses that actually store and serve data. Each RS hosts multiple regions.</li>
+        <li><strong>HDFS:</strong> The underlying distributed file system where HBase data is physically stored as HFiles.</li>
+      </ul>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Location Procedure <span class="marks-badge">6 marks</span></h4>
+
+      <p>When a client wants to find a specific data item (identified by a row key), it follows a multi-step lookup process that progressively narrows down the location:</p>
+
+      <ol class="step-list">
+        <li><strong>Client contacts ZooKeeper:</strong> The client first queries ZooKeeper to discover which RegionServer is currently hosting the <code>hbase:meta</code> table. ZooKeeper maintains this information as a small piece of coordination data. This is a lightweight lookup — ZooKeeper is designed for exactly this kind of fast metadata query.</li>
+        <li><strong>Client queries the META table:</strong> Armed with the META table's location, the client contacts that RegionServer and scans the META table to find which RegionServer hosts the <strong>specific region</strong> containing the target row key. The META table is organized so that each row maps a region's start/end key range to a RegionServer address.</li>
+        <li><strong>Client contacts the target RegionServer:</strong> The client now goes directly to the identified RegionServer and requests the data for the target row key. The RS looks up the data in its in-memory MemStore and/or on-disk HFiles and returns the result.</li>
+        <li><strong>Client caches the location:</strong> To avoid repeating this three-step lookup for every subsequent request, the client <strong>caches</strong> the region-to-RegionServer mapping locally. Future reads for row keys in the same region skip ZooKeeper and META entirely and go straight to the RS. The cache is invalidated when a region is moved or split.</li>
+      </ol>
+
+      <div class="concept-box">
+        <h5>Why Three Steps Instead of One?</h5>
+        <p>You might wonder: why not just ask ZooKeeper directly where a specific row key lives? The answer is scale. ZooKeeper is designed to store tiny amounts of coordination data, not millions of region mappings. The META table can be large (one row per region, potentially millions of regions), so it lives on a RegionServer just like any other HBase table. ZooKeeper only stores the single pointer to META's location — a clean separation of concerns.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>RegionServer-HDFS Interaction <span class="marks-badge">2 marks</span></h4>
+
+      <p>Once the client reaches the correct RegionServer, the RS must actually retrieve the data from HDFS. The RegionServer acts as a <strong>mediator</strong> between the client and the underlying HDFS storage:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Region-to-HDFS-block mapping:</strong> The RegionServer maintains mappings from its hosted regions to the corresponding HDFS blocks (HFiles). It knows exactly which HDFS files contain the data for each region.</li>
+        <li><strong>Data retrieval:</strong> The RS reads the required data blocks from HDFS DataNodes (acting as an HDFS client itself), caches frequently accessed blocks in its <strong>block cache</strong> (an in-memory LRU cache), and returns the data to the HBase client.</li>
+        <li><strong>Block cache optimization:</strong> On subsequent reads for the same or nearby data, the RS can serve directly from its block cache without touching HDFS at all, significantly reducing latency.</li>
+      </ul>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy: University Library System</h5>
+      <p>Imagine you need to find a specific book in a large university library system spread across multiple buildings. You first go to the <strong>reception desk</strong> (ZooKeeper) and ask: "Where is the master catalog?" The receptionist tells you it is in Building A, Room 201. You go to that room and check the <strong>master catalog</strong> (META table), which tells you that books with call numbers in your range are on Floor 3 of Building C. You go directly to that <strong>floor and shelf</strong> (RegionServer) and find your book. You make a mental note (cache) that books in this call number range are on Floor 3 of Building C — next time you need a book from the same range, you skip the reception desk and catalog and go straight to the shelf.</p>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>Common misconception:</strong> The HBase Master is NOT involved in the data location procedure. Clients never contact the Master to find data — the Master only handles administrative tasks like region assignment and failover. Data lookups go through ZK, META, and RS only.</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>Location Flow Summary</h5>
+      <p>Client → ZooKeeper (get META location) → META table on RS (get target region's RS) → Target RegionServer (get data) → Cache result. The RS mediates between client and HDFS: it maps regions to HDFS blocks, reads from DataNodes, caches in block cache, and returns data to client.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

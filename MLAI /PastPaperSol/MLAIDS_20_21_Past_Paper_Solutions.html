@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2020-2021 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        .subquestion {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2020-2021 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL questions. Show all working clearly.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Basis Functions <span class="marks">[4 marks]</span></h3>
+            <p>What is the purpose of using basis functions in regression?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>Basis functions allow us to transform the input features into a higher-dimensional space. <strong>[2 marks]</strong></p>
+            <p>This enables linear regression methods to fit non-linear relationships in the data by learning linear combinations of the transformed features. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Example:</strong> For polynomial basis functions, we transform \(x\) into \([1, x, x^2, x^3, ...]\). For RBF basis functions, we use \(\phi_j(x) = \exp(-\frac{(x-\mu_j)^2}{2s^2})\). This way, a linear model in the transformed space can represent complex non-linear patterns.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Overfitting and Regularization <span class="marks">[6 marks]</span></h3>
+            <p>Explain what overfitting is and how regularization helps prevent it.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Overfitting:</strong></p>
+            <p>Overfitting occurs when a model learns the training data too well, including noise and random fluctuations, resulting in poor generalization to new data. <strong>[2 marks]</strong></p>
+            <p>The model has low training error but high test error.</p>
+
+            <p><strong>How Regularization Helps:</strong></p>
+            <p>Regularization adds a penalty term to the loss function that discourages large parameter values. <strong>[2 marks]</strong></p>
+            <p>This constrains the model complexity and reduces overfitting by preventing the model from fitting noise in the training data. <strong>[2 marks]</strong></p>
+
+            <div class="formula-box">
+                <p><strong>Regularized Loss Function:</strong></p>
+                <p>\[L_{regularized} = L_{data} + \lambda \cdot \text{Penalty}(w)\]</p>
+                <p>where \(\lambda\) controls the strength of regularization.</p>
+            </div>
+
+            <div class="note">
+                <strong>Key Insight:</strong> Regularization forces the model to find a balance between fitting the training data well and keeping the model simple. This improves generalization to unseen data.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Cross-Validation <span class="marks">[5 marks]</span></h3>
+            <p>Describe the k-fold cross-validation procedure and explain why it is useful.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>K-fold Cross-Validation Procedure:</strong></p>
+            <ol>
+                <li>Divide the dataset into k equal-sized folds <strong>[1 mark]</strong></li>
+                <li>For each fold (i = 1 to k):
+                    <ul>
+                        <li>Use fold i as the validation set</li>
+                        <li>Use the remaining k-1 folds as the training set</li>
+                        <li>Train the model and evaluate on the validation fold</li>
+                    </ul>
+                    <strong>[2 marks]</strong>
+                </li>
+                <li>Average the k validation scores to get the final performance estimate <strong>[1 mark]</strong></li>
+            </ol>
+
+            <p><strong>Why It Is Useful:</strong></p>
+            <p>Cross-validation provides a more reliable estimate of model performance by using all data for both training and validation. It reduces the variance in performance estimates and helps in model selection and hyperparameter tuning. <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Common Value:</strong> k=5 or k=10 are commonly used. When k equals the dataset size, it's called Leave-One-Out Cross-Validation (LOOCV).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Ridge Regression Calculation <span class="marks">[5 marks]</span></h3>
+            <p>Given the following:</p>
+            <ul>
+                <li>Design matrix \(\Phi\) is 3×2</li>
+                <li>Target vector \(y = [1, 2, 3]^T\)</li>
+                <li>Regularization parameter \(\lambda = 0.1\)</li>
+            </ul>
+            <p>Write the equation for computing the Ridge regression weights.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>The Ridge regression weights are computed using: <strong>[2 marks]</strong></p>
+
+            <div class="formula-box">
+                <p>\[w = (\Phi^T\Phi + \lambda I)^{-1}\Phi^T y\]</p>
+            </div>
+
+            <p>Where:</p>
+            <ul>
+                <li>\(\Phi\) is the design matrix (3×2) <strong>[1 mark]</strong></li>
+                <li>\(I\) is the identity matrix (2×2 in this case) <strong>[1 mark]</strong></li>
+                <li>\(\lambda = 0.1\) is the regularization parameter <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Important:</strong> The identity matrix \(I\) has the same dimensions as \(\Phi^T\Phi\). Since \(\Phi\) is 3×2, \(\Phi^T\Phi\) is 2×2, so \(I\) is also 2×2.
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Logistic Regression Output <span class="marks">[4 marks]</span></h3>
+            <p>What does the output of logistic regression represent?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>The output of logistic regression represents the probability that a given input belongs to the positive class (class 1). <strong>[2 marks]</strong></p>
+            <p>It is computed using the sigmoid function: \(P(y=1|x) = \sigma(w^Tx) = \frac{1}{1+e^{-w^Tx}}\), which maps any real-valued input to a value between 0 and 1. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Decision Rule:</strong> We typically classify as class 1 if \(P(y=1|x) \geq 0.5\), and class 0 otherwise. However, this threshold can be adjusted based on the application requirements.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) SVM Margin <span class="marks">[6 marks]</span></h3>
+            <p>Explain what the margin is in Support Vector Machines and why maximizing it is important.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Definition of Margin:</strong></p>
+            <p>The margin is the distance between the decision boundary (hyperplane) and the nearest data points from either class, called support vectors. <strong>[2 marks]</strong></p>
+            <p>It is defined as \(\frac{2}{\|w\|}\), where \(w\) is the weight vector perpendicular to the hyperplane.</p>
+
+            <p><strong>Why Maximizing the Margin Is Important:</strong></p>
+            <ul>
+                <li>A larger margin provides better generalization to new data <strong>[2 marks]</strong></li>
+                <li>It makes the classifier more robust to noise and variations in the data <strong>[1 mark]</strong></li>
+                <li>It leads to a unique optimal solution <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Intuition:</strong> Think of the margin as a "safety zone" around the decision boundary. A wider safety zone means the classifier is more confident and less likely to make mistakes on similar but slightly different data points.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Confusion Matrix Analysis <span class="marks">[6 marks]</span></h3>
+            <p>Given the following confusion matrix for a binary classifier:</p>
+
+            <table style="width: 50%; margin: 20px auto;">
+                <tr>
+                    <th></th>
+                    <th>Predicted Positive</th>
+                    <th>Predicted Negative</th>
+                </tr>
+                <tr>
+                    <th>Actual Positive</th>
+                    <td>80</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <th>Actual Negative</th>
+                    <td>10</td>
+                    <td>90</td>
+                </tr>
+            </table>
+
+            <p>Calculate: (i) Precision, (ii) Recall, (iii) Accuracy</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Given:</strong></p>
+            <ul>
+                <li>True Positives (TP) = 80</li>
+                <li>False Negatives (FN) = 20</li>
+                <li>False Positives (FP) = 10</li>
+                <li>True Negatives (TN) = 90</li>
+            </ul>
+
+            <p><strong>(i) Precision:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Precision} = \frac{TP}{TP + FP} = \frac{80}{80 + 10} = \frac{80}{90} = 0.889 \text{ or } 88.9\%\]</p>
+            </div>
+
+            <p><strong>(ii) Recall:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Recall} = \frac{TP}{TP + FN} = \frac{80}{80 + 20} = \frac{80}{100} = 0.8 \text{ or } 80\%\]</p>
+            </div>
+
+            <p><strong>(iii) Accuracy:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN} = \frac{80 + 90}{80 + 90 + 10 + 20} = \frac{170}{200} = 0.85 \text{ or } 85\%\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Interpretation:</strong>
+                <ul>
+                    <li>Precision (88.9%): When the model predicts positive, it's correct 88.9% of the time</li>
+                    <li>Recall (80%): The model correctly identifies 80% of all actual positive cases</li>
+                    <li>Accuracy (85%): Overall, the model makes correct predictions 85% of the time</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Multi-class Classification <span class="marks">[4 marks]</span></h3>
+            <p>Briefly explain the "one-vs-all" (one-vs-rest) approach for multi-class classification.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>In the one-vs-all approach, we train K separate binary classifiers for K classes. <strong>[2 marks]</strong></p>
+            <p>Each classifier learns to distinguish one class from all other classes combined. To make a prediction, we run all K classifiers and choose the class whose classifier gives the highest confidence score. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Example:</strong> For 3 classes (A, B, C), we train:
+                <ul>
+                    <li>Classifier 1: A vs (B and C)</li>
+                    <li>Classifier 2: B vs (A and C)</li>
+                    <li>Classifier 3: C vs (A and B)</li>
+                </ul>
+                For a new data point, we apply all three classifiers and select the class with the highest score.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Initialization <span class="marks">[4 marks]</span></h3>
+            <p>Why is initialization important in K-means clustering, and what problems can poor initialization cause?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>K-means is sensitive to initial centroid positions because it uses an iterative optimization process that can get stuck in local minima. <strong>[2 marks]</strong></p>
+            <p>Poor initialization can lead to:
+                <ul>
+                    <li>Suboptimal clustering results (finding local minima instead of global minimum)</li>
+                    <li>Empty clusters (no points assigned to a centroid)</li>
+                    <li>Slow convergence</li>
+                </ul>
+                <strong>[2 marks]</strong>
+            </p>
+
+            <div class="note">
+                <strong>Solution:</strong> Use K-means++ initialization, which chooses initial centroids that are far apart from each other. This typically leads to better and more consistent clustering results.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) EM Algorithm Steps <span class="marks">[6 marks]</span></h3>
+            <p>Describe the two main steps of the EM (Expectation-Maximization) algorithm used in Gaussian Mixture Models.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>E-Step (Expectation Step):</strong> <strong>[3 marks]</strong></p>
+            <p>Calculate the responsibility (posterior probability) that each Gaussian component has for each data point, given the current parameters.</p>
+            <div class="formula-box">
+                <p>\[r_{ik} = \frac{\pi_k \mathcal{N}(x_i|\mu_k, \Sigma_k)}{\sum_{j=1}^{K} \pi_j \mathcal{N}(x_i|\mu_j, \Sigma_j)}\]</p>
+            </div>
+            <p>This tells us how likely each data point belongs to each cluster.</p>
+
+            <p><strong>M-Step (Maximization Step):</strong> <strong>[3 marks]</strong></p>
+            <p>Update the model parameters (means \(\mu_k\), covariances \(\Sigma_k\), and mixing coefficients \(\pi_k\)) to maximize the likelihood, using the responsibilities calculated in the E-step.</p>
+            <div class="formula-box">
+                <p>\[\mu_k = \frac{\sum_{i=1}^{N} r_{ik} x_i}{\sum_{i=1}^{N} r_{ik}}\]</p>
+                <p>\[\pi_k = \frac{1}{N}\sum_{i=1}^{N} r_{ik}\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Iteration:</strong> These two steps alternate until convergence (when parameters stop changing significantly). The algorithm is guaranteed to increase the likelihood at each iteration.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) PCA Dimensionality Reduction <span class="marks">[6 marks]</span></h3>
+            <p>A dataset has 10 features. After performing PCA, you obtain the following eigenvalues:</p>
+            <p>[25, 18, 12, 8, 5, 3, 2, 1, 0.5, 0.5]</p>
+            <p>(i) How much variance is explained by the first principal component?</p>
+            <p>(ii) How many principal components are needed to retain at least 80% of the variance?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Total variance:</strong> Sum of all eigenvalues = 25 + 18 + 12 + 8 + 5 + 3 + 2 + 1 + 0.5 + 0.5 = 75</p>
+
+            <p><strong>(i) Variance explained by first PC:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Variance explained} = \frac{\lambda_1}{\sum \lambda_i} = \frac{25}{75} = 0.333 \text{ or } 33.3\%\]</p>
+            </div>
+
+            <p><strong>(ii) Components needed for 80% variance:</strong> <strong>[4 marks]</strong></p>
+            <p>Calculate cumulative variance:</p>
+            <ul>
+                <li>PC1: 25/75 = 33.3%</li>
+                <li>PC1-2: (25+18)/75 = 43/75 = 57.3%</li>
+                <li>PC1-3: (25+18+12)/75 = 55/75 = 73.3%</li>
+                <li>PC1-4: (25+18+12+8)/75 = 63/75 = 84.0% ✓</li>
+            </ul>
+            <p><strong>Answer: 4 principal components</strong> are needed to retain at least 80% of the variance.</p>
+
+            <div class="note">
+                <strong>Benefit:</strong> By using 4 components instead of 10 features, we reduce dimensionality by 60% while retaining 84% of the variance. This can significantly speed up subsequent learning algorithms.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Hierarchical Clustering <span class="marks">[4 marks]</span></h3>
+            <p>What is the difference between agglomerative and divisive hierarchical clustering?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Agglomerative (Bottom-up):</strong> <strong>[2 marks]</strong></p>
+            <p>Starts with each data point as its own cluster and iteratively merges the closest pairs of clusters until all points are in a single cluster or a stopping criterion is met.</p>
+
+            <p><strong>Divisive (Top-down):</strong> <strong>[2 marks]</strong></p>
+            <p>Starts with all data points in one cluster and iteratively splits clusters into smaller clusters until each point is in its own cluster or a stopping criterion is met.</p>
+
+            <div class="note">
+                <strong>Common Practice:</strong> Agglomerative clustering is more commonly used because it is computationally more efficient. The results can be visualized using a dendrogram, which shows the hierarchy of cluster merges/splits.
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Good luck with your exam preparation!</p>
+        </div>
+    </div>
+</body>
+</html>

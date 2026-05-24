@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Deep Neural Networks | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    
+    <nav class="main-nav">
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">DL Tutorial</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#chapters" class="nav-link">All Chapters</a>
+            <a href="https://udlbook.github.io/udlbook/" target="_blank" class="nav-link external">Original Book ↗</a>
+        </div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta">
+                <span class="chapter-badge">Chapter 4</span>
+                <span class="part-label">Part II: Supervised Learning</span>
+            </div>
+            <h1>Deep <span class="gradient-text">Neural Networks</span></h1>
+            <p class="chapter-description">
+                Explore why depth matters—how stacking multiple layers creates exponentially more powerful representations than wider shallow networks.
+            </p>
+            <div class="chapter-nav">
+                <a href="chapter3.html" class="nav-btn">← Previous: Shallow Networks</a>
+                <a href="chapter5.html" class="nav-btn">Next: Loss Functions →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            
+            <section id="why-depth" class="content-section">
+                <h2>Why Go Deep?</h2>
+                
+                <p>
+                    The universal approximation theorem tells us that shallow networks can represent any function. So why do we need deep networks?
+                </p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Insight</div>
+                    <p>
+                        While shallow networks <em>can</em> represent any function, they may need exponentially many neurons. Deep networks can represent the same functions much more <strong>efficiently</strong>—with far fewer total parameters.
+                    </p>
+                </div>
+                
+                <h3>The Efficiency Argument</h3>
+                
+                <p>
+                    Consider computing the function f(x) = x × x × x × ... (16 multiplications). A shallow network would need many neurons to approximate this. But a deep network can do it with just 4 layers, each squaring its input.
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        Layer 1: h₁ = x²<br>
+                        Layer 2: h₂ = h₁² = x⁴<br>
+                        Layer 3: h₃ = h₂² = x⁸<br>
+                        Layer 4: h₄ = h₃² = x¹⁶
+                    </div>
+                </div>
+                
+                <p>
+                    This exponential compression is why deep learning is so powerful for complex real-world patterns.
+                </p>
+            </section>
+            
+            <section id="architecture" class="content-section">
+                <h2>Deep Network Architecture</h2>
+                
+                <p>
+                    A deep neural network (DNN) consists of multiple hidden layers stacked together:
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        h₁ = a(W₁x + b₁)<br>
+                        h₂ = a(W₂h₁ + b₂)<br>
+                        h₃ = a(W₃h₂ + b₃)<br>
+                        ⋮<br>
+                        hₗ = a(Wₗhₗ₋₁ + bₗ)<br>
+                        y = Wₒhₗ + bₒ
+                    </div>
+                </div>
+                
+                <p>
+                    Each layer transforms the representation from the previous layer, building increasingly abstract features.
+                </p>
+                
+                <h3>Terminology</h3>
+                
+                <ul>
+                    <li><strong>Depth:</strong> The number of layers (input → output)</li>
+                    <li><strong>Width:</strong> The number of neurons in a layer</li>
+                    <li><strong>Feedforward:</strong> Information flows in one direction (no loops)</li>
+                    <li><strong>Fully connected:</strong> Every neuron connects to all neurons in adjacent layers</li>
+                </ul>
+            </section>
+            
+            <section id="hierarchical-representations" class="content-section">
+                <h2>Hierarchical Representations</h2>
+                
+                <p>
+                    The magic of deep learning lies in <strong>hierarchical feature learning</strong>. Each layer learns increasingly abstract representations.
+                </p>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Image Recognition Example</div>
+                    <p>
+                        <strong>Layer 1:</strong> Detects edges (horizontal, vertical, diagonal)<br>
+                        <strong>Layer 2:</strong> Combines edges into corners, curves, textures<br>
+                        <strong>Layer 3:</strong> Recognizes object parts (eyes, wheels, windows)<br>
+                        <strong>Layer 4:</strong> Identifies whole objects (faces, cars, houses)<br>
+                        <strong>Layer 5:</strong> Classifies scenes and contexts
+                    </p>
+                </div>
+                
+                <p>
+                    This hierarchy emerges automatically during training—we don't explicitly program what each layer should learn. The network discovers useful representations on its own.
+                </p>
+                
+                <h3>Compositionality</h3>
+                
+                <p>
+                    Deep networks exploit the <strong>compositional</strong> nature of the world. Complex things are built from simpler parts:
+                </p>
+                
+                <ul>
+                    <li>Words are composed of letters</li>
+                    <li>Sentences are composed of words</li>
+                    <li>Faces are composed of eyes, noses, mouths</li>
+                    <li>Cars are composed of wheels, windows, doors</li>
+                </ul>
+                
+                <p>
+                    Each layer learns one level of this composition, allowing the network to reuse features across different concepts.
+                </p>
+            </section>
+            
+            <section id="depth-vs-width" class="content-section">
+                <h2>Depth vs. Width</h2>
+                
+                <p>
+                    Given a fixed parameter budget, should we make networks deeper or wider?
+                </p>
+                
+                <h3>Wider Networks (More Neurons per Layer)</h3>
+                <ul>
+                    <li>More expressive per layer</li>
+                    <li>Better at memorizing training data</li>
+                    <li>Easier to train (less depth means shorter gradient paths)</li>
+                    <li>May require exponentially more parameters for complex functions</li>
+                </ul>
+                
+                <h3>Deeper Networks (More Layers)</h3>
+                <ul>
+                    <li>More efficient representation of hierarchical features</li>
+                    <li>Better generalization (less memorization)</li>
+                    <li>Can capture complex compositions with fewer parameters</li>
+                    <li>Harder to train (vanishing/exploding gradients)</li>
+                </ul>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 The Goldilocks Principle</div>
+                    <p>
+                        Modern networks balance depth and width. Very deep narrow networks are hard to train, while very wide shallow networks are inefficient. The sweet spot depends on the problem and available data.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="challenges" class="content-section">
+                <h2>Challenges with Depth</h2>
+                
+                <p>
+                    Training deep networks isn't easy. Several challenges emerge as networks get deeper:
+                </p>
+                
+                <h3>Vanishing Gradients</h3>
+                
+                <p>
+                    During backpropagation, gradients are multiplied through each layer. If these multipliers are small (< 1), gradients shrink exponentially:
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        gradient ∝ (factor)^depth
+                    </div>
+                </div>
+                
+                <p>
+                    With sigmoid/tanh activations (which squash values), gradients become tiny in early layers. The network can't learn effective representations in those layers.
+                </p>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Vanishing Gradient Problem</div>
+                    <p>
+                        For a 10-layer network with factor 0.25 per layer:<br>
+                        Gradient at layer 1 ≈ 0.25¹⁰ ≈ 0.000001<br><br>
+                        The first layer barely learns anything!
+                    </p>
+                </div>
+                
+                <h3>Exploding Gradients</h3>
+                
+                <p>
+                    The opposite problem: if multipliers are large (> 1), gradients explode exponentially. This causes unstable training with NaN values.
+                </p>
+                
+                <h3>Solutions</h3>
+                
+                <p>Modern deep learning addresses these with:</p>
+                <ol>
+                    <li><strong>ReLU activation:</strong> Gradient is 1 for positive inputs (no squashing)</li>
+                    <li><strong>Careful initialization:</strong> Set initial weights to maintain variance</li>
+                    <li><strong>Batch normalization:</strong> Normalize activations between layers</li>
+                    <li><strong>Residual connections:</strong> Add skip connections (Chapter 11)</li>
+                    <li><strong>Gradient clipping:</strong> Cap gradient magnitude to prevent explosion</li>
+                </ol>
+            </section>
+            
+            <section id="initialization" class="content-section">
+                <h2>Weight Initialization</h2>
+                
+                <p>
+                    Proper initialization is crucial for training deep networks. The goal: keep activation and gradient variances roughly constant across layers.
+                </p>
+                
+                <h3>Xavier/Glorot Initialization</h3>
+                
+                <p>For layers with tanh/sigmoid activation:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        W ~ Uniform(-√(6/(nᵢₙ + nₒᵤₜ)), √(6/(nᵢₙ + nₒᵤₜ)))
+                    </div>
+                </div>
+                
+                <h3>He Initialization</h3>
+                
+                <p>For layers with ReLU activation:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        W ~ Normal(0, √(2/nᵢₙ))
+                    </div>
+                </div>
+                
+                <p>where nᵢₙ is the number of input connections to each neuron.</p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Why It Matters</div>
+                    <p>
+                        Bad initialization can cause activations to vanish (all zeros) or explode (all huge) in forward pass, making the network impossible to train. Proper initialization gives the network a fighting chance.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="practical-considerations" class="content-section">
+                <h2>Practical Considerations</h2>
+                
+                <h3>How Deep Should You Go?</h3>
+                
+                <ul>
+                    <li><strong>Simple problems:</strong> 2-4 layers often suffice</li>
+                    <li><strong>Image classification:</strong> 20-150 layers (ResNets)</li>
+                    <li><strong>NLP/Transformers:</strong> 12-96 layers</li>
+                </ul>
+                
+                <h3>Common Architectures</h3>
+                
+                <ul>
+                    <li><strong>MLP:</strong> Fully connected layers, general purpose</li>
+                    <li><strong>CNN:</strong> Convolutional layers for images (Chapter 10)</li>
+                    <li><strong>ResNet:</strong> Deep networks with skip connections (Chapter 11)</li>
+                    <li><strong>Transformer:</strong> Attention-based architecture (Chapter 12)</li>
+                </ul>
+                
+                <h3>Parameter Efficiency</h3>
+                
+                <p>
+                    Deep networks have a parameter advantage. A 10-layer network with 100 neurons per layer has ~100,000 parameters but can represent functions that a shallow network would need millions of parameters for.
+                </p>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="key-points">
+                    <div class="key-points-title">Summary</div>
+                    <ul>
+                        <li>Depth allows exponentially more efficient representations than width</li>
+                        <li>Deep networks learn hierarchical features automatically</li>
+                        <li>Each layer builds increasingly abstract representations</li>
+                        <li>Vanishing/exploding gradients are key challenges with depth</li>
+                        <li>ReLU activation, proper initialization, and normalization help</li>
+                        <li>Balance depth and width based on your problem and data</li>
+                        <li>Modern deep networks range from 10 to 100+ layers</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter3.html" class="chapter-footer-link">
+                    <span class="footer-link-label">Previous Chapter</span>
+                    <span class="footer-link-title">← Shallow Neural Networks</span>
+                </a>
+                <a href="chapter5.html" class="chapter-footer-link next">
+                    <span class="footer-link-label">Next Chapter</span>
+                    <span class="footer-link-title">Loss Functions →</span>
+                </a>
+            </footer>
+        </main>
+        
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#why-depth">Why Go Deep?</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#hierarchical-representations">Hierarchical Representations</a></li>
+                    <li><a href="#depth-vs-width">Depth vs. Width</a></li>
+                    <li><a href="#challenges">Challenges</a></li>
+                    <li><a href="#initialization">Initialization</a></li>
+                    <li><a href="#practical-considerations">Practical Considerations</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">◈</span>
+                    <span>Understanding Deep Learning Tutorial</span>
+                </div>
+                <p class="footer-note">
+                    Based on the textbook by Simon J.D. Prince.
+                    <a href="https://udlbook.github.io/udlbook/" target="_blank">View original book →</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

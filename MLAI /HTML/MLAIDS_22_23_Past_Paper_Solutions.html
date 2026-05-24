@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2022-2023 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2022-2023 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 90 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions. Show all working clearly.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression - World Population Growth Rate (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Consider using regression to predict the world population growth rate using data from 1950 to 2021.</p>
+
+            <h3>(a) Rescaling Strategy for Year Variable <span class="marks">[4 marks]</span></h3>
+            <p>Propose a rescaling strategy (with enough details of the procedure) for the variable Year. Explain why the proposed strategy is appropriate.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Proposed Rescaling Strategies:</strong> <strong>[2 marks for reasonable strategy]</strong></p>
+
+            <p>Any of the following strategies would be appropriate:</p>
+
+            <p><strong>1. Whitening (Standardization):</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Year}_{scaled} = \frac{\text{Year} - \mu}{\sigma}\]</p>
+                <p>where \(\mu\) is the mean year (≈1985.5) and \(\sigma\) is the standard deviation of years.</p>
+            </div>
+
+            <p><strong>2. Min-Max Scaling:</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Year}_{scaled} = \frac{\text{Year} - 1950}{2021 - 1950} = \frac{\text{Year} - 1950}{71}\]</p>
+                <p>This scales the data to the range [0, 1].</p>
+            </div>
+
+            <p><strong>3. Logarithmic Transformation:</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Year}_{scaled} = \log(\text{Year})\]</p>
+                <p>This compresses the scale of the year values.</p>
+            </div>
+
+            <p><strong>Reasoning for Why This is Appropriate:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The key is to reduce the absolute value of "year", such that high order polynomial will still produce well-behaved values (small). Without rescaling, raising large year values (e.g., 2021) to high powers would result in extremely large numbers (2021³ ≈ 8.2 billion) that cause numerical instability.</li>
+                <li><strong>[1 mark]</strong> The matrix inversion in the least square solution is still stable. Large numbers in the design matrix \(\Phi\) lead to very large values in \(\Phi^T\Phi\), making the matrix ill-conditioned and its inversion numerically unstable.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Example:</strong> Without rescaling: 1950³ = 7.4×10⁹, 2021³ = 8.2×10⁹. With min-max scaling to [0,1]: values raised to any power remain in [0,1], which is numerically stable.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Poorly Fitted Data Points with Order-1 Polynomial <span class="marks">[6 marks]</span></h3>
+            <p>Consider fitting the data with a polynomial regression model with the order of 1. Identify the two most likely poorly fitted data points and explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Poorly Fitted Data Points:</strong> <strong>[2 marks]</strong></p>
+            <p>Three options for the two most poorly fitted points:</p>
+            <ul>
+                <li>Year 1960 (dramatic drop in growth rate)</li>
+                <li>Around 1963 (dramatic jump in growth rate)</li>
+                <li>Year 2021 (recent quick drop in growth rate)</li>
+            </ul>
+
+            <p><strong>Reasoning:</strong> <strong>[4 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> A polynomial regression model with an order of 1 is a straight line.</li>
+                <li><strong>[1 mark]</strong> The data in the figure can be split into two regions: before 1990 where growth rate changes a lot but stays the same on average.</li>
+                <li><strong>[1 mark]</strong> After 1990 where growth rate consistently slows down.</li>
+                <li><strong>[1 mark]</strong> A straight line needs to average over both regions and is therefore likely to miss the dramatic drop and jump around 1960. [Alternative answer: or a quick drop in growth rate close to 2021.]</li>
+            </ul>
+
+            <div class="note">
+                <strong>Intuition:</strong> The data shows two distinct regimes - a fluctuating but stable period (1950-1990) and a declining period (1990-2021). A single straight line will try to fit both regions, missing the local extremes around 1960 (sharp drop then recovery) and the recent decline near 2021.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Sigmoid Basis Functions vs Polynomials <span class="marks">[4 marks]</span></h3>
+            <p>Consider fitting the data in figure 1 with a regression using sigmoid basis functions:</p>
+            <div class="formula-box">
+                <p>\[h_{n,k} = \text{sigmoid}\left(\frac{(x_n - \mu_k)^2}{s}\right), \quad n = 1, \ldots, N; \quad k = 1, \ldots, K\]</p>
+                <p>where \(x_n\) represents each year and \(\text{sigmoid}(a) = \frac{1}{1 + \exp(-a)}\)</p>
+            </div>
+            <p>Outline one advantage and one disadvantage of using this sigmoid basis function over polynomials.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Advantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The variance is not equally distributed across x values - it is larger in small values (early years with more fluctuation) and smaller in large x values (recent years with smoother decline).</li>
+                <li><strong>[1 mark]</strong> Using location-specific basis functions, sigmoid can model this localized effect better than polynomial functions which model global effect across all x values, resulting in better fitting performance.</li>
+            </ul>
+
+            <p><strong>Disadvantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Need to choose hyperparameter \(\mu_k\) (centers).</li>
+                <li><strong>[1 mark]</strong> Need to choose hyperparameter \(s\) (scale/bandwidth).</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Insight:</strong> Sigmoid basis functions are local - they activate based on distance from centers \(\mu_k\). This allows adaptive fitting to regions with different variability. Polynomials affect the entire range uniformly and cannot adapt to local patterns.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Identifying Fitting Strategies from Figures <span class="marks">[6 marks]</span></h3>
+            <p>Suppose we use the sigmoid basis function in (c), with \(\mu_k\) set to be \(x_n\) and \(s = 10\), to fit the data. We used three fitting strategies: linear regression, ridge regression, and lasso, and obtained the following fitting models in Figures 2A, 2B, and 2C.</p>
+            <p>Identify which fitting strategy is used in each figure and explain why (note: each method is used only once).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Figure 2A: Lasso</strong> <strong>[3 marks]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Lasso.</li>
+                <li><strong>[1 mark]</strong> The fitted line misses many data points between 1990-2010, suggesting some weights of basis functions using these centers are pushed to zero.</li>
+                <li><strong>[1 mark]</strong> Out of the three fitting methods, only Lasso with strong regularization can do this - it performs feature selection by setting coefficients exactly to zero.</li>
+            </ul>
+
+            <p><strong>Figure 2B: Ridge Regression</strong> <strong>[3 marks]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Ridge regression.</li>
+                <li><strong>[1 mark]</strong> The model ignores some extreme data points on the left, suggesting weights controlling the corresponding basis functions are very small.</li>
+                <li><strong>[1 mark]</strong> Ridge regression shrinks coefficients toward zero but doesn't eliminate them completely, resulting in a smoothed fit that underweights extreme points.</li>
+            </ul>
+
+            <p><strong>Figure 2C: Linear Regression</strong> <strong>[3 marks total - note the marking scheme shows [1][1][1]]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Linear regression (unregularized).</li>
+                <li><strong>[1 mark]</strong> The model fits most of the data points very well, especially fitting the data points between 1950 and 1970 perfectly.</li>
+                <li><strong>[1 mark]</strong> This suggests a large number of basis functions actively contribute to the fitted model with potentially large weights, which is characteristic of unregularized regression.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Summary:</strong> Lasso performs aggressive feature selection (some basis functions completely removed), Ridge smoothly shrinks all coefficients (all basis functions weakly active), and Linear regression uses all basis functions with unconstrained weights for tight fit.
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification - Tweet Hate Speech Detection (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Hate Speech Classifier Design <span class="marks">[13 marks total]</span></h3>
+            <p>You have been asked to design a classifier to automatically identify Tweets that are considered as 'hate speech' on Twitter. You collected a training dataset with 800 'regular' tweets and 100 'hate' tweets.</p>
+        </div>
+
+        <div class="question">
+            <h3>(i) Feature Engineering <span class="marks">[3 marks]</span></h3>
+            <p>Describe 2 features you might use for this task including their type (scalar/vector, real-valued or not).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Marking:</strong> 1 mark for each feature and 1 mark for mentioning the feature type.</p>
+
+            <p><strong>Example Features:</strong></p>
+
+            <p><strong>Feature 1: Presence/Absence of Disrespectful Words</strong></p>
+            <ul>
+                <li><strong>Type:</strong> Binary feature (scalar)</li>
+                <li><strong>Description:</strong> A binary indicator (0 or 1) showing whether the tweet contains words from a predefined list of disrespectful or offensive terms.</li>
+            </ul>
+
+            <p><strong>Feature 2: Count of Strongly Negative Words</strong></p>
+            <ul>
+                <li><strong>Type:</strong> Real-valued scalar</li>
+                <li><strong>Description:</strong> The number or proportion of words with strong negative sentiment (e.g., using a sentiment lexicon).</li>
+            </ul>
+
+            <p><strong>Feature 3: Word Embeddings (Alternative)</strong></p>
+            <ul>
+                <li><strong>Type:</strong> Real-valued vector (e.g., 300-dimensional)</li>
+                <li><strong>Description:</strong> Dense vector representation of the tweet using pre-trained word embeddings (e.g., Word2Vec, GloVe) averaged over all words.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Other Valid Features:</strong> Character n-grams, tweet length, presence of all-caps words, number of profanity words, toxicity scores from APIs, user mention count, hashtag count, etc. Any reasonable feature with correct type specification is acceptable.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(ii) Weighted Classification Accuracy <span class="marks">[2 marks]</span></h3>
+            <p>You learn a faulty classifier which always classifies a tweet as 'regular'. What would be the weighted classification accuracy of this classifier?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Analysis:</strong></p>
+            <ul>
+                <li><strong>Regular class accuracy:</strong> 100% (all 800 regular tweets correctly classified as regular)</li>
+                <li><strong>Hate class accuracy:</strong> 0% (all 100 hate tweets incorrectly classified as regular)</li>
+            </ul>
+
+            <div class="formula-box">
+                <p>\[\text{Weighted Accuracy} = \frac{\text{Regular Accuracy} + \text{Hate Accuracy}}{2} = \frac{100\% + 0\%}{2} = 50\%\]</p>
+            </div>
+
+            <p><strong>Answer: 50%</strong> (average across classes)</p>
+
+            <div class="note">
+                <strong>Important Distinction:</strong> Note that the <em>overall accuracy</em> would be 800/900 = 88.9% (proportion of correct predictions), but the <em>weighted classification accuracy</em> (balanced accuracy) averages the per-class accuracies, giving 50%. This metric is more appropriate for imbalanced datasets.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(iii) Logistic Regression Calculation <span class="marks">[4 marks]</span></h3>
+            <p>Assume that we use Logistic Regression for the task considering only 2 scalar features. We get the following set of parameters w = [-1.8, 2.1, -0.3]ᵀ after training. For feature vector x = [1, 1]ᵀ, calculate the output of the logistic function (probability score).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Step 1: Calculate the linear combination</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[z = w_0 + w_1 x_1 + w_2 x_2\]</p>
+                <p>\[z = -1.8 + 2.1 \times 1 + (-0.3) \times 1\]</p>
+                <p>\[z = -1.8 + 2.1 - 0.3 = 0\]</p>
+            </div>
+
+            <p><strong>Step 2: Calculate the output probability score</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{sigmoid}(z) = \frac{1}{1 + \exp(-z)} = \frac{1}{1 + \exp(0)} = \frac{1}{1 + 1} = \frac{1}{2} = 0.5\]</p>
+            </div>
+
+            <p><strong>Answer: 0.5</strong></p>
+
+            <div class="note">
+                <strong>Interpretation:</strong> A probability of 0.5 means the classifier is completely uncertain - it considers the tweet equally likely to be hate speech or regular. This makes sense since z=0 is exactly at the decision boundary.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(iv) Limitation of Linear Relationship Assumption <span class="marks">[2 marks]</span></h3>
+            <p>Logistic Regression assumes a linear relationship between the dependent and the independent variables (x). Why is that considered a limitation of the model?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Limitation Explanation:</strong> <strong>[2 marks total - 1 mark for each observation]</strong></p>
+
+            <p><strong>[1 mark]</strong> This assumption lets Logistic Regression learn only linear decision boundaries.</p>
+
+            <p><strong>[1 mark]</strong> Not suitable for data that requires a non-linear decision boundary - which is the case in many real problems.</p>
+
+            <div class="note">
+                <strong>Example:</strong> If hate speech is characterized by a complex combination of features (e.g., "high negative sentiment AND short length" or "contains profanity but NOT in quotes"), a linear boundary cannot capture these interactions. Real-world text classification often has such non-linear patterns.
+            </div>
+
+            <p><strong>Potential Solutions:</strong></p>
+            <ul>
+                <li>Add polynomial or interaction features (e.g., x₁×x₂, x₁²)</li>
+                <li>Use kernel methods</li>
+                <li>Use neural networks with non-linear activations</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(v) Alternative Activation Function <span class="marks">[2 marks]</span></h3>
+            <p>Can we replace the sigmoid function in Logistic Regression by the function g(z) shown in Figure 3? Explain your answer.</p>
+            <p><em>(Figure 3 shows a piecewise linear function that resembles a sigmoid, transitioning smoothly from 0 to 1)</em></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer: Yes, possible.</strong> <strong>[1 mark for saying yes]</strong></p>
+
+            <p><strong>Explanation:</strong> <strong>[1 mark for commenting on resemblance with sigmoid and properties]</strong></p>
+            <ul>
+                <li>It resembles a sigmoid and shares some of the sigmoid's properties (bounded, monotonic).</li>
+                <li>Not as smooth as sigmoid, but still will work.</li>
+                <li>Optimization may be a bit more difficult (still possible through Linear Programming methods).</li>
+            </ul>
+
+            <div class="note">
+                <strong>Technical Details:</strong> The function shown is bounded between 0 and 1, which allows it to be interpreted as a probability. It's monotonically increasing, which preserves the ordering of predictions. However, the lack of smoothness (not differentiable at transition points) means gradient-based optimization would need to be modified or replaced with sub-gradient methods or linear programming.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Linear Hard Margin SVM <span class="marks">[7 marks total]</span></h3>
+            <p>Consider 8 data points for your training set belonging to 2 classes in Figure 4. This is used to train a linear SVM.</p>
+        </div>
+
+        <div class="question">
+            <h3>(i) Draw Decision Boundary and Margin <span class="marks">[3 marks]</span></h3>
+            <p>Draw the decision boundary for linear hard margin SVM method with a solid line. Show the margin using dotted lines.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Decision Boundary and Margin:</strong> <strong>[3 marks]</strong></p>
+
+            <p>The solution shows a vertical decision boundary passing between the two classes, with support vectors on both sides defining the maximum margin.</p>
+
+            <p><strong>Key Elements:</strong></p>
+            <ul>
+                <li><strong>Solid line:</strong> Decision boundary (vertical line separating red circles on left from blue triangles on right)</li>
+                <li><strong>Dotted lines:</strong> Margin boundaries (two vertical lines parallel to decision boundary, equidistant on both sides)</li>
+                <li><strong>Support vectors:</strong> Points 2, 3, 5 (red circles closest to boundary) and points 4, 8 (blue triangles closest to boundary)</li>
+            </ul>
+
+            <div class="note">
+                <strong>Hard Margin SVM Principle:</strong> The algorithm finds the hyperplane (line in 2D) that maximizes the margin (distance) between the two classes. The margin is defined by the closest points from each class, called support vectors.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(ii) Identify Support Vectors <span class="marks">[2 marks]</span></h3>
+            <p>Which ones are the support vectors?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Support Vectors:</strong> <strong>2, 3, 4, 5, 8</strong></p>
+
+            <p><strong>Marking:</strong> 2 marks for correctly finding all. 0 for missing even 1 support vector.</p>
+
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li><strong>Red class (circles):</strong> Points 2, 3, 5 are on the margin boundary</li>
+                <li><strong>Blue class (triangles):</strong> Points 4, 8 are on the margin boundary</li>
+                <li>Points 1, 6, 7 are NOT support vectors as they lie outside the margin</li>
+            </ul>
+
+            <div class="note">
+                <strong>Support Vector Property:</strong> These are the critical points that define the decision boundary. If any support vector were removed or moved, the decision boundary would change. Non-support vectors can be removed without affecting the boundary.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(iii) Training Error <span class="marks">[1 mark]</span></h3>
+            <p>What is the training error?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Training Error: 0</strong> <strong>[1 mark for correct answer]</strong></p>
+
+            <p>Since this is a hard margin SVM and the data is linearly separable, all training points are correctly classified. The decision boundary perfectly separates all red circles from all blue triangles with no misclassifications.</p>
+
+            <div class="formula-box">
+                <p>\[\text{Training Error} = \frac{\text{Number of misclassified points}}{\text{Total number of points}} = \frac{0}{8} = 0\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Hard vs Soft Margin:</strong> Hard margin SVM only works when data is perfectly linearly separable (training error = 0 is possible). For overlapping classes, soft margin SVM is needed, which allows some training errors controlled by parameter C.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(iv) Impact of Removing Data Point <span class="marks">[1 mark]</span></h3>
+            <p>Removal of which data point will change the decision boundary?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer: Data point 4</strong> <strong>[1 mark for correct answer]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+            <p>Point 4 is a support vector (one of the blue triangles on the margin boundary). Removing it would allow the decision boundary to shift, potentially increasing the margin. The new boundary would be determined by the remaining support vectors (2, 3, 5, 8).</p>
+
+            <p><strong>Why not other points?</strong></p>
+            <ul>
+                <li><strong>Points 2, 3, 5, 8:</strong> These are also support vectors, so removing any of them would also change the boundary</li>
+                <li><strong>Points 1, 6, 7:</strong> These are not support vectors, so removing them would NOT change the boundary</li>
+            </ul>
+
+            <div class="note">
+                <strong>Critical Insight:</strong> Point 4 appears to be the most critical support vector based on the geometry. Removing it would likely cause the most significant shift in the decision boundary. However, removing <em>any</em> support vector would change the boundary - the question asks for <em>which</em> point, and the marking scheme specifically indicates point 4 as the answer.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>Context: Clustering Two-Moon Manifolds</h3>
+            <p>Consider using K-means to perform clustering on data arranged in two crescent moon shapes (scenario A1), where we expect to form two clusters as shown in A2.</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) K-means with Euclidean Distance on Moon Shapes <span class="marks">[2 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[1 mark]</strong> K-means cannot split the data into two clusters correctly.</p>
+
+            <p><strong>Explanation:</strong> <strong>[1 mark]</strong> Due to the Euclidean distance, points that are close together, although they belong to another manifold/cluster, will be clustered together.</p>
+
+            <p><strong>Detailed Analysis:</strong></p>
+            <p>The two moon shapes interleave with each other. Points from the inner moon are spatially close to points from the outer moon in certain regions. K-means creates clusters based on Euclidean distance to centroids, which results in:</p>
+            <ul>
+                <li>Vertical or diagonal splits that cut across both moons</li>
+                <li>Each resulting cluster contains parts of both moons</li>
+                <li>The algorithm cannot capture the curved, non-convex structure of the moons</li>
+            </ul>
+
+            <div class="note">
+                <strong>Fundamental Issue:</strong> K-means assumes convex, spherical clusters. The two-moon problem requires capturing non-convex, curved manifolds - something K-means with Euclidean distance cannot do. This is a classic example demonstrating K-means' limitations.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means for Moon Shapes <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use Kernel K-means. Would kernel K-means help in this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[1 mark]</strong> Yes, a kernel would help in this case.</p>
+
+            <p><strong>Explanation:</strong></p>
+
+            <p><strong>[1 mark]</strong> A kernel would project the data onto a different space where data can be easily separated.</p>
+
+            <p><strong>[1 mark]</strong> A kernel also relaxes the dependency of K-means on Euclidean distance and allows more appropriate distance measures to be used for the problem at hand.</p>
+
+            <p><strong>How It Works:</strong></p>
+            <ul>
+                <li>The kernel trick implicitly maps data to a higher-dimensional space</li>
+                <li>In this higher-dimensional space, the two moons may become linearly (or spherically) separable</li>
+                <li>K-means in the kernel space can then successfully separate the two clusters</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>Kernel K-means distance:</strong></p>
+                <p>\[\|\phi(x_i) - \mu_k\|^2 = K(x_i, x_i) - \frac{2}{|C_k|}\sum_{x_j \in C_k} K(x_i, x_j) + \text{const}\]</p>
+                <p>where K is the kernel function and φ is the implicit feature map</p>
+            </div>
+
+            <div class="note">
+                <strong>Example Kernel:</strong> An RBF (Gaussian) kernel with appropriate bandwidth could map the two moons to a space where they are separable. The key is choosing a kernel that captures the manifold structure.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Mixture Models for Moon Shapes <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use mixture models. Would mixture models help to better classify this dataset than K-means and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[1 mark]</strong> Mixture models might not be able to classify those data.</p>
+
+            <p><strong>Explanation:</strong></p>
+
+            <p><strong>[1 mark]</strong> Mixture models assume a Gaussian distribution of the underlying clusters and they capture different variations based on the parameters of the distribution.</p>
+
+            <p><strong>[1 mark]</strong> In this case, it is not possible to approximate the complex boundary shape with a Gaussian and the algorithm won't perform well.</p>
+
+            <p><strong>Detailed Analysis:</strong></p>
+            <ul>
+                <li>Gaussian Mixture Models (GMMs) model each cluster as a Gaussian (elliptical) distribution</li>
+                <li>Even with anisotropic (non-spherical) Gaussians, each component is still convex</li>
+                <li>The crescent moon shapes are highly non-convex - no single Gaussian can fit them</li>
+                <li>Using multiple Gaussians per moon might help but requires knowing the true structure a priori</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Limitation:</strong> While GMM is more flexible than K-means (soft assignments, different cluster shapes), it still assumes each cluster follows a Gaussian distribution. Non-convex, crescent-shaped manifolds violate this assumption. Kernel K-means or spectral clustering would be more appropriate.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) PCA - First Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>The plot in D1 shows some 2D data. PCA is applied to this data. Sketch this plot, and indicate on your sketch what the first principal component would look like. Explain your reasoning.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>First Principal Component:</strong> <strong>[1 mark for plot, 1 mark for explanation]</strong></p>
+
+            <p><strong>Sketch:</strong> A line passing through the center of the data cloud along the direction of maximum spread (approximately diagonal from lower-left to upper-right).</p>
+
+            <p><strong>Explanation:</strong> The first principal component will be across the direction of highest variance. Looking at the data distribution, the points spread most along a diagonal direction, so the first PC aligns with this direction.</p>
+
+            <div class="formula-box">
+                <p><strong>PCA Principle:</strong></p>
+                <p>PC1 = direction of eigenvector with largest eigenvalue of covariance matrix</p>
+                <p>This direction maximizes: \(\text{Var}(\mathbf{w}^T\mathbf{X})\) subject to \(\|\mathbf{w}\| = 1\)</p>
+            </div>
+
+            <div class="note">
+                <strong>Visual Guidance:</strong> Imagine fitting the longest possible line through the data cloud such that the projections of all points onto this line have maximum variance. This captures the "main axis" of variation in the data.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) PCA - Second Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>Similar to previous question, sketch what the second principal component would look like and explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Second Principal Component:</strong> <strong>[1 mark for plot, 1 mark for explanation]</strong></p>
+
+            <p><strong>Sketch:</strong> A line perpendicular (orthogonal) to the first principal component, passing through the center of the data.</p>
+
+            <p><strong>Explanation:</strong> PCA decomposes the data into orthogonal components. Therefore, the second principal component must be perpendicular to the first PC, along the direction of second-highest variance.</p>
+
+            <div class="formula-box">
+                <p><strong>Orthogonality Constraint:</strong></p>
+                <p>PC2 maximizes variance subject to: \(\mathbf{w}_2^T\mathbf{w}_1 = 0\) (orthogonal to PC1)</p>
+                <p>In 2D, there's only one direction perpendicular to PC1</p>
+            </div>
+
+            <div class="note">
+                <strong>2D Special Case:</strong> In 2D data, there are exactly 2 principal components. Once PC1 is determined, PC2 is uniquely determined as the perpendicular direction. Together, they form a rotated coordinate system aligned with the data's natural axes of variation.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) PCA Applications and Component Selection <span class="marks">[2 marks]</span></h3>
+            <p>Explain why PCA is used (provide at least two applications) and how to decide for the optimum number of principal components.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Why PCA is Used (Applications):</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li><strong>Dimensionality Reduction:</strong> Reduce high-dimensional data to lower dimensions while preserving most variance</li>
+                <li><strong>Intuitive Visualization:</strong> Project high-dimensional data to 2D or 3D for visualization</li>
+                <li><strong>Feature Selection:</strong> Identify the most important directions of variation in the data</li>
+                <li><strong>Noise Reduction:</strong> Remove components with low variance (likely noise)</li>
+                <li><strong>Computational Efficiency:</strong> Speed up machine learning algorithms by reducing features</li>
+            </ul>
+
+            <p><strong>How to Decide Optimum Number of Components:</strong> <strong>[1 mark]</strong></p>
+            <p>We can use cross-validation by leaving points at random and estimating the mean square error of the matrix factorization approach as we include more components.</p>
+
+            <p><strong>Alternative Methods:</strong></p>
+            <ul>
+                <li><strong>Explained Variance Ratio:</strong> Select k components that explain a threshold of total variance (e.g., 95%)</li>
+                <li><strong>Scree Plot:</strong> Plot eigenvalues and look for an "elbow" where additional components add little variance</li>
+                <li><strong>Kaiser Criterion:</strong> Keep components with eigenvalues > 1 (for normalized data)</li>
+                <li><strong>Cross-Validation:</strong> Test reconstruction error on held-out data for different k values</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>Explained Variance Ratio:</strong></p>
+                <p>\[\text{EVR}(k) = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^d \lambda_i}\]</p>
+                <p>where λᵢ are eigenvalues and d is total dimensions</p>
+            </div>
+
+            <div class="note">
+                <strong>Practical Guidance:</strong> The optimal number depends on the application. For visualization, use 2-3 components. For preprocessing before classification, use cross-validation on the downstream task to select k.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(g) Projection vs Discriminative Feature Selection <span class="marks">[6 marks]</span></h3>
+            <p>Explain the advantages and disadvantages of feature selection based on projection compared to feature selection based on how well they can discriminate between two classes.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Projection Methods (e.g., PCA):</strong></p>
+
+            <p><strong>How They Work:</strong> <strong>[1 mark]</strong></p>
+            <p>Projection methods will map data into different dimensions/coordinate system, and they will select the components based on the maximum variance. These methods are based on unsupervised learning, and they don't require class labels.</p>
+
+            <p><strong>Key Characteristics:</strong> <strong>[1 mark]</strong></p>
+            <p>They project all features in a different space and therefore the new features are a combination of all the old ones.</p>
+
+            <p><strong>Advantages:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Since they don't exclude completely specific features, they model better the intrinsic properties of the datasets in lower dimensions</li>
+                <li>They depend on the intrinsic properties of the data and their interrelationships</li>
+                <li>No need for labeled data (unsupervised)</li>
+                <li>If variables are highly correlated, projection methods can effectively combine them</li>
+            </ul>
+
+            <p><strong>Disadvantages:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>The number of optimum components might be unstable and less meaningful</li>
+                <li>New features are linear combinations of old features, losing interpretability</li>
+                <li>May not focus on directions that are actually useful for classification</li>
+                <li>High variance doesn't always mean high discriminative power</li>
+            </ul>
+
+            <p><strong>Discriminative Methods (e.g., Filter/Wrapper Methods):</strong></p>
+
+            <p><strong>How They Work:</strong></p>
+            <p>Select original features based on their ability to separate classes (e.g., using mutual information, chi-square test, or classifier performance).</p>
+
+            <p><strong>Advantages:</strong></p>
+            <ul>
+                <li>Features are selected specifically to maximize class separability</li>
+                <li>Retains original features, maintaining interpretability</li>
+                <li>Directly optimizes for the classification objective</li>
+            </ul>
+
+            <p><strong>Disadvantages:</strong></p>
+            <ul>
+                <li>Requires labeled data (supervised)</li>
+                <li>May discard features that are individually weak but collectively strong</li>
+                <li>Risk of overfitting to specific class labels</li>
+                <li>Computationally expensive for wrapper methods</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>Comparison Summary:</strong></p>
+                <table style="width: 100%; text-align: left;">
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Projection (PCA)</th>
+                        <th>Discriminative (e.g., LDA, Filter)</th>
+                    </tr>
+                    <tr>
+                        <td>Supervision</td>
+                        <td>Unsupervised</td>
+                        <td>Supervised</td>
+                    </tr>
+                    <tr>
+                        <td>Goal</td>
+                        <td>Max variance</td>
+                        <td>Max class separation</td>
+                    </tr>
+                    <tr>
+                        <td>Features</td>
+                        <td>New combinations</td>
+                        <td>Original subset</td>
+                    </tr>
+                    <tr>
+                        <td>Interpretability</td>
+                        <td>Low</td>
+                        <td>High</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="note">
+                <strong>When to Use Each:</strong>
+                <ul>
+                    <li><strong>Projection (PCA):</strong> Exploratory analysis, visualization, when you don't have labels, reducing correlated features</li>
+                    <li><strong>Discriminative:</strong> When classification performance is the primary goal, when interpretability matters, when you have good labels</li>
+                </ul>
+                <p><strong>Hybrid Approach:</strong> Use PCA for initial dimensionality reduction, then apply discriminative methods on the reduced space.</p>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | This was a 90-minute examination</p>
+            <p>Remember to show detailed calculations, clear diagrams, and thorough explanations in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

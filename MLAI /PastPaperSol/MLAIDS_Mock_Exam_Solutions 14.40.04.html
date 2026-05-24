@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS Mock Exam Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #9b59b6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #9b59b6;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #f4ecf7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #9b59b6;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .mock-badge {
+            background-color: #9b59b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mock-badge">MOCK EXAM</div>
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Mock Examination - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL questions. This is practice for the real exam format.<br>
+            <strong>Purpose:</strong> Familiarize yourself with exam structure and time management.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Basis Function Transformation <span class="marks">[5 marks]</span></h3>
+            <p>(i) What is the purpose of using basis functions in regression? [2 marks]</p>
+            <p>(ii) Give two examples of basis functions. [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Purpose of Basis Functions:</strong> <strong>[2 marks]</strong></p>
+            <p>Basis functions transform the input features into a higher-dimensional space, allowing linear models to capture non-linear relationships in the data. <strong>[2 marks]</strong></p>
+            <p>By learning linear combinations of these transformed features, we can fit complex patterns while still using linear regression techniques.</p>
+
+            <p><strong>(ii) Examples of Basis Functions:</strong> <strong>[3 marks]</strong></p>
+
+            <p><strong>Example 1: Polynomial Basis Functions</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\phi(x) = [1, x, x^2, x^3, ..., x^d]^T\]</p>
+                <p>Transforms a single input x into polynomial terms up to degree d.</p>
+            </div>
+
+            <p><strong>Example 2: Radial Basis Functions (RBF/Gaussian)</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\phi_j(x) = \exp\left(-\frac{(x-\mu_j)^2}{2s^2}\right)\]</p>
+                <p>Creates localized "bump" functions centered at μ_j with width s.</p>
+            </div>
+
+            <div class="note">
+                <strong>Other valid examples:</strong> Fourier basis (sin, cos functions), Sigmoid basis, Wavelet basis
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Regularization Methods <span class="marks">[8 marks]</span></h3>
+            <p>Compare Ridge and Lasso regularization:</p>
+            <p>(i) Write the objective function for each method. [4 marks]</p>
+            <p>(ii) What is the key difference in their behavior? [4 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Objective Functions:</strong> <strong>[4 marks]</strong></p>
+
+            <p><strong>Ridge Regression (L2 regularization):</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[L_{Ridge}(w) = \sum_{i=1}^{N}(y_i - w^T\phi(x_i))^2 + \lambda\sum_{j=1}^{D}w_j^2\]</p>
+            </div>
+            <p>Penalizes the sum of squared weights.</p>
+
+            <p><strong>Lasso Regression (L1 regularization):</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[L_{Lasso}(w) = \sum_{i=1}^{N}(y_i - w^T\phi(x_i))^2 + \lambda\sum_{j=1}^{D}|w_j|\]</p>
+            </div>
+            <p>Penalizes the sum of absolute values of weights.</p>
+
+            <p><strong>(ii) Key Difference in Behavior:</strong> <strong>[4 marks]</strong></p>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Ridge (L2)</th>
+                    <th>Lasso (L1)</th>
+                </tr>
+                <tr>
+                    <td><strong>Effect on weights</strong></td>
+                    <td>Shrinks weights toward zero but never exactly to zero</td>
+                    <td>Can shrink weights to exactly zero</td>
+                </tr>
+                <tr>
+                    <td><strong>Feature selection</strong></td>
+                    <td>No - keeps all features</td>
+                    <td>Yes - performs automatic feature selection</td>
+                </tr>
+                <tr>
+                    <td><strong>Solution</strong></td>
+                    <td>Dense (all non-zero weights)</td>
+                    <td>Sparse (many zero weights)</td>
+                </tr>
+                <tr>
+                    <td><strong>When to use</strong></td>
+                    <td>When all features are relevant</td>
+                    <td>When only subset of features are relevant</td>
+                </tr>
+            </table>
+            <strong>[4 marks: 2 marks for Ridge description, 2 marks for Lasso description]</strong>
+
+            <div class="note">
+                <strong>Geometric Interpretation:</strong> The L1 penalty has "corners" at axes where weights can be exactly zero, while the L2 penalty is smooth and only asymptotically approaches zero.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Cross-Validation <span class="marks">[7 marks]</span></h3>
+            <p>You have 100 data points and want to use 5-fold cross-validation to select the best regularization parameter λ.</p>
+            <p>(i) How many data points are in each fold? [2 marks]</p>
+            <p>(ii) Describe the complete validation process. [5 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Data Points per Fold:</strong> <strong>[2 marks]</strong></p>
+            <p>With 100 data points divided into 5 folds: <strong>100 ÷ 5 = 20 data points per fold</strong> <strong>[2 marks]</strong></p>
+
+            <p><strong>(ii) Complete Validation Process:</strong> <strong>[5 marks]</strong></p>
+
+            <ol>
+                <li><strong>Divide data:</strong> Split the 100 data points into 5 equal folds of 20 points each <strong>[1 mark]</strong></li>
+
+                <li><strong>For each candidate λ value:</strong> <strong>[3 marks]</strong>
+                    <ul>
+                        <li>For each fold i (i=1 to 5):
+                            <ul>
+                                <li>Use fold i as validation set (20 points)</li>
+                                <li>Use remaining 4 folds as training set (80 points)</li>
+                                <li>Train model with parameter λ on training set</li>
+                                <li>Evaluate performance on validation fold</li>
+                            </ul>
+                        </li>
+                        <li>Average the 5 validation scores to get mean performance for this λ</li>
+                    </ul>
+                </li>
+
+                <li><strong>Select best λ:</strong> Choose the λ value that gives the best average validation performance <strong>[1 mark]</strong></li>
+
+                <li><strong>Final model:</strong> Retrain on all 100 data points using the selected λ</li>
+            </ol>
+
+            <div class="note">
+                <strong>Why 5-fold?</strong> It's a good balance:
+                <ul>
+                    <li>Uses 80% of data for training (good for model learning)</li>
+                    <li>Uses 20% for validation (reasonable estimate of performance)</li>
+                    <li>Computationally efficient (only 5 training runs per λ)</li>
+                    <li>Every data point is used for validation exactly once</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Logistic Regression Basics <span class="marks">[6 marks]</span></h3>
+            <p>(i) Write the logistic regression prediction formula. [3 marks]</p>
+            <p>(ii) Why do we use the sigmoid function? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Prediction Formula:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[P(y=1|x) = \sigma(w^Tx + b) = \frac{1}{1 + e^{-(w^Tx + b)}}\]</p>
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>σ is the sigmoid function <strong>[1 mark]</strong></li>
+                <li>w^Tx + b is the linear combination of features <strong>[1 mark]</strong></li>
+                <li>Output is a probability between 0 and 1 <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(ii) Why Sigmoid Function:</strong> <strong>[3 marks]</strong></p>
+            <ul>
+                <li><strong>Maps to probability range:</strong> Sigmoid transforms any real-valued input to the range (0,1), which can be interpreted as a probability <strong>[1 mark]</strong></li>
+                <li><strong>Smooth and differentiable:</strong> Has a nice derivative (σ'(z) = σ(z)(1-σ(z))), making gradient-based optimization efficient <strong>[1 mark]</strong></li>
+                <li><strong>Interpretable:</strong> When w^Tx+b = 0 (decision boundary), σ = 0.5. Positive values give probability > 0.5 (class 1), negative values give probability < 0.5 (class 0) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Properties of Sigmoid:</strong>
+                <ul>
+                    <li>σ(0) = 0.5 (midpoint)</li>
+                    <li>σ(∞) → 1 (approaches 1 for large positive values)</li>
+                    <li>σ(-∞) → 0 (approaches 0 for large negative values)</li>
+                    <li>Symmetric around 0.5: σ(-z) = 1 - σ(z)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Support Vector Machines <span class="marks">[7 marks]</span></h3>
+            <p>(i) What is the margin in SVM? [3 marks]</p>
+            <p>(ii) Explain the difference between hard margin and soft margin SVM. [4 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) The Margin:</strong> <strong>[3 marks]</strong></p>
+            <p>The margin is the perpendicular distance between the decision boundary (hyperplane) and the closest data points from either class. <strong>[2 marks]</strong></p>
+            <p>It equals 2/||w||, where w is the weight vector. SVM finds the hyperplane that maximizes this margin. <strong>[1 mark]</strong></p>
+
+            <div class="formula-box">
+                <p>For a point x_i with label y_i ∈ {-1, +1}:</p>
+                <p>\[\text{Distance to hyperplane} = \frac{|w^Tx_i + b|}{\|w\|}\]</p>
+                <p>\[\text{Margin} = \frac{2}{\|w\|}\]</p>
+            </div>
+
+            <p><strong>(ii) Hard vs Soft Margin:</strong> <strong>[4 marks]</strong></p>
+
+            <p><strong>Hard Margin SVM:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Assumes data is linearly separable</li>
+                <li>No training points allowed inside the margin</li>
+                <li>All constraints must be satisfied: y_i(w^Tx_i + b) ≥ 1</li>
+                <li><strong>Problem:</strong> Fails if data is not perfectly separable or if there are outliers</li>
+            </ul>
+
+            <p><strong>Soft Margin SVM:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Allows some misclassifications and margin violations</li>
+                <li>Introduces slack variables ξ_i ≥ 0 to permit violations</li>
+                <li>Constraint: y_i(w^Tx_i + b) ≥ 1 - ξ_i</li>
+                <li>Objective: minimize (1/2)||w||² + C∑ξ_i (balance margin vs errors)</li>
+                <li><strong>Advantage:</strong> More robust to outliers and works with non-separable data</li>
+            </ul>
+
+            <div class="note">
+                <strong>Parameter C:</strong> Controls the trade-off
+                <ul>
+                    <li>Large C: Strong penalty for errors → tries to classify all points correctly → smaller margin</li>
+                    <li>Small C: Weak penalty for errors → allows more violations → larger margin</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Performance Metrics <span class="marks">[7 marks]</span></h3>
+            <p>Given a confusion matrix:</p>
+
+            <table style="width: 60%; margin: 20px auto;">
+                <tr>
+                    <th></th>
+                    <th>Predicted Positive</th>
+                    <th>Predicted Negative</th>
+                </tr>
+                <tr>
+                    <th>Actual Positive</th>
+                    <td>60</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <th>Actual Negative</th>
+                    <td>20</td>
+                    <td>80</td>
+                </tr>
+            </table>
+
+            <p>Calculate: (i) Accuracy [2 marks], (ii) Precision [2 marks], (iii) Recall [2 marks], (iv) F1-score [1 mark]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Given values:</strong></p>
+            <ul>
+                <li>True Positives (TP) = 60</li>
+                <li>False Negatives (FN) = 40</li>
+                <li>False Positives (FP) = 20</li>
+                <li>True Negatives (TN) = 80</li>
+                <li>Total = 200</li>
+            </ul>
+
+            <p><strong>(i) Accuracy:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN} = \frac{60 + 80}{200} = \frac{140}{200} = 0.70 = 70\%\]</p>
+            </div>
+
+            <p><strong>(ii) Precision:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Precision} = \frac{TP}{TP + FP} = \frac{60}{60 + 20} = \frac{60}{80} = 0.75 = 75\%\]</p>
+            </div>
+            <p>Interpretation: When the model predicts positive, it's correct 75% of the time.</p>
+
+            <p><strong>(iii) Recall:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Recall} = \frac{TP}{TP + FN} = \frac{60}{60 + 40} = \frac{60}{100} = 0.60 = 60\%\]</p>
+            </div>
+            <p>Interpretation: The model correctly identifies 60% of all actual positive cases.</p>
+
+            <p><strong>(iv) F1-Score:</strong> <strong>[1 mark]</strong></p>
+            <div class="formula-box">
+                <p>\[F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = 2 \times \frac{0.75 \times 0.60}{0.75 + 0.60} = 2 \times \frac{0.45}{1.35} = \frac{0.90}{1.35} \approx 0.667 = 66.7\%\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Summary of Results:</strong>
+                <ul>
+                    <li>Accuracy: 70% (overall correct predictions)</li>
+                    <li>Precision: 75% (quality of positive predictions)</li>
+                    <li>Recall: 60% (coverage of actual positives)</li>
+                    <li>F1-score: 66.7% (harmonic mean of precision and recall)</li>
+                </ul>
+                <p>The model has moderate performance with higher precision than recall, suggesting it's conservative in predicting positives.</p>
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Clustering <span class="marks">[8 marks]</span></h3>
+            <p>Given 1D data points: [1, 2, 5, 8, 9, 10]</p>
+            <p>Perform ONE iteration of K-means with K=2, starting with centroids μ₁=2 and μ₂=9.</p>
+            <p>(i) Assign points to clusters. [4 marks]</p>
+            <p>(ii) Calculate new centroids. [4 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Assignment Step:</strong> <strong>[4 marks]</strong></p>
+            <p>Calculate distance from each point to both centroids and assign to nearest:</p>
+
+            <div class="formula-box">
+                <p><strong>Point 1:</strong> |1-2|=1, |1-9|=8 → Assign to μ₁</p>
+                <p><strong>Point 2:</strong> |2-2|=0, |2-9|=7 → Assign to μ₁</p>
+                <p><strong>Point 5:</strong> |5-2|=3, |5-9|=4 → Assign to μ₁</p>
+                <p><strong>Point 8:</strong> |8-2|=6, |8-9|=1 → Assign to μ₂</p>
+                <p><strong>Point 9:</strong> |9-2|=7, |9-9|=0 → Assign to μ₂</p>
+                <p><strong>Point 10:</strong> |10-2|=8, |10-9|=1 → Assign to μ₂</p>
+            </div>
+            <strong>[4 marks]</strong>
+
+            <p><strong>Result:</strong></p>
+            <ul>
+                <li>Cluster 1: {1, 2, 5}</li>
+                <li>Cluster 2: {8, 9, 10}</li>
+            </ul>
+
+            <p><strong>(ii) Update Step:</strong> <strong>[4 marks]</strong></p>
+            <p>Calculate new centroids as the mean of assigned points:</p>
+
+            <div class="formula-box">
+                <p>\[\mu_1^{new} = \frac{1 + 2 + 5}{3} = \frac{8}{3} \approx 2.67\]</p>
+                <p>\[\mu_2^{new} = \frac{8 + 9 + 10}{3} = \frac{27}{3} = 9.0\]</p>
+            </div>
+            <strong>[4 marks: 2 marks per centroid]</strong>
+
+            <p><strong>New centroids: μ₁ = 2.67, μ₂ = 9.0</strong></p>
+
+            <div class="note">
+                <strong>Next Iteration:</strong> We would repeat the process using the new centroids (2.67 and 9.0) until convergence. In this case, the assignments would likely remain the same, indicating convergence has been reached.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Gaussian Mixture Models <span class="marks">[6 marks]</span></h3>
+            <p>(i) What is the main advantage of GMM over K-means? [3 marks]</p>
+            <p>(ii) What are the two steps of the EM algorithm? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Main Advantage of GMM:</strong> <strong>[3 marks]</strong></p>
+            <p><strong>Soft probabilistic assignments vs hard assignments</strong> <strong>[1.5 marks]</strong></p>
+            <ul>
+                <li>GMM assigns each point a probability of belonging to each cluster (soft assignment)</li>
+                <li>K-means assigns each point to exactly one cluster (hard assignment)</li>
+                <li>GMM provides uncertainty estimates - useful when cluster boundaries are unclear</li>
+            </ul>
+
+            <p><strong>More flexible cluster shapes</strong> <strong>[1.5 marks]</strong></p>
+            <ul>
+                <li>GMM can model elliptical clusters with different sizes and orientations</li>
+                <li>K-means assumes spherical clusters of similar size</li>
+                <li>GMM uses covariance matrices to capture cluster shape</li>
+            </ul>
+
+            <p><strong>(ii) EM Algorithm Steps:</strong> <strong>[3 marks]</strong></p>
+
+            <p><strong>E-Step (Expectation):</strong> <strong>[1.5 marks]</strong></p>
+            <p>Calculate responsibilities r_ik - the posterior probability that point x_i belongs to component k:</p>
+            <div class="formula-box">
+                <p>\[r_{ik} = \frac{\pi_k \mathcal{N}(x_i|\mu_k, \Sigma_k)}{\sum_{j=1}^{K} \pi_j \mathcal{N}(x_i|\mu_j, \Sigma_j)}\]</p>
+            </div>
+
+            <p><strong>M-Step (Maximization):</strong> <strong>[1.5 marks]</strong></p>
+            <p>Update parameters (μ_k, Σ_k, π_k) using the responsibilities to maximize likelihood:</p>
+            <div class="formula-box">
+                <p>\[\mu_k = \frac{\sum_{i} r_{ik} x_i}{\sum_{i} r_{ik}}, \quad \pi_k = \frac{1}{N}\sum_{i} r_{ik}\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Iteration:</strong> These steps alternate until convergence. Each iteration is guaranteed to increase (or maintain) the log-likelihood of the data.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Principal Component Analysis <span class="marks">[6 marks]</span></h3>
+            <p>You have a dataset with eigenvalues: [50, 30, 15, 5]</p>
+            <p>(i) What is the total variance in the data? [1 mark]</p>
+            <p>(ii) How much variance is explained by the first principal component? [2 marks]</p>
+            <p>(iii) How many components are needed for 90% variance? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Total Variance:</strong> <strong>[1 mark]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Total Variance} = \sum \lambda_i = 50 + 30 + 15 + 5 = 100\]</p>
+            </div>
+
+            <p><strong>(ii) Variance Explained by PC1:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Variance Explained} = \frac{\lambda_1}{\text{Total}} = \frac{50}{100} = 0.50 = 50\%\]</p>
+            </div>
+            <p>The first principal component explains half of the total variance.</p>
+
+            <p><strong>(iii) Components for 90% Variance:</strong> <strong>[3 marks]</strong></p>
+            <p>Calculate cumulative variance:</p>
+            <div class="formula-box">
+                <p>PC1: 50/100 = 50%</p>
+                <p>PC1-2: (50+30)/100 = 80/100 = 80%</p>
+                <p>PC1-3: (50+30+15)/100 = 95/100 = 95% ✓</p>
+            </div>
+            <strong>[2 marks for calculations]</strong>
+
+            <p><strong>Answer: 3 principal components are needed</strong> to explain at least 90% of variance (specifically, 95%). <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Dimensionality Reduction:</strong>
+                <ul>
+                    <li>Original data has 4 dimensions</li>
+                    <li>Using 3 PCs captures 95% of variance</li>
+                    <li>Reduction: 25% fewer dimensions with only 5% information loss</li>
+                    <li>This can significantly speed up subsequent algorithms while retaining most information</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Mock Exam Solutions</strong></p>
+            <p>Total Marks: 60</p>
+            <p><em>Use this mock exam to practice time management and identify areas needing more study!</em></p>
+        </div>
+    </div>
+</body>
+</html>

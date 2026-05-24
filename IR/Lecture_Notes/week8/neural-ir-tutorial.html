@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Information Retrieval — A Visual Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f14;
+    --surface: #141820;
+    --surface-2: #1a1f2b;
+    --border: #252b3a;
+    --text: #d4dae6;
+    --text-muted: #7b849a;
+    --accent-cyan: #4ecdc4;
+    --accent-orange: #ff8c42;
+    --accent-purple: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-yellow: #fbbf24;
+    --accent-green: #34d399;
+    --accent-blue: #60a5fa;
+    --accent-red: #f87171;
+    --glow-cyan: rgba(78, 205, 196, 0.15);
+    --glow-orange: rgba(255, 140, 66, 0.12);
+    --glow-purple: rgba(167, 139, 250, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%);
+    animation: floatBlob 12s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--glow-orange) 0%, transparent 70%);
+    animation: floatBlob 15s ease-in-out infinite reverse;
+    pointer-events: none;
+  }
+
+  @keyframes floatBlob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 100px;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 3rem;
+    animation: fadeUp 0.8s 0.35s ease both;
+  }
+
+  .hero-nav a {
+    padding: 10px 22px;
+    border-radius: 100px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.25s;
+  }
+
+  .hero-nav a:hover {
+    background: var(--accent-cyan);
+    color: var(--bg);
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* ── Section Headers ── */
+  .section-header {
+    margin: 5rem 0 2.5rem;
+    position: relative;
+    scroll-margin-top: 2rem;
+  }
+
+  .section-num {
+    font-family: 'Fraunces', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    opacity: 0.06;
+    position: absolute;
+    top: -2.2rem;
+    left: -0.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 100px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .section-header p {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  /* ── Color Themes for sections ── */
+  .theme-cyan .section-label { background: rgba(78,205,196,0.12); color: var(--accent-cyan); }
+  .theme-orange .section-label { background: rgba(255,140,66,0.1); color: var(--accent-orange); }
+  .theme-purple .section-label { background: rgba(167,139,250,0.1); color: var(--accent-purple); }
+  .theme-green .section-label { background: rgba(52,211,153,0.1); color: var(--accent-green); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    border-color: rgba(78, 205, 196, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-top: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* icon & tag colors */
+  .ic-cyan { background: rgba(78,205,196,0.12); color: var(--accent-cyan); }
+  .ic-orange { background: rgba(255,140,66,0.1); color: var(--accent-orange); }
+  .ic-purple { background: rgba(167,139,250,0.1); color: var(--accent-purple); }
+  .ic-pink { background: rgba(244,114,182,0.1); color: var(--accent-pink); }
+  .ic-yellow { background: rgba(251,191,36,0.1); color: var(--accent-yellow); }
+  .ic-green { background: rgba(52,211,153,0.1); color: var(--accent-green); }
+  .ic-blue { background: rgba(96,165,250,0.1); color: var(--accent-blue); }
+  .ic-red { background: rgba(248,113,113,0.1); color: var(--accent-red); }
+
+  /* ── Diagram Blocks ── */
+  .diagram {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .diagram .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .diagram .node {
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    white-space: nowrap;
+  }
+
+  .diagram .arrow {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  /* ── Callout ── */
+  .callout {
+    padding: 1.4rem 1.6rem;
+    border-radius: var(--radius);
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    border-left: 4px solid;
+  }
+
+  .callout-cyan { background: rgba(78,205,196,0.06); border-color: var(--accent-cyan); }
+  .callout-orange { background: rgba(255,140,66,0.06); border-color: var(--accent-orange); }
+  .callout-purple { background: rgba(167,139,250,0.06); border-color: var(--accent-purple); }
+  .callout-green { background: rgba(52,211,153,0.06); border-color: var(--accent-green); }
+
+  .callout strong { color: var(--text); }
+
+  /* ── Comparison Table ── */
+  .comparison-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table th {
+    background: var(--surface-2);
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+
+  .comparison-table tr:last-child td { border-bottom: none; }
+
+  .comparison-table td:first-child {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ── Pipeline visual ── */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+
+  .pipeline-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.3rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .pipeline-step .step-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    opacity: 0.2;
+    margin-bottom: 0.3rem;
+  }
+
+  .pipeline-step h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .pipeline-step p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Code/Formula ── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    color: var(--accent-cyan);
+  }
+
+  /* ── vs blocks ── */
+  .vs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  .vs-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+  }
+
+  .vs-block h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .vs-block p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .vs-grid { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .card { padding: 1.5rem; }
+    .container { padding: 0 1.25rem 4rem; }
+  }
+
+  /* ── Scroll animations ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <span class="hero-badge">Beginner-Friendly Guide</span>
+  <h1>Neural<br><span class="gradient-text">Information Retrieval</span></h1>
+  <p class="hero-sub">How modern search engines use neural networks to understand what you mean — not just what you type.</p>
+  <nav class="hero-nav">
+    <a href="#part1">1 — Relevance Models</a>
+    <a href="#part2">2 — Training</a>
+    <a href="#part3">3 — Retrieval Engines</a>
+    <a href="#part4">4 — RAG</a>
+  </nav>
+</section>
+
+<!-- ═══════════════ PART 1 ═══════════════ -->
+<div class="container">
+
+  <div class="section-header theme-cyan reveal" id="part1">
+    <span class="section-num">01</span>
+    <span class="section-label">Part 1</span>
+    <h2>Relevance Estimation Models</h2>
+    <p>Given a query and a document — how do we score how relevant they are to each other?</p>
+  </div>
+
+  <div class="callout callout-cyan reveal">
+    <strong>The Big Idea:</strong> Think of searching as matchmaking. You have a question, and millions of documents. Each model below is a different strategy for figuring out which documents are the best "match" for your question.
+  </div>
+
+  <!-- Lexical -->
+  <div class="card reveal">
+    <div class="card-icon ic-cyan">Aa</div>
+    <h3>Lexical Models (Word Matching)</h3>
+    <p>The simplest approach. These count how many words your query and a document share. If you search for <code>apple pie recipe</code>, it literally looks for those exact words.</p>
+    <p style="margin-top:0.6rem">Common algorithms: <strong>TF-IDF</strong> (term frequency × rarity) and <strong>BM25</strong> (a smarter version that handles long documents better).</p>
+    <span class="card-tag ic-red">⚠️ Problem: Searching "grand prix" won't match a document that says "gp"</span>
+  </div>
+
+  <!-- LSR -->
+  <div class="card reveal">
+    <div class="card-icon ic-green">+</div>
+    <h3>Learned Sparse Retrieval (LSR)</h3>
+    <p>To fix the synonym problem, we use neural language models like <strong>BERT</strong> to read documents and expand them with related terms. A doc about a "collision" might get "crash", "accident", "mercedes" added behind the scenes.</p>
+    <p style="margin-top:0.6rem">Still sparse (word-based), but now much smarter about connecting related concepts.</p>
+    <span class="card-tag ic-green">Examples: SPLADE, DeepCT</span>
+  </div>
+
+  <!-- Bi-Encoders -->
+  <div class="card reveal">
+    <div class="card-icon ic-purple">→</div>
+    <h3>Single-Vector Dense Models (Bi-Encoders)</h3>
+    <p>Instead of individual words, these embed the entire query and entire document each into one big numeric vector (typically 500–2000 numbers). Then we measure how "close" they are in that vector space using cosine similarity or dot product.</p>
+    <div class="diagram">
+      <div class="flow">
+        <span class="node" style="border-color: var(--accent-purple);">Query → [0.3, 0.8, ...]</span>
+        <span class="arrow">⟷</span>
+        <span class="node" style="border-color: var(--accent-pink);">Doc → [0.2, 0.7, ...]</span>
+        <span class="arrow">=</span>
+        <span class="node" style="border-color: var(--accent-yellow);">Score ✓</span>
+      </div>
+    </div>
+    <span class="card-tag ic-purple">Example: DPR (Dense Passage Retrieval)</span>
+  </div>
+
+  <!-- ColBERT -->
+  <div class="card reveal">
+    <div class="card-icon ic-pink">⊞</div>
+    <h3>Multi-Vector / Interaction Models</h3>
+    <p>Rather than crushing a whole document into a single vector, these keep a separate vector for <em>every token</em>. Then they use a trick called <strong>MaxSim</strong> — for each query word, find the most similar document word, then sum those scores.</p>
+    <p style="margin-top:0.6rem">More nuanced than a single vector, because fine-grained word-level matching is preserved.</p>
+    <span class="card-tag ic-pink">Example: ColBERT</span>
+  </div>
+
+  <!-- Cross-Encoders -->
+  <div class="card reveal">
+    <div class="card-icon ic-orange">⚡</div>
+    <h3>Mono Models (Cross-Encoders)</h3>
+    <p>The heavyweight champion. These concatenate the query and document into one single input, then run it through every Transformer layer with full cross-attention. Every word in the query can "see" every word in the document.</p>
+    <p style="margin-top:0.6rem">Gives the <strong>best relevance scores</strong> — but is extremely expensive. Cost scales quadratically <code>O(d²)</code>, so you can't run it over millions of documents.</p>
+    <span class="card-tag ic-orange">Examples: MonoBERT, MonoT5</span>
+  </div>
+
+  <!-- Duo + QE -->
+  <div class="vs-grid reveal">
+    <div class="vs-block">
+      <h4 style="color: var(--accent-blue);">Duo+ Models</h4>
+      <p>Like Cross-Encoders, but they evaluate <em>multiple documents at once</em> against the query and each other. Great for fine-grained re-ranking.</p>
+      <p style="margin-top:0.5rem; font-size:0.8rem; color:var(--accent-blue);">DuoBERT, RankGPT</p>
+    </div>
+    <div class="vs-block">
+      <h4 style="color: var(--accent-yellow);">Quality Estimators</h4>
+      <p>These evaluate a document <em>on its own</em> — no query needed. They just ask: "Is this document high-quality enough to ever be relevant?" Think of it as spam filtering.</p>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <h3 style="font-family:'Fraunces',serif; margin: 2rem 0 1rem; font-size:1.2rem;" class="reveal">Model Comparison at a Glance</h3>
+  <div class="reveal" style="overflow-x:auto;">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Model Type</th>
+        <th>Speed</th>
+        <th>Quality</th>
+        <th>Key Trade-Off</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Lexical (BM25)</td><td style="color:var(--accent-green)">⚡ Very Fast</td><td>Good baseline</td><td>Misses synonyms</td></tr>
+      <tr><td>Learned Sparse</td><td style="color:var(--accent-green)">⚡ Fast</td><td>Better</td><td>Needs neural training</td></tr>
+      <tr><td>Bi-Encoder</td><td style="color:var(--accent-yellow)">⏱ Moderate</td><td>Good</td><td>Single vector is lossy</td></tr>
+      <tr><td>Multi-Vector</td><td style="color:var(--accent-yellow)">⏱ Moderate</td><td>Very Good</td><td>More storage needed</td></tr>
+      <tr><td>Cross-Encoder</td><td style="color:var(--accent-red)">🐢 Slow</td><td style="color:var(--accent-green)">Best</td><td>Can't scale to full corpus</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ═══════════════ PART 2 ═══════════════ -->
+  <div class="section-header theme-orange reveal" id="part2">
+    <span class="section-num">02</span>
+    <span class="section-label">Part 2</span>
+    <h2>Training</h2>
+    <p>How do we actually teach these neural models what "relevant" means?</p>
+  </div>
+
+  <div class="callout callout-orange reveal">
+    <strong>Key Insight:</strong> All these models learn from labeled examples — pairs of queries and documents that humans have judged as relevant or not relevant. The training strategy matters a lot.
+  </div>
+
+  <div class="vs-grid reveal">
+    <div class="vs-block" style="border-top: 3px solid var(--accent-orange);">
+      <h4 style="color: var(--accent-orange);">Pointwise Training</h4>
+      <p>Looks at one document at a time. Asks: "On a scale of 0 to 1, how relevant is this doc?" Optimizes using Mean Squared Error to push the score toward the label.</p>
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:var(--text-muted);">Simple, but doesn't learn relative ordering.</p>
+    </div>
+    <div class="vs-block" style="border-top: 3px solid var(--accent-purple);">
+      <h4 style="color: var(--accent-purple);">Pairwise Training</h4>
+      <p>Uses triples: (Query, Good Doc, Bad Doc). Optimizes so the good doc always scores higher than the bad one. Uses Cross Entropy Loss.</p>
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:var(--text-muted);">Learns ranking — which is what search actually needs.</p>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif; margin: 2.5rem 0 1rem; font-size:1.2rem;" class="reveal">Finding Negative Examples</h3>
+  <p class="reveal" style="color:var(--text-muted); margin-bottom:1rem;">Datasets usually tell us which docs ARE relevant. But the model also needs to see <em>non-relevant</em> docs. Where do we find them?</p>
+
+  <div class="card reveal">
+    <div class="card-icon ic-blue">🎲</div>
+    <h3>In-Batch Negatives</h3>
+    <p>The lazy but effective trick. When training in a batch of 32 queries, each query's relevant doc becomes a negative for the other 31 queries. Free negatives with zero extra computation.</p>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-icon ic-red">🎯</div>
+    <h3>Hard Negatives</h3>
+    <p>Run a search engine and grab the top-ranked documents that are actually wrong. These are the "tricky" negatives — they look relevant but aren't. Forces the model to learn much finer distinctions.</p>
+    <span class="card-tag ic-red">⚠️ Risk: You might accidentally pick a doc that IS relevant (false negative)</span>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif; margin: 2.5rem 0 1rem; font-size:1.2rem;" class="reveal">Advanced Training Tricks</h3>
+
+  <div class="vs-grid reveal">
+    <div class="vs-block">
+      <h4 style="color: var(--accent-yellow);">🎓 Distillation</h4>
+      <p>Have a powerful but slow "teacher" model (like a Cross-Encoder) score documents. Then train a fast "student" model to mimic those scores. You get speed AND quality.</p>
+    </div>
+    <div class="vs-block">
+      <h4 style="color: var(--accent-green);">🤖 Synthetic Data</h4>
+      <p>No real queries? Use an LLM to read your documents and generate fake but realistic queries. Surprisingly effective for bootstrapping training data.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PART 3 ═══════════════ -->
+  <div class="section-header theme-purple reveal" id="part3">
+    <span class="section-num">03</span>
+    <span class="section-label">Part 3</span>
+    <h2>Retrieval Engines</h2>
+    <p>You have a model that can score relevance. Now how do you search millions of documents quickly?</p>
+  </div>
+
+  <div class="callout callout-purple reveal">
+    <strong>The Challenge:</strong> A Cross-Encoder gives amazing scores, but scoring every document in a billion-document corpus would take hours. We need smart data structures to make search fast.
+  </div>
+
+  <div class="card reveal">
+    <div class="card-icon ic-red">🔨</div>
+    <h3>Brute Force (Forward Index)</h3>
+    <p>The naive approach. Pre-compute and store the representation for every document, then at search time, score every single one. Works on small datasets. Completely impractical at scale.</p>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-icon ic-cyan">📖</div>
+    <h3>Inverted Index (Sparse Retrieval)</h3>
+    <p>The classic search engine trick. Build a lookup table: for each word, store which documents contain it. When someone searches "machine learning", only check documents that have those words. Massively scalable.</p>
+    <div class="diagram">
+      <div class="flow">
+        <span class="node" style="border-color:var(--accent-cyan);">"machine" → [Doc 3, Doc 17, Doc 42]</span>
+      </div>
+      <div class="flow" style="margin-top:8px;">
+        <span class="node" style="border-color:var(--accent-cyan);">"learning" → [Doc 3, Doc 8, Doc 42]</span>
+      </div>
+      <div class="flow" style="margin-top:8px;">
+        <span class="arrow">∩</span>
+        <span class="node" style="border-color:var(--accent-green);">Match: Doc 3, Doc 42</span>
+      </div>
+    </div>
+    <span class="card-tag ic-cyan">Only works with sparse (word-based) models</span>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-icon ic-purple">🌐</div>
+    <h3>Approximate Nearest Neighbor (ANN)</h3>
+    <p>For dense vector models, we build a graph where similar documents are connected as neighbors. At search time, we "walk" through the graph toward vectors close to our query. Fast, but approximate — we might miss the absolute best result.</p>
+    <p style="margin-top:0.6rem">Popular algorithm: <strong>HNSW</strong> (Hierarchical Navigable Small World) — builds a multi-layer graph for efficient navigation.</p>
+    <span class="card-tag ic-purple">Used for: Bi-Encoder and other dense models</span>
+  </div>
+
+  <div class="card reveal" style="border-color: rgba(251,191,36,0.3); background: linear-gradient(135deg, var(--surface), rgba(251,191,36,0.03));">
+    <div class="card-icon ic-yellow">⭐</div>
+    <h3>Re-Ranking (The Cascading Approach)</h3>
+    <p>The most popular strategy in production. It combines the best of both worlds in two stages:</p>
+    <div class="pipeline" style="margin-top:1rem;">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <h4 style="color: var(--accent-cyan);">First Stage</h4>
+        <p>Fast engine (Inverted Index or ANN) grabs top ~1000 candidates</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <h4 style="color: var(--accent-orange);">Re-Rank</h4>
+        <p>Expensive model (Cross-Encoder) precisely re-orders just those candidates</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <h4 style="color: var(--accent-green);">Result</h4>
+        <p>Scalability of fast search + accuracy of deep models</p>
+      </div>
+    </div>
+    <span class="card-tag ic-yellow">⚠️ Limited by what the first stage retrieves — if a great doc is missed early, re-ranking can't save it</span>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif; margin: 2rem 0 1rem; font-size:1.2rem;" class="reveal">Engine Comparison</h3>
+  <div class="reveal" style="overflow-x:auto;">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Engine</th>
+        <th>Best For</th>
+        <th>Scalability</th>
+        <th>Exactness</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Brute Force</td><td>Tiny datasets</td><td style="color:var(--accent-red)">✗ Poor</td><td style="color:var(--accent-green)">✓ Exact</td></tr>
+      <tr><td>Inverted Index</td><td>Sparse models</td><td style="color:var(--accent-green)">✓ Excellent</td><td style="color:var(--accent-green)">✓ Exact</td></tr>
+      <tr><td>ANN (HNSW)</td><td>Dense models</td><td style="color:var(--accent-green)">✓ Excellent</td><td style="color:var(--accent-yellow)">~ Approx</td></tr>
+      <tr><td>Re-Ranking</td><td>Production systems</td><td style="color:var(--accent-green)">✓ Excellent</td><td style="color:var(--accent-green)">✓ High</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ═══════════════ PART 4 ═══════════════ -->
+  <div class="section-header theme-green reveal" id="part4">
+    <span class="section-num">04</span>
+    <span class="section-label">Bonus</span>
+    <h2>Retrieval Augmented Generation (RAG)</h2>
+    <p>Where retrieval meets generative AI — the architecture powering modern AI assistants.</p>
+  </div>
+
+  <div class="callout callout-green reveal">
+    <strong>The Shift:</strong> Search results used to be shown directly to humans as ranked lists. Now, an LLM sits in the middle — it reads the retrieved documents and generates a natural language answer for you.
+  </div>
+
+  <div class="pipeline reveal" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="pipeline-step" style="border-color: rgba(96,165,250,0.3);">
+      <div class="step-num" style="color: var(--accent-blue);">1</div>
+      <h4>User Query</h4>
+      <p>"What causes northern lights?"</p>
+    </div>
+    <div class="pipeline-step" style="border-color: rgba(78,205,196,0.3);">
+      <div class="step-num" style="color: var(--accent-cyan);">2</div>
+      <h4>Retrieve</h4>
+      <p>Search engine finds top relevant docs</p>
+    </div>
+    <div class="pipeline-step" style="border-color: rgba(167,139,250,0.3);">
+      <div class="step-num" style="color: var(--accent-purple);">3</div>
+      <h4>Read</h4>
+      <p>LLM reads retrieved documents</p>
+    </div>
+    <div class="pipeline-step" style="border-color: rgba(52,211,153,0.3);">
+      <div class="step-num" style="color: var(--accent-green);">4</div>
+      <h4>Generate</h4>
+      <p>LLM writes a grounded answer</p>
+    </div>
+  </div>
+
+  <div class="vs-grid reveal">
+    <div class="vs-block" style="border-top: 3px solid var(--accent-green);">
+      <h4 style="color: var(--accent-green);">✓ Reduces Hallucinations</h4>
+      <p>By grounding the LLM's output in actual retrieved documents, it's far less likely to make things up. The facts come from real sources.</p>
+    </div>
+    <div class="vs-block" style="border-top: 3px solid var(--accent-blue);">
+      <h4 style="color: var(--accent-blue);">✓ Enables Attribution</h4>
+      <p>Because we know which documents were retrieved, we can trace every claim in the generated answer back to a specific source.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RECAP ═══════════════ -->
+  <div class="section-header reveal" style="margin-top:5rem;">
+    <span class="section-label" style="background: rgba(244,114,182,0.1); color: var(--accent-pink);">Recap</span>
+    <h2>The Full Picture</h2>
+  </div>
+
+  <div class="diagram reveal" style="padding:2rem; font-size:0.8rem;">
+    <div class="flow" style="gap:6px;">
+      <span class="node" style="border-color:var(--accent-blue);">User Query</span>
+      <span class="arrow">→</span>
+      <span class="node" style="border-color:var(--accent-cyan);">Fast Retrieval<br><small style="color:var(--text-muted)">Inverted Index / ANN</small></span>
+      <span class="arrow">→</span>
+      <span class="node" style="border-color:var(--accent-orange);">Re-Rank<br><small style="color:var(--text-muted)">Cross-Encoder</small></span>
+      <span class="arrow">→</span>
+      <span class="node" style="border-color:var(--accent-purple);">LLM Reads Docs<br><small style="color:var(--text-muted)">RAG</small></span>
+      <span class="arrow">→</span>
+      <span class="node" style="border-color:var(--accent-green);">Answer ✨</span>
+    </div>
+  </div>
+
+  <div class="callout callout-cyan reveal" style="text-align:center; border-left:none; border:1px solid var(--border);">
+    <strong>That's the modern search stack.</strong><br>
+    Sparse retrieval for speed → Dense re-ranking for precision → Generative AI for natural answers.<br>
+    Each layer builds on the one before it.
+  </div>
+
+</div>
+
+<footer>
+  <p>Neural Information Retrieval — A Visual Guide</p>
+  <p style="margin-top:0.3rem; opacity:0.6;">Built for learning. Scroll up and explore each section.</p>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNN Architecture — Fashion-MNIST</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --text-dim: #64748b;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --accent-amber: #f59e0b;
+    --accent-green: #10b981;
+    --glow-blue: rgba(59, 130, 246, 0.3);
+    --glow-cyan: rgba(6, 182, 212, 0.3);
+    --glow-purple: rgba(139, 92, 246, 0.3);
+    --glow-pink: rgba(236, 72, 153, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 30px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeInDown 0.8s ease-out;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* Architecture Flow */
+  .arch-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .arrow-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    position: relative;
+  }
+
+  .arrow-connector::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--border), var(--text-dim));
+    transform: translateY(-50%);
+  }
+
+  .arrow-connector::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--text-dim);
+    border-bottom: 2px solid var(--text-dim);
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  .layer-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 200px;
+  }
+
+  .layer-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .layer-card:nth-child(1) { animation-delay: 0.1s; }
+  .layer-card:nth-child(3) { animation-delay: 0.2s; }
+  .layer-card:nth-child(5) { animation-delay: 0.3s; }
+  .layer-card:nth-child(7) { animation-delay: 0.4s; }
+  .layer-card:nth-child(9) { animation-delay: 0.5s; }
+  .layer-card:nth-child(11) { animation-delay: 0.6s; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Input Card */
+  .card-input {
+    background: linear-gradient(145deg, #0f1a2e, #111827);
+    border: 1px solid #1e3a5f;
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.08);
+    max-width: 160px;
+    min-width: 160px;
+  }
+  .card-input:hover { box-shadow: 0 8px 40px rgba(6, 182, 212, 0.15); }
+
+  /* Conv layers */
+  .card-conv1 {
+    background: linear-gradient(145deg, #0f172a, #1a1040);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 30px var(--glow-purple);
+  }
+  .card-conv1:hover { box-shadow: 0 8px 40px rgba(139, 92, 246, 0.25); }
+
+  .card-conv2 {
+    background: linear-gradient(145deg, #0f172a, #1a0a30);
+    border: 1px solid rgba(236, 72, 153, 0.3);
+    box-shadow: 0 0 30px var(--glow-pink);
+  }
+  .card-conv2:hover { box-shadow: 0 8px 40px rgba(236, 72, 153, 0.25); }
+
+  /* Flatten */
+  .card-flatten {
+    background: linear-gradient(145deg, #111827, #1a2332);
+    border: 1px dashed var(--text-dim);
+    max-width: 130px;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* FC layers */
+  .card-fc1 {
+    background: linear-gradient(145deg, #0f172a, #0a2030);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 30px var(--glow-blue);
+  }
+  .card-fc1:hover { box-shadow: 0 8px 40px rgba(59, 130, 246, 0.25); }
+
+  .card-fc2 {
+    background: linear-gradient(145deg, #0f172a, #0a201a);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
+  }
+  .card-fc2:hover { box-shadow: 0 8px 40px rgba(16, 185, 129, 0.2); }
+
+  .layer-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+
+  .badge-input { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+  .badge-conv { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+  .badge-conv2 { background: rgba(236, 72, 153, 0.15); color: var(--accent-pink); }
+  .badge-flatten { background: rgba(100, 116, 139, 0.2); color: var(--text-dim); }
+  .badge-fc { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+  .badge-fc2 { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+
+  .layer-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .shape-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent-amber);
+    background: rgba(245, 158, 11, 0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 16px;
+    border: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .specs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+
+  .spec-label {
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .spec-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+
+  .param-count {
+    text-align: center;
+    margin-top: 14px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .param-count .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .param-count .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .val-purple { color: var(--accent-purple); }
+  .val-pink { color: var(--accent-pink); }
+  .val-blue { color: var(--accent-blue); }
+  .val-green { color: var(--accent-green); }
+
+  .activation-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 5px;
+  }
+
+  .act-tanh { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+  .act-sigmoid { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }
+  .act-relu { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+
+  /* Summary Bar */
+  .summary {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.7s both;
+  }
+
+  .summary-item {
+    text-align: center;
+    padding: 24px 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: transform 0.3s;
+  }
+
+  .summary-item:hover { transform: translateY(-3px); }
+
+  .summary-item .s-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .summary-item .s-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Visual blocks for input */
+  .input-visual {
+    width: 70px;
+    height: 70px;
+    border: 2px solid rgba(6, 182, 212, 0.4);
+    border-radius: 6px;
+    margin: 10px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 1px;
+    padding: 4px;
+  }
+
+  .pixel {
+    background: rgba(6, 182, 212, 0.15);
+    border-radius: 1px;
+  }
+
+  .pixel:nth-child(odd) { background: rgba(6, 182, 212, 0.3); }
+  .pixel:nth-child(3n) { background: rgba(6, 182, 212, 0.5); }
+
+  /* Flatten visual */
+  .flatten-visual {
+    width: 20px;
+    height: 80px;
+    border: 1px dashed var(--text-dim);
+    border-radius: 4px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 4px 2px;
+  }
+
+  .flatten-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    margin: 0 auto;
+  }
+
+  /* Kernel visual */
+  .kernel-grid {
+    display: inline-grid;
+    gap: 1px;
+    margin: 8px auto;
+    opacity: 0.5;
+  }
+
+  .kernel-cell {
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+  }
+
+  .k-purple .kernel-cell { background: var(--accent-purple); }
+  .k-pink .kernel-cell { background: var(--accent-pink); }
+
+  @media (max-width: 1200px) {
+    .arch-flow {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+    .arrow-connector {
+      display: none;
+    }
+    .layer-card {
+      min-width: 220px;
+      max-width: 280px;
+    }
+    .card-input, .card-flatten {
+      max-width: 280px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="container">
+  <header>
+    <h1>CNN Architecture</h1>
+    <p>Fashion-MNIST Classification Network</p>
+  </header>
+
+  <div class="arch-flow">
+    <!-- Input -->
+    <div class="layer-card card-input">
+      <span class="layer-badge badge-input">Input</span>
+      <div class="layer-title">Fashion<br>MNIST</div>
+      <div class="shape-tag">28 × 28 × 1</div>
+      <div class="input-visual">
+        <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+        <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+        <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+        <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+      </div>
+    </div>
+
+    <div class="arrow-connector"></div>
+
+    <!-- Layer 1: Conv -->
+    <div class="layer-card card-conv1">
+      <span class="layer-badge badge-conv">Layer 1 — Conv2D</span>
+      <div class="layer-title">Convolutional</div>
+      <div class="shape-tag">25 × 25 × 3</div>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-label">Kernels</span><span class="spec-value">3</span></div>
+        <div class="spec-row"><span class="spec-label">Kernel Size</span><span class="spec-value">6 × 6</span></div>
+        <div class="spec-row"><span class="spec-label">Padding</span><span class="spec-value">1</span></div>
+        <div class="spec-row"><span class="spec-label">Stride</span><span class="spec-value">1</span></div>
+        <div class="spec-row"><span class="spec-label">Activation</span><span class="activation-badge act-tanh">Tanh</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="param-count">
+        <div class="label">Parameters</div>
+        <div class="value val-purple">111</div>
+      </div>
+    </div>
+
+    <div class="arrow-connector"></div>
+
+    <!-- Layer 2: Conv -->
+    <div class="layer-card card-conv2">
+      <span class="layer-badge badge-conv2">Layer 2 — Conv2D</span>
+      <div class="layer-title">Convolutional</div>
+      <div class="shape-tag">25 × 25 × 5</div>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-label">Kernels</span><span class="spec-value">5</span></div>
+        <div class="spec-row"><span class="spec-label">Kernel Size</span><span class="spec-value">5 × 5</span></div>
+        <div class="spec-row"><span class="spec-label">Padding</span><span class="spec-value">2</span></div>
+        <div class="spec-row"><span class="spec-label">Stride</span><span class="spec-value">1</span></div>
+        <div class="spec-row"><span class="spec-label">Activation</span><span class="activation-badge act-sigmoid">Sigmoid</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="param-count">
+        <div class="label">Parameters</div>
+        <div class="value val-pink">380</div>
+      </div>
+    </div>
+
+    <div class="arrow-connector"></div>
+
+    <!-- Flatten -->
+    <div class="layer-card card-flatten">
+      <span class="layer-badge badge-flatten">Flatten</span>
+      <div class="layer-title" style="font-size:1rem;">Reshape</div>
+      <div class="flatten-visual">
+        <div class="flatten-dot"></div>
+        <div class="flatten-dot"></div>
+        <div class="flatten-dot"></div>
+        <div class="flatten-dot"></div>
+        <div class="flatten-dot"></div>
+      </div>
+      <div class="shape-tag" style="font-size:0.7rem;">3125</div>
+    </div>
+
+    <div class="arrow-connector"></div>
+
+    <!-- Layer 3: FC -->
+    <div class="layer-card card-fc1">
+      <span class="layer-badge badge-fc">Layer 3 — Dense</span>
+      <div class="layer-title">Fully Connected</div>
+      <div class="shape-tag">67</div>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-label">Neurons</span><span class="spec-value">67</span></div>
+        <div class="spec-row"><span class="spec-label">Activation</span><span class="activation-badge act-relu">ReLU</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="param-count">
+        <div class="label">Bias Params</div>
+        <div class="value val-blue">67</div>
+      </div>
+      <div style="text-align:center; margin-top:6px;">
+        <span class="spec-label" style="font-size:0.7rem;">Total: 209,442</span>
+      </div>
+    </div>
+
+    <div class="arrow-connector"></div>
+
+    <!-- Layer 4: FC (Output) -->
+    <div class="layer-card card-fc2">
+      <span class="layer-badge badge-fc2">Layer 4 — Output</span>
+      <div class="layer-title">Fully Connected</div>
+      <div class="shape-tag">10</div>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-label">Neurons</span><span class="spec-value">10</span></div>
+        <div class="spec-row"><span class="spec-label">Classes</span><span class="spec-value">10</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="param-count">
+        <div class="label">Parameters</div>
+        <div class="value val-green">680</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="summary-item">
+      <div class="s-label">Total Parameters</div>
+      <div class="s-value">210,613</div>
+    </div>
+    <div class="summary-item">
+      <div class="s-label">Conv Layers</div>
+      <div class="s-value">2</div>
+    </div>
+    <div class="summary-item">
+      <div class="s-label">FC Layers</div>
+      <div class="s-value">2</div>
+    </div>
+    <div class="summary-item">
+      <div class="s-label">Output Classes</div>
+      <div class="s-value">10</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

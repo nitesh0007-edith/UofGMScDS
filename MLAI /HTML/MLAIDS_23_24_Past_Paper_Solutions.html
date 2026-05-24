@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2023-2024 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2023-2024 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 90 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions. Show all working clearly.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression - ML Training Data Size (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Consider using regression to predict the size of training data used in machine learning models from 1950-2023.</p>
+
+            <h3>(a) Identifying Rescaling Method <span class="marks">[4 marks]</span></h3>
+            <p>A rescaling method was used to rescale the years to values displayed in Figure 1.2. Describe which rescaling method was used (with enough details of the procedure), and why you think it was applied.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Rescaling Method Used:</strong> <strong>[1 mark]</strong> Whitening (or equivalent answer such as standardization/z-score normalization)</p>
+
+            <p><strong>Procedure:</strong> <strong>[1 mark]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Year}_{scaled} = \frac{\text{Year} - \text{mean}(\text{Year})}{\text{std}(\text{Year})}\]</p>
+            </div>
+
+            <p><strong>Evidence from Figure 1.2:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The mean of rescaled years in Figure 1.2 is around 0, indicated by a roughly equal number of data points around 0.</li>
+                <li><strong>[1 mark]</strong> The rescaled years range from around -2.5 to around 1.5, mimicking the unit variance (equals to 1) expected with standard normal distribution.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Why Whitening?</strong> The distribution of rescaled values centered at 0 with symmetric spread is characteristic of standardization. This is different from min-max scaling (which would give [0,1]) or log transform (which would preserve positive values).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Poorly Fitted Points with Order-2 Polynomial <span class="marks">[6 marks]</span></h3>
+            <p>Consider fitting the data with a polynomial regression of order 2. Identify the two most likely poorly fitted data points (use years in Figure 1.1 as reference) and explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Poorly Fitted Data Points:</strong> <strong>[2 marks]</strong></p>
+            <p>Several options for the two most poorly fitted points:</p>
+            <ul>
+                <li>(x = 1980, y ≈ 1)</li>
+                <li>(x ≈ 2005, y ≈ 6)</li>
+                <li>3 points with x range from 1990 to 1995</li>
+            </ul>
+
+            <p><strong>Reasoning:</strong> <strong>[4 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Polynomial regression model with an order of 2 is a quadratic (or convex) curve.</li>
+                <li><strong>[1 mark]</strong> The global minima of the curve would be in years before 1970.</li>
+                <li><strong>[1 mark]</strong> The right tail end would be following the upward trend from 1980 to 2020.</li>
+                <li><strong>[1 mark]</strong> The curve would closely follow a relatively high-density data region in the middle 1980 to 2020, where points line up almost like a straight line, leaving clear outliers.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Intuition:</strong> A quadratic curve (parabola) will fit the general upward trend from 1980-2020 well, but will miss isolated points in the sparse regions (1960-1980 gap and extreme outliers in the 1990-2005 range).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) RBF vs Polynomials <span class="marks">[4 marks]</span></h3>
+            <p>Consider fitting the data in Figure 1.1 with a regression using radial basis functions:</p>
+            <div class="formula-box">
+                <p>\[h_{n,k} = \exp\left(-\frac{(x_n - \mu_k)^2}{2s^2}\right), \quad n = 1, \ldots, N; \quad k = 1, \ldots, K\]</p>
+            </div>
+            <p>Outline one advantage and disadvantage of using this radial basis function over polynomials with the data in Figure 1.1.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Advantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The data is not equally distributed across x values - there is a clear gap (1960-1980).</li>
+                <li><strong>[1 mark]</strong> Using location-specific basis functions such as the radial basis functions can model this localized effect by placing basis functions around regions where we have strong data support.</li>
+            </ul>
+
+            <p><strong>Disadvantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Need to choose hyperparameters \(\mu_k\) (centers) and \(s\) (bandwidth).</li>
+                <li><strong>[1 mark]</strong> A bad choice of \(\mu_k\) could lead to very bad prediction in the gap (1960-1980) where there's no data to constrain the model.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Trade-off:</strong> RBF's locality is both a strength (can ignore irrelevant regions) and weakness (requires careful placement of centers, especially in data-sparse regions).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Identifying Ridge vs Lasso from Figures <span class="marks">[6 marks]</span></h3>
+            <p>Suppose we use the radial basis function in (c), with \(\mu_k\) set to be \(x_n\) and \(s = 10\), to fit the data. We used two fitting strategies: ridge regression and lasso, and obtained the following fitting models in Figures 1.3A and 1.3B. Identify which fitting strategy is used in each figure and explain why and how the chosen fitting method could have generated the result. (Note: each method is used only once)</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Figure 1.3A: Ridge Regression</strong> <strong>[3 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Ridge regression.</li>
+                <li><strong>[1 mark]</strong> Reasoning: The fitted model is a curve that is close to a flat straight line. This happens when most of the basis functions have close to zero coefficients.</li>
+                <li><strong>[1 mark]</strong> This also suggests that the hyperparameter controlling the strength of L2 regularization is set to be too strong (large λ value).</li>
+            </ul>
+
+            <p><strong>Figure 1.3B: Lasso</strong> <strong>[3 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Lasso.</li>
+                <li><strong>[1 mark]</strong> Reasoning: The fitted model is a straight line. This happens when only one basis function has a non-zero coefficient (the intercept/bias term).</li>
+                <li><strong>[1 mark]</strong> This also suggests that the hyperparameter controlling the strength of L1 regularization is set to be too strong (large λ value).</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Difference:</strong> With strong regularization, Ridge shrinks all coefficients toward zero (creating a nearly flat curve), while Lasso sets most coefficients exactly to zero (creating a straight line if only the bias remains).
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Extreme Regularization Behavior:</strong></p>
+                <p>Ridge (L2): \(\lim_{\lambda \to \infty} \mathbf{w} \to \mathbf{0}\) (all weights → 0, flat prediction)</p>
+                <p>Lasso (L1): \(\lim_{\lambda \to \infty}\) Most \(w_i = 0\) exactly (sparse solution, linear if only bias survives)</p>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification - k-NN and SVM (20 marks)</h2>
+
+        <div class="question">
+            <h3>Context</h3>
+            <p>Training data in the two-dimensional plane of \(X_1\) and \(X_2\):</p>
+            <ul>
+                <li>&lt;(2,0), 1&gt; - Red (+1)</li>
+                <li>&lt;(0,2), -1&gt; - Blue (-1)</li>
+                <li>&lt;(0,-2), -1&gt; - Blue (-1)</li>
+                <li>&lt;(3,0), 1&gt; - Red (+1)</li>
+                <li>&lt;(-1,0), -1&gt; - Blue (-1)</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(a)(i) k-NN Decision Boundary Equations <span class="marks">[6 marks]</span></h3>
+            <p>Design a k-NN classifier with k=1 and write down the equations that specify the decision boundary between the two classes.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Decision Boundary Equations:</strong></p>
+
+            <p><strong>[2 marks]</strong> In region \(X_1 > 0.5\) and \(X_2 > 0.5\):</p>
+            <div class="formula-box">
+                <p>\[X_1 - X_2 = 0\]</p>
+            </div>
+
+            <p><strong>[2 marks]</strong> In region \(X_1 > 0.5\) and \(X_2 < -0.5\):</p>
+            <div class="formula-box">
+                <p>\[X_1 + X_2 = 0\]</p>
+            </div>
+
+            <p><strong>[2 marks]</strong> In region \(-0.5 < X_2 < 0.5\):</p>
+            <div class="formula-box">
+                <p>\[X_1 - 0.5 = 0 \quad \text{or} \quad X_1 = 0.5\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Explanation:</strong> With k=1, the decision boundary consists of the perpendicular bisectors between nearest neighbors of opposite classes. The boundary forms piecewise linear segments separating the Voronoi regions:
+                <ul>
+                    <li>Between (2,0) and (0,2): line \(X_1 - X_2 = 0\)</li>
+                    <li>Between (2,0) and (0,-2): line \(X_1 + X_2 = 0\)</li>
+                    <li>Between (2,0) and (-1,0): vertical line \(X_1 = 0.5\)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(a)(ii) k-NN Classification of Test Points <span class="marks">[3 marks]</span></h3>
+            <p>Using the classifier above, determine the class variables C1, C2, and C3 for the following test data points: &lt;(0,0), C1&gt;, &lt;(0.7,0), C2&gt;, and &lt;(0.3,0), C3&gt;</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Test Point Classifications:</strong> <strong>[3 marks - 1 mark each]</strong></p>
+
+            <p><strong>C1 = -1</strong> for point (0,0)</p>
+            <ul>
+                <li>Distances: to (2,0)=2, to (0,2)=2, to (0,-2)=2, to (3,0)=3, to (-1,0)=1</li>
+                <li>Nearest neighbor: (-1,0) with class -1</li>
+            </ul>
+
+            <p><strong>C2 = 1</strong> for point (0.7,0)</p>
+            <ul>
+                <li>This point is to the right of \(X_1 = 0.5\), closer to (2,0) than any other point</li>
+                <li>Nearest neighbor: (2,0) with class +1</li>
+            </ul>
+
+            <p><strong>C3 = -1</strong> for point (0.3,0)</p>
+            <ul>
+                <li>This point is to the left of \(X_1 = 0.5\), closer to (-1,0) than to (2,0)</li>
+                <li>Nearest neighbor: (-1,0) with class -1</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>Summary:</strong> C1 = -1, C2 = 1, C3 = -1</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b)(i) SVM Support Vectors and Predictor <span class="marks">[4 marks]</span></h3>
+            <p>In the same dataset, we apply a linear SVM model with predictor \(y(X_1, X_2)\) for classification. Which data points are the support vectors? Write down the equation for \(y(X_1, X_2)\).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Support Vectors:</strong> <strong>[1 mark]</strong></p>
+            <p>The support vectors are: <strong>(2,0), (0,2), and (0,-2)</strong></p>
+
+            <p><strong>Predictor Equation:</strong> <strong>[3 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[y(X_1, X_2) = X_1 - 1\]</p>
+            </div>
+
+            <p><strong>Explanation:</strong></p>
+            <p>The decision boundary is the vertical line \(X_1 = 1\) (midpoint between red points at x=2,3 and blue points at x=0,-1). The SVM predictor is:</p>
+            <ul>
+                <li>\(y(X_1, X_2) > 0\) → class +1 (red)</li>
+                <li>\(y(X_1, X_2) < 0\) → class -1 (blue)</li>
+                <li>\(y(X_1, X_2) = 0\) → decision boundary at \(X_1 = 1\)</li>
+            </ul>
+
+            <p>The support vectors are the closest points to the boundary: (2,0) from class +1, and (0,2), (0,-2) from class -1.</p>
+        </div>
+
+        <div class="question">
+            <h3>(b)(ii) Lagrange Multipliers <span class="marks">[5 marks]</span></h3>
+            <p>Specify the Lagrange multipliers \(\alpha_1, \alpha_2, \alpha_3, \alpha_4, \alpha_5\) for each of the data points in the training data: (2,0), (0,2), (0,-2), (3,0), and (-1,0), respectively.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Lagrange Multipliers:</strong> <strong>[5 marks]</strong></p>
+
+            <div class="formula-box">
+                <p>\[\alpha_1 = 0.5, \quad \alpha_2 = \alpha_3 = 0.25, \quad \alpha_4 = \alpha_5 = 0\]</p>
+            </div>
+
+            <p><strong>Verification:</strong></p>
+            <p>The weight vector is computed as:</p>
+            <div class="formula-box">
+                <p>\[\mathbf{w} = \sum_{i=1}^{5} \alpha_i y_i \mathbf{x}_i\]</p>
+                <p>\[= 0.5(+1)\begin{bmatrix}2\\0\end{bmatrix} + 0.25(-1)\begin{bmatrix}0\\2\end{bmatrix} + 0.25(-1)\begin{bmatrix}0\\-2\end{bmatrix} + 0(+1)\begin{bmatrix}3\\0\end{bmatrix} + 0(-1)\begin{bmatrix}-1\\0\end{bmatrix}\]</p>
+                <p>\[= \begin{bmatrix}1\\0\end{bmatrix} + \begin{bmatrix}0\\-0.5\end{bmatrix} + \begin{bmatrix}0\\0.5\end{bmatrix} = \begin{bmatrix}1\\0\end{bmatrix}\]</p>
+            </div>
+
+            <p>This gives \(\mathbf{w} = [1, 0]^T\), confirming \(y(X_1, X_2) = X_1 - 1\) with appropriate bias.</p>
+
+            <div class="note">
+                <strong>Interpretation:</strong> Only support vectors have non-zero α values. Point (2,0) has the largest α because it alone represents the positive class on the margin, while the two blue support vectors share the responsibility for the negative class.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b)(iii) Comparing k-NN vs SVM Accuracy <span class="marks">[2 marks]</span></h3>
+            <p>Which classifier (k-NN or SVM designed above) will be more accurate? Explain your answer in up to two sentences.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[2 marks]</strong> k-NN will work better as a nonlinear classifier.</p>
+
+            <p><strong>Explanation:</strong></p>
+            <p>The data distribution has a nonlinear structure - the blue class surrounds the red class in a non-convex pattern (points at (0,2), (0,-2), and (-1,0) form a "C" shape around the red points). Linear SVM can only create a straight decision boundary, which will misclassify some points. k-NN with k=1 can capture the complex nonlinear boundary perfectly for this small dataset.</p>
+
+            <div class="note">
+                <strong>Caveat:</strong> For this specific tiny dataset, k-NN performs better. However, for larger datasets or with noise, the linear SVM's simpler boundary might generalize better despite lower training accuracy.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>Context: Clustering Gaussian Distributions</h3>
+            <p>Consider using K-means to perform clustering on data in Figure 3.1A, where we expect to form three clusters as shown in Figure 3.1B. The data appears to follow Gaussian distributions with anisotropic (elongated) shapes.</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) K-means on Anisotropic Gaussian Clusters <span class="marks">[3 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Analysis:</strong></p>
+
+            <p><strong>[1 mark]</strong> The clusters seem to follow Gaussian distributions and some of them are anisotropic (elongated in certain directions).</p>
+
+            <p><strong>[1 mark]</strong> K-means is not able to encode anisotropy. Therefore, K-means would be partially effective.</p>
+
+            <p><strong>[1 mark]</strong> They will center the three clusters well but they won't be able to capture well the more distant points (at the extremes of the elongated clusters).</p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong> K-means assumes isotropic (spherical) clusters with equal variance in all directions. When clusters are elongated (anisotropic), K-means will:
+                <ul>
+                    <li>Correctly identify cluster centers</li>
+                    <li>Misclassify points at the elongated ends of clusters</li>
+                    <li>Potentially split elongated clusters if they're very stretched</li>
+                    <li>Merge nearby elongated clusters if their ends overlap</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means for Anisotropic Clusters <span class="marks">[2 marks]</span></h3>
+            <p>An alternative approach is to use Kernel K-means. Would kernel K-means help in this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> Yes, a kernel would help in this case.</p>
+
+            <p><strong>[1 mark]</strong> A Gaussian kernel would be able to encode the anisotropy in the data.</p>
+
+            <p><strong>[1 mark]</strong> In this case, the recovered clusters would have a very close fit with the actual ground truth.</p>
+
+            <div class="note">
+                <strong>How It Works:</strong> Kernel K-means with an appropriate kernel (e.g., RBF/Gaussian kernel) can implicitly map the data to a higher-dimensional space where the anisotropic clusters become more separable with spherical boundaries. The kernel parameters can be tuned to capture the scale and orientation of each cluster's elongation.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Mixture Models for Gaussian Clusters <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use mixture models. Would mixture models help to better classify this dataset than K-means and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> Mixture models is the ideal method to detect clusters generated via a Gaussian model.</p>
+
+            <p><strong>[1 mark]</strong> Mixture models assume a Gaussian distribution of the underlying clusters and they capture different variations based on the parameters of the distribution (mean, covariance).</p>
+
+            <p><strong>[1 mark]</strong> In this case, the clusters obtained will be a close fit and you get the additional advantage of recovering the parameters of the generative process (means, covariances, mixing proportions).</p>
+
+            <div class="formula-box">
+                <p><strong>GMM Advantage:</strong></p>
+                <p>Each cluster k has its own covariance matrix \(\Sigma_k\) that can be:</p>
+                <ul>
+                    <li>Full: \(\Sigma_k\) = general matrix (captures any ellipsoid orientation)</li>
+                    <li>Diagonal: Different variances per dimension</li>
+                    <li>Spherical: Isotropic (like K-means)</li>
+                </ul>
+                <p>For anisotropic Gaussian clusters, full covariance GMM is optimal.</p>
+            </div>
+
+            <div class="note">
+                <strong>Perfect Match:</strong> Since the data is actually generated from Gaussian distributions, GMM is the ideal choice - it's fitting the exact generative model that produced the data.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) PCA - First Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>The plot in Figure 3.2 shows some 2D data. PCA is applied to this data. Explain how the first principal component would look if it is overlaid on the plot. Explain your reasoning.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>First Principal Component:</strong></p>
+
+            <p><strong>[1 mark]</strong> The first principal component will be across the direction of the highest variance.</p>
+
+            <p><strong>[1 mark]</strong> In this case, we can note that there is a large variation in the y-axis and much smaller variation in the x-axis.</p>
+
+            <p><strong>Visual Description:</strong> The first PC would be a vertical (or near-vertical) line/vector pointing in the y-direction, as the data shows two distinct clusters vertically separated but with similar x-coordinates. The maximum variance is in the vertical spread of the data.</p>
+
+            <div class="note">
+                <strong>PC1 Direction:</strong> Looking at Figure 3.2, the data has two clusters roughly at y≈10-12 and y≈3-5, both centered around x≈1-2. The variance in y-direction is much larger than in x-direction, so PC1 aligns approximately with the y-axis.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) PCA - Second Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>Similar to the previous question, explain what the second principal component would look like and why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> PCA decomposes the data into orthogonal components.</p>
+
+            <p><strong>[1 mark]</strong> Therefore, the second principal component will be orthogonal to the first.</p>
+
+            <p><strong>Visual Description:</strong> Since PC1 is vertical (aligned with y-axis), PC2 must be horizontal (aligned with x-axis), perpendicular to PC1. This captures the secondary variation in the data's horizontal spread.</p>
+
+            <div class="formula-box">
+                <p><strong>Orthogonality Constraint:</strong></p>
+                <p>If PC1 ≈ [0, 1]<sup>T</sup> (vertical), then PC2 ≈ [1, 0]<sup>T</sup> (horizontal)</p>
+                <p>Such that PC1 · PC2 = 0</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) Choosing Number of Clusters in GMM <span class="marks">[3 marks]</span></h3>
+            <p>Explain how you would choose the number of clusters in an application of mixture models.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Method:</strong></p>
+
+            <p><strong>[1 mark]</strong> Use k-fold cross-validation.</p>
+
+            <p><strong>[1 mark]</strong> Estimate the log-likelihood across an increasing number of clusters, K.</p>
+
+            <p><strong>[1 mark]</strong> Decide the number of clusters based on the extreme/maximum point of the curve.</p>
+
+            <div class="formula-box">
+                <p><strong>Algorithm:</strong></p>
+                <pre>
+For K = 1 to K_max:
+    For each fold in cross-validation:
+        Train GMM with K components on training folds
+        Compute log-likelihood on validation fold
+    Average log-likelihood across folds → LL(K)
+
+Select K* = argmax_K LL(K)
+                </pre>
+            </div>
+
+            <div class="note">
+                <strong>Alternative Methods:</strong>
+                <ul>
+                    <li><strong>BIC (Bayesian Information Criterion):</strong> Penalizes model complexity: BIC = -2·log(L) + k·log(n)</li>
+                    <li><strong>AIC (Akaike Information Criterion):</strong> AIC = -2·log(L) + 2k</li>
+                    <li><strong>Silhouette Score:</strong> Measures cluster cohesion and separation</li>
+                    <li><strong>Elbow Method:</strong> Plot log-likelihood vs K and look for "elbow"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(g) Outlier Detection with Mixture Models <span class="marks">[5 marks]</span></h3>
+            <p>Explain how you could detect an outlier point with mixture models. Write a high-level pseudo code and describe each step. (Hint: Start with the expectation-maximization algorithm and how it can facilitate the detection)</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Algorithm Steps:</strong></p>
+
+            <p><strong>Step 1: Apply Gaussian Mixture Models for Clustering</strong> <strong>[2 marks]</strong></p>
+
+            <div class="formula-box">
+                <pre>
+<strong>Use Gaussian Mixture Models for clustering:</strong>
+
+1. Decide on the number of clusters K
+2. Use expectation-maximization algorithm:
+   - theta = {π, μ, Σ}: parameters of the Gaussian distribution
+     encoding each of the K clusters
+   - Initialize parameters (e.g., use k-means to get approximate answer)
+
+   - <strong>Expectation step:</strong>
+     Estimate the probability to assign data to each component q_nk
+     (responsibilities)
+
+   - <strong>Maximization step:</strong>
+     Update μ_k, Σ_k, and π_k
+
+   - Repeat until convergence
+                </pre>
+            </div>
+
+            <p><strong>Step 2: Use Responsibilities for Outlier Detection</strong> <strong>[1 mark]</strong></p>
+            <p>The probability assigned to each data point (q_nk - responsibilities) reflects its distance from the cluster distribution.</p>
+
+            <p><strong>Step 3: Threshold-Based Detection</strong> <strong>[2 marks]</strong></p>
+
+            <div class="formula-box">
+                <pre>
+<strong>Outlier Detection:</strong>
+
+1. For each data point n:
+   - Compute max_k(q_nk) = maximum responsibility across all clusters
+
+2. Use a threshold to highlight points unlikely to belong to any cluster:
+   - Set threshold: pval_threshold
+
+3. Identify outliers:
+   - Outliers O = {points where max_k(q_nk) < pval_threshold}
+
+<strong>Interpretation:</strong>
+- If max_k(q_nk) is small for all k, the point doesn't fit any cluster well
+- Such points are likely outliers
+                </pre>
+            </div>
+
+            <div class="note">
+                <strong>Alternative Approach:</strong> Compute the log-likelihood of each point under the fitted GMM. Points with very low likelihood (below a threshold) are outliers:
+                <div class="formula-box">
+                    <p>\[\log p(x_n) = \log\left(\sum_{k=1}^K \pi_k \mathcal{N}(x_n|\mu_k, \Sigma_k)\right)\]</p>
+                    <p>Outliers: \(\{x_n : \log p(x_n) < \text{threshold}\}\)</p>
+                </div>
+            </div>
+
+            <p><strong>Complete Pseudo-code:</strong></p>
+            <div class="formula-box">
+                <pre>
+<strong>OUTLIER_DETECTION_GMM(data, K, threshold):</strong>
+    # Fit GMM
+    params = INITIALIZE_GMM(data, K)  # Use k-means
+
+    converged = False
+    while not converged:
+        # E-step
+        responsibilities = COMPUTE_RESPONSIBILITIES(data, params)
+
+        # M-step
+        params = UPDATE_PARAMETERS(data, responsibilities)
+
+        converged = CHECK_CONVERGENCE(params)
+
+    # Detect outliers
+    outliers = []
+    for n in 1 to N:
+        max_responsibility = max(responsibilities[n, :])
+        if max_responsibility < threshold:
+            outliers.append(n)
+
+    return outliers, params
+                </pre>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | This was a 90-minute examination</p>
+            <p>Remember to show detailed calculations, derivations, and clear explanations in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glasgow Weather Visualization - IV Project 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 50px 40px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .intro p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0 40px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .system-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: #3498db;
+        }
+
+        .system-header {
+            padding: 25px;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .system-a .system-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .system-b .system-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .system-c .system-header {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .system-gen .system-header {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+        }
+
+        .system-body {
+            padding: 25px;
+        }
+
+        .system-body h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .system-body p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .features li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .features li:before {
+            content: "✓ ";
+            color: #2ecc71;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .system-a .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .system-b .btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .system-c .btn {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .system-gen .btn {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .intro h2 {
+                font-size: 1.4em;
+            }
+
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌦️ Glasgow Weather Visualization</h1>
+            <p>Multi-view Interactive Analysis of Daily Weather Data (2015-2019)</p>
+            <p class="subtitle">Information Visualisation Group Project | University of Glasgow | 2024/25</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Introduction -->
+            <div class="intro">
+                <h2>Explore Glasgow's Weather Patterns</h2>
+                <p>
+                    This project presents three distinct visualization systems for analyzing 1,795 days of Glasgow weather data.
+                    Each system uses different design approaches to support five analytical tasks: seasonal comparison,
+                    extreme event identification, correlation exploration, temporal trend analysis, and interactive filtering.
+                </p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number">1,795</div>
+                    <div class="label">Daily Observations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">5 Years</div>
+                    <div class="label">Time Period (2015-2019)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">9</div>
+                    <div class="label">Weather Attributes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">3</div>
+                    <div class="label">Visualization Systems</div>
+                </div>
+            </div>
+
+            <!-- Systems Grid -->
+            <div class="systems-grid">
+                <!-- System A -->
+                <div class="system-card system-a">
+                    <div class="system-header">
+                        System A
+                    </div>
+                    <div class="system-body">
+                        <h3>Temporal Analysis & Correlation</h3>
+                        <p>Traditional charts optimized for trend detection and pattern exploration with bidirectional linking.</p>
+                        <ul class="features">
+                            <li>Time series line chart (temperature trends)</li>
+                            <li>Scatter plot with regression (humidity vs visibility)</li>
+                            <li>Seasonal comparison bar chart</li>
+                            <li>Wind speed distribution histogram</li>
+                            <li>Bidirectional brushing & linking</li>
+                        </ul>
+                        <a href="SystemA/system_a_visualization.html" class="btn">Launch System A</a>
+                    </div>
+                </div>
+
+                <!-- System B -->
+                <div class="system-card system-b">
+                    <div class="system-header">
+                        System B
+                    </div>
+                    <div class="system-body">
+                        <h3>Statistical Distribution Focus</h3>
+                        <p>Distribution-focused design emphasizing outlier detection and pattern recognition through statistical views.</p>
+                        <ul class="features">
+                            <li>Monthly temperature heatmap (year × month)</li>
+                            <li>Box plots showing quartiles & outliers</li>
+                            <li>Scatter plot with dynamic regression</li>
+                            <li>Weather type distribution bars</li>
+                            <li>Click & brush selection across views</li>
+                        </ul>
+                        <a href="SystemB/system_b_visualization.html" class="btn">Launch System B</a>
+                    </div>
+                </div>
+
+                <!-- System C -->
+                <div class="system-card system-c">
+                    <div class="system-header">
+                        System C
+                    </div>
+                    <div class="system-body">
+                        <h3>Small Multiples & Faceting</h3>
+                        <p>Maximizes pattern visibility through faceted views and explicit filtering controls for detailed exploration.</p>
+                        <ul class="features">
+                            <li>Faceted time series (one per year)</li>
+                            <li>Strip plot for outlier identification</li>
+                            <li>Multi-dimensional bubble chart</li>
+                            <li>Temperature distribution histogram</li>
+                            <li>Dropdown & slider filtering controls</li>
+                        </ul>
+                        <a href="SystemC/system_c_visualization.html" class="btn">Launch System C</a>
+                    </div>
+                </div>
+
+                <!-- System A with Generalization -->
+                <div class="system-card system-gen">
+                    <div class="system-header">
+                        System A + Generalization
+                    </div>
+                    <div class="system-body">
+                        <h3>Hierarchical Temporal Selection</h3>
+                        <p>Extended System A with generalized selection demonstrating semantic hierarchical abstraction.</p>
+                        <ul class="features">
+                            <li>5-level temporal hierarchy (Day→Year)</li>
+                            <li>Interactive hierarchy traversal</li>
+                            <li>Aggregation at all levels (week/month/season/year)</li>
+                            <li>Visual feedback on selection generalization</li>
+                            <li>NOT global filtering - true semantic abstraction</li>
+                        </ul>
+                        <a href="SystemA/system_a_with_generalization.html" class="btn">Launch Generalized Selection</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Information Visualisation (M)</strong> | University of Glasgow</p>
+            <p>Academic Year 2024/25 | Submission Date: March 20, 2026</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Dataset: Glasgow Weather Data (2015-2019) | 1,795 daily observations<br>
+                Technology: Python 3.7+ | Altair 5.5.0 (Vega-Lite)
+            </p>
+        </div>
+    </div>
+</body>
+</html>

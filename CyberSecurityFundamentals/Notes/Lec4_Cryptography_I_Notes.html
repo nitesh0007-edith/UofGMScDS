@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptography I – COMPSCI5063</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --accent: #58a6ff; --accent2: #3fb950;
+    --accent3: #f78166; --accent4: #d2a8ff; --accent5: #ffa657;
+    --text: #e6edf3; --muted: #8b949e; --yellow: #e3b341;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; }
+  /* NAV */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; position: sticky; top: 0; z-index: 100; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  nav span { color: var(--accent); font-weight: 700; font-size: 1rem; margin-right: 12px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.78rem; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); transition: all .2s; }
+  nav a:hover { color: var(--accent); border-color: var(--accent); }
+  /* LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+  section { margin-bottom: 60px; scroll-margin-top: 80px; }
+  h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 6px; }
+  h2 { font-size: 1.5rem; color: var(--accent4); margin: 40px 0 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  h3 { font-size: 1.1rem; color: var(--accent5); margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; margin-bottom: 24px; }
+  .card-sm { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-sm h4 { color: var(--accent2); font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+  /* BADGES */
+  .badge { display: inline-block; font-size: 0.72rem; padding: 2px 10px; border-radius: 20px; font-weight: 600; margin: 2px; }
+  .badge-blue { background: #1f3a5f; color: var(--accent); }
+  .badge-green { background: #1a3a25; color: var(--accent2); }
+  .badge-red { background: #3a1f1f; color: var(--accent3); }
+  .badge-purple { background: #2d1f3a; color: var(--accent4); }
+  .badge-yellow { background: #3a2e1a; color: var(--yellow); }
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 18px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; margin: 14px 0; }
+  code { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+  .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .cm { color: #8b949e; font-style: italic; }
+  .num { color: #79c0ff; } .str { color: #a5d6ff; }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
+  th { background: var(--surface2); color: var(--accent); padding: 10px 12px; text-align: left; border: 1px solid var(--border); }
+  td { padding: 8px 12px; border: 1px solid var(--border); }
+  tr:nth-child(even) td { background: #161b22; }
+  tr:hover td { background: #1c2128; }
+  /* DIAGRAMS */
+  .diagram { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin: 20px 0; text-align: center; overflow-x: auto; }
+  .box { display: inline-flex; align-items: center; justify-content: center; background: var(--surface); border: 2px solid var(--accent); border-radius: 8px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; min-width: 80px; }
+  .box-green { border-color: var(--accent2); color: var(--accent2); }
+  .box-red { border-color: var(--accent3); color: var(--accent3); }
+  .box-purple { border-color: var(--accent4); color: var(--accent4); }
+  .box-yellow { border-color: var(--yellow); color: var(--yellow); }
+  .arrow { color: var(--muted); font-size: 1.2rem; margin: 0 6px; }
+  .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  /* ANIMATION */
+  @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(88,166,255,.4)} 50%{box-shadow:0 0 0 8px rgba(88,166,255,0)} }
+  .animate { animation: fadeIn .5s ease both; }
+  .pulse { animation: pulse 2s infinite; }
+  /* ALERTS */
+  .alert { border-radius: 8px; padding: 14px 18px; margin: 14px 0; border-left: 4px solid; }
+  .alert-info { background: #1f3a5f22; border-color: var(--accent); }
+  .alert-warn { background: #3a2e1a22; border-color: var(--yellow); }
+  .alert-danger { background: #3a1f1f22; border-color: var(--accent3); }
+  .alert-success { background: #1a3a2522; border-color: var(--accent2); }
+  /* EXAM */
+  .exam-q { background: var(--surface); border: 1px solid var(--yellow); border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .exam-q .marks { float: right; background: var(--yellow); color: #000; font-weight: 700; font-size: 0.8rem; padding: 2px 10px; border-radius: 20px; }
+  .exam-q h4 { color: var(--yellow); margin-bottom: 12px; }
+  .solution { display: none; background: var(--surface2); border: 1px solid var(--accent2); border-radius: 8px; padding: 18px; margin-top: 12px; }
+  .solution.show { display: block; animation: fadeIn .3s ease; }
+  .toggle-btn { background: var(--accent2); color: #000; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; margin-top: 10px; transition: opacity .2s; }
+  .toggle-btn:hover { opacity: .85; }
+  /* QUIZ */
+  .quiz-q { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+  .quiz-q p { font-weight: 600; margin-bottom: 12px; }
+  .quiz-opt { display: block; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin: 6px 0; cursor: pointer; transition: all .2s; font-size: 0.9rem; }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct { background: #1a3a25; border-color: var(--accent2); color: var(--accent2); }
+  .quiz-opt.wrong { background: #3a1f1f; border-color: var(--accent3); color: var(--accent3); }
+  .quiz-feedback { margin-top: 8px; font-size: 0.85rem; display: none; }
+  .quiz-feedback.show { display: block; animation: fadeIn .3s ease; }
+  /* XOR TABLE */
+  .xor-cell { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 700; font-size: 1.1rem; }
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 16px; margin-bottom: 16px; }
+  .step::before { counter-increment: step; content: counter(step); background: var(--accent); color: #000; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; margin-top: 2px; }
+  /* MATH HIGHLIGHT */
+  .math-block { background: var(--surface2); border-left: 3px solid var(--accent4); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 14px 0; overflow-x: auto; }
+  /* PROGRESS */
+  .progress-bar { background: var(--surface2); border-radius: 99px; height: 8px; margin: 4px 0 12px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent4)); transition: width .5s ease; }
+  /* CBC INTERACTIVE */
+  .cbc-block { background: var(--surface2); border: 2px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; min-width: 80px; }
+  .cbc-row { display: flex; align-items: center; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 8px 0; }
+  .xor-symbol { font-size: 1.5rem; color: var(--accent3); font-weight: 700; }
+  .enc-box { background: #1f3a5f; border: 2px solid var(--accent); border-radius: 8px; padding: 8px 16px; color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span>Crypto I</span>
+  <a href="#overview">Overview</a>
+  <a href="#ingredients">Ingredients</a>
+  <a href="#attacks">Attacks</a>
+  <a href="#feistel">Feistel/DES</a>
+  <a href="#3des">3DES</a>
+  <a href="#aes">AES</a>
+  <a href="#rc4">RC4</a>
+  <a href="#modes">Block Modes</a>
+  <a href="#rsa">RSA</a>
+  <a href="#exam">Exam Qs</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section id="overview">
+  <h1>Cryptography I</h1>
+  <p class="subtitle">COMPSCI5063 · Cyber Security Fundamentals · Week 4 · University of Glasgow</p>
+
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>Topics</h4>
+      <p>Context · Ingredients · Classification · Attacks · DES · 3DES · AES · RC4 · Block Modes</p>
+    </div>
+    <div class="card-sm">
+      <h4>Key Exam Areas</h4>
+      <p>ECB/CBC decrypt · ECB weaknesses · RSA key gen · Brute force analysis</p>
+    </div>
+    <div class="card-sm">
+      <h4>Reading</h4>
+      <p>Chapter 20 – Computer Security: Principles and Practice (Stallings &amp; Brown, 3rd Ed.)</p>
+    </div>
+  </div>
+
+  <!-- Crypto context diagram -->
+  <h2>Communication Model</h2>
+  <div class="diagram animate">
+    <div class="flow">
+      <div class="box box-green">Andy<br><small>Sender</small></div>
+      <span class="arrow">→</span>
+      <div class="box">Plaintext<br><small>560213</small></div>
+      <span class="arrow">→</span>
+      <div class="box box-purple">Encrypt<br><small>+Key</small></div>
+      <span class="arrow">→</span>
+      <div class="box box-red">Ciphertext<br><small>A4$h*L@9</small></div>
+      <span class="arrow">→</span>
+      <div class="box box-purple">Decrypt<br><small>+Key</small></div>
+      <span class="arrow">→</span>
+      <div class="box box-green">Sam<br><small>Receiver</small></div>
+    </div>
+    <div style="margin-top:16px;color:var(--accent3)">
+      ↑<br>
+      <div class="box box-red" style="margin:0 auto;width:160px">Eaves (Attacker)</div>
+    </div>
+  </div>
+
+  <h2 id="ingredients">Cryptography Ingredients</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Plaintext</h4><p>The original message before encryption</p></div>
+    <div class="card-sm"><h4>Encryption Algorithm</h4><p>Performs substitutions/transformations on plaintext</p></div>
+    <div class="card-sm"><h4>Secret Key</h4><p>Input to the algorithm; determines the substitutions</p></div>
+    <div class="card-sm"><h4>Ciphertext</h4><p>Scrambled output; depends on plaintext + key</p></div>
+    <div class="card-sm"><h4>Decryption Algorithm</h4><p>Reverse of encryption algorithm</p></div>
+  </div>
+
+  <h2>Classification of Cryptography</h2>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>By Operation Type</h4>
+      <p><strong>Substitution</strong> – each element mapped to another<br>
+         <strong>Transposition</strong> – elements rearranged</p>
+    </div>
+    <div class="card-sm">
+      <h4>By Processing Method</h4>
+      <p><strong>Block cipher</strong> – processes one block at a time<br>
+         <strong>Stream cipher</strong> – processes elements continuously</p>
+    </div>
+    <div class="card-sm">
+      <h4>By Number of Keys</h4>
+      <p><strong>Symmetric</strong> – same key at sender &amp; receiver<br>
+         <strong>Asymmetric</strong> – different keys (public/private)</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>Symmetric Encryption</h4>
+      <div class="flow" style="justify-content:flex-start;flex-wrap:wrap">
+        <div class="box" style="font-size:.78rem">Plaintext</div>
+        <span class="arrow">→</span>
+        <div class="box box-purple" style="font-size:.78rem">E(K,P)</div>
+        <span class="arrow">→</span>
+        <div class="box box-red" style="font-size:.78rem">Ciphertext</div>
+        <span class="arrow">→</span>
+        <div class="box box-purple" style="font-size:.78rem">D(K,C)</div>
+        <span class="arrow">→</span>
+        <div class="box box-green" style="font-size:.78rem">Plaintext</div>
+      </div>
+      <p style="margin-top:8px;font-size:.8rem;color:var(--muted)">Same secret key K used for both operations</p>
+    </div>
+    <div class="card-sm">
+      <h4>Asymmetric Encryption</h4>
+      <div class="flow" style="justify-content:flex-start;flex-wrap:wrap">
+        <div class="box" style="font-size:.78rem">Plaintext</div>
+        <span class="arrow">→</span>
+        <div class="box box-yellow" style="font-size:.78rem">E(PubK)</div>
+        <span class="arrow">→</span>
+        <div class="box box-red" style="font-size:.78rem">Ciphertext</div>
+        <span class="arrow">→</span>
+        <div class="box box-purple" style="font-size:.78rem">D(PrivK)</div>
+        <span class="arrow">→</span>
+        <div class="box box-green" style="font-size:.78rem">Plaintext</div>
+      </div>
+      <p style="margin-top:8px;font-size:.8rem;color:var(--muted)">Public key encrypts; private key decrypts. Never encrypt with private key!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ATTACKS -->
+<section id="attacks">
+  <h2>Types of Attacks on Encrypted Messages</h2>
+  <div class="alert alert-warn">
+    <strong>Exam tip:</strong> Know the hierarchy of attacks from easiest to hardest for the attacker to execute (and easiest/hardest to defend).
+  </div>
+  <table>
+    <thead>
+      <tr><th>Attack Type</th><th>What Attacker Knows</th><th>Difficulty (for attacker)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge badge-green">Ciphertext Only</span></td><td>Encryption algorithm + ciphertext only</td><td>Hardest</td></tr>
+      <tr><td><span class="badge badge-blue">Known Plaintext</span></td><td>+ One or more plaintext-ciphertext pairs</td><td>↑</td></tr>
+      <tr><td><span class="badge badge-purple">Chosen Plaintext</span></td><td>+ Can choose plaintext and get ciphertext</td><td>↑</td></tr>
+      <tr><td><span class="badge badge-yellow">Chosen Ciphertext</span></td><td>+ Can choose ciphertext and get decryption</td><td>↑</td></tr>
+      <tr><td><span class="badge badge-red">Chosen Text</span></td><td>Both chosen plaintext and chosen ciphertext</td><td>Easiest</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Brute Force Attack</h3>
+  <div class="card">
+    <p>Try all possible keys until intelligible plaintext is found. Impractical when key space is large.</p>
+    <div class="alert alert-info">
+      <strong>Computationally Secure</strong> means either: (1) the cost of breaking exceeds the value of the information, OR (2) the time to break exceeds the useful lifetime of the information.
+    </div>
+    <div class="math-block">
+      <p>Key size = \(n\) bits → Key space = \(2^n\) possible keys</p>
+      <p>Average brute force attempts = \(2^{n-1}\)</p>
+      <p>With \(r\) attempts/sec, time = \(\dfrac{2^{n-1}}{r}\) seconds</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEISTEL / DES -->
+<section id="feistel">
+  <h2>Feistel Cipher Structure</h2>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>Key Properties</h4>
+      <ul style="padding-left:18px">
+        <li>Plaintext split into two halves: L₀, R₀</li>
+        <li>Passes through n rounds of processing</li>
+        <li>Each round uses subkey Kᵢ derived from main key</li>
+        <li>Substitution on left half using round function F on right half</li>
+        <li>Halves are swapped after each round</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <h4>Design Decisions</h4>
+      <ul style="padding-left:18px">
+        <li><strong>Block size:</strong> 128 bits (common)</li>
+        <li><strong>Key size:</strong> 128 bits (common)</li>
+        <li><strong>Rounds:</strong> 16 typical</li>
+        <li><strong>Subkey gen:</strong> complex = more secure</li>
+        <li><strong>Round function:</strong> more complex = harder to cryptanalyse</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Feistel diagram -->
+  <div class="diagram">
+    <p style="color:var(--accent);font-weight:700;margin-bottom:16px">Feistel Structure (n rounds)</p>
+    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div class="box" style="width:180px;margin:0 auto">Plaintext (2w bits)</div>
+        <div style="display:flex;gap:20px;justify-content:center;margin:12px 0">
+          <div style="text-align:center">
+            <div class="box box-blue" style="width:70px">L₀<br><small>w bits</small></div>
+          </div>
+          <div style="text-align:center">
+            <div class="box box-green" style="width:70px">R₀<br><small>w bits</small></div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin:4px 0">Round 1 → K₁</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0">
+          <div class="box box-blue" style="width:70px;font-size:.8rem">L₁ = R₀</div>
+          <span style="color:var(--accent3);font-size:1.2rem">⊕</span>
+          <div class="box box-green" style="width:70px;font-size:.8rem">R₁ = L₀⊕F(K₁,R₀)</div>
+        </div>
+        <div style="color:var(--muted);font-size:0.8rem;margin:4px 0">⋮ (n rounds) ⋮</div>
+        <div class="box" style="width:180px;margin:8px auto">Ciphertext (2w bits)</div>
+      </div>
+    </div>
+    <div class="math-block" style="text-align:left;margin-top:16px">
+      <p>Each round: \(L_i = R_{i-1}\), &nbsp; \(R_i = L_{i-1} \oplus F(K_i, R_{i-1})\)</p>
+      <p>Decryption: reverse key order \(K_n, K_{n-1}, \ldots, K_1\)</p>
+    </div>
+  </div>
+
+  <h2>DES – Data Encryption Standard</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Plaintext</h4><p>64 bits</p></div>
+    <div class="card-sm"><h4>Key</h4><p>56 bits</p></div>
+    <div class="card-sm"><h4>Rounds</h4><p>16 rounds</p></div>
+    <div class="card-sm"><h4>Subkeys</h4><p>16 subkeys (48 bits each)</p></div>
+  </div>
+
+  <h3>Simplified S-DES Key Generation Example</h3>
+  <div class="alert alert-info">Simplified DES (S-DES) uses 8-bit plaintext, 10-bit key, 2 rounds — used to illustrate the concept.</div>
+
+  <div class="card">
+    <p><strong>Original Key:</strong> <code>1 0 1 0 0 0 0 0 1 0</code></p>
+    <div class="steps">
+      <div class="step"><div><strong>Apply P10 permutation</strong> (positions: 3,5,2,7,4,10,1,9,8,6)<br>Result: <code>1 0 0 0 0 0 1 1 0 0</code></div></div>
+      <div class="step"><div><strong>Split into Left 5 / Right 5</strong><br>Left: <code>1 0 0 0 0</code> &nbsp; Right: <code>0 1 1 0 0</code></div></div>
+      <div class="step"><div><strong>LS1</strong> (circular left shift by 1)<br>Left: <code>0 0 0 0 1</code> &nbsp; Right: <code>1 1 0 0 0</code></div></div>
+      <div class="step"><div><strong>Apply P8 permutation</strong> (positions: 6,3,7,4,8,5,10,9) to combined 10 bits<br><strong>K1 = <code style="color:var(--accent2)">1 0 1 0 0 1 0 0</code></strong></div></div>
+      <div class="step"><div><strong>LS2</strong> (circular left shift by 2 from LS1 result)<br>Left: <code>0 0 1 0 0</code> &nbsp; Right: <code>0 0 0 1 1</code></div></div>
+      <div class="step"><div><strong>Apply P8 again</strong><br><strong>K2 = <code style="color:var(--accent2)">0 1 0 0 0 0 1 1</code></strong></div></div>
+    </div>
+  </div>
+
+  <h3>S-DES Encryption: Plaintext = 0 1 1 1 0 0 1 0</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div><strong>IP (Initial Permutation)</strong> positions: 2,6,3,1,4,8,5,7<br>Result: <code>1 0 1 0 1 0 0 1</code> → L=<code>1010</code>, R=<code>1001</code></div></div>
+      <div class="step"><div><strong>EP (Expand & Permute R)</strong> positions: 4,1,2,3,2,3,4,1<br>R=<code>1001</code> → EP: <code>1 1 0 0 0 0 1 1</code></div></div>
+      <div class="step"><div><strong>XOR with K1</strong> = <code>1 0 1 0 0 1 0 0</code><br>Result: <code>0 1 1 0 0 1 1 1</code></div></div>
+      <div class="step"><div><strong>S-Box substitution</strong><br>
+        S0 input: <code>0110</code> → row=00 (bits 1,4), col=11 (bits 2,3) → <code>10</code><br>
+        S1 input: <code>0111</code> → row=01, col=11 → <code>11</code><br>
+        Combined: <code>1011</code>
+      </div></div>
+      <div class="step"><div><strong>Apply P4</strong> positions: 2,4,3,1 → <code>0 1 1 1</code></div></div>
+      <div class="step"><div><strong>XOR with L</strong> = <code>1010</code> → new L = <code>1 1 0 1</code>, R unchanged = <code>1001</code></div></div>
+      <div class="step"><div><strong>Swap L and R</strong> → <code>1001 1101</code>, then apply Round 2 with K2</div></div>
+      <div class="step"><div><strong>Apply IP⁻¹</strong> (positions: 4,1,3,5,7,2,8,6)<br><strong>Ciphertext = <code style="color:var(--accent3)">0 1 1 1 0 1 1 1</code></strong></div></div>
+    </div>
+  </div>
+
+  <h3>S-Box Reference</h3>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>S0 Matrix</h4>
+      <table style="font-size:0.82rem">
+        <thead><tr><th>Row\Col</th><th>00</th><th>01</th><th>10</th><th>11</th></tr></thead>
+        <tbody>
+          <tr><td><strong>00</strong></td><td>01</td><td>00</td><td>11</td><td>10</td></tr>
+          <tr><td><strong>01</strong></td><td>11</td><td>10</td><td>01</td><td>00</td></tr>
+          <tr><td><strong>10</strong></td><td>00</td><td>10</td><td>01</td><td>11</td></tr>
+          <tr><td><strong>11</strong></td><td>11</td><td>01</td><td>11</td><td>10</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:6px">Row = bits 1&4, Col = bits 2&3</p>
+    </div>
+    <div class="card-sm">
+      <h4>S1 Matrix</h4>
+      <table style="font-size:0.82rem">
+        <thead><tr><th>Row\Col</th><th>00</th><th>01</th><th>10</th><th>11</th></tr></thead>
+        <tbody>
+          <tr><td><strong>00</strong></td><td>00</td><td>01</td><td>10</td><td>11</td></tr>
+          <tr><td><strong>01</strong></td><td>10</td><td>00</td><td>01</td><td>11</td></tr>
+          <tr><td><strong>10</strong></td><td>11</td><td>00</td><td>01</td><td>00</td></tr>
+          <tr><td><strong>11</strong></td><td>10</td><td>01</td><td>00</td><td>11</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>XOR Truth Table (Essential!)</h3>
+  <div class="diagram" style="max-width:300px">
+    <table style="margin:0 auto;width:auto">
+      <thead><tr><th>A</th><th>B</th><th>A ⊕ B</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>0</td><td style="color:var(--accent2)">0</td></tr>
+        <tr><td>0</td><td>1</td><td style="color:var(--accent3)">1</td></tr>
+        <tr><td>1</td><td>0</td><td style="color:var(--accent3)">1</td></tr>
+        <tr><td>1</td><td>1</td><td style="color:var(--accent2)">0</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px;font-size:.82rem;color:var(--muted)">Key property: A ⊕ A = 0, A ⊕ 0 = A, A ⊕ B ⊕ B = A</p>
+  </div>
+</section>
+
+<!-- 3DES -->
+<section id="3des">
+  <h2>Triple DES (3DES)</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Keys</h4><p>3 independent keys (K1, K2, K3)</p></div>
+    <div class="card-sm"><h4>Pattern</h4><p>Encrypt-Decrypt-Encrypt (EDE)</p></div>
+    <div class="card-sm"><h4>Backward compat.</h4><p>K1=K2=K3 → reduces to single DES</p></div>
+  </div>
+
+  <div class="diagram">
+    <p style="color:var(--accent);font-weight:700;margin-bottom:16px">3DES EDE Encryption</p>
+    <div class="flow">
+      <div class="box box-green">Plaintext P</div>
+      <span class="arrow">→</span>
+      <div class="enc-box">E(K₁)</div>
+      <span class="arrow">→</span>
+      <div class="box box-red">D(K₂)</div>
+      <span class="arrow">→</span>
+      <div class="enc-box">E(K₃)</div>
+      <span class="arrow">→</span>
+      <div class="box box-green">Ciphertext C</div>
+    </div>
+    <div class="math-block" style="text-align:left;margin-top:16px">
+      <p><strong>Encryption:</strong> \(C = E(K_3,\, D(K_2,\, E(K_1, P)))\)</p>
+      <p><strong>Decryption:</strong> \(P = D(K_1,\, E(K_2,\, D(K_3, C)))\)</p>
+      <p><strong>Backward compatibility:</strong> If \(K_1 = K_2 = K_3\): \(C = E(K_1, D(K_1, E(K_1,P))) = E(K_1, P)\)</p>
+    </div>
+  </div>
+  <div class="alert alert-info">
+    The use of decryption in the second stage has no cryptographic significance — it only allows 3DES users to decrypt data encrypted by original single DES users.
+  </div>
+</section>
+
+<!-- AES -->
+<section id="aes">
+  <h2>AES – Advanced Encryption Standard</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Block Size</h4><p>128 bits (fixed)</p></div>
+    <div class="card-sm"><h4>Key Size</h4><p>128, 192, or 256 bits</p></div>
+    <div class="card-sm"><h4>Rounds</h4><p>10 (128-bit key), 12 (192), 14 (256)</p></div>
+    <div class="card-sm"><h4>Structure</h4><p>NOT Feistel – operates on entire block in parallel</p></div>
+  </div>
+
+  <div class="alert alert-warn">
+    <strong>Key AES vs DES difference:</strong> DES uses Feistel structure (half block modified at a time). AES processes the ENTIRE block in each round using 4 operations.
+  </div>
+
+  <h3>AES Four Operations (Each Round)</h3>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>1. Substitute Bytes</h4>
+      <p>16×16 S-box lookup. Left 4 bits = row, right 4 bits = column. Provides non-linearity (confusion).</p>
+    </div>
+    <div class="card-sm">
+      <h4>2. Shift Rows</h4>
+      <p>Row 1: no shift. Row 2: 1-byte left shift. Row 3: 2-byte shift. Row 4: 3-byte shift. Provides diffusion.</p>
+    </div>
+    <div class="card-sm">
+      <h4>3. Mix Columns</h4>
+      <p>Matrix multiplication in GF(2⁸). Each column treated as polynomial. Mixes data across columns.</p>
+    </div>
+    <div class="card-sm">
+      <h4>4. Add Round Key</h4>
+      <p>XOR state with round key. Self-inverse: XOR same key again returns original. The only key-dependent step.</p>
+    </div>
+  </div>
+
+  <h3>Shift Row Example</h3>
+  <div class="diagram">
+    <table style="width:auto;margin:0 auto;font-family:monospace">
+      <thead><tr><th>Row</th><th>Before</th><th>Shift</th><th>After</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>87 F2 4D 97</td><td>0</td><td style="color:var(--accent2)">87 F2 4D 97</td></tr>
+        <tr><td>2</td><td>EC 6E 4C 90</td><td>1 left</td><td style="color:var(--accent2)">6E 4C 90 EC</td></tr>
+        <tr><td>3</td><td>4A C3 46 E7</td><td>2 left</td><td style="color:var(--accent2)">46 E7 4A C3</td></tr>
+        <tr><td>4</td><td>8C D8 95 A6</td><td>3 left</td><td style="color:var(--accent2)">A6 8C D8 95</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Mix Column Math</h3>
+  <div class="math-block">
+    <p>Mix Columns matrix multiplication:</p>
+    <p>\[\begin{bmatrix} S'_{0j} \\ S'_{1j} \\ S'_{2j} \\ S'_{3j} \end{bmatrix} = \begin{bmatrix} 02 & 03 & 01 & 01 \\ 01 & 02 & 03 & 01 \\ 01 & 01 & 02 & 03 \\ 03 & 01 & 01 & 02 \end{bmatrix} \begin{bmatrix} S_{0j} \\ S_{1j} \\ S_{2j} \\ S_{3j} \end{bmatrix}\]</p>
+    <p>All arithmetic in GF(2⁸): 01·x = x, 02·x = shift left (XOR 0x1B if overflow), 03·x = 02·x ⊕ x</p>
+  </div>
+
+  <div class="card">
+    <h4 style="color:var(--accent5)">Mix Column Worked Example</h4>
+    <p>For byte <strong>87</strong> (= 1000 0111):</p>
+    <p>02 × 87: leftmost bit=1, so shift left → 0000 1110, then XOR 0001 1011 = <strong>0001 0101</strong></p>
+    <p>For byte <strong>6E</strong> (= 0110 1110):</p>
+    <p>02 × 6E: leftmost bit=0, so shift left → 1101 1100 = <strong>DC</strong></p>
+    <p>03 × 6E = 02×6E ⊕ 6E = DC ⊕ 6E = <strong>B2</strong></p>
+  </div>
+
+  <h3>Add Round Key – Why It's Its Own Inverse</h3>
+  <div class="math-block">
+    <p>\(A \oplus K = C\) (encrypt)</p>
+    <p>\(C \oplus K = A \oplus K \oplus K = A \oplus 0 = A\) (decrypt)</p>
+    <p>This is why <strong>no separate decryption key needed</strong> for this step.</p>
+  </div>
+</section>
+
+<!-- RC4 -->
+<section id="rc4">
+  <h2>RC4 – Rivest Cipher 4 (Stream Cipher)</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Type</h4><p>Stream cipher (variable key length)</p></div>
+    <div class="card-sm"><h4>Key Length</h4><p>1–256 bytes</p></div>
+    <div class="card-sm"><h4>State</h4><p>256-byte permutation vector S[0..255]</p></div>
+    <div class="card-sm"><h4>Output</h4><p>Pseudorandom keystream XORed with plaintext</p></div>
+  </div>
+
+  <h3>Phase 1: State Initialization (KSA)</h3>
+  <pre><code><span class="cm">// Key Scheduling Algorithm (KSA)</span>
+<span class="kw">for</span> i = 0 <span class="kw">to</span> <span class="num">255</span>:
+    S[i] = i
+    T[i] = K[i <span class="kw">mod</span> keylen]   <span class="cm">// T is temporary vector</span>
+
+j = <span class="num">0</span>
+<span class="kw">for</span> i = 0 <span class="kw">to</span> <span class="num">255</span>:
+    j = (j + S[i] + T[i]) <span class="kw">mod</span> <span class="num">256</span>
+    swap(S[i], S[j])          <span class="cm">// Initial permutation of S</span></code></pre>
+
+  <h3>Phase 2: Keystream Generation (PRGA)</h3>
+  <pre><code><span class="cm">// Pseudo-Random Generation Algorithm (PRGA)</span>
+i = 0; j = 0
+<span class="kw">while</span> (plaintext bytes remain):
+    i = (i + <span class="num">1</span>) <span class="kw">mod</span> <span class="num">256</span>
+    j = (j + S[i]) <span class="kw">mod</span> <span class="num">256</span>
+    swap(S[i], S[j])
+    t = (S[i] + S[j]) <span class="kw">mod</span> <span class="num">256</span>
+    k = S[t]              <span class="cm">// One keystream byte</span>
+    output k XOR plaintext_byte</code></pre>
+
+  <h3>Stream Cipher Security Vulnerability</h3>
+  <div class="alert alert-danger">
+    <strong>NEVER reuse a stream cipher key!</strong><br>
+    If C₁ = P₁ ⊕ K and C₂ = P₂ ⊕ K, then C₁ ⊕ C₂ = P₁ ⊕ P₂.<br>
+    If one plaintext is known/guessable, the other is immediately recoverable.
+  </div>
+
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>Stream Cipher Advantages</h4>
+      <ul style="padding-left:18px">
+        <li>As secure as block cipher (comparable key)</li>
+        <li>Faster, uses less code</li>
+        <li>Good for real-time applications</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <h4>Stream Cipher Disadvantages</h4>
+      <ul style="padding-left:18px">
+        <li>Key reuse is catastrophic</li>
+        <li>Block ciphers can safely reuse keys</li>
+        <li>No authentication by itself</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- BLOCK MODES -->
+<section id="modes">
+  <h2>Cipher Block Modes of Operation</h2>
+  <div class="alert alert-info">
+    <strong>The problem:</strong> DES/3DES blocks = 64 bits. AES blocks = 128 bits. What about longer messages? We need block modes.
+  </div>
+
+  <!-- ECB -->
+  <h3>1. Electronic Code Book (ECB)</h3>
+  <div class="diagram">
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent2)">P₁</div>
+      <div class="cbc-block" style="border-color:var(--accent2)">P₂</div>
+      <div class="cbc-block" style="border-color:var(--accent2)">P₃</div>
+    </div>
+    <div class="cbc-row">
+      <div class="enc-box">E(K)</div>
+      <div class="enc-box">E(K)</div>
+      <div class="enc-box">E(K)</div>
+    </div>
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent3)">C₁</div>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₂</div>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₃</div>
+    </div>
+    <p style="margin-top:10px;color:var(--accent3);font-size:.85rem">Same key, no chaining. P₁=P₂ → C₁=C₂ !</p>
+  </div>
+  <div class="math-block">
+    <p><strong>Encryption:</strong> \(C_j = E(K, P_j)\)</p>
+    <p><strong>Decryption:</strong> \(P_j = D(K, C_j)\)</p>
+  </div>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>Properties</h4>
+      <ul style="padding-left:18px">
+        <li>Each block encrypted independently</li>
+        <li>Same plaintext → same ciphertext</li>
+        <li>Blocks can be encrypted in parallel</li>
+        <li>Random access possible</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <h4 style="color:var(--accent3)">Weaknesses</h4>
+      <ul style="padding-left:18px">
+        <li>Patterns in plaintext visible in ciphertext</li>
+        <li>Block replay attacks possible</li>
+        <li>Not semantically secure</li>
+        <li>Classic example: ECB penguin image</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CBC -->
+  <h3>2. Cipher Block Chaining (CBC)</h3>
+  <div class="diagram">
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent4)">IV</div>
+      <span class="xor-symbol">⊕</span>
+      <div class="cbc-block" style="border-color:var(--accent2)">P₁</div>
+      <span style="color:var(--muted)">→</span>
+      <div class="enc-box">E(K)</div>
+      <span style="color:var(--muted)">→</span>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₁</div>
+    </div>
+    <div class="cbc-row" style="justify-content:flex-start;padding-left:100px">
+      <span style="color:var(--accent4);font-size:0.8rem">↙ used as next IV</span>
+    </div>
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent3)">C₁</div>
+      <span class="xor-symbol">⊕</span>
+      <div class="cbc-block" style="border-color:var(--accent2)">P₂</div>
+      <span style="color:var(--muted)">→</span>
+      <div class="enc-box">E(K)</div>
+      <span style="color:var(--muted)">→</span>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₂</div>
+    </div>
+  </div>
+  <div class="math-block">
+    <p><strong>Encryption:</strong> \(C_j = E(K,\, C_{j-1} \oplus P_j)\) &nbsp; where \(C_0 = IV\)</p>
+    <p><strong>Decryption:</strong> \(P_j = D(K, C_j) \oplus C_{j-1}\)</p>
+    <p><strong>Proof:</strong> \(D(K, C_j) = D(K, E(K, C_{j-1} \oplus P_j)) = C_{j-1} \oplus P_j\)</p>
+    <p>So: \(C_{j-1} \oplus D(K, C_j) = C_{j-1} \oplus C_{j-1} \oplus P_j = P_j\) ✓</p>
+  </div>
+  <div class="alert alert-warn">
+    <strong>CBC Error Propagation:</strong> If ciphertext block Cᵢ is corrupted, it affects decryption of BOTH Pᵢ (fully corrupted) and Pᵢ₊₁ (partially corrupted — only the corresponding bit positions affected). Pᵢ₊₂ onwards are fine.
+  </div>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>IV Requirements</h4>
+      <ul style="padding-left:18px">
+        <li>Must be known to both sender and receiver</li>
+        <li>Must be protected like a key</li>
+        <li>Adversary changing IV bits → corrupts P₁</li>
+        <li>Should be random and unpredictable</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <h4>CBC Properties</h4>
+      <ul style="padding-left:18px">
+        <li>Identical plaintext blocks → different ciphertext</li>
+        <li>Chaining hides patterns</li>
+        <li>Cannot parallelize encryption</li>
+        <li>Can parallelize decryption</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CFB -->
+  <h3>3. Cipher Feedback (CFB)</h3>
+  <div class="card">
+    <p>Converts a block cipher into a stream cipher. Uses the encryption function for BOTH encryption AND decryption.</p>
+    <div class="math-block">
+      <p><strong>Encryption:</strong> \(C_1 = P_1 \oplus S_s[E(K, IV)]\)</p>
+      <p><strong>Decryption:</strong> \(P_1 = C_1 \oplus S_s[E(K, IV)]\)</p>
+      <p><em>Note: decryption also uses E (not D)!</em></p>
+    </div>
+  </div>
+
+  <!-- CTR -->
+  <h3>4. Counter Mode (CTR)</h3>
+  <div class="diagram">
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent)">CTR</div>
+      <div class="cbc-block" style="border-color:var(--accent)">CTR+1</div>
+      <div class="cbc-block" style="border-color:var(--accent)">CTR+2</div>
+    </div>
+    <div class="cbc-row">
+      <div class="enc-box">E(K)</div>
+      <div class="enc-box">E(K)</div>
+      <div class="enc-box">E(K)</div>
+    </div>
+    <div class="cbc-row">
+      <span class="xor-symbol">⊕P₁</span>
+      <span class="xor-symbol">⊕P₂</span>
+      <span class="xor-symbol">⊕P₃</span>
+    </div>
+    <div class="cbc-row">
+      <div class="cbc-block" style="border-color:var(--accent3)">C₁</div>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₂</div>
+      <div class="cbc-block" style="border-color:var(--accent3)">C₃</div>
+    </div>
+  </div>
+  <div class="math-block">
+    <p><strong>Encryption:</strong> \(C_j = P_j \oplus E(K, \text{CTR} + j - 1)\)</p>
+    <p><strong>Decryption:</strong> \(P_j = C_j \oplus E(K, \text{CTR} + j - 1)\)</p>
+  </div>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>CTR Advantages</h4>
+      <ul style="padding-left:18px">
+        <li>Fully parallelisable (enc &amp; dec)</li>
+        <li>Only needs encryption function</li>
+        <li>No error propagation</li>
+        <li>Random access to any block</li>
+        <li>High-speed performance</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <h4>Mode Comparison</h4>
+      <table style="font-size:.8rem">
+        <thead><tr><th>Mode</th><th>Parallel Enc</th><th>Parallel Dec</th><th>Rand. Access</th></tr></thead>
+        <tbody>
+          <tr><td>ECB</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent2)">✓</td></tr>
+          <tr><td>CBC</td><td style="color:var(--accent3)">✗</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent3)">✗</td></tr>
+          <tr><td>CFB</td><td style="color:var(--accent3)">✗</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent3)">✗</td></tr>
+          <tr><td>CTR</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent2)">✓</td><td style="color:var(--accent2)">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- RSA -->
+<section id="rsa">
+  <h2>RSA – Asymmetric Encryption</h2>
+  <div class="card-grid">
+    <div class="card-sm"><h4>Type</h4><p>Public-key (asymmetric) cryptosystem</p></div>
+    <div class="card-sm"><h4>Security Basis</h4><p>Difficulty of factoring large integers</p></div>
+    <div class="card-sm"><h4>Keys</h4><p>Public key (e, n) for encryption; Private key (d, n) for decryption</p></div>
+  </div>
+
+  <h3>RSA Key Generation Steps</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div>Choose two large primes <strong>p</strong> and <strong>q</strong></div></div>
+      <div class="step"><div>Compute \(n = p \times q\) (the modulus)</div></div>
+      <div class="step"><div>Compute \(\phi(n) = (p-1)(q-1)\) (Euler's totient)</div></div>
+      <div class="step"><div>Choose integer <strong>e</strong> such that \(\gcd(e, \phi(n)) = 1\) and \(1 < e < \phi(n)\)</div></div>
+      <div class="step"><div>Find <strong>d</strong> such that \(d \cdot e \equiv 1 \pmod{\phi(n)}\) (use Extended Euclidean Algorithm)</div></div>
+      <div class="step"><div>Public key: <strong>(e, n)</strong> &nbsp; Private key: <strong>(d, n)</strong></div></div>
+    </div>
+  </div>
+
+  <div class="math-block">
+    <p><strong>Encryption:</strong> \(C = M^e \bmod n\)</p>
+    <p><strong>Decryption:</strong> \(M = C^d \bmod n\)</p>
+    <p><strong>Modular arithmetic shortcut:</strong> \((A \times B) \bmod C = [(A \bmod C) \times (B \bmod C)] \bmod C\)</p>
+    <p><strong>Power mod:</strong> \(A^B \bmod C = (A \bmod C)^B \bmod C\)</p>
+  </div>
+
+  <h3>RSA Worked Example 1: p=3, q=11, e=7, M=5</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div>\(n = 3 \times 11 = 33\)</div></div>
+      <div class="step"><div>\(\phi(n) = (3-1)(11-1) = 2 \times 10 = 20\)</div></div>
+      <div class="step"><div>Find d: \(d \times 7 \equiv 1 \pmod{20}\) → d = <strong>3</strong> (since 3×7=21≡1 mod 20)</div></div>
+      <div class="step"><div>Encrypt: \(C = 5^7 \bmod 33\)<br>
+        5² = 25, 5⁴ = 625 mod 33 = 625 - 18×33 = 625 - 594 = 31<br>
+        5⁷ = 5⁴ × 5² × 5¹ = 31 × 25 × 5 mod 33<br>
+        31×25 = 775 mod 33 = 775 - 23×33 = 775 - 759 = 16<br>
+        16×5 = 80 mod 33 = 80 - 2×33 = <strong>C = 14</strong>
+      </div></div>
+      <div class="step"><div>Decrypt: \(M = 14^3 \bmod 33\)<br>
+        14² = 196 mod 33 = 196 - 5×33 = 196 - 165 = 31<br>
+        14³ = 31 × 14 mod 33 = 434 mod 33 = 434 - 13×33 = 434 - 429 = <strong>M = 5</strong> ✓
+      </div></div>
+    </div>
+  </div>
+
+  <h3>RSA Worked Example 2: p=5, q=11, e=3, M=9</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div>\(n = 55\), \(\phi(n) = 40\)</div></div>
+      <div class="step"><div>Find d: \(3d \equiv 1 \pmod{40}\) → d = <strong>27</strong> (3×27=81=2×40+1)</div></div>
+      <div class="step"><div>Encrypt: \(C = 9^3 \bmod 55 = 729 \bmod 55\)<br>729 = 13×55 + 14 → <strong>C = 14</strong></div></div>
+      <div class="step"><div>Decrypt: \(M = 14^{27} \bmod 55\)<br>
+        14¹⁰ mod 55 = 1 (can verify), 14⁷ mod 55 = 9<br>
+        14²⁷ = 14¹⁰ × 14¹⁰ × 14⁷ mod 55 = 1 × 1 × 9 = <strong>M = 9</strong> ✓
+      </div></div>
+    </div>
+  </div>
+
+  <h3>RSA Extended Euclidean Algorithm: e=31, n=3599</h3>
+  <div class="card">
+    <div class="steps">
+      <div class="step"><div>Factor n=3599: note 3599 = 60² - 1 = (60-1)(60+1) → p=59, q=61</div></div>
+      <div class="step"><div>\(\phi(n) = 58 \times 60 = 3480\)</div></div>
+      <div class="step"><div>Find d: \(31d \equiv 1 \pmod{3480}\) — use Extended Euclidean:</div></div>
+    </div>
+    <pre><code><span class="cm">// Extended Euclidean Algorithm</span>
+3480 = 112(31) + 8
+  31 = 3(8)  + 7
+   8 = 1(7)  + 1   <span class="cm">← GCD = 1</span>
+
+<span class="cm">// Back-substitute</span>
+1 = 8 - 7
+  = 8 - (31 - 3×8) = 4×8 - 31
+  = 4×(3480 - 112×31) - 31
+  = 4×3480 - 449×31
+
+<span class="cm">// So 31×(-449) ≡ 1 (mod 3480)</span>
+d = -449 mod 3480 = 3480 - 449 = <span class="num">3031</span></code></pre>
+    <div class="alert alert-success"><strong>Private key d = 3031</strong></div>
+  </div>
+
+  <h3>RSA Security: Dictionary Attack on Small Alphabet</h3>
+  <div class="alert alert-danger">
+    <strong>Vulnerability:</strong> If plaintext is encoded character-by-character (A=0..Z=25), attacker can precompute all 26 encryptions {0^e mod n, 1^e mod n, …, 25^e mod n} using the PUBLIC key, then look up each ciphertext block to get plaintext. This is NOT secure!
+  </div>
+</section>
+
+<!-- EXAM QUESTIONS -->
+<section id="exam">
+  <h2>Exam Questions & Model Answers</h2>
+  <div class="alert alert-warn">
+    <strong>Past exam May 2025 (COMPSCI5063)</strong> — 40 marks total, 1 hour, open book. All questions shown with full model answers.
+  </div>
+
+  <!-- Q1 -->
+  <div class="exam-q">
+    <span class="marks">[5 marks]</span>
+    <h4>Question 1 — Session ID Vulnerability</h4>
+    <p>A company called <strong>Travelsafe</strong> operates a website using <strong>URL session IDs</strong> (unique numbers assigned after authentication). Visitors can search for holiday locations. Mention and describe a potential vulnerability and corresponding defence mechanisms.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p><strong>Vulnerability: Session Hijacking via URL Session ID</strong></p>
+      <p>When session IDs are embedded in URLs (e.g., <code>travelsafe.com/search?sessionid=12345</code>), they are exposed in:</p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>Browser history</li>
+        <li>Server access logs</li>
+        <li>HTTP Referer headers when navigating to external sites</li>
+        <li>Shared links (users may accidentally share their session)</li>
+      </ul>
+      <p>An attacker (Eve) who obtains the URL can assume the victim's identity without knowing their password.</p>
+      <p><strong>Defence Mechanisms:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>Use <strong>cookies</strong> (HttpOnly, Secure flag) instead of URL parameters to store session IDs</li>
+        <li>Use <strong>HTTPS</strong> to encrypt the session ID in transit</li>
+        <li>Implement <strong>session expiry</strong> (short-lived sessions)</li>
+        <li>Use <strong>cryptographically random</strong> session IDs with sufficient entropy (≥128 bits)</li>
+        <li>Bind sessions to <strong>IP address</strong> or user-agent (though this can break with NAT/proxies)</li>
+        <li>Implement <strong>CSRF tokens</strong> for state-changing requests</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="exam-q">
+    <span class="marks">[7 marks]</span>
+    <h4>Question 2 — Single Sign-On (SSO)</h4>
+    <p>Companies like Google and Amazon use SSO for authentication. 1) Argue for the advantages and disadvantages of SSO over traditional approaches. 2) Explain what SSO means for Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p><strong>1) Advantages of SSO:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>Users authenticate once — reduces password fatigue and encourages strong unique passwords</li>
+        <li>Reduced attack surface (fewer credential stores to protect)</li>
+        <li>Centralised authentication makes auditing and revocation easier</li>
+        <li>Better user experience → fewer support tickets for password resets</li>
+      </ul>
+      <p><strong>Disadvantages of SSO:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li><strong>Single point of failure</strong>: if SSO provider is compromised or unavailable, ALL services fail</li>
+        <li>Credential compromise gives attacker access to ALL linked services</li>
+        <li>Vendor lock-in to identity provider</li>
+        <li>Privacy: identity provider can track all service usage</li>
+      </ul>
+      <p><strong>2) Security Properties with SSO:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li><strong>Confidentiality</strong>: SSO tokens transmitted over HTTPS protect credentials; risk if token intercepted</li>
+        <li><strong>Integrity</strong>: Signed tokens (JWT with digital signature) ensure tokens haven't been tampered with</li>
+        <li><strong>Authenticity</strong>: Identity provider verifies the user's identity; relying parties trust the provider's assertion</li>
+        <li><strong>Accountability</strong>: Centralised logs at identity provider enable tracking of all authentication events</li>
+        <li><strong>Non-repudiation</strong>: Signed authentication assertions mean users cannot deny having authenticated</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q3a -->
+  <div class="exam-q">
+    <span class="marks">[2 marks]</span>
+    <h4>Question 3(a) — ECB Decryption: 187b06</h4>
+    <p>Block cipher on 4-bit blocks. Permutation table:</p>
+    <table style="font-size:0.82rem;margin:10px 0">
+      <thead><tr><th>m</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th></tr></thead>
+      <tbody><tr><th>Eₖ(m)</th><td>1</td><td>b</td><td>5</td><td>c</td><td>7</td><td>e</td><td>2</td><td>a</td><td>4</td><td>9</td><td>3</td><td>d</td><td>0</td><td>f</td><td>6</td><td>8</td></tr></tbody>
+    </table>
+    <p>Decrypt ciphertext <strong>187b06</strong> using ECB mode.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p>ECB decryption: find m such that Eₖ(m) = ciphertext digit.</p>
+      <table style="font-size:0.9rem">
+        <thead><tr><th>Ciphertext digit</th><th>Find m where Eₖ(m) = this</th><th>Plaintext digit</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Eₖ(0) = 1</td><td><strong>0</strong></td></tr>
+          <tr><td>8</td><td>Eₖ(f) = 8</td><td><strong>f</strong></td></tr>
+          <tr><td>7</td><td>Eₖ(4) = 7</td><td><strong>4</strong></td></tr>
+          <tr><td>b</td><td>Eₖ(1) = b</td><td><strong>1</strong></td></tr>
+          <tr><td>0</td><td>Eₖ(c) = 0</td><td><strong>c</strong></td></tr>
+          <tr><td>6</td><td>Eₖ(e) = 6</td><td><strong>e</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-success"><strong>Plaintext = 0f41ce</strong></div>
+    </div>
+  </div>
+
+  <!-- Q3b -->
+  <div class="exam-q">
+    <span class="marks">[4 marks]</span>
+    <h4>Question 3(b) — CBC Decryption: 301be, IV=1</h4>
+    <p>Decrypt ciphertext <strong>301be</strong> using CBC mode with initialization vector IV=1.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p>CBC decryption formula: \(P_j = D_K(C_j) \oplus C_{j-1}\) where C₀ = IV = 1</p>
+      <p>First, build the inverse table (Dₖ): reverse lookup of Eₖ</p>
+      <table style="font-size:0.82rem;margin:10px 0">
+        <thead><tr><th>Ciphertext</th><th>Plaintext (Dₖ)</th></tr></thead>
+        <tbody>
+          <tr><td>3</td><td>a</td></tr>
+          <tr><td>0</td><td>c</td></tr>
+          <tr><td>1</td><td>0</td></tr>
+          <tr><td>b</td><td>1 (wait: Eₖ(1)=b → Dₖ(b)=1)</td></tr>
+          <tr><td>e</td><td>5</td></tr>
+        </tbody>
+      </table>
+      <table style="font-size:0.9rem">
+        <thead><tr><th>Step</th><th>Cᵢ</th><th>Dₖ(Cᵢ)</th><th>XOR with prev</th><th>Pᵢ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>3</td><td>a</td><td>a ⊕ IV(1) = a ⊕ 1</td><td><strong>b</strong> (1010⊕0001=1011=b)</td></tr>
+          <tr><td>2</td><td>0</td><td>c</td><td>c ⊕ C₁(3) = c ⊕ 3</td><td><strong>f</strong> (1100⊕0011=1111=f)</td></tr>
+          <tr><td>3</td><td>1</td><td>0</td><td>0 ⊕ C₂(0) = 0 ⊕ 0</td><td><strong>0</strong></td></tr>
+          <tr><td>4</td><td>b</td><td>1</td><td>1 ⊕ C₃(1) = 1 ⊕ 1</td><td><strong>0</strong></td></tr>
+          <tr><td>5</td><td>e</td><td>5</td><td>5 ⊕ C₄(b) = 5 ⊕ b</td><td><strong>e</strong> (0101⊕1011=1110=e)</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-success"><strong>Plaintext = bf00e</strong></div>
+    </div>
+  </div>
+
+  <!-- Q3c -->
+  <div class="exam-q">
+    <span class="marks">[7 marks]</span>
+    <h4>Question 3(c) — ECB Security Analysis (Eve's Attack)</h4>
+    <p>Alice encrypts messages using ECB mode. Eve notices ciphertext blocks repeat. Explain why ECB is insecure and suggest a better mode.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p><strong>Why ECB is insecure (4 marks):</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>ECB encrypts each block <em>independently</em> using the same key: \(C_j = E(K, P_j)\)</li>
+        <li>If \(P_i = P_j\) then \(C_i = C_j\) — identical plaintext always produces identical ciphertext</li>
+        <li>This means the <strong>pattern structure of the plaintext is preserved</strong> in the ciphertext</li>
+        <li>Eve can identify when the same plaintext block appears in different messages without knowing the key</li>
+        <li>Classic demonstration: encrypting a bitmap image — the outline of the image remains visible in ECB ciphertext</li>
+        <li>Also vulnerable to <strong>block replay attacks</strong>: attacker can reorder/replay ciphertext blocks to alter plaintext</li>
+      </ul>
+      <p><strong>Better alternative — CBC mode (3 marks):</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>CBC chains blocks: \(C_j = E(K, C_{j-1} \oplus P_j)\)</li>
+        <li>Even if \(P_i = P_j\), their ciphertext will differ because different preceding ciphertext blocks XOR in</li>
+        <li>A random, unpredictable IV ensures ciphertext varies even for the same message encrypted twice</li>
+        <li>Patterns in plaintext are completely hidden in ciphertext</li>
+        <li>Mitigates Eve's pattern analysis attack</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q4a -->
+  <div class="exam-q">
+    <span class="marks">[10 marks]</span>
+    <h4>Question 4(a) — RSA Private Key: e=17, n=1763</h4>
+    <p>The public key of a user is e=17, n=1763. Find the private key d. Show all steps.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <div class="steps">
+        <div class="step">
+          <div><strong>Factor n = 1763</strong><br>
+          Try: √1763 ≈ 42. Test primes up to 42.<br>
+          1763 / 41 = 43 ✓ → <strong>p = 41, q = 43</strong></div>
+        </div>
+        <div class="step">
+          <div><strong>Compute φ(n)</strong><br>
+          \(\phi(1763) = (41-1)(43-1) = 40 \times 42 = 1680\)</div>
+        </div>
+        <div class="step">
+          <div><strong>Find d: 17d ≡ 1 (mod 1680)</strong><br>
+          Apply Extended Euclidean Algorithm:</div>
+        </div>
+      </div>
+      <pre><code>1680 = 98(17) + 14
+  17 = 1(14) + 3
+  14 = 4(3)  + 2
+   3 = 1(2)  + 1   ← GCD = 1
+
+Back-substitute:
+1 = 3 - 1×2
+  = 3 - 1×(14 - 4×3) = 5×3 - 1×14
+  = 5×(17 - 1×14) - 1×14 = 5×17 - 6×14
+  = 5×17 - 6×(1680 - 98×17)
+  = 5×17 - 6×1680 + 588×17
+  = 593×17 - 6×1680
+
+So: 17×593 ≡ 1 (mod 1680)</code></pre>
+      <div class="alert alert-success"><strong>Private key d = 593</strong><br>Verify: 17 × 593 = 10081 = 6 × 1680 + 1 ✓</div>
+    </div>
+  </div>
+
+  <!-- Q4b -->
+  <div class="exam-q">
+    <span class="marks">[5 marks]</span>
+    <h4>Question 4(b) — Brute Force Analysis</h4>
+    <p>You can do 2⁸ encryptions/second, key size = 16 bits. How long does a brute force attack take? What if key size doubles to 32 bits?</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <div class="math-block">
+        <p><strong>Key space:</strong> \(2^{16} = 65,536\) keys</p>
+        <p><strong>Average attempts:</strong> \(2^{16}/2 = 2^{15} = 32,768\) attempts</p>
+        <p><strong>Rate:</strong> \(2^8 = 256\) encryptions/second</p>
+        <p><strong>Time:</strong> \(\dfrac{2^{15}}{2^8} = 2^7 = 128 \text{ seconds} \approx 2 \text{ minutes}\)</p>
+      </div>
+      <p><strong>Where this IS practical:</strong> Short-lived data (e.g., a time-sensitive OTP that expires in 2 minutes), low-value data where attacker invests minimal resources, or during a race condition attack window.</p>
+      <p><strong>Where this is NOT practical:</strong> Banking credentials (by the time cracked, session may be expired but damage requires immediate action), long-term secrets, or when keys change frequently.</p>
+      <div class="math-block">
+        <p><strong>Doubling key size to 32 bits:</strong></p>
+        <p>Key space: \(2^{32} = 4,294,967,296\)</p>
+        <p>Average attempts: \(2^{31}\)</p>
+        <p>Time: \(\dfrac{2^{31}}{2^8} = 2^{23} \approx 8.4 \text{ million seconds} \approx 97 \text{ days}\)</p>
+        <p>Doubling key size from 16→32 bits squares the key space, making brute force completely impractical with the same hardware.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extra questions -->
+  <h2>Additional Practice Questions</h2>
+
+  <div class="exam-q">
+    <span class="marks">[Extra]</span>
+    <h4>Extra Q1 — Linear Block Cipher Attack</h4>
+    <p>A linear block cipher EL satisfies: EL(k, m₁ ⊕ m₂) = EL(k, m₁) ⊕ EL(k, m₂). Using 128 chosen ciphertexts, explain how an adversary can decrypt ANY ciphertext without knowing key k.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p><strong>Attack strategy:</strong></p>
+      <div class="steps">
+        <div class="step"><div>For i = 1 to 128, choose cᵢ = the 128-bit string with a 1 in position i and zeros elsewhere (standard basis vectors).</div></div>
+        <div class="step"><div>Obtain decryptions: let mᵢ = D(k, cᵢ) for each i (these are our 128 chosen ciphertext decryptions).</div></div>
+        <div class="step"><div>Given any target ciphertext c, express it as XOR of a subset I(c) of the basis vectors: c = ⊕ᵢ∈I(c) cᵢ (every non-zero binary string has a unique such representation).</div></div>
+        <div class="step"><div>By linearity: c = ⊕cᵢ = ⊕E(mᵢ) = E(⊕mᵢ), so plaintext = ⊕ᵢ∈I(c) mᵢ</div></div>
+        <div class="step"><div>Special case c=0: E(0⊕0) = E(0)⊕E(0) = 0, so plaintext of 0 is 0.</div></div>
+      </div>
+      <div class="alert alert-success">This breaks the cipher with only 128 chosen ciphertext queries — demonstrating why non-linearity (S-boxes) is essential.</div>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <span class="marks">[Extra]</span>
+    <h4>Extra Q2 — CBC Error Propagation</h4>
+    <p>An error occurs in ciphertext block Cᵢ during transmission in CBC mode. What effect does this have on the recovered plaintext blocks?</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p>CBC decryption: \(P_j = D(K, C_j) \oplus C_{j-1}\)</p>
+      <p><strong>Effect of a corrupted block Cᵢ:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li><strong>Block Pᵢ:</strong> Completely garbled — D(K, Cᵢ) is wrong, so Pᵢ = D(K, Cᵢ) ⊕ Cᵢ₋₁ is entirely incorrect</li>
+        <li><strong>Block Pᵢ₊₁:</strong> Partially corrupted — Pᵢ₊₁ = D(K, Cᵢ₊₁) ⊕ Cᵢ. Since Cᵢ is wrong, exactly the corrupted BIT POSITIONS in Cᵢ will flip the corresponding bits in Pᵢ₊₁. If a single bit in Cᵢ is flipped, exactly one bit of Pᵢ₊₁ is wrong.</li>
+        <li><strong>Blocks Pᵢ₊₂ onwards:</strong> Perfectly recovered — they depend on Cᵢ₊₁, Cᵢ₊₂, etc., which are intact.</li>
+      </ul>
+      <p><strong>Conclusion:</strong> A single corrupted ciphertext block in CBC causes damage to 2 plaintext blocks (one fully, one partially), then self-corrects.</p>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <span class="marks">[Extra]</span>
+    <h4>Extra Q3 — RSA: p=17, q=31, e=7, M=2</h4>
+    <p>Perform encryption and decryption using RSA with p=17, q=31, e=7, M=2.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <div class="steps">
+        <div class="step"><div>n = 17 × 31 = <strong>527</strong></div></div>
+        <div class="step"><div>φ(n) = 16 × 30 = <strong>480</strong></div></div>
+        <div class="step"><div>Find d: 7d ≡ 1 (mod 480) → d = <strong>343</strong> (7×343 = 2401 = 5×480 + 1 ✓)</div></div>
+        <div class="step"><div>Encrypt: C = 2⁷ mod 527 = 128 mod 527 = <strong>128</strong></div></div>
+        <div class="step"><div>Decrypt: M = 128³⁴³ mod 527<br>
+          Use repeated squaring. Result = <strong>M = 2</strong> ✓</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <span class="marks">[Extra]</span>
+    <h4>Extra Q4 — Stream Cipher Key Reuse Attack</h4>
+    <p>Alice encrypts two messages P1 and P2 using RC4 with the same key K. Eve intercepts C1 and C2. Eve knows that P1 starts with "LOGIN". Describe how Eve can recover P2.</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <p><strong>Attack:</strong></p>
+      <div class="math-block">
+        <p>C1 = P1 ⊕ K &nbsp;&nbsp; C2 = P2 ⊕ K</p>
+        <p>C1 ⊕ C2 = P1 ⊕ K ⊕ P2 ⊕ K = P1 ⊕ P2</p>
+        <p>If P1 is known: P2 = (P1 ⊕ P2) ⊕ P1 = (C1 ⊕ C2) ⊕ P1</p>
+      </div>
+      <p>Eve computes C1 ⊕ C2, then XORs with known P1 bytes ("LOGIN" = 0x4C4F47494E) to recover corresponding bytes of P2. With crib-dragging techniques, even partial knowledge of P1 can reveal much of P2.</p>
+      <div class="alert alert-danger"><strong>Lesson:</strong> NEVER reuse a stream cipher key. This is why protocols like TLS use a new key (derived from key exchange) for each session.</div>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <span class="marks">[Extra]</span>
+    <h4>Extra Q5 — AES vs DES Comparison</h4>
+    <p>Compare AES and DES across: block size, key size, rounds, and structure. Why is AES considered more secure?</p>
+    <button class="toggle-btn" onclick="toggle(this)">Show Answer</button>
+    <div class="solution">
+      <table>
+        <thead><tr><th>Feature</th><th>DES</th><th>AES</th></tr></thead>
+        <tbody>
+          <tr><td>Block size</td><td>64 bits</td><td>128 bits</td></tr>
+          <tr><td>Key size</td><td>56 bits (effective)</td><td>128, 192, or 256 bits</td></tr>
+          <tr><td>Rounds</td><td>16</td><td>10, 12, or 14</td></tr>
+          <tr><td>Structure</td><td>Feistel (half block/round)</td><td>SPN (full block/round)</td></tr>
+          <tr><td>Parallel processing</td><td>Limited</td><td>Full block parallel</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Why AES is more secure:</strong></p>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>56-bit DES key: 2⁵⁶ ≈ 7×10¹⁶ possible keys — broken in hours with modern hardware</li>
+        <li>128-bit AES key: 2¹²⁸ ≈ 3.4×10³⁸ — computationally infeasible to brute force</li>
+        <li>AES operates on full 128-bit block simultaneously — greater diffusion per round</li>
+        <li>No known practical attacks on full AES-128 (as of 2025)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <h2>Interactive Quiz</h2>
+  <p style="color:var(--muted);margin-bottom:20px">Test your understanding. Click an option to check your answer.</p>
+
+  <div class="quiz-q">
+    <p>Q1. In CBC mode, what is XORed with each plaintext block before encryption?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) The encryption key</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) The previous ciphertext block (or IV for first block)</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) The next plaintext block</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) A random nonce generated per block</label>
+    <div class="quiz-feedback">Correct! CBC: Cⱼ = E(K, Cⱼ₋₁ ⊕ Pⱼ). The chaining is what prevents identical plaintext producing identical ciphertext.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q2. Which block mode allows both encryption AND decryption to be parallelised?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) CBC</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">B) CFB</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">C) CTR</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) CBC and CTR both</label>
+    <div class="quiz-feedback">Correct! CTR has no dependencies between blocks — encryption and decryption are fully parallelisable. CBC can only parallelise decryption, not encryption.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q3. In RSA, if φ(n) = 40 and e = 7, what is d?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) 7</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">B) 40</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">C) 23</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) 3</label>
+    <div class="quiz-feedback">Correct! d×7 ≡ 1 (mod 40). Check: 23×7 = 161 = 4×40 + 1 ✓. (Note: for p=3,q=11, the answer is d=3; this uses φ(n)=40 with e=7 generally).</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q4. What is the fundamental weakness of ECB mode?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) It requires a very long key</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) Identical plaintext blocks produce identical ciphertext blocks</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) It cannot encrypt blocks longer than 64 bits</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) It requires a separate IV for each block</label>
+    <div class="quiz-feedback">Correct! ECB's deterministic block-by-block encryption means patterns in plaintext are visible in ciphertext — a critical security flaw.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q5. In the AES Mix Columns operation, what does 02 × 0x87 equal? (0x87 = 10000111)</p>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">A) 0x15 (00010101)</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">B) 0x0E (00001110)</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) 0x8E (10001110)</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) 0x1B (00011011)</label>
+    <div class="quiz-feedback">Correct! 0x87 has leftmost bit=1, so: shift left → 0x0E, then XOR 0x1B → 0x0E ⊕ 0x1B = 0x15.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q6. In 3DES EDE encryption with K1=K2=K3=K, what is the result?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) Three-times-stronger encryption than single DES</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) Equivalent to single DES with key K</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) Twice-stronger encryption</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) No encryption (plaintext = ciphertext)</label>
+    <div class="quiz-feedback">Correct! E(K,D(K,E(K,P))) = E(K,P). The decrypt undoes one encrypt, leaving a single encrypt. This is backward compatibility with DES.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q7. Which AES operation uses the same function for both encryption and decryption?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) Substitute Bytes</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">B) Shift Rows</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) Mix Columns</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">D) Add Round Key</label>
+    <div class="quiz-feedback">Correct! XOR is self-inverse: A ⊕ K ⊕ K = A. So Add Round Key is identical in encryption and decryption.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q8. Alice encrypts 26 letters (A=0…Z=25) character by character with RSA. Why is this insecure?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) RSA cannot encrypt numbers smaller than n</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) Anyone with the public key can precompute all 26 ciphertexts and build a lookup table</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) The private key can be inferred from the ciphertext length</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) 26 is not coprime with n</label>
+    <div class="quiz-feedback">Correct! Since the plaintext space is only 26 values and the public key is known, Eve computes M^e mod n for M=0..25 and creates a lookup table. No key needed.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q9. A ciphertext block Cᵢ is corrupted in CBC. Which plaintext blocks are affected?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) Only Pᵢ</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) Pᵢ (fully garbled) and Pᵢ₊₁ (partially corrupted)</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) All blocks from Pᵢ onwards</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) Pᵢ₋₁, Pᵢ, and Pᵢ₊₁</label>
+    <div class="quiz-feedback">Correct! Pᵢ = D(K,Cᵢ) ⊕ Cᵢ₋₁ — fully wrong. Pᵢ₊₁ = D(K,Cᵢ₊₁) ⊕ Cᵢ — only the corrupted bits of Cᵢ affect Pᵢ₊₁. All later blocks use intact ciphertext blocks.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p>Q10. Key size is 16 bits, rate = 2⁸ encrypt/sec. How long for brute force (worst case)?</p>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">A) 128 seconds</label>
+    <label class="quiz-opt" onclick="checkQ(this,'correct')">B) 256 seconds</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">C) 64 seconds</label>
+    <label class="quiz-opt" onclick="checkQ(this,'wrong')">D) 32 seconds</label>
+    <div class="quiz-feedback">Correct! Worst case = try ALL 2¹⁶ keys. Time = 2¹⁶ / 2⁸ = 2⁸ = 256 seconds. Average case = 2¹⁵/2⁸ = 2⁷ = 128 seconds.</div>
+  </div>
+</section>
+
+<!-- QUICK REFERENCE -->
+<section id="ref">
+  <h2>Quick Reference Card</h2>
+  <div class="card-grid">
+    <div class="card-sm">
+      <h4>RSA Formulas</h4>
+      <p>n = p·q</p>
+      <p>φ(n) = (p-1)(q-1)</p>
+      <p>de ≡ 1 (mod φ(n))</p>
+      <p>C = Mᵉ mod n</p>
+      <p>M = Cᵈ mod n</p>
+    </div>
+    <div class="card-sm">
+      <h4>CBC Decrypt</h4>
+      <p>Pⱼ = Dₖ(Cⱼ) ⊕ Cⱼ₋₁</p>
+      <p>C₀ = IV</p>
+      <p>Error in Cᵢ → Pᵢ garbled, Pᵢ₊₁ partial</p>
+    </div>
+    <div class="card-sm">
+      <h4>Brute Force Time</h4>
+      <p>Average = 2^(n-1) / rate</p>
+      <p>Worst = 2^n / rate</p>
+      <p>Double key: time ≈ 2^n times harder</p>
+    </div>
+    <div class="card-sm">
+      <h4>AES Operations</h4>
+      <p>Sub Bytes (S-box)</p>
+      <p>Shift Rows (left rotate)</p>
+      <p>Mix Columns (GF(2⁸) mult)</p>
+      <p>Add Round Key (XOR)</p>
+    </div>
+    <div class="card-sm">
+      <h4>Key XOR Properties</h4>
+      <p>A ⊕ 0 = A</p>
+      <p>A ⊕ A = 0</p>
+      <p>A ⊕ B ⊕ B = A</p>
+      <p>Commutative & associative</p>
+    </div>
+    <div class="card-sm">
+      <h4>3DES Formulas</h4>
+      <p>Enc: C = E(K₃,D(K₂,E(K₁,P)))</p>
+      <p>Dec: P = D(K₁,E(K₂,D(K₃,C)))</p>
+      <p>K1=K2=K3 → single DES</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+function toggle(btn) {
+  const sol = btn.nextElementSibling;
+  if (sol.classList.contains('show')) {
+    sol.classList.remove('show');
+    btn.textContent = 'Show Answer';
+  } else {
+    sol.classList.add('show');
+    btn.textContent = 'Hide Answer';
+  }
+}
+
+function checkQ(el, result) {
+  const q = el.closest('.quiz-q');
+  const opts = q.querySelectorAll('.quiz-opt');
+  if (q.dataset.answered) return;
+  q.dataset.answered = '1';
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  el.classList.add(result);
+  const fb = q.querySelector('.quiz-feedback');
+  fb.classList.add('show');
+  if (result === 'wrong') {
+    opts.forEach(o => { if (o.onclick && o.onclick.toString().includes("'correct'")) o.classList.add('correct'); });
+  }
+}
+
+// Smooth scroll
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

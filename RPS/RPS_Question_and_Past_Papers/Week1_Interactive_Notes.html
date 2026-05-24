@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS Week 1: Professional Practice - Interactive Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .accordion {
+            margin: 20px 0;
+        }
+
+        .accordion-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            opacity: 0.9;
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active::after {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: white;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+        }
+
+        .accordion-body {
+            padding: 20px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .info-box.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .info-box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .info-box.danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .case-study {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .case-study-title {
+            color: #ff8c00;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .key-point {
+            background: #f0f7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .key-point strong {
+            color: #667eea;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            border-left: 3px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 3px solid #667eea;
+        }
+
+        .quiz-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .quiz-answer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .show-answer-btn {
+            background: white;
+            color: #f5576c;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .show-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .nav-tab {
+                padding: 15px 10px;
+                font-size: 0.9em;
+            }
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-to-top:hover {
+            background: #764ba2;
+            transform: translateY(-3px);
+        }
+
+        .scroll-to-top.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Research and Professional Skills</h1>
+            <p>Week 1: Professional Practice & Legal Framework</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="openTab(event, 'overview')">Overview</button>
+            <button class="nav-tab" onclick="openTab(event, 'bcs-code')">BCS Code</button>
+            <button class="nav-tab" onclick="openTab(event, 'computer-misuse')">Computer Misuse</button>
+            <button class="nav-tab" onclick="openTab(event, 'data-protection')">Data Protection</button>
+            <button class="nav-tab" onclick="openTab(event, 'copyright')">Copyright</button>
+            <button class="nav-tab" onclick="openTab(event, 'confidential')">Confidential Info</button>
+        </div>
+
+        <div class="content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="section">
+                    <h2 class="section-title">Welcome to Week 1!</h2>
+                    <p>This week introduces you to the legal and professional framework that governs computing professionals. Understanding these laws and principles is essential for anyone working in the tech industry.</p>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">What You'll Learn This Week</div>
+                        <ul>
+                            <li>BCS Code of Conduct - Professional standards for IT professionals</li>
+                            <li>Computer Misuse Act 1990 - Laws protecting computer systems</li>
+                            <li>Data Protection Act & GDPR - How to handle personal data legally</li>
+                            <li>Copyright Law - Protecting intellectual property</li>
+                            <li>Confidential Information - Trade secrets and professional duties</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Course Structure</h3>
+                    <div class="key-point">
+                        <strong>Assessment Breakdown:</strong>
+                        <ul>
+                            <li>20% - Video Assessment Exercise (AE)</li>
+                            <li>20% - Written Assessment Exercise (AE)</li>
+                            <li>60% - Final Examination</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Why This Matters</h3>
+                    <p>As a computing professional, you will:</p>
+                    <ul>
+                        <li>Handle sensitive data that must be protected by law</li>
+                        <li>Create intellectual property (code, designs, systems)</li>
+                        <li>Work with systems that must be secured against unauthorized access</li>
+                        <li>Make ethical decisions that affect users and society</li>
+                    </ul>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Remember</div>
+                        Ignorance of the law is not a defense. Even if you don't know these laws exist, you can still be prosecuted for breaking them!
+                    </div>
+                </div>
+            </div>
+
+            <!-- BCS Code of Conduct Tab -->
+            <div id="bcs-code" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">BCS Code of Conduct</h2>
+
+                    <p>The <span class="highlight">BCS Code of Conduct</span> sets professional standards for all members of the British Computer Society (BCS), which is the Chartered Institute for IT. It defines the ethical and professional responsibilities of IT professionals.</p>
+
+                    <div class="info-box">
+                        <div class="info-box-title">About BCS</div>
+                        <p>BCS is responsible for setting professional standards in the UK IT industry. All members must abide by this Code of Conduct as a condition of membership, regardless of their grade or role.</p>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">The Four Main Duties</h3>
+
+                    <p>The BCS Code of Conduct is organized around four fundamental duties. Each duty contains specific requirements that members must follow.</p>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                1. Public Interest
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Core Principle</div>
+                                        <p>You shall carry out your professional responsibilities with due regard for the public health, privacy, security and wellbeing of others and the environment.</p>
+                                    </div>
+
+                                    <p><strong>Specific Requirements:</strong></p>
+
+                                    <div class="key-point">
+                                        <strong>a) Public Health, Privacy, Security and Wellbeing</strong>
+                                        <p>Have due regard for the public health, privacy, security and wellbeing of others and the environment.</p>
+                                        <ul>
+                                            <li>Consider impact of your work on public safety</li>
+                                            <li>Protect privacy in systems you design or maintain</li>
+                                            <li>Implement appropriate security measures</li>
+                                            <li>Think about environmental impact of technology</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>b) Legitimate Rights of Third Parties</strong>
+                                        <p>Have due regard for the legitimate rights of Third Parties.</p>
+                                        <ul>
+                                            <li>Respect rights of users, customers, and stakeholders</li>
+                                            <li>Consider how your work affects others</li>
+                                            <li>Balance competing interests fairly</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>c) Non-Discrimination</strong>
+                                        <p>Conduct your professional activities without discrimination on the grounds of sex, sexual orientation, marital status, nationality, colour, race, ethnic origin, religion, age or disability, or of any other condition or requirement.</p>
+                                        <ul>
+                                            <li>Ensure equal treatment in professional interactions</li>
+                                            <li>Design inclusive systems and services</li>
+                                            <li>Challenge discriminatory practices</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>d) Equal Access to IT Benefits</strong>
+                                        <p>Promote equal access to the benefits of IT and seek to promote the inclusion of all sectors in society wherever opportunities arise.</p>
+                                        <ul>
+                                            <li>Work to bridge the digital divide</li>
+                                            <li>Make technology accessible to all</li>
+                                            <li>Consider underserved communities in your work</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Real-World Example: Accessibility</div>
+                                        <p>When developing a government website, you must ensure it meets accessibility standards (like WCAG) so people with disabilities can use it. This fulfills duties (c) non-discrimination and (d) equal access to IT benefits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                2. Professional Competence and Integrity
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Core Principle</div>
+                                        <p>You shall have due regard for the legitimate rights of Third Parties and act with integrity in your professional relationships.</p>
+                                    </div>
+
+                                    <p><strong>Specific Requirements:</strong></p>
+
+                                    <div class="key-point">
+                                        <strong>a) Work Within Your Competence</strong>
+                                        <p>Only undertake to do work or provide a service that is within your professional competence.</p>
+                                        <ul>
+                                            <li>Know your limits and don't overpromise</li>
+                                            <li>Seek help when needed</li>
+                                            <li>Don't accept work you cannot properly complete</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>b) Don't Claim False Competence</strong>
+                                        <p>NOT claim any level of competence that you do not possess.</p>
+                                        <ul>
+                                            <li>Be honest about your skills and experience</li>
+                                            <li>Don't exaggerate qualifications</li>
+                                            <li>Accurately represent your expertise</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>c) Continuous Professional Development</strong>
+                                        <p>Develop your professional knowledge, skills and competence on a continuing basis, maintaining awareness of technological developments, procedures, and standards that are relevant to your field.</p>
+                                        <ul>
+                                            <li>Keep learning and updating your skills</li>
+                                            <li>Stay current with industry developments</li>
+                                            <li>Pursue relevant training and education</li>
+                                            <li>Follow best practices and standards</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>d) Know and Comply with Legislation</strong>
+                                        <p>Ensure that you have the knowledge and understanding of Legislation and that you comply with such Legislation, in carrying out your professional responsibilities.</p>
+                                        <ul>
+                                            <li>Understand relevant laws (Computer Misuse Act, GDPR, etc.)</li>
+                                            <li>Ensure compliance in your work</li>
+                                            <li>Stay updated on legal changes</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>e) Respect Alternative Viewpoints</strong>
+                                        <p>Respect and value alternative viewpoints and, seek, accept and offer honest criticisms of work.</p>
+                                        <ul>
+                                            <li>Be open to different perspectives</li>
+                                            <li>Provide constructive criticism</li>
+                                            <li>Accept feedback gracefully</li>
+                                            <li>Foster collaborative environments</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>f) Avoid Injuring Others</strong>
+                                        <p>Avoid injuring others, their property, reputation, or employment by false or malicious or negligent action or inaction.</p>
+                                        <ul>
+                                            <li>Act professionally at all times</li>
+                                            <li>Don't make false accusations</li>
+                                            <li>Take care to avoid negligent work</li>
+                                            <li>Protect colleagues' reputations</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>g) Reject Bribery and Unethical Inducements</strong>
+                                        <p>Reject and will not make any offer of bribery or unethical inducement.</p>
+                                        <ul>
+                                            <li>Refuse bribes and kickbacks</li>
+                                            <li>Don't offer bribes to gain advantage</li>
+                                            <li>Maintain ethical business practices</li>
+                                            <li>Report corruption when discovered</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Important Note</div>
+                                        <p>This duty emphasizes both technical competence AND ethical integrity. Being skilled isn't enough - you must also act with honesty and professionalism!</p>
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Real-World Example: Competence Limits</div>
+                                        <p>If a client asks you to build a medical device control system but you only have experience in web development, you must decline (or seek proper training/assistance first). Healthcare systems require specialized knowledge - taking on work beyond your competence could endanger lives!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                3. Duty to Relevant Authority
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Core Principle</div>
+                                        <p>You shall carry out your professional responsibilities with due care and diligence in accordance with the Relevant Authority's requirements whilst exercising your professional judgement at all times.</p>
+                                    </div>
+
+                                    <div class="info-box">
+                                        <div class="info-box-title">What is "Relevant Authority"?</div>
+                                        <p><strong>Relevant Authority</strong> means the person or organization that has authority over your activities as an IT professional. This includes your employer, client, or any authority that you are contractually bound to serve.</p>
+                                    </div>
+
+                                    <p><strong>Specific Requirements:</strong></p>
+
+                                    <div class="key-point">
+                                        <strong>a) Due Care and Diligence</strong>
+                                        <p>Carry out your professional responsibilities with due care and diligence in accordance with the Relevant Authority's requirements whilst exercising your professional judgement at all times.</p>
+                                        <ul>
+                                            <li>Perform work thoroughly and carefully</li>
+                                            <li>Follow employer/client requirements</li>
+                                            <li>Use professional judgment when needed</li>
+                                            <li>Meet deadlines and quality standards</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>b) Avoid Conflicts of Interest</strong>
+                                        <p>Seek to avoid any situation that may give rise to a conflict of interest between you and your Relevant Authority. Disclose such conflict to the Relevant Authority if it occurs.</p>
+                                        <ul>
+                                            <li>Identify potential conflicts early</li>
+                                            <li>Disclose conflicts when they arise</li>
+                                            <li>Don't use your position for personal gain</li>
+                                            <li>Avoid competing with your employer</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>c) Accept Professional Responsibility</strong>
+                                        <p>Accept professional responsibility for your work and for the work of colleagues who are defined in a given context as working under your supervision.</p>
+                                        <ul>
+                                            <li>Take ownership of your work</li>
+                                            <li>Be accountable for results</li>
+                                            <li>Supervise junior colleagues properly</li>
+                                            <li>Don't blame others for your mistakes</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>d) Protect Confidential Information</strong>
+                                        <p>NOT disclose or authorise to be disclosed, or use for personal gain or to benefit a third party, confidential information except with the permission of your Relevant Authority, or as required by Legislation.</p>
+                                        <ul>
+                                            <li>Keep employer/client information confidential</li>
+                                            <li>Don't share trade secrets</li>
+                                            <li>Only disclose when authorized or legally required</li>
+                                            <li>Don't use confidential info for personal benefit</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>e) Honest Reporting</strong>
+                                        <p>NOT misrepresent or withhold information on the performance of products, systems or services (unless lawfully bound by a duty of confidentiality not to disclose such information), or take advantage of the lack of relevant knowledge or inexperience of others.</p>
+                                        <ul>
+                                            <li>Report system performance honestly</li>
+                                            <li>Don't hide bugs or limitations</li>
+                                            <li>Don't exploit others' lack of technical knowledge</li>
+                                            <li>Be transparent about capabilities and risks</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Real-World Example: Honest Reporting</div>
+                                        <p><strong>Situation:</strong> You discover a critical security vulnerability in software you're about to release. Your manager wants to ship it anyway to meet the deadline.</p>
+                                        <p><strong>Your Duty:</strong> You must NOT misrepresent the product's security. You should clearly communicate the risk to the Relevant Authority (your employer) and document your concerns. If they still proceed, you've fulfilled your duty by honest reporting.</p>
+                                    </div>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Balancing Duties</div>
+                                        <p>Note the phrase "whilst exercising your professional judgement at all times." If your employer asks you to do something unethical or illegal, your professional judgment (and other duties in the Code) take precedence!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                4. Duty to the Profession
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Core Principle</div>
+                                        <p>You shall uphold the reputation and good standing of BCS in particular, and the profession in general, and accept your personal duty to uphold the profession's reputation.</p>
+                                    </div>
+
+                                    <p><strong>Specific Requirements:</strong></p>
+
+                                    <div class="key-point">
+                                        <strong>a) Uphold the Profession's Reputation</strong>
+                                        <p>Act with integrity and respect in your professional relationships with all members of BCS and with members of other professions with whom you work in a professional capacity.</p>
+                                        <ul>
+                                            <li>Behave professionally at all times</li>
+                                            <li>Treat colleagues with respect</li>
+                                            <li>Maintain professional relationships</li>
+                                            <li>Represent the IT profession well</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>b) Don't Bring the Profession into Disrepute</strong>
+                                        <p>You shall conduct yourself in a manner that does not bring or is not likely to bring the profession or BCS into disrepute.</p>
+                                        <ul>
+                                            <li>Avoid behavior that damages IT profession's image</li>
+                                            <li>Don't engage in unethical practices</li>
+                                            <li>Consider how your actions reflect on the profession</li>
+                                            <li>Maintain high standards of conduct</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>c) Seek to Improve Professional Standards</strong>
+                                        <p>Seek to improve professional standards through participation in their development, use and enforcement.</p>
+                                        <ul>
+                                            <li>Contribute to professional development</li>
+                                            <li>Follow and promote best practices</li>
+                                            <li>Participate in standards development</li>
+                                            <li>Help advance the profession</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>d) Uphold BCS Reputation</strong>
+                                        <p>Uphold the reputation, good standing and dignity of BCS.</p>
+                                        <ul>
+                                            <li>Represent BCS positively</li>
+                                            <li>Follow BCS rules and guidelines</li>
+                                            <li>Support BCS's mission and values</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>e) Support Fellow Members</strong>
+                                        <p>Encourage and support fellow members in their professional development.</p>
+                                        <ul>
+                                            <li>Mentor junior professionals</li>
+                                            <li>Share knowledge and experience</li>
+                                            <li>Help colleagues grow professionally</li>
+                                            <li>Foster a supportive professional community</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="info-box">
+                                        <div class="info-box-title">The Collective Responsibility</div>
+                                        <p>This duty recognizes that IT professionals are part of a broader profession. Your individual actions affect how the public views all IT professionals. By maintaining high standards, you help build trust in the profession as a whole.</p>
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Real-World Example: Professional Reputation</div>
+                                        <p><strong>Good Practice:</strong> When you discover a colleague has made an error, help them fix it professionally and use it as a learning opportunity. This supports their development and maintains the profession's reputation.</p>
+                                        <p><strong>Bad Practice:</strong> Publicly shaming a colleague for a mistake or using errors to gain personal advantage damages professional relationships and brings the profession into disrepute.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Key Definitions</h3>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Legislation
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Any statute, subordinate legislation or regulation in force in the United Kingdom from time to time.</p>
+
+                                    <p><strong>Examples include:</strong></p>
+                                    <ul>
+                                        <li>Computer Misuse Act 1990</li>
+                                        <li>Data Protection Act 2018</li>
+                                        <li>General Data Protection Regulation (GDPR)</li>
+                                        <li>Copyright, Designs and Patents Act 1988</li>
+                                        <li>Equality Act 2010</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Third Parties
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Any party (individual or entity) other than yourself or your Relevant Authority.</p>
+
+                                    <p><strong>This includes:</strong></p>
+                                    <ul>
+                                        <li>End users of systems you develop</li>
+                                        <li>The general public</li>
+                                        <li>Other organizations affected by your work</li>
+                                        <li>Stakeholders outside your direct employment relationship</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Relevant Authority
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> The person or organization that has authority over your activities as an IT professional.</p>
+
+                                    <p><strong>This could be:</strong></p>
+                                    <ul>
+                                        <li>Your employer (if you're an employee)</li>
+                                        <li>Your client (if you're a contractor or consultant)</li>
+                                        <li>Any organization you are contractually bound to serve</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Breaches and Disciplinary Procedures</h3>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Consequences of Breaching the Code</div>
+                        <p>Breaches of this Code of Conduct may result in:</p>
+                        <ul>
+                            <li>Disciplinary action by BCS</li>
+                            <li>Suspension or termination of membership</li>
+                            <li>Loss of professional certifications</li>
+                            <li>Damage to professional reputation</li>
+                        </ul>
+                        <p>In serious cases, especially those involving illegal activity, breaches may also result in criminal prosecution under relevant legislation.</p>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Interpretation and Application</h3>
+
+                    <div class="key-point">
+                        <strong>How to Apply the Code:</strong>
+                        <ul>
+                            <li><strong>In good faith:</strong> The Code should be interpreted and applied in good faith</li>
+                            <li><strong>Professional judgment:</strong> Use your professional judgment when applying principles</li>
+                            <li><strong>Context matters:</strong> Consider the specific circumstances of each situation</li>
+                            <li><strong>Seek guidance:</strong> When in doubt, seek advice from BCS or professional colleagues</li>
+                            <li><strong>Document decisions:</strong> Keep records of how you applied the Code in difficult situations</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-box">
+                        <div class="quiz-question">Test Your Understanding!</div>
+                        <p>You're working on a project and discover your company is collecting user data without proper consent, violating GDPR. Your manager tells you to ignore it. Which BCS duties are relevant, and what should you do?</p>
+                        <button class="show-answer-btn" onclick="toggleQuiz(this)">Show Answer</button>
+                        <div class="quiz-answer">
+                            <strong>Relevant Duties:</strong><br><br>
+                            <strong>1. Public Interest (1a):</strong> Privacy is explicitly mentioned - you have a duty to protect it<br><br>
+                            <strong>2. Professional Competence and Integrity (2d):</strong> You must comply with Legislation (GDPR)<br><br>
+                            <strong>3. Duty to Relevant Authority (3e):</strong> You must NOT misrepresent system performance or legal compliance<br><br>
+                            <strong>What to do:</strong><br>
+                            1. Document the GDPR violation clearly<br>
+                            2. Escalate to higher management/legal/compliance team<br>
+                            3. If internal escalation fails, consider reporting to ICO (Information Commissioner's Office)<br>
+                            4. The Code supports you in refusing to participate in illegal activities, even if instructed by management<br>
+                            5. Whistleblowing protections may apply in this situation<br><br>
+                            <strong>Remember:</strong> Your duty to comply with legislation and protect public interest takes precedence over following improper instructions from management!
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Key Takeaways</h3>
+
+                    <div class="key-point">
+                        <strong>Remember the Four Duties:</strong>
+                        <ol>
+                            <li><strong>Public Interest</strong> - Put society's wellbeing first</li>
+                            <li><strong>Professional Competence and Integrity</strong> - Be skilled and honest</li>
+                            <li><strong>Duty to Relevant Authority</strong> - Serve your employer/client well</li>
+                            <li><strong>Duty to the Profession</strong> - Uphold IT professional standards</li>
+                        </ol>
+                    </div>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">The Code in Practice</div>
+                        <p>The BCS Code of Conduct isn't just theory - it provides practical guidance for real professional situations:</p>
+                        <ul>
+                            <li>When faced with ethical dilemmas, refer to these four duties</li>
+                            <li>If duties conflict, public interest and legal compliance generally take priority</li>
+                            <li>Being a professional means more than technical skill - it requires ethical judgment</li>
+                            <li>Your professional reputation depends on consistently upholding these standards</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Computer Misuse Act Tab -->
+            <div id="computer-misuse" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Computer Misuse Act 1990</h2>
+
+                    <p>The <span class="highlight">Computer Misuse Act 1990</span> was introduced to criminalize unauthorized access to computer systems. Before this act, hacking wasn't explicitly illegal in the UK!</p>
+
+                    <div class="case-study">
+                        <div class="case-study-title">The Prestel Hack (1984-1987)</div>
+                        <p><strong>The Story:</strong> Robert Schifreen and Stephen Gold hacked into British Telecom's Prestel system (an early online service). They accessed the Duke of Edinburgh's personal mailbox!</p>
+
+                        <p><strong>The Problem:</strong> They were initially convicted under the Forgery and Counterfeiting Act 1981, but on appeal, the conviction was overturned because hacking wasn't explicitly illegal.</p>
+
+                        <p><strong>The Result:</strong> This case exposed a gap in UK law, leading to the creation of the Computer Misuse Act 1990.</p>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">The Three Offences</h3>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Section 1: Unauthorized Access
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">The Law</div>
+                                        <p>It is illegal to access a computer system without permission, knowing that you don't have authorization.</p>
+                                    </div>
+
+                                    <p><strong>What this means in practice:</strong></p>
+                                    <ul>
+                                        <li>Using someone else's password without their permission</li>
+                                        <li>Accessing files you're not authorized to view</li>
+                                        <li>Breaking into computer systems for any reason</li>
+                                    </ul>
+
+                                    <p><strong>Penalty:</strong> Up to 2 years in prison and/or a fine</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A student discovers their professor's password is "password123" and logs into their account just to look around. Even if they don't change anything, this is illegal under Section 1.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Section 2: Unauthorized Access with Intent
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">The Law</div>
+                                        <p>It is illegal to access a computer system without permission with the intent to commit or facilitate a further crime.</p>
+                                    </div>
+
+                                    <p><strong>What this means in practice:</strong></p>
+                                    <ul>
+                                        <li>Hacking into a system to steal data</li>
+                                        <li>Accessing systems to commit fraud</li>
+                                        <li>Breaking in to enable blackmail or extortion</li>
+                                    </ul>
+
+                                    <p><strong>Penalty:</strong> Up to 5 years in prison and/or a fine</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A hacker breaks into a company's database to steal credit card numbers they plan to sell. This is Section 2 because they accessed the system with intent to commit fraud.
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Paul Bedworth (1993)</div>
+                                        <p>One of the first cases under the Computer Misuse Act. Bedworth was accused of hacking but claimed "computer addiction" as a defense. He was acquitted because the jury wasn't convinced he had criminal intent.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Section 3: Unauthorized Modification
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">The Law</div>
+                                        <p>It is illegal to modify computer material without authorization, knowing you don't have permission to do so.</p>
+                                    </div>
+
+                                    <p><strong>What this means in practice:</strong></p>
+                                    <ul>
+                                        <li>Deleting or changing files without permission</li>
+                                        <li>Installing malware or viruses</li>
+                                        <li>Defacing websites</li>
+                                        <li>Denial of Service (DoS) attacks</li>
+                                    </ul>
+
+                                    <p><strong>Penalty:</strong> Up to 10 years in prison and/or a fine</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A disgruntled employee deletes customer records from the company database before leaving. This is unauthorized modification under Section 3.
+                                    </div>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Important Note</div>
+                                        DoS attacks are specifically covered under Section 3. Even if you don't permanently delete anything, making a system unavailable counts as modification!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box">
+                        <div class="quiz-question">Test Your Understanding!</div>
+                        <p>Which section would apply if someone hacks into a university system just to prove they can do it, without stealing or changing anything?</p>
+                        <button class="show-answer-btn" onclick="toggleQuiz(this)">Show Answer</button>
+                        <div class="quiz-answer">
+                            <strong>Answer: Section 1 - Unauthorized Access</strong><br>
+                            Even though they didn't steal anything or have further criminal intent, the unauthorized access itself is illegal under Section 1.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Protection Tab -->
+            <div id="data-protection" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Data Protection Act & GDPR</h2>
+
+                    <p>Data protection laws govern how organizations collect, store, process, and share personal information. These laws protect individuals' privacy rights.</p>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Evolution of Data Protection Law</h3>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">1984</div>
+                            <p><strong>Data Protection Act 1984</strong> - First UK law to regulate personal data. Required registration of data controllers.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">1998</div>
+                            <p><strong>Data Protection Act 1998</strong> - Implemented EU Directive 95/46/EC. Introduced 8 data protection principles and expanded rights.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2018</div>
+                            <p><strong>Data Protection Act 2018</strong> - Implemented GDPR in UK law. Much stronger enforcement and penalties.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2018</div>
+                            <p><strong>GDPR (General Data Protection Regulation)</strong> - EU-wide regulation with strict requirements and massive fines for violations.</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Key Terminology</h3>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Personal Data
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Any information relating to an identified or identifiable living individual.</p>
+
+                                    <p><strong>Examples include:</strong></p>
+                                    <ul>
+                                        <li>Names, addresses, email addresses</li>
+                                        <li>Phone numbers</li>
+                                        <li>IP addresses</li>
+                                        <li>Cookie identifiers</li>
+                                        <li>Location data</li>
+                                        <li>Photos of people</li>
+                                    </ul>
+
+                                    <div class="info-box">
+                                        <div class="info-box-title">Remember</div>
+                                        Data is "personal" if you can identify someone from it, either directly or in combination with other information!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Sensitive Personal Data (Special Category Data)
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Personal data that requires extra protection due to its sensitive nature.</p>
+
+                                    <p><strong>Includes information about:</strong></p>
+                                    <ul>
+                                        <li>Racial or ethnic origin</li>
+                                        <li>Political opinions</li>
+                                        <li>Religious or philosophical beliefs</li>
+                                        <li>Trade union membership</li>
+                                        <li>Genetic data</li>
+                                        <li>Biometric data (fingerprints, facial recognition)</li>
+                                        <li>Health data</li>
+                                        <li>Sex life or sexual orientation</li>
+                                    </ul>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Extra Protection Required</div>
+                                        Processing sensitive personal data requires explicit consent and additional safeguards. You can't just collect this data casually!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Data Subject
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> The living individual whose personal data is being processed.</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> If a company stores your email address and purchase history, YOU are the data subject.
+                                    </div>
+
+                                    <p><strong>Data subjects have rights including:</strong></p>
+                                    <ul>
+                                        <li>Right to access their data</li>
+                                        <li>Right to correct inaccurate data</li>
+                                        <li>Right to erasure ("right to be forgotten")</li>
+                                        <li>Right to data portability</li>
+                                        <li>Right to object to processing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Data Controller
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> The organization or person that determines the purposes and means of processing personal data.</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A university decides to collect student email addresses for sending course updates. The university is the data controller because they decide WHY and HOW to collect this data.
+                                    </div>
+
+                                    <p><strong>Responsibilities:</strong></p>
+                                    <ul>
+                                        <li>Ensure lawful processing of data</li>
+                                        <li>Implement appropriate security measures</li>
+                                        <li>Respond to data subject requests</li>
+                                        <li>Report data breaches</li>
+                                        <li>Maintain processing records</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Data Processor
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> An organization or person that processes personal data on behalf of the data controller.</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A university (data controller) uses a cloud email service like Gmail (data processor) to send emails to students. Google processes the data but doesn't decide what emails to send.
+                                    </div>
+
+                                    <p><strong>Key points:</strong></p>
+                                    <ul>
+                                        <li>Processors act on instructions from controllers</li>
+                                        <li>Must have a written contract with the controller</li>
+                                        <li>Still have legal obligations for data security</li>
+                                        <li>Cannot use data for their own purposes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">The 8 Data Protection Principles (DPA 1998)</h3>
+
+                    <p>These principles form the foundation of data protection law:</p>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                1. Fairly and Lawfully Processed
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Data must be processed fairly and in accordance with the law.</p>
+
+                                    <p><strong>What this means:</strong></p>
+                                    <ul>
+                                        <li>Tell people you're collecting their data</li>
+                                        <li>Explain what you'll use it for</li>
+                                        <li>Have a legal basis for processing (consent, contract, legitimate interest, etc.)</li>
+                                        <li>Don't deceive people about how you'll use their data</li>
+                                    </ul>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Bad Example</div>
+                                        Collecting email addresses "for newsletters" but then selling them to marketing companies. This is unfair processing!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                2. Obtained for Specified Purposes
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Data must be collected for specific, explicit, and legitimate purposes.</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> If you collect phone numbers "for account verification," you can't later use them for marketing calls without getting new consent.
+                                    </div>
+
+                                    <p><strong>Best practice:</strong> Be clear and specific about why you're collecting data. Don't collect it "just in case" you might need it later.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                3. Adequate, Relevant, and Not Excessive
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Only collect data that you actually need for your stated purpose.</p>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Bad Example</div>
+                                        A job application form asking for your religion, medical history, and social media passwords when none of this is relevant to the job.
+                                    </div>
+
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Good Practice</div>
+                                        Data minimization - only collect what you need, nothing more!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                4. Accurate and Up to Date
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Personal data must be accurate and kept current where necessary.</p>
+
+                                    <p><strong>What this means:</strong></p>
+                                    <ul>
+                                        <li>Take reasonable steps to ensure accuracy</li>
+                                        <li>Correct errors when discovered</li>
+                                        <li>Allow people to update their information</li>
+                                        <li>Delete or correct inaccurate data</li>
+                                    </ul>
+
+                                    <div class="key-point">
+                                        <strong>Why it matters:</strong> Inaccurate data can lead to wrong decisions. Imagine being denied a loan because of incorrect financial data!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                5. Not Kept Longer Than Necessary
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Delete or anonymize data when you no longer need it.</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> If you collect data for a specific research project, delete it once the project is complete (unless participants consented to longer retention).
+                                    </div>
+
+                                    <p><strong>Best practice:</strong> Implement retention policies - define how long you'll keep different types of data and automatically delete it when the time is up.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                6. Processed in Line with Rights
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Respect individuals' rights regarding their data.</p>
+
+                                    <p><strong>Key rights include:</strong></p>
+                                    <ul>
+                                        <li>Right to be informed about data processing</li>
+                                        <li>Right to access their data (Subject Access Request)</li>
+                                        <li>Right to rectification (correct errors)</li>
+                                        <li>Right to erasure (deletion)</li>
+                                        <li>Right to restrict processing</li>
+                                        <li>Right to data portability</li>
+                                        <li>Right to object</li>
+                                    </ul>
+
+                                    <div class="info-box">
+                                        <div class="info-box-title">Important</div>
+                                        You must respond to Subject Access Requests within 1 month under GDPR!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                7. Kept Secure
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Implement appropriate technical and organizational measures to protect data.</p>
+
+                                    <p><strong>Security measures include:</strong></p>
+                                    <ul>
+                                        <li>Encryption of sensitive data</li>
+                                        <li>Access controls (only authorized people can access data)</li>
+                                        <li>Regular security updates and patches</li>
+                                        <li>Backup systems</li>
+                                        <li>Staff training on data security</li>
+                                        <li>Physical security (locked servers, etc.)</li>
+                                    </ul>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Data Breaches</div>
+                                        Under GDPR, serious data breaches must be reported to the ICO (Information Commissioner's Office) within 72 hours!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                8. Not Transferred Outside EEA Without Protection
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Special rules apply when transferring personal data outside the European Economic Area (EEA).</p>
+
+                                    <p><strong>Why this matters:</strong> Countries outside the EEA may not have the same data protection standards.</p>
+
+                                    <p><strong>How to transfer data legally:</strong></p>
+                                    <ul>
+                                        <li>Use countries with "adequacy decisions" (deemed to have adequate protection)</li>
+                                        <li>Use Standard Contractual Clauses (SCCs)</li>
+                                        <li>Use Binding Corporate Rules for large organizations</li>
+                                        <li>Get explicit consent from data subjects</li>
+                                    </ul>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> Using US cloud services (like AWS) requires special agreements because the US doesn't have blanket adequacy status.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">GDPR Key Points</h3>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Massive Penalties!</div>
+                        <p>GDPR violations can result in fines up to €20 million or 4% of global annual revenue, whichever is higher!</p>
+                    </div>
+
+                    <div class="key-point">
+                        <strong>New Requirements Under GDPR:</strong>
+                        <ul>
+                            <li><strong>Privacy by Design:</strong> Build privacy into systems from the start</li>
+                            <li><strong>Privacy by Default:</strong> Highest privacy settings should be the default</li>
+                            <li><strong>Data Protection Impact Assessments (DPIAs):</strong> Required for high-risk processing</li>
+                            <li><strong>Data Protection Officers (DPOs):</strong> Required for public authorities and large-scale data processing</li>
+                            <li><strong>Breach Notification:</strong> 72-hour reporting requirement</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-box">
+                        <div class="quiz-question">Test Your Understanding!</div>
+                        <p>A social media company collects users' political opinions from their posts and sells this data to political campaigns. Which principles are being violated?</p>
+                        <button class="show-answer-btn" onclick="toggleQuiz(this)">Show Answer</button>
+                        <div class="quiz-answer">
+                            <strong>Multiple violations:</strong><br>
+                            1. <strong>Fairly and lawfully processed</strong> - Users likely didn't consent to this use<br>
+                            2. <strong>Obtained for specified purposes</strong> - Data collected for social networking, not for selling<br>
+                            3. <strong>Special category data</strong> - Political opinions require explicit consent and extra protection!<br><br>
+                            This would result in massive GDPR fines!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright Tab -->
+            <div id="copyright" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Copyright Law</h2>
+
+                    <p>Copyright protects <span class="highlight">original creative works</span> from being copied without permission. This includes software code!</p>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Tangible vs Intangible Property</h3>
+
+                    <div class="key-point">
+                        <strong>Important Distinction:</strong>
+                        <p><strong>Tangible property</strong> = Physical items (laptop, phone, book)<br>
+                        <strong>Intangible property</strong> = Non-physical creations (ideas, code, music, art)</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">The Theft Act 1968 Problem</div>
+                        <p>The Theft Act defines theft as "dishonestly appropriating property belonging to another with the intention of permanently depriving the other of it."</p>
+                        <p><strong>Problem:</strong> When you copy software, the original owner still has their copy! So traditional theft laws don't apply to copying intangible property.</p>
+                    </div>
+
+                    <p>This is why we need <strong>intellectual property laws</strong> like copyright!</p>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Copyright, Designs and Patents Act 1988</h3>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                What Does Copyright Protect?
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Copyright protects:</strong></p>
+                                    <ul>
+                                        <li>Literary works (including software code!)</li>
+                                        <li>Dramatic works</li>
+                                        <li>Musical works</li>
+                                        <li>Artistic works</li>
+                                        <li>Sound recordings</li>
+                                        <li>Films</li>
+                                        <li>Broadcasts</li>
+                                        <li>Typographical arrangements</li>
+                                    </ul>
+
+                                    <div class="key-point">
+                                        <strong>For Computing:</strong> Software source code is protected as a "literary work" under copyright law!
+                                    </div>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Important</div>
+                                        Copyright protects the <strong>expression</strong> of ideas, not the ideas themselves. You can't copyright an algorithm, but you can copyright the specific code implementing it.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                How Do You Get Copyright?
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Automatic Protection!</div>
+                                        <p>Copyright is <strong>automatic</strong> in the UK. As soon as you create an original work and fix it in a tangible form (write code, save a file, etc.), you own the copyright!</p>
+                                    </div>
+
+                                    <p><strong>No registration required</strong> (unlike patents or trademarks)</p>
+
+                                    <p><strong>Requirements:</strong></p>
+                                    <ul>
+                                        <li>Work must be <strong>original</strong> (your own creation)</li>
+                                        <li>Must show some <strong>skill and effort</strong></li>
+                                        <li>Must be <strong>fixed in a medium</strong> (written down, saved, recorded)</li>
+                                    </ul>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> The moment you write and save a Python script, you automatically own the copyright to that code!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                What Rights Does Copyright Give You?
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>Exclusive rights to:</strong></p>
+                                    <ul>
+                                        <li><strong>Copy</strong> the work</li>
+                                        <li><strong>Distribute</strong> copies to the public</li>
+                                        <li><strong>Perform, show, or play</strong> the work in public</li>
+                                        <li><strong>Communicate</strong> the work to the public (e.g., online)</li>
+                                        <li>Make <strong>adaptations</strong> (e.g., translating code to another language)</li>
+                                    </ul>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Infringement</div>
+                                        <p>Anyone who does these things without permission is infringing your copyright!</p>
+                                    </div>
+
+                                    <p><strong>For software specifically:</strong></p>
+                                    <ul>
+                                        <li>Making copies of the program</li>
+                                        <li>Distributing the program</li>
+                                        <li>Making modified versions</li>
+                                        <li>Translating to another programming language</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                How Long Does Copyright Last?
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>For literary works (including software):</strong></p>
+                                    <p class="highlight" style="font-size: 1.2em;">Life of the author + 70 years</p>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> If you write code in 2025 and live until 2075, your copyright lasts until 2145!
+                                    </div>
+
+                                    <p><strong>For works created in employment:</strong> 70 years from creation</p>
+
+                                    <div class="info-box">
+                                        <div class="info-box-title">After Copyright Expires</div>
+                                        The work enters the "public domain" and anyone can use it freely.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Who Owns the Copyright?
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>General rule:</strong> The creator owns the copyright</p>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Employment Exception!</div>
+                                        <p>If you create something as part of your job, your <strong>employer</strong> owns the copyright, not you!</p>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong>
+                                        <ul>
+                                            <li>You write code at work → Your employer owns it</li>
+                                            <li>You write code at home for a personal project → You own it</li>
+                                            <li>You write code as a freelancer → You own it (unless contract says otherwise)</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Howard and Cantor Fitzgerald</div>
+                                        <p><strong>The Story:</strong> An employee developed software for his employer but wanted to keep it.</p>
+                                        <p><strong>Court Decision:</strong> The employer owned the copyright because the software was created as part of his employment duties.</p>
+                                        <p><strong>Lesson:</strong> If you create it for work, work owns it!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Fair Dealing and Exceptions
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>Some uses of copyrighted work are allowed without permission:</p>
+
+                                    <p><strong>Fair Dealing for:</strong></p>
+                                    <ul>
+                                        <li>Research and private study (non-commercial)</li>
+                                        <li>Criticism and review (with acknowledgment)</li>
+                                        <li>News reporting</li>
+                                        <li>Teaching (in educational institutions)</li>
+                                    </ul>
+
+                                    <p><strong>For software specifically:</strong></p>
+                                    <ul>
+                                        <li>Making backup copies</li>
+                                        <li>Decompilation for interoperability (under strict conditions)</li>
+                                        <li>Error correction</li>
+                                    </ul>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Important</div>
+                                        Fair dealing is quite narrow in UK law. When in doubt, ask for permission!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Real-World Case Studies</h3>
+
+                    <div class="case-study">
+                        <div class="case-study-title">John Carmack, Oculus, and ZeniMax</div>
+                        <p><strong>Background:</strong> John Carmack (legendary game developer) left id Software (owned by ZeniMax) to join Oculus VR.</p>
+
+                        <p><strong>The Dispute:</strong> ZeniMax claimed Carmack took intellectual property (code and trade secrets) with him to Oculus.</p>
+
+                        <p><strong>Result:</strong> Jury found Oculus violated a non-disclosure agreement. Oculus had to pay $500 million in damages!</p>
+
+                        <p><strong>Lessons:</strong></p>
+                        <ul>
+                            <li>You can't take your employer's code when you leave</li>
+                            <li>Even famous developers must respect IP laws</li>
+                            <li>Non-disclosure agreements are legally binding</li>
+                        </ul>
+                    </div>
+
+                    <div class="case-study">
+                        <div class="case-study-title">Threes! vs 2048 - Game Cloning</div>
+                        <p><strong>Background:</strong> Threes! was an original puzzle game. Soon after release, nearly identical clones appeared, including "2048".</p>
+
+                        <p><strong>The Problem:</strong> The clones copied the game mechanics exactly, just changed the numbers and visuals.</p>
+
+                        <p><strong>Copyright Issue:</strong> Game mechanics (the idea) aren't copyrightable, only the specific implementation (code, graphics, text) is protected.</p>
+
+                        <p><strong>Result:</strong> The clones were legal (even though many considered them unethical). The original creators couldn't stop them with copyright law.</p>
+
+                        <p><strong>Lesson:</strong> Copyright protects expression, not ideas. This is a gap in IP protection for games!</p>
+                    </div>
+
+                    <div class="quiz-box">
+                        <div class="quiz-question">Test Your Understanding!</div>
+                        <p>You're a software developer. During evenings and weekends, you build a mobile app using your own laptop at home. Your employment contract doesn't mention intellectual property. Who owns the copyright to your app?</p>
+                        <button class="show-answer-btn" onclick="toggleQuiz(this)">Show Answer</button>
+                        <div class="quiz-answer">
+                            <strong>Answer: You own the copyright!</strong><br><br>
+                            Because you created it:<br>
+                            • Outside work hours<br>
+                            • On your own equipment<br>
+                            • Not as part of your employment duties<br><br>
+                            However, always check your employment contract for IP clauses. Some contracts claim ownership of anything you create, even at home!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confidential Information Tab -->
+            <div id="confidential" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Confidential Information & Trade Secrets</h2>
+
+                    <p>Some valuable information doesn't qualify for copyright protection (like business strategies, customer lists, or algorithms). This is where <span class="highlight">confidential information law</span> comes in.</p>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">What is Confidential Information?</h3>
+
+                    <div class="key-point">
+                        <strong>Definition:</strong> Information that:
+                        <ul>
+                            <li>Has the <strong>quality of confidence</strong> (not public knowledge)</li>
+                            <li>Was <strong>imparted in circumstances of confidence</strong></li>
+                            <li>Has been <strong>used without authorization</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Examples of Confidential Information
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p><strong>In business and technology:</strong></p>
+                                    <ul>
+                                        <li><strong>Trade secrets:</strong> Secret formulas, algorithms, processes</li>
+                                        <li><strong>Customer lists:</strong> Who your clients are and their contact details</li>
+                                        <li><strong>Business strategies:</strong> Future product plans, pricing strategies</li>
+                                        <li><strong>Technical know-how:</strong> Specialized knowledge about how things work</li>
+                                        <li><strong>Source code:</strong> (protected by both copyright AND confidentiality)</li>
+                                        <li><strong>Database contents:</strong> Compiled data that's not public</li>
+                                        <li><strong>Security measures:</strong> How you protect your systems</li>
+                                    </ul>
+
+                                    <div class="key-point">
+                                        <strong>Famous Example:</strong> The Coca-Cola recipe is a trade secret, not a patent. If they patented it, they'd have to disclose the recipe and it would enter public domain after 20 years. By keeping it secret, it's protected indefinitely!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Quality of Confidence
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>For information to be confidential, it must have the "quality of confidence":</p>
+
+                                    <div class="info-box success">
+                                        <div class="info-box-title">Information HAS quality of confidence if:</div>
+                                        <ul>
+                                            <li>It's not in the public domain</li>
+                                            <li>It's not "common knowledge"</li>
+                                            <li>It's relatively inaccessible</li>
+                                            <li>It has commercial value</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Information LOSES quality of confidence if:</div>
+                                        <ul>
+                                            <li>It's published or widely known</li>
+                                            <li>It can be easily reverse-engineered</li>
+                                            <li>It's obvious to anyone in the field</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="key-point">
+                                        <strong>Example:</strong> A company's unique machine learning algorithm has quality of confidence. But "we use Python for web development" does not - that's common knowledge.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Circumstances of Confidence
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>The information must have been shared in circumstances where the recipient should understand it's confidential.</p>
+
+                                    <p><strong>Circumstances that create confidence:</strong></p>
+                                    <ul>
+                                        <li><strong>Express agreements:</strong> Non-Disclosure Agreements (NDAs), employment contracts</li>
+                                        <li><strong>Implied duties:</strong> Doctor-patient, lawyer-client relationships</li>
+                                        <li><strong>Employment relationships:</strong> Employees have a duty not to disclose employer's secrets</li>
+                                        <li><strong>Business negotiations:</strong> Sharing information during deal discussions</li>
+                                    </ul>
+
+                                    <div class="case-study">
+                                        <div class="case-study-title">Employment Scenario</div>
+                                        <p>You work for a tech startup and have access to their unreleased product roadmap. Even without signing an NDA, you have an <strong>implied duty of confidence</strong> not to share this with competitors or the public.</p>
+                                    </div>
+
+                                    <div class="info-box warning">
+                                        <div class="info-box-title">Important</div>
+                                        This duty often continues even after you leave the company! You can't immediately use your ex-employer's trade secrets.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                Unauthorized Use
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>For there to be a breach, the information must be used or disclosed without authorization.</p>
+
+                                    <p><strong>Examples of unauthorized use:</strong></p>
+                                    <ul>
+                                        <li>Sharing confidential information with competitors</li>
+                                        <li>Using trade secrets to start a competing business</li>
+                                        <li>Publishing confidential data online</li>
+                                        <li>Selling customer lists to third parties</li>
+                                    </ul>
+
+                                    <div class="info-box danger">
+                                        <div class="info-box-title">Remedies</div>
+                                        <p>If you breach confidentiality, courts can:</p>
+                                        <ul>
+                                            <li>Grant an <strong>injunction</strong> (order you to stop)</li>
+                                            <li>Award <strong>damages</strong> (financial compensation)</li>
+                                            <li>Order <strong>delivery up</strong> (return/destroy confidential materials)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Non-Disclosure Agreements (NDAs)</h3>
+
+                    <div class="info-box">
+                        <div class="info-box-title">What is an NDA?</div>
+                        <p>A Non-Disclosure Agreement (also called a confidentiality agreement) is a legal contract that creates a confidential relationship between parties.</p>
+                    </div>
+
+                    <p><strong>Types of NDAs:</strong></p>
+                    <ul>
+                        <li><strong>Unilateral (One-way):</strong> One party discloses to another (e.g., employer to employee)</li>
+                        <li><strong>Bilateral (Mutual):</strong> Both parties share confidential information (e.g., two companies discussing a partnership)</li>
+                    </ul>
+
+                    <p><strong>Key clauses in NDAs:</strong></p>
+                    <ul>
+                        <li><strong>Definition of confidential information:</strong> What's covered</li>
+                        <li><strong>Obligations:</strong> What you must/must not do</li>
+                        <li><strong>Exclusions:</strong> What's not confidential (e.g., public information)</li>
+                        <li><strong>Duration:</strong> How long the agreement lasts</li>
+                        <li><strong>Consequences:</strong> What happens if you breach</li>
+                    </ul>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Before Signing an NDA</div>
+                        <ul>
+                            <li>Read it carefully!</li>
+                            <li>Understand what you're agreeing to</li>
+                            <li>Check the duration (some last forever!)</li>
+                            <li>Ensure it's not unreasonably broad</li>
+                            <li>Get legal advice if you're unsure</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Confidentiality vs Copyright</h3>
+
+                    <div class="key-point">
+                        <strong>Key Differences:</strong>
+                        <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
+                            <tr style="background: #667eea; color: white;">
+                                <th style="padding: 10px; border: 1px solid #ddd;">Aspect</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Copyright</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Confidentiality</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>What it protects</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Expression of ideas</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Information itself</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>How you get it</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Automatic upon creation</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Requires confidential relationship</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Duration</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Life + 70 years</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">As long as it stays secret</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Public disclosure</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Doesn't affect rights</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Destroys protection</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Independent creation</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">If you create same thing independently, that's okay</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Doesn't matter - you still can't use it if you received it in confidence</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="key-point">
+                        <strong>Example - Source Code:</strong>
+                        <p>Your company's source code is protected by BOTH copyright AND confidentiality:</p>
+                        <ul>
+                            <li><strong>Copyright</strong> prevents copying the code itself</li>
+                            <li><strong>Confidentiality</strong> prevents employees from sharing it or using the algorithms/techniques elsewhere</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Professional Duties</h3>
+
+                    <div class="info-box">
+                        <div class="info-box-title">As a Computing Professional</div>
+                        <p>You have legal and ethical duties regarding confidential information:</p>
+                        <ul>
+                            <li><strong>During employment:</strong> Don't disclose or misuse employer's confidential information</li>
+                            <li><strong>After leaving:</strong> Don't use trade secrets from previous employers</li>
+                            <li><strong>With clients:</strong> Protect client data and business information</li>
+                            <li><strong>In collaborations:</strong> Respect NDAs and confidentiality agreements</li>
+                        </ul>
+                    </div>
+
+                    <div class="case-study">
+                        <div class="case-study-title">Practical Scenario</div>
+                        <p><strong>Situation:</strong> You leave Company A to join Company B (a competitor). You remember details about Company A's upcoming product features.</p>
+
+                        <p><strong>What you CAN do:</strong></p>
+                        <ul>
+                            <li>Use general skills and knowledge you gained</li>
+                            <li>Use publicly available information</li>
+                            <li>Apply standard industry practices</li>
+                        </ul>
+
+                        <p><strong>What you CANNOT do:</strong></p>
+                        <ul>
+                            <li>Share Company A's trade secrets with Company B</li>
+                            <li>Use specific proprietary algorithms or techniques</li>
+                            <li>Disclose customer lists or business strategies</li>
+                            <li>Bring Company A's code or documents</li>
+                        </ul>
+
+                        <p><strong>Gray area:</strong> Knowledge in your head (that's not a specific trade secret) can be hard to separate. When in doubt, don't use it!</p>
+                    </div>
+
+                    <div class="quiz-box">
+                        <div class="quiz-question">Test Your Understanding!</div>
+                        <p>You discover your company's database password is "password123" and they store customer credit cards in plain text. Can you publicly disclose this security vulnerability?</p>
+                        <button class="show-answer-btn" onclick="toggleQuiz(this)">Show Answer</button>
+                        <div class="quiz-answer">
+                            <strong>Complex Answer:</strong><br><br>
+                            <strong>Legally:</strong> You have a duty of confidence to your employer, so public disclosure could breach this.<br><br>
+                            <strong>However:</strong> There's a <strong>public interest defense</strong>. Serious security issues that endanger customers might justify disclosure.<br><br>
+                            <strong>Best practice:</strong><br>
+                            1. Report to management first<br>
+                            2. If ignored, report to ICO (data protection authority)<br>
+                            3. Consider whistleblowing protections<br>
+                            4. Get legal advice before public disclosure<br><br>
+                            Responsible disclosure protects both customers and yourself legally!
+                        </div>
+                    </div>
+
+                    <h3 style="color: #667eea; margin-top: 30px;">Key Takeaways</h3>
+
+                    <div class="key-point">
+                        <strong>Remember:</strong>
+                        <ul>
+                            <li>Confidentiality protects information that copyright cannot</li>
+                            <li>You can be bound by confidentiality even without signing anything (implied duties)</li>
+                            <li>Confidentiality duties often continue after employment ends</li>
+                            <li>Public disclosure destroys confidential information protection</li>
+                            <li>Always respect NDAs and confidentiality agreements</li>
+                            <li>When in doubt about what you can share, ask first!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Research and Professional Skills - Week 1 Interactive Notes</strong></p>
+            <p>Remember: These notes are for educational purposes. Always consult official legal resources and seek professional legal advice for specific situations.</p>
+            <p style="margin-top: 10px; color: #999;">Created for beginner-friendly learning | Use the tabs above to navigate topics</p>
+        </div>
+    </div>
+
+    <button class="scroll-to-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Tab switching functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, navtabs;
+
+            // Hide all tab contents
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Remove active class from all nav tabs
+            navtabs = document.getElementsByClassName("nav-tab");
+            for (i = 0; i < navtabs.length; i++) {
+                navtabs[i].classList.remove("active");
+            }
+
+            // Show current tab and mark button as active
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+
+            // Scroll to top when switching tabs
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Accordion functionality
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const isActive = element.classList.contains('active');
+
+            // Close all accordions in the same section
+            const allHeaders = element.parentElement.parentElement.getElementsByClassName('accordion-header');
+            const allContents = element.parentElement.parentElement.getElementsByClassName('accordion-content');
+
+            for (let i = 0; i < allHeaders.length; i++) {
+                allHeaders[i].classList.remove('active');
+                allContents[i].classList.remove('active');
+            }
+
+            // If it wasn't active, open it
+            if (!isActive) {
+                element.classList.add('active');
+                content.classList.add('active');
+            }
+        }
+
+        // Quiz answer toggle
+        function toggleQuiz(button) {
+            const answer = button.nextElementSibling;
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                button.textContent = 'Show Answer';
+            } else {
+                answer.style.display = 'block';
+                button.textContent = 'Hide Answer';
+            }
+        }
+
+        // Scroll to top button
+        window.onscroll = function() {
+            const scrollButton = document.querySelector('.scroll-to-top');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollButton.classList.add('visible');
+            } else {
+                scrollButton.classList.remove('visible');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add smooth scrolling to all internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

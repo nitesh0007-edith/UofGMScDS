@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Retrieval - Complete Interactive Tutorial</title>
+
+    <!-- MathJax for mathematical formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --code-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: var(--card-bg);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .formula-box {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--secondary-color);
+            overflow-x: auto;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .example-box h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+
+        .interactive-calc {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .calc-input {
+            margin: 0.5rem 0;
+        }
+
+        .calc-input label {
+            display: inline-block;
+            width: 150px;
+            font-weight: 600;
+        }
+
+        .calc-input input {
+            padding: 0.5rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 5px;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        button {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+
+        button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .result {
+            background: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .quiz-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .quiz-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .quiz-option {
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            background: var(--bg-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-color);
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-color);
+        }
+
+        tr:hover {
+            background: var(--bg-color);
+        }
+
+        .key-point {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .key-point::before {
+            content: "💡";
+            position: absolute;
+            left: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .diagram {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .process-step {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: "→";
+            position: absolute;
+            right: -2rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .process-step:last-child::after {
+            content: "";
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .calc-input label {
+                display: block;
+                width: 100%;
+                margin-bottom: 0.3rem;
+            }
+
+            .calc-input input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Information Retrieval</h1>
+            <p>Complete Interactive Tutorial - From Basics to Advanced Concepts</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#weighting">Term Weighting</a></li>
+                <li><a href="#vsm">Vector Space Model</a></li>
+                <li><a href="#practice">Practice Zone</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- SECTION 1: INTRODUCTION -->
+            <section id="intro">
+                <h2>1. Introduction to Information Retrieval</h2>
+
+                <div class="highlight">
+                    <h3>What is Information Retrieval?</h3>
+                    <p><strong>Information Retrieval (IR)</strong> is the science of searching for information in documents, searching for documents themselves, searching for metadata that describes documents, or searching within databases, whether relational stand-alone databases or hypertext networked databases such as the World Wide Web.</p>
+                </div>
+
+                <h3>1.1 Core Concepts</h3>
+
+                <h4>Information Need vs Query</h4>
+                <p>Understanding the distinction between what users actually want and what they search for is crucial:</p>
+
+                <ul>
+                    <li><strong>Information Need:</strong> The actual information requirement that exists in the user's mind</li>
+                    <li><strong>Query:</strong> The translation of the information need into the formal language of the retrieval system</li>
+                </ul>
+
+                <div class="example-box">
+                    <h4>📝 Real-World Example</h4>
+                    <p><strong>Information Need:</strong> "I want to learn about how climate change affects polar bear populations in the Arctic"</p>
+                    <p><strong>Query:</strong> "climate change polar bears arctic"</p>
+                    <p>Notice how the query is a simplified, keyword-based version of the actual information need!</p>
+                </div>
+
+                <h4>Relevance: The Heart of IR</h4>
+                <p>Relevance is the key concept in information retrieval. We distinguish between two types:</p>
+
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Definition</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Topical Relevance</strong></td>
+                        <td>Document is about the same topic as the query</td>
+                        <td>Query: "machine learning" → Document about neural networks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>User Relevance</strong></td>
+                        <td>Document satisfies the user's actual information need</td>
+                        <td>User wants beginner tutorial, gets introductory guide (not research paper)</td>
+                    </tr>
+                </table>
+
+                <h3>1.2 Text Processing Pipeline</h3>
+
+                <div class="diagram">
+                    <h4>Document Processing Flow</h4>
+                    <div style="margin: 2rem 0;">
+                        <div class="process-step">Raw Text</div>
+                        <div class="process-step">Tokenization</div>
+                        <div class="process-step">Stopword Removal</div>
+                        <div class="process-step">Stemming</div>
+                        <div class="process-step">Index Terms</div>
+                    </div>
+                </div>
+
+                <h4>Step 1: Tokenization</h4>
+                <p>Tokenization is the process of breaking text into individual words or tokens.</p>
+
+                <div class="example-box">
+                    <h4>📝 Tokenization Example</h4>
+                    <p><strong>Input:</strong> "Information retrieval is fascinating!"</p>
+                    <p><strong>Tokens:</strong> ["Information", "retrieval", "is", "fascinating"]</p>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Try It Yourself: Tokenizer</h4>
+                    <div class="calc-input">
+                        <label>Enter text:</label>
+                        <input type="text" id="tokenInput" placeholder="Type any sentence...">
+                    </div>
+                    <button onclick="tokenize()">Tokenize</button>
+                    <div id="tokenResult" class="result"></div>
+                </div>
+
+                <h4>Step 2: Stopword Removal</h4>
+                <p>Stopwords are common words that typically don't carry much meaning (e.g., "the", "is", "a", "an").</p>
+
+                <div class="key-point">
+                    Removing stopwords reduces index size by 30-50% and can improve retrieval effectiveness!
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Stopword Removal Example</h4>
+                    <p><strong>Before:</strong> ["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]</p>
+                    <p><strong>After:</strong> ["quick", "brown", "fox", "jumps", "lazy", "dog"]</p>
+                    <p><strong>Removed:</strong> "the", "over"</p>
+                </div>
+
+                <h4>Step 3: Stemming</h4>
+                <p>Stemming reduces words to their root form, helping to match different variants of the same word.</p>
+
+                <div class="example-box">
+                    <h4>📝 Stemming Example</h4>
+                    <table>
+                        <tr>
+                            <th>Original Word</th>
+                            <th>Stem</th>
+                        </tr>
+                        <tr>
+                            <td>running, runs, ran</td>
+                            <td>run</td>
+                        </tr>
+                        <tr>
+                            <td>computing, computed, computer</td>
+                            <td>comput</td>
+                        </tr>
+                        <tr>
+                            <td>retrieval, retrieve, retrieved</td>
+                            <td>retriev</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>1.3 The Bag-of-Words Model</h3>
+
+                <p>The bag-of-words model represents documents as unordered collections of words, disregarding grammar and word order but keeping frequency.</p>
+
+                <div class="formula-box">
+                    <p>A document <strong>d</strong> is represented as:</p>
+                    <p>$$d = \{(t_1, f_1), (t_2, f_2), ..., (t_n, f_n)\}$$</p>
+                    <p>where \(t_i\) is a term and \(f_i\) is its frequency</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Bag-of-Words Example</h4>
+                    <p><strong>Document:</strong> "The cat sat on the mat. The cat was happy."</p>
+                    <p><strong>Bag-of-Words (after processing):</strong></p>
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Frequency</th>
+                        </tr>
+                        <tr><td>cat</td><td>2</td></tr>
+                        <tr><td>sat</td><td>1</td></tr>
+                        <tr><td>mat</td><td>1</td></tr>
+                        <tr><td>happy</td><td>1</td></tr>
+                    </table>
+                </div>
+
+                <div class="quiz-box">
+                    <h4>🎯 Check Your Understanding</h4>
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> What is the main difference between an information need and a query?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) There is no difference</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Information need is what the user wants, query is how they express it</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Query is always more detailed than information need</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Information need is always written in natural language</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> Why do we remove stopwords?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) To make text harder to read</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) To reduce index size and improve efficiency</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) To add more words to the index</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Stopwords are never removed</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> What does stemming do?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Removes all words from a document</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Adds prefixes to words</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">C) Reduces words to their root form</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Counts word frequencies</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: ARCHITECTURE -->
+            <section id="architecture">
+                <h2>2. Information Retrieval Architecture</h2>
+
+                <div class="highlight">
+                    <h3>Overview</h3>
+                    <p>An IR system's architecture determines how efficiently it can store and retrieve information. The core component is the <strong>inverted index</strong>, which maps terms to documents.</p>
+                </div>
+
+                <h3>2.1 The Inverted Index</h3>
+
+                <p>An inverted index is the fundamental data structure in IR systems. Unlike a forward index (document → terms), an inverted index maps terms to documents.</p>
+
+                <div class="key-point">
+                    The inverted index allows us to quickly find all documents containing a specific term!
+                </div>
+
+                <h4>Components of an Inverted Index</h4>
+
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Lexicon (Dictionary)</strong></td>
+                        <td>List of all unique terms</td>
+                        <td>["apple", "banana", "cherry"]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Postings List</strong></td>
+                        <td>For each term, list of documents containing it</td>
+                        <td>"apple" → [doc1, doc3, doc7]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Document Index</strong></td>
+                        <td>Metadata about documents</td>
+                        <td>doc1: {title: "...", length: 500}</td>
+                    </tr>
+                </table>
+
+                <h4>Building an Inverted Index: Step-by-Step</h4>
+
+                <div class="example-box">
+                    <h4>📝 Complete Example: Building an Inverted Index</h4>
+
+                    <p><strong>Step 1: Start with Documents</strong></p>
+                    <ul>
+                        <li>Doc1: "The cat sat on the mat"</li>
+                        <li>Doc2: "The dog sat on the log"</li>
+                        <li>Doc3: "Cats and dogs are friends"</li>
+                    </ul>
+
+                    <p><strong>Step 2: Process Each Document (tokenize, remove stopwords, stem)</strong></p>
+                    <ul>
+                        <li>Doc1: ["cat", "sat", "mat"]</li>
+                        <li>Doc2: ["dog", "sat", "log"]</li>
+                        <li>Doc3: ["cat", "dog", "friend"]</li>
+                    </ul>
+
+                    <p><strong>Step 3: Create Term-Document Pairs</strong></p>
+                    <pre style="background: white; padding: 1rem; border-radius: 5px;">
+(cat, Doc1), (sat, Doc1), (mat, Doc1)
+(dog, Doc2), (sat, Doc2), (log, Doc2)
+(cat, Doc3), (dog, Doc3), (friend, Doc3)
+                    </pre>
+
+                    <p><strong>Step 4: Sort by Term</strong></p>
+                    <pre style="background: white; padding: 1rem; border-radius: 5px;">
+(cat, Doc1), (cat, Doc3)
+(dog, Doc2), (dog, Doc3)
+(friend, Doc3)
+(log, Doc2)
+(mat, Doc1)
+(sat, Doc1), (sat, Doc2)
+                    </pre>
+
+                    <p><strong>Step 5: Merge to Create Postings Lists</strong></p>
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Postings List</th>
+                        </tr>
+                        <tr><td>cat</td><td>[Doc1, Doc3]</td></tr>
+                        <tr><td>dog</td><td>[Doc2, Doc3]</td></tr>
+                        <tr><td>friend</td><td>[Doc3]</td></tr>
+                        <tr><td>log</td><td>[Doc2]</td></tr>
+                        <tr><td>mat</td><td>[Doc1]</td></tr>
+                        <tr><td>sat</td><td>[Doc1, Doc2]</td></tr>
+                    </table>
+                </div>
+
+                <h3>2.2 Document Representation</h3>
+
+                <p>Documents are represented as vectors in a high-dimensional space, where each dimension corresponds to a term.</p>
+
+                <div class="formula-box">
+                    <p>For a collection with vocabulary size \(|V|\), each document \(d\) is a vector:</p>
+                    <p>$$\vec{d} = (w_{1}, w_{2}, ..., w_{|V|})$$</p>
+                    <p>where \(w_i\) is the weight of term \(i\) in the document</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Document Vector Example</h4>
+                    <p><strong>Vocabulary:</strong> [cat, dog, friend, log, mat, sat]</p>
+                    <p><strong>Doc1:</strong> "cat sat mat"</p>
+                    <p><strong>Vector representation (using binary weights):</strong></p>
+                    <p>Doc1 = (1, 0, 0, 0, 1, 1)</p>
+                    <p style="margin-top: 1rem;">This means Doc1 contains "cat", "mat", and "sat", but not "dog", "friend", or "log".</p>
+                </div>
+
+                <h3>2.3 Query Processing</h3>
+
+                <p>When a user submits a query, the IR system must efficiently find relevant documents:</p>
+
+                <div class="diagram">
+                    <h4>Query Processing Pipeline</h4>
+                    <div style="margin: 2rem 0;">
+                        <div class="process-step">User Query</div>
+                        <div class="process-step">Process Query</div>
+                        <div class="process-step">Look up Index</div>
+                        <div class="process-step">Rank Documents</div>
+                        <div class="process-step">Return Results</div>
+                    </div>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Interactive: Query Processing Simulator</h4>
+                    <p>Try searching in our mini inverted index!</p>
+
+                    <div style="background: white; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <strong>Available Documents:</strong>
+                        <ul>
+                            <li>Doc1: "information retrieval systems"</li>
+                            <li>Doc2: "database management systems"</li>
+                            <li>Doc3: "information systems and databases"</li>
+                            <li>Doc4: "retrieval of information"</li>
+                        </ul>
+                    </div>
+
+                    <div class="calc-input">
+                        <label>Enter query:</label>
+                        <input type="text" id="queryInput" placeholder="e.g., information systems">
+                    </div>
+                    <button onclick="processQuery()">Search</button>
+                    <div id="queryResult" class="result"></div>
+                </div>
+
+                <h3>2.4 Boolean Retrieval</h3>
+
+                <p>Boolean retrieval uses Boolean operators (AND, OR, NOT) to combine search terms:</p>
+
+                <div class="formula-box">
+                    <p><strong>Boolean Operations on Postings Lists:</strong></p>
+                    <p>• <strong>AND:</strong> Intersection of postings lists</p>
+                    <p>$$\text{cat AND dog} = \text{postings}(\text{cat}) \cap \text{postings}(\text{dog})$$</p>
+                    <p>• <strong>OR:</strong> Union of postings lists</p>
+                    <p>$$\text{cat OR dog} = \text{postings}(\text{cat}) \cup \text{postings}(\text{dog})$$</p>
+                    <p>• <strong>NOT:</strong> Complement of postings list</p>
+                    <p>$$\text{NOT cat} = \text{all\_docs} - \text{postings}(\text{cat})$$</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Boolean Query Example</h4>
+                    <p><strong>Index:</strong></p>
+                    <ul>
+                        <li>cat → [Doc1, Doc3, Doc5]</li>
+                        <li>dog → [Doc2, Doc3, Doc4]</li>
+                    </ul>
+
+                    <p><strong>Query: "cat AND dog"</strong></p>
+                    <p>Result: [Doc3] (only Doc3 contains both terms)</p>
+
+                    <p><strong>Query: "cat OR dog"</strong></p>
+                    <p>Result: [Doc1, Doc2, Doc3, Doc4, Doc5]</p>
+
+                    <p><strong>Query: "cat AND NOT dog"</strong></p>
+                    <p>Result: [Doc1, Doc5] (documents with cat but not dog)</p>
+                </div>
+
+                <div class="quiz-box">
+                    <h4>🎯 Check Your Understanding</h4>
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> What is the main purpose of an inverted index?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) To store documents in alphabetical order</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) To quickly find documents containing specific terms</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) To compress documents</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) To remove duplicate documents</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> Given: term "apple" → [Doc1, Doc3, Doc5] and term "pie" → [Doc2, Doc3, Doc4], what is the result of "apple AND pie"?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) [Doc1, Doc2, Doc3, Doc4, Doc5]</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) [Doc3]</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) [Doc1, Doc5]</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) []</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: TERM WEIGHTING -->
+            <section id="weighting">
+                <h2>3. Term Weighting and Statistical Information</h2>
+
+                <div class="highlight">
+                    <h3>Why Term Weighting?</h3>
+                    <p>Not all terms are equally important! Some terms are more discriminative than others. Term weighting assigns numerical weights to terms based on their importance in documents and the collection.</p>
+                </div>
+
+                <h3>3.1 Statistical Laws in IR</h3>
+
+                <h4>Zipf's Law</h4>
+
+                <p>Zipf's Law describes the frequency distribution of words in natural language:</p>
+
+                <div class="formula-box">
+                    <p><strong>Zipf's Law:</strong></p>
+                    <p>$$r \times f \approx k$$</p>
+                    <p>where:</p>
+                    <ul>
+                        <li>\(r\) = rank of the word (most frequent word has rank 1)</li>
+                        <li>\(f\) = frequency of the word</li>
+                        <li>\(k\) = a constant</li>
+                    </ul>
+                    <p>Alternative formulation:</p>
+                    <p>$$f \propto \frac{1}{r}$$</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Zipf's Law Example</h4>
+                    <p>In a corpus of 1 million words:</p>
+                    <table>
+                        <tr>
+                            <th>Rank (r)</th>
+                            <th>Word</th>
+                            <th>Frequency (f)</th>
+                            <th>r × f</th>
+                        </tr>
+                        <tr><td>1</td><td>the</td><td>70,000</td><td>70,000</td></tr>
+                        <tr><td>2</td><td>of</td><td>35,000</td><td>70,000</td></tr>
+                        <tr><td>10</td><td>from</td><td>7,000</td><td>70,000</td></tr>
+                        <tr><td>100</td><td>software</td><td>700</td><td>70,000</td></tr>
+                        <tr><td>1000</td><td>algorithm</td><td>70</td><td>70,000</td></tr>
+                    </table>
+                    <p>Notice how r × f stays approximately constant!</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="zipfChart"></canvas>
+                </div>
+
+                <h4>Heap's Law</h4>
+
+                <p>Heap's Law predicts vocabulary growth as more text is processed:</p>
+
+                <div class="formula-box">
+                    <p><strong>Heap's Law:</strong></p>
+                    <p>$$V = K \cdot n^{\beta}$$</p>
+                    <p>where:</p>
+                    <ul>
+                        <li>\(V\) = vocabulary size (number of unique words)</li>
+                        <li>\(n\) = total number of words in the collection</li>
+                        <li>\(K\) = constant (typically 10-100)</li>
+                        <li>\(\beta\) = constant (typically 0.4-0.6)</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Heap's Law Example</h4>
+                    <p>Assuming K = 50 and β = 0.5:</p>
+                    <table>
+                        <tr>
+                            <th>Collection Size (n)</th>
+                            <th>Vocabulary Size (V)</th>
+                        </tr>
+                        <tr><td>1,000 words</td><td>50 × √1,000 ≈ 1,581</td></tr>
+                        <tr><td>10,000 words</td><td>50 × √10,000 = 5,000</td></tr>
+                        <tr><td>100,000 words</td><td>50 × √100,000 ≈ 15,811</td></tr>
+                        <tr><td>1,000,000 words</td><td>50 × √1,000,000 = 50,000</td></tr>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="heapChart"></canvas>
+                </div>
+
+                <h3>3.2 Term Frequency (TF)</h3>
+
+                <p>Term Frequency measures how often a term appears in a document.</p>
+
+                <div class="formula-box">
+                    <p><strong>Raw Term Frequency:</strong></p>
+                    <p>$$\text{tf}(t, d) = \text{count of term } t \text{ in document } d$$</p>
+
+                    <p><strong>Normalized Term Frequency:</strong></p>
+                    <p>$$\text{tf}(t, d) = \frac{\text{count of } t \text{ in } d}{\text{total terms in } d}$$</p>
+
+                    <p><strong>Log-scaled Term Frequency:</strong></p>
+                    <p>$$\text{tf}(t, d) = \begin{cases}
+                    1 + \log(\text{count of } t \text{ in } d) & \text{if count} > 0 \\
+                    0 & \text{otherwise}
+                    \end{cases}$$</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Term Frequency Example</h4>
+                    <p><strong>Document:</strong> "information retrieval retrieval systems information"</p>
+                    <p><strong>Total terms:</strong> 5</p>
+
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Raw TF</th>
+                            <th>Normalized TF</th>
+                            <th>Log TF</th>
+                        </tr>
+                        <tr>
+                            <td>information</td>
+                            <td>2</td>
+                            <td>2/5 = 0.4</td>
+                            <td>1 + log(2) ≈ 1.301</td>
+                        </tr>
+                        <tr>
+                            <td>retrieval</td>
+                            <td>2</td>
+                            <td>2/5 = 0.4</td>
+                            <td>1 + log(2) ≈ 1.301</td>
+                        </tr>
+                        <tr>
+                            <td>systems</td>
+                            <td>1</td>
+                            <td>1/5 = 0.2</td>
+                            <td>1 + log(1) = 1.0</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>3.3 Inverse Document Frequency (IDF)</h3>
+
+                <p>IDF measures how rare or common a term is across all documents. Rare terms are more discriminative!</p>
+
+                <div class="formula-box">
+                    <p><strong>Inverse Document Frequency:</strong></p>
+                    <p>$$\text{idf}(t) = \log\left(\frac{N}{df_t}\right)$$</p>
+                    <p>where:</p>
+                    <ul>
+                        <li>\(N\) = total number of documents in the collection</li>
+                        <li>\(df_t\) = number of documents containing term \(t\)</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    High IDF = Rare term = More discriminative = More valuable for retrieval!
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 IDF Calculation Example</h4>
+                    <p><strong>Collection:</strong> N = 10,000 documents</p>
+
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Documents Containing (df)</th>
+                            <th>IDF</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>the</td>
+                            <td>9,000</td>
+                            <td>log(10,000/9,000) ≈ 0.046</td>
+                            <td>Very common, low value</td>
+                        </tr>
+                        <tr>
+                            <td>information</td>
+                            <td>1,000</td>
+                            <td>log(10,000/1,000) = 1.0</td>
+                            <td>Moderately common</td>
+                        </tr>
+                        <tr>
+                            <td>algorithm</td>
+                            <td>100</td>
+                            <td>log(10,000/100) = 2.0</td>
+                            <td>Fairly rare, good discriminator</td>
+                        </tr>
+                        <tr>
+                            <td>quantum</td>
+                            <td>10</td>
+                            <td>log(10,000/10) = 3.0</td>
+                            <td>Very rare, excellent discriminator</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>3.4 TF-IDF Weighting</h3>
+
+                <p>TF-IDF combines both term frequency and inverse document frequency to give a balanced weight:</p>
+
+                <div class="formula-box">
+                    <p><strong>TF-IDF Formula:</strong></p>
+                    <p>$$\text{tf-idf}(t, d) = \text{tf}(t, d) \times \text{idf}(t)$$</p>
+
+                    <p><strong>Complete Formula (log-scaled TF):</strong></p>
+                    <p>$$\text{tf-idf}(t, d) = (1 + \log(\text{tf}(t, d))) \times \log\left(\frac{N}{df_t}\right)$$</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Complete TF-IDF Example</h4>
+                    <p><strong>Scenario:</strong></p>
+                    <ul>
+                        <li>Collection size: N = 10,000 documents</li>
+                        <li>Document D1 contains 100 words</li>
+                    </ul>
+
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>TF in D1</th>
+                            <th>DF</th>
+                            <th>Log TF</th>
+                            <th>IDF</th>
+                            <th>TF-IDF</th>
+                        </tr>
+                        <tr>
+                            <td>information</td>
+                            <td>5</td>
+                            <td>1,000</td>
+                            <td>1.699</td>
+                            <td>1.0</td>
+                            <td>1.699</td>
+                        </tr>
+                        <tr>
+                            <td>retrieval</td>
+                            <td>3</td>
+                            <td>500</td>
+                            <td>1.477</td>
+                            <td>1.301</td>
+                            <td>1.922</td>
+                        </tr>
+                        <tr>
+                            <td>quantum</td>
+                            <td>2</td>
+                            <td>10</td>
+                            <td>1.301</td>
+                            <td>3.0</td>
+                            <td>3.903</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Notice:</strong> "quantum" has the highest TF-IDF because it's rare (high IDF) even though it appears less frequently in the document!</p>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Interactive TF-IDF Calculator</h4>
+                    <div class="calc-input">
+                        <label>Term Frequency (TF):</label>
+                        <input type="number" id="tfInput" value="5" min="1">
+                    </div>
+                    <div class="calc-input">
+                        <label>Total Documents (N):</label>
+                        <input type="number" id="totalDocs" value="10000" min="1">
+                    </div>
+                    <div class="calc-input">
+                        <label>Docs with Term (DF):</label>
+                        <input type="number" id="dfInput" value="1000" min="1">
+                    </div>
+                    <button onclick="calculateTFIDF()">Calculate TF-IDF</button>
+                    <div id="tfidfResult" class="result"></div>
+                </div>
+
+                <h3>3.5 Resolving Power</h3>
+
+                <p>The resolving power of a term measures its ability to discriminate between relevant and non-relevant documents.</p>
+
+                <div class="key-point">
+                    Terms with medium frequency have the best resolving power - not too common, not too rare!
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="resolvingPowerChart"></canvas>
+                </div>
+
+                <div class="quiz-box">
+                    <h4>🎯 Check Your Understanding</h4>
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> According to Zipf's Law, if the most frequent word appears 10,000 times, approximately how many times should the 10th most frequent word appear?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) 10,000 times</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) 1,000 times</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) 100 times</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) 10 times</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> A term appears in ALL documents of a collection. What is its IDF value?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) log(N/N) = log(1) = 0</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) 1</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) log(N)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Infinity</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> Which term would likely have the HIGHEST TF-IDF in a document about "quantum computing"?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) "the" (appears 50 times in document, appears in all documents)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) "computer" (appears 10 times in document, appears in 80% of documents)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">C) "quantum" (appears 15 times in document, appears in 1% of documents)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) "algorithm" (appears 5 times in document, appears in 50% of documents)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: VECTOR SPACE MODEL -->
+            <section id="vsm">
+                <h2>4. Vector Space Model</h2>
+
+                <div class="highlight">
+                    <h3>The Geometric View of IR</h3>
+                    <p>The Vector Space Model (VSM) represents documents and queries as vectors in a high-dimensional space. Documents similar to the query are "close" in this space!</p>
+                </div>
+
+                <h3>4.1 Document and Query Vectors</h3>
+
+                <p>In the VSM, both documents and queries are represented as vectors in a t-dimensional space, where t is the number of unique terms.</p>
+
+                <div class="formula-box">
+                    <p><strong>Document Vector:</strong></p>
+                    <p>$$\vec{d} = (w_{1,d}, w_{2,d}, ..., w_{t,d})$$</p>
+
+                    <p><strong>Query Vector:</strong></p>
+                    <p>$$\vec{q} = (w_{1,q}, w_{2,q}, ..., w_{t,q})$$</p>
+
+                    <p>where \(w_{i,d}\) is the weight of term \(i\) in document \(d\) (often TF-IDF)</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Vector Representation Example</h4>
+                    <p><strong>Vocabulary:</strong> [information, retrieval, database, query, search]</p>
+
+                    <p><strong>Document 1:</strong> "information retrieval and search"</p>
+                    <p><strong>Document 2:</strong> "database query search"</p>
+                    <p><strong>Query:</strong> "information search"</p>
+
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc1 TF-IDF</th>
+                            <th>Doc2 TF-IDF</th>
+                            <th>Query TF-IDF</th>
+                        </tr>
+                        <tr><td>information</td><td>2.5</td><td>0.0</td><td>2.5</td></tr>
+                        <tr><td>retrieval</td><td>2.0</td><td>0.0</td><td>0.0</td></tr>
+                        <tr><td>database</td><td>0.0</td><td>2.3</td><td>0.0</td></tr>
+                        <tr><td>query</td><td>0.0</td><td>2.1</td><td>0.0</td></tr>
+                        <tr><td>search</td><td>1.5</td><td>1.5</td><td>1.5</td></tr>
+                    </table>
+
+                    <p><strong>Vectors:</strong></p>
+                    <ul>
+                        <li>Doc1 = (2.5, 2.0, 0.0, 0.0, 1.5)</li>
+                        <li>Doc2 = (0.0, 0.0, 2.3, 2.1, 1.5)</li>
+                        <li>Query = (2.5, 0.0, 0.0, 0.0, 1.5)</li>
+                    </ul>
+                </div>
+
+                <h3>4.2 Cosine Similarity</h3>
+
+                <p>Cosine similarity measures the angle between two vectors. It's the most popular similarity measure in IR!</p>
+
+                <div class="formula-box">
+                    <p><strong>Cosine Similarity Formula:</strong></p>
+                    <p>$$\text{sim}(\vec{q}, \vec{d}) = \frac{\vec{q} \cdot \vec{d}}{|\vec{q}| \times |\vec{d}|}$$</p>
+
+                    <p><strong>Expanded Form:</strong></p>
+                    <p>$$\text{sim}(\vec{q}, \vec{d}) = \frac{\sum_{i=1}^{t} q_i \times d_i}{\sqrt{\sum_{i=1}^{t} q_i^2} \times \sqrt{\sum_{i=1}^{t} d_i^2}}$$</p>
+
+                    <p>where:</p>
+                    <ul>
+                        <li>\(\vec{q} \cdot \vec{d}\) = dot product of query and document vectors</li>
+                        <li>\(|\vec{q}|\) = magnitude (length) of query vector</li>
+                        <li>\(|\vec{d}|\) = magnitude (length) of document vector</li>
+                    </ul>
+                </div>
+
+                <div class="key-point">
+                    Cosine similarity ranges from 0 to 1:<br>
+                    • 1 = vectors point in same direction (very similar)<br>
+                    • 0 = vectors are orthogonal (completely different)<br>
+                    Cosine similarity is independent of document length!
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Cosine Similarity Calculation - Step by Step</h4>
+
+                    <p><strong>Given:</strong></p>
+                    <ul>
+                        <li>Query: \(\vec{q}\) = (2, 0, 1)</li>
+                        <li>Document: \(\vec{d}\) = (3, 1, 2)</li>
+                    </ul>
+
+                    <p><strong>Step 1: Calculate Dot Product</strong></p>
+                    <p>$$\vec{q} \cdot \vec{d} = (2 \times 3) + (0 \times 1) + (1 \times 2) = 6 + 0 + 2 = 8$$</p>
+
+                    <p><strong>Step 2: Calculate Query Magnitude</strong></p>
+                    <p>$$|\vec{q}| = \sqrt{2^2 + 0^2 + 1^2} = \sqrt{4 + 0 + 1} = \sqrt{5} \approx 2.236$$</p>
+
+                    <p><strong>Step 3: Calculate Document Magnitude</strong></p>
+                    <p>$$|\vec{d}| = \sqrt{3^2 + 1^2 + 2^2} = \sqrt{9 + 1 + 4} = \sqrt{14} \approx 3.742$$</p>
+
+                    <p><strong>Step 4: Calculate Cosine Similarity</strong></p>
+                    <p>$$\text{sim}(\vec{q}, \vec{d}) = \frac{8}{2.236 \times 3.742} = \frac{8}{8.367} \approx 0.956$$</p>
+
+                    <p><strong>Interpretation:</strong> Very high similarity (0.956) means the query and document are very similar!</p>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Interactive Cosine Similarity Calculator</h4>
+                    <p>Enter two 3-dimensional vectors (use comma-separated values):</p>
+
+                    <div class="calc-input">
+                        <label>Vector 1 (q):</label>
+                        <input type="text" id="vector1" placeholder="e.g., 2,0,1" value="2,0,1">
+                    </div>
+                    <div class="calc-input">
+                        <label>Vector 2 (d):</label>
+                        <input type="text" id="vector2" placeholder="e.g., 3,1,2" value="3,1,2">
+                    </div>
+                    <button onclick="calculateCosineSimilarity()">Calculate Similarity</button>
+                    <div id="cosineResult" class="result"></div>
+                </div>
+
+                <h3>4.3 Other Similarity Measures</h3>
+
+                <h4>Dice Coefficient</h4>
+
+                <div class="formula-box">
+                    <p><strong>Dice Coefficient:</strong></p>
+                    <p>$$\text{Dice}(X, Y) = \frac{2|X \cap Y|}{|X| + |Y|}$$</p>
+
+                    <p>For vectors:</p>
+                    <p>$$\text{Dice}(\vec{q}, \vec{d}) = \frac{2 \sum_{i=1}^{t} q_i \times d_i}{\sum_{i=1}^{t} q_i^2 + \sum_{i=1}^{t} d_i^2}$$</p>
+                </div>
+
+                <h4>Jaccard Coefficient</h4>
+
+                <div class="formula-box">
+                    <p><strong>Jaccard Coefficient:</strong></p>
+                    <p>$$\text{Jaccard}(X, Y) = \frac{|X \cap Y|}{|X \cup Y|}$$</p>
+
+                    <p>For binary vectors (presence/absence of terms):</p>
+                    <p>$$\text{Jaccard}(\vec{q}, \vec{d}) = \frac{\text{number of common terms}}{\text{total unique terms in both}}$$</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Comparing Similarity Measures</h4>
+
+                    <p><strong>Query terms:</strong> {information, retrieval, search}</p>
+                    <p><strong>Document terms:</strong> {information, search, engine}</p>
+
+                    <p><strong>Jaccard Similarity:</strong></p>
+                    <p>Common terms: {information, search} → |X ∩ Y| = 2</p>
+                    <p>All unique terms: {information, retrieval, search, engine} → |X ∪ Y| = 4</p>
+                    <p>$$\text{Jaccard} = \frac{2}{4} = 0.5$$</p>
+
+                    <p><strong>Dice Coefficient:</strong></p>
+                    <p>$$\text{Dice} = \frac{2 \times 2}{3 + 3} = \frac{4}{6} = 0.667$$</p>
+                </div>
+
+                <h3>4.4 Ranking Documents</h3>
+
+                <p>The VSM allows us to rank documents by their similarity to the query:</p>
+
+                <div class="example-box">
+                    <h4>📝 Complete Ranking Example</h4>
+
+                    <p><strong>Query:</strong> "information retrieval"</p>
+                    <p><strong>Documents:</strong></p>
+
+                    <table>
+                        <tr>
+                            <th>Document</th>
+                            <th>Content</th>
+                            <th>Cosine Similarity</th>
+                            <th>Rank</th>
+                        </tr>
+                        <tr>
+                            <td>D1</td>
+                            <td>"information retrieval systems"</td>
+                            <td>0.95</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>D2</td>
+                            <td>"information and data retrieval"</td>
+                            <td>0.88</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>D3</td>
+                            <td>"database information systems"</td>
+                            <td>0.62</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>D4</td>
+                            <td>"web search engines"</td>
+                            <td>0.15</td>
+                            <td>4</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Ranked Results:</strong> D1, D2, D3, D4</p>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Interactive Document Ranker</h4>
+                    <p>Enter a query and documents to see how they rank!</p>
+
+                    <div class="calc-input">
+                        <label>Query:</label>
+                        <input type="text" id="rankQuery" placeholder="e.g., machine learning" value="machine learning">
+                    </div>
+
+                    <div class="calc-input">
+                        <label>Document 1:</label>
+                        <input type="text" id="rankDoc1" placeholder="Enter document text" value="machine learning algorithms">
+                    </div>
+
+                    <div class="calc-input">
+                        <label>Document 2:</label>
+                        <input type="text" id="rankDoc2" placeholder="Enter document text" value="deep learning neural networks">
+                    </div>
+
+                    <div class="calc-input">
+                        <label>Document 3:</label>
+                        <input type="text" id="rankDoc3" placeholder="Enter document text" value="database management systems">
+                    </div>
+
+                    <button onclick="rankDocuments()">Rank Documents</button>
+                    <div id="rankResult" class="result"></div>
+                </div>
+
+                <h3>4.5 Advantages and Disadvantages of VSM</h3>
+
+                <table>
+                    <tr>
+                        <th>Advantages ✓</th>
+                        <th>Disadvantages ✗</th>
+                    </tr>
+                    <tr>
+                        <td>Simple and intuitive geometric interpretation</td>
+                        <td>Assumes term independence (bag-of-words)</td>
+                    </tr>
+                    <tr>
+                        <td>Allows partial matching and ranking</td>
+                        <td>Doesn't capture semantic relationships</td>
+                    </tr>
+                    <tr>
+                        <td>Well-founded mathematically</td>
+                        <td>High-dimensional sparse vectors</td>
+                    </tr>
+                    <tr>
+                        <td>Effective in practice</td>
+                        <td>Requires term weighting scheme selection</td>
+                    </tr>
+                    <tr>
+                        <td>Flexible (various similarity measures)</td>
+                        <td>Synonymy not handled (e.g., "car" vs "automobile")</td>
+                    </tr>
+                </table>
+
+                <div class="chart-container">
+                    <canvas id="vsmVisualization"></canvas>
+                </div>
+
+                <div class="quiz-box">
+                    <h4>🎯 Check Your Understanding</h4>
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> What does a cosine similarity of 1.0 mean?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) The documents are completely different</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) The documents are identical in direction (same relative term weights)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) The documents have exactly one word in common</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) The documents have the same length</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> Why is cosine similarity better than just dot product for comparing documents?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) It's faster to compute</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) It normalizes for document length</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) It can be negative</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) It uses less memory</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> In VSM, two documents that share NO common terms will have a cosine similarity of:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) 0</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) 1</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) -1</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) undefined</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: PRACTICE ZONE -->
+            <section id="practice">
+                <h2>5. Practice Zone - Test Your Knowledge!</h2>
+
+                <div class="highlight">
+                    <h3>Challenge Yourself!</h3>
+                    <p>Work through these comprehensive problems to solidify your understanding of Information Retrieval concepts.</p>
+                </div>
+
+                <h3>5.1 Comprehensive Exercise: Building a Mini Search Engine</h3>
+
+                <div class="example-box">
+                    <h4>📝 Scenario</h4>
+                    <p>You have a small collection of 4 documents:</p>
+                    <ul>
+                        <li><strong>D1:</strong> "machine learning is a subset of artificial intelligence"</li>
+                        <li><strong>D2:</strong> "deep learning is a subset of machine learning"</li>
+                        <li><strong>D3:</strong> "artificial intelligence includes machine learning and robotics"</li>
+                        <li><strong>D4:</strong> "natural language processing uses machine learning techniques"</li>
+                    </ul>
+
+                    <p><strong>Query:</strong> "machine learning artificial intelligence"</p>
+                </div>
+
+                <div class="interactive-calc">
+                    <h4>🔧 Step-by-Step Solution Builder</h4>
+
+                    <button onclick="showStep(1)">Step 1: Build Inverted Index</button>
+                    <div id="step1" class="result" style="display:none;">
+                        <h4>Inverted Index:</h4>
+                        <table>
+                            <tr><th>Term</th><th>Postings List (Document IDs)</th></tr>
+                            <tr><td>machine</td><td>[D1, D2, D3, D4]</td></tr>
+                            <tr><td>learning</td><td>[D1, D2, D3, D4]</td></tr>
+                            <tr><td>artificial</td><td>[D1, D3]</td></tr>
+                            <tr><td>intelligence</td><td>[D1, D3]</td></tr>
+                            <tr><td>subset</td><td>[D1, D2]</td></tr>
+                            <tr><td>deep</td><td>[D2]</td></tr>
+                            <tr><td>includes</td><td>[D3]</td></tr>
+                            <tr><td>robotics</td><td>[D3]</td></tr>
+                            <tr><td>natural</td><td>[D4]</td></tr>
+                            <tr><td>language</td><td>[D4]</td></tr>
+                            <tr><td>processing</td><td>[D4]</td></tr>
+                            <tr><td>techniques</td><td>[D4]</td></tr>
+                        </table>
+                    </div>
+
+                    <button onclick="showStep(2)">Step 2: Calculate IDF Values</button>
+                    <div id="step2" class="result" style="display:none;">
+                        <h4>IDF Calculations (N = 4):</h4>
+                        <table>
+                            <tr><th>Term</th><th>DF</th><th>IDF = log(4/DF)</th></tr>
+                            <tr><td>machine</td><td>4</td><td>log(4/4) = 0</td></tr>
+                            <tr><td>learning</td><td>4</td><td>log(4/4) = 0</td></tr>
+                            <tr><td>artificial</td><td>2</td><td>log(4/2) = 0.301</td></tr>
+                            <tr><td>intelligence</td><td>2</td><td>log(4/2) = 0.301</td></tr>
+                        </table>
+                        <p><strong>Note:</strong> "machine" and "learning" appear in all documents, so IDF = 0 (not discriminative!)</p>
+                    </div>
+
+                    <button onclick="showStep(3)">Step 3: Calculate TF-IDF for Query Terms</button>
+                    <div id="step3" class="result" style="display:none;">
+                        <h4>TF-IDF Matrix:</h4>
+                        <p>Using formula: TF-IDF = (1 + log(TF)) × IDF</p>
+                        <table>
+                            <tr>
+                                <th>Term</th>
+                                <th>D1 TF-IDF</th>
+                                <th>D2 TF-IDF</th>
+                                <th>D3 TF-IDF</th>
+                                <th>D4 TF-IDF</th>
+                            </tr>
+                            <tr>
+                                <td>machine</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                            </tr>
+                            <tr>
+                                <td>learning</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                                <td>1×0 = 0</td>
+                            </tr>
+                            <tr>
+                                <td>artificial</td>
+                                <td>1×0.301 = 0.301</td>
+                                <td>0</td>
+                                <td>1×0.301 = 0.301</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>intelligence</td>
+                                <td>1×0.301 = 0.301</td>
+                                <td>0</td>
+                                <td>1×0.301 = 0.301</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <button onclick="showStep(4)">Step 4: Calculate Cosine Similarities</button>
+                    <div id="step4" class="result" style="display:none;">
+                        <h4>Cosine Similarity Calculations:</h4>
+                        <p><strong>Query vector:</strong> (0, 0, 0.301, 0.301)</p>
+
+                        <p><strong>sim(Q, D1):</strong></p>
+                        <p>Dot product = 0×0 + 0×0 + 0.301×0.301 + 0.301×0.301 = 0.181</p>
+                        <p>|Q| = sqrt(0.301² + 0.301²) = 0.426</p>
+                        <p>|D1| = sqrt(0.301² + 0.301²) = 0.426</p>
+                        <p>Cosine = 0.181 / (0.426 × 0.426) = <strong>1.0</strong></p>
+
+                        <p><strong>sim(Q, D2):</strong> <strong>0</strong> (no common discriminative terms)</p>
+                        <p><strong>sim(Q, D3):</strong> <strong>1.0</strong> (same as D1)</p>
+                        <p><strong>sim(Q, D4):</strong> <strong>0</strong> (no common discriminative terms)</p>
+                    </div>
+
+                    <button onclick="showStep(5)">Step 5: Final Ranking</button>
+                    <div id="step5" class="result" style="display:none;">
+                        <h4>Ranked Results:</h4>
+                        <ol>
+                            <li><strong>D1 & D3 (tied):</strong> Cosine similarity = 1.0
+                                <ul>
+                                    <li>D1: "machine learning is a subset of artificial intelligence"</li>
+                                    <li>D3: "artificial intelligence includes machine learning and robotics"</li>
+                                </ul>
+                            </li>
+                            <li><strong>D2 & D4 (tied):</strong> Cosine similarity = 0
+                                <ul>
+                                    <li>D2: "deep learning is a subset of machine learning"</li>
+                                    <li>D4: "natural language processing uses machine learning techniques"</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p><strong>Key Insight:</strong> D1 and D3 rank highest because they contain the discriminative terms "artificial" and "intelligence"!</p>
+                    </div>
+                </div>
+
+                <h3>5.2 Final Comprehensive Quiz</h3>
+
+                <div class="quiz-box">
+                    <h4>🎯 Master Quiz - 10 Questions</h4>
+
+                    <div class="quiz-question">
+                        <p><strong>Q1:</strong> What is the primary purpose of stemming in text preprocessing?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) To remove all vowels from words</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) To reduce words to their root form for better matching</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) To convert all words to uppercase</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) To count word frequencies</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q2:</strong> An inverted index maps:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) Terms to documents containing them</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Documents to their terms</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Queries to results</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Users to their search history</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q3:</strong> If a term appears in only 1 out of 1000 documents, it likely has:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) High IDF (very discriminative)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Low IDF (not discriminative)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) IDF of zero</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Negative IDF</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q4:</strong> TF-IDF gives highest weight to terms that:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Appear in all documents</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Never appear in any document</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">C) Appear frequently in a document but rarely across the collection</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Appear exactly once in every document</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q5:</strong> Cosine similarity measures:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) The angle between two vectors</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) The distance between two points</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) The number of common terms</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) The length of vectors</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q6:</strong> According to Zipf's Law, the relationship between rank and frequency is:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Linear</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Exponential</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">C) Inversely proportional</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Constant</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q7:</strong> The main advantage of VSM over Boolean retrieval is:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) It's faster</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) It provides ranked results and partial matching</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) It uses less memory</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) It handles Boolean operators better</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q8:</strong> Stopwords are typically:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) The most important words in a document</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) High-frequency, low-content words that are removed</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Words that never appear in queries</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Technical terms in a domain</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q9:</strong> Heap's Law predicts:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) The frequency of the most common word</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Vocabulary growth as collection size increases</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) The optimal index size</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Query processing time</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Q10:</strong> A bag-of-words model:</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Preserves word order and grammar</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Represents documents as unordered collections of words</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Only keeps the most important words</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Translates words into different languages</div>
+                    </div>
+                </div>
+
+                <h3>5.3 Advanced Challenge Problems</h3>
+
+                <div class="example-box">
+                    <h4>🏆 Challenge 1: Multi-Term Query Processing</h4>
+                    <p><strong>Given:</strong></p>
+                    <ul>
+                        <li>Query: "artificial OR (intelligence AND machine)"</li>
+                        <li>Postings: artificial → [D1, D5, D8], intelligence → [D1, D3, D5], machine → [D1, D2, D3, D4]</li>
+                    </ul>
+                    <p><strong>Task:</strong> Determine which documents satisfy the query.</p>
+                    <button onclick="showChallenge(1)">Show Solution</button>
+                    <div id="challenge1" class="result" style="display:none;">
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>intelligence AND machine = [D1, D3, D5] ∩ [D1, D2, D3, D4] = [D1, D3]</li>
+                            <li>artificial OR [D1, D3] = [D1, D5, D8] ∪ [D1, D3] = [D1, D3, D5, D8]</li>
+                        </ol>
+                        <p><strong>Answer:</strong> Documents D1, D3, D5, and D8</p>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h4>🏆 Challenge 2: Complete TF-IDF Ranking</h4>
+                    <p><strong>Given a collection of 1000 documents and query "neural networks":</strong></p>
+                    <ul>
+                        <li>Doc A: "neural" appears 5 times, "networks" appears 3 times</li>
+                        <li>Doc B: "neural" appears 2 times, "networks" appears 8 times</li>
+                        <li>"neural" appears in 50 documents total</li>
+                        <li>"networks" appears in 100 documents total</li>
+                    </ul>
+                    <p><strong>Task:</strong> Which document ranks higher using TF-IDF cosine similarity?</p>
+                    <button onclick="showChallenge(2)">Show Solution</button>
+                    <div id="challenge2" class="result" style="display:none;">
+                        <p><strong>Step-by-step Solution:</strong></p>
+                        <p><strong>Calculate IDFs:</strong></p>
+                        <ul>
+                            <li>IDF(neural) = log(1000/50) = log(20) ≈ 1.301</li>
+                            <li>IDF(networks) = log(1000/100) = log(10) = 1.0</li>
+                        </ul>
+
+                        <p><strong>Calculate TF-IDFs for Doc A:</strong></p>
+                        <ul>
+                            <li>TF-IDF(neural) = (1 + log(5)) × 1.301 ≈ 1.699 × 1.301 ≈ 2.210</li>
+                            <li>TF-IDF(networks) = (1 + log(3)) × 1.0 ≈ 1.477 × 1.0 ≈ 1.477</li>
+                            <li>Doc A vector = (2.210, 1.477)</li>
+                        </ul>
+
+                        <p><strong>Calculate TF-IDFs for Doc B:</strong></p>
+                        <ul>
+                            <li>TF-IDF(neural) = (1 + log(2)) × 1.301 ≈ 1.301 × 1.301 ≈ 1.693</li>
+                            <li>TF-IDF(networks) = (1 + log(8)) × 1.0 ≈ 1.903 × 1.0 ≈ 1.903</li>
+                            <li>Doc B vector = (1.693, 1.903)</li>
+                        </ul>
+
+                        <p><strong>Query vector (both terms equal weight):</strong> (1.301, 1.0)</p>
+
+                        <p><strong>Cosine similarity for Doc A:</strong></p>
+                        <p>Dot product = 2.210×1.301 + 1.477×1.0 = 2.875 + 1.477 = 4.352</p>
+                        <p>|Q| = sqrt(1.301² + 1²) = sqrt(2.693) ≈ 1.641</p>
+                        <p>|A| = sqrt(2.210² + 1.477²) = sqrt(7.065) ≈ 2.658</p>
+                        <p>cos(Q,A) = 4.352 / (1.641 × 2.658) ≈ 0.998</p>
+
+                        <p><strong>Cosine similarity for Doc B:</strong></p>
+                        <p>Dot product = 1.693×1.301 + 1.903×1.0 = 2.202 + 1.903 = 4.105</p>
+                        <p>|B| = sqrt(1.693² + 1.903²) = sqrt(6.489) ≈ 2.547</p>
+                        <p>cos(Q,B) = 4.105 / (1.641 × 2.547) ≈ 0.983</p>
+
+                        <p><strong>Answer:</strong> Doc A ranks higher (0.998 > 0.983)</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>📚 Information Retrieval - Interactive Tutorial</p>
+            <p>© 2025 - Created for Educational Purposes</p>
+            <p>Based on comprehensive lecture materials covering IR fundamentals</p>
+        </footer>
+
+        <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Scroll to top button
+        window.onscroll = function() {
+            const scrollTop = document.getElementById('scrollTop');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollTop.style.display = 'flex';
+            } else {
+                scrollTop.style.display = 'none';
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Tokenization function
+        function tokenize() {
+            const input = document.getElementById('tokenInput').value;
+            const tokens = input.toLowerCase().match(/\b\w+\b/g) || [];
+            const result = document.getElementById('tokenResult');
+            result.innerHTML = `
+                <h4>Tokenization Result:</h4>
+                <p><strong>Input:</strong> "${input}"</p>
+                <p><strong>Tokens:</strong> ${JSON.stringify(tokens)}</p>
+                <p><strong>Number of tokens:</strong> ${tokens.length}</p>
+            `;
+            result.style.display = 'block';
+        }
+
+        // Query processing function
+        function processQuery() {
+            const query = document.getElementById('queryInput').value.toLowerCase();
+            const index = {
+                'information': ['Doc1', 'Doc3', 'Doc4'],
+                'retrieval': ['Doc1', 'Doc4'],
+                'systems': ['Doc1', 'Doc2', 'Doc3'],
+                'database': ['Doc2', 'Doc3'],
+                'management': ['Doc2']
+            };
+
+            const queryTerms = query.match(/\b\w+\b/g) || [];
+            const result = document.getElementById('queryResult');
+
+            let resultDocs = new Set();
+            let details = '';
+
+            queryTerms.forEach(term => {
+                if (index[term]) {
+                    index[term].forEach(doc => resultDocs.add(doc));
+                    details += `<p>Term "<strong>${term}</strong>" found in: ${index[term].join(', ')}</p>`;
+                } else {
+                    details += `<p>Term "<strong>${term}</strong>" not found in index</p>`;
+                }
+            });
+
+            result.innerHTML = `
+                <h4>Search Results:</h4>
+                ${details}
+                <p><strong>Documents containing any query term:</strong> ${Array.from(resultDocs).join(', ') || 'None'}</p>
+            `;
+            result.style.display = 'block';
+        }
+
+        // TF-IDF Calculator
+        function calculateTFIDF() {
+            const tf = parseFloat(document.getElementById('tfInput').value);
+            const N = parseFloat(document.getElementById('totalDocs').value);
+            const df = parseFloat(document.getElementById('dfInput').value);
+
+            const logTF = 1 + Math.log10(tf);
+            const idf = Math.log10(N / df);
+            const tfidf = logTF * idf;
+
+            const result = document.getElementById('tfidfResult');
+            result.innerHTML = `
+                <h4>TF-IDF Calculation:</h4>
+                <p><strong>Log TF:</strong> 1 + log(${tf}) = ${logTF.toFixed(3)}</p>
+                <p><strong>IDF:</strong> log(${N}/${df}) = ${idf.toFixed(3)}</p>
+                <p><strong>TF-IDF:</strong> ${logTF.toFixed(3)} × ${idf.toFixed(3)} = <strong>${tfidf.toFixed(3)}</strong></p>
+            `;
+            result.style.display = 'block';
+        }
+
+        // Cosine Similarity Calculator
+        function calculateCosineSimilarity() {
+            const v1 = document.getElementById('vector1').value.split(',').map(Number);
+            const v2 = document.getElementById('vector2').value.split(',').map(Number);
+
+            if (v1.length !== v2.length) {
+                alert('Vectors must have the same length!');
+                return;
+            }
+
+            let dotProduct = 0;
+            let mag1 = 0;
+            let mag2 = 0;
+
+            for (let i = 0; i < v1.length; i++) {
+                dotProduct += v1[i] * v2[i];
+                mag1 += v1[i] * v1[i];
+                mag2 += v2[i] * v2[i];
+            }
+
+            mag1 = Math.sqrt(mag1);
+            mag2 = Math.sqrt(mag2);
+            const cosineSim = dotProduct / (mag1 * mag2);
+
+            const result = document.getElementById('cosineResult');
+            result.innerHTML = `
+                <h4>Cosine Similarity Calculation:</h4>
+                <p><strong>Vector 1:</strong> (${v1.join(', ')})</p>
+                <p><strong>Vector 2:</strong> (${v2.join(', ')})</p>
+                <p><strong>Dot Product:</strong> ${dotProduct.toFixed(3)}</p>
+                <p><strong>|Vector 1|:</strong> ${mag1.toFixed(3)}</p>
+                <p><strong>|Vector 2|:</strong> ${mag2.toFixed(3)}</p>
+                <p><strong>Cosine Similarity:</strong> <span style="font-size: 1.5em; color: #27ae60;">${cosineSim.toFixed(4)}</span></p>
+                <p>${cosineSim > 0.8 ? '✓ Very similar vectors!' : cosineSim > 0.5 ? '~ Moderately similar' : '✗ Not very similar'}</p>
+            `;
+            result.style.display = 'block';
+        }
+
+        // Document Ranker
+        function rankDocuments() {
+            const query = document.getElementById('rankQuery').value.toLowerCase();
+            const doc1 = document.getElementById('rankDoc1').value.toLowerCase();
+            const doc2 = document.getElementById('rankDoc2').value.toLowerCase();
+            const doc3 = document.getElementById('rankDoc3').value.toLowerCase();
+
+            const docs = [
+                {id: 1, text: doc1},
+                {id: 2, text: doc2},
+                {id: 3, text: doc3}
+            ];
+
+            // Simple TF-based similarity (simplified for demo)
+            const queryTerms = new Set(query.match(/\b\w+\b/g) || []);
+
+            const scores = docs.map(doc => {
+                const docTerms = doc.text.match(/\b\w+\b/g) || [];
+                let score = 0;
+                queryTerms.forEach(term => {
+                    score += docTerms.filter(t => t === term).length;
+                });
+                return {id: doc.id, text: doc.text, score: score};
+            });
+
+            scores.sort((a, b) => b.score - a.score);
+
+            const result = document.getElementById('rankResult');
+            result.innerHTML = `
+                <h4>Ranked Results:</h4>
+                <ol>
+                    ${scores.map(s => `
+                        <li><strong>Document ${s.id}</strong> (Score: ${s.score})<br>
+                        "${s.text}"</li>
+                    `).join('')}
+                </ol>
+            `;
+            result.style.display = 'block';
+        }
+
+        // Quiz answer checking
+        function checkAnswer(element, isCorrect) {
+            // Remove previous selections in this question
+            const siblings = element.parentElement.querySelectorAll('.quiz-option');
+            siblings.forEach(sib => {
+                sib.classList.remove('correct', 'incorrect');
+            });
+
+            // Mark the selected answer
+            if (isCorrect) {
+                element.classList.add('correct');
+                element.innerHTML += ' ✓ Correct!';
+            } else {
+                element.classList.add('incorrect');
+                element.innerHTML += ' ✗ Try again';
+            }
+        }
+
+        // Show step function
+        function showStep(stepNum) {
+            const step = document.getElementById('step' + stepNum);
+            step.style.display = step.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Show challenge function
+        function showChallenge(challengeNum) {
+            const challenge = document.getElementById('challenge' + challengeNum);
+            challenge.style.display = challenge.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize Charts
+        window.addEventListener('load', function() {
+            // Zipf's Law Chart
+            const zipfCtx = document.getElementById('zipfChart').getContext('2d');
+            const zipfData = Array.from({length: 100}, (_, i) => ({
+                rank: i + 1,
+                freq: 70000 / (i + 1)
+            }));
+
+            new Chart(zipfCtx, {
+                type: 'line',
+                data: {
+                    labels: zipfData.map(d => d.rank),
+                    datasets: [{
+                        label: 'Word Frequency',
+                        data: zipfData.map(d => d.freq),
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Zipf's Law: Frequency vs Rank"
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Frequency' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Rank' }
+                        }
+                    }
+                }
+            });
+
+            // Heap's Law Chart
+            const heapCtx = document.getElementById('heapChart').getContext('2d');
+            const heapData = [1000, 10000, 100000, 1000000, 10000000].map(n => ({
+                size: n,
+                vocab: 50 * Math.pow(n, 0.5)
+            }));
+
+            new Chart(heapCtx, {
+                type: 'line',
+                data: {
+                    labels: heapData.map(d => d.size.toLocaleString()),
+                    datasets: [{
+                        label: 'Vocabulary Size',
+                        data: heapData.map(d => d.vocab),
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Heap's Law: Vocabulary Growth"
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Vocabulary Size' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Collection Size (words)' }
+                        }
+                    }
+                }
+            });
+
+            // Resolving Power Chart
+            const resolvingCtx = document.getElementById('resolvingPowerChart').getContext('2d');
+            const resolvingData = Array.from({length: 50}, (_, i) => {
+                const df = i * 20 + 1;
+                const idf = Math.log10(1000 / df);
+                return { df: df, power: idf * (1 - df/1000) };
+            });
+
+            new Chart(resolvingCtx, {
+                type: 'line',
+                data: {
+                    labels: resolvingData.map(d => d.df),
+                    datasets: [{
+                        label: 'Resolving Power',
+                        data: resolvingData.map(d => d.power),
+                        borderColor: '#27ae60',
+                        backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Term Resolving Power vs Document Frequency'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Resolving Power' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Document Frequency' }
+                        }
+                    }
+                }
+            });
+
+            // VSM Visualization (2D projection)
+            const vsmCtx = document.getElementById('vsmVisualization').getContext('2d');
+            new Chart(vsmCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Query',
+                        data: [{x: 2.5, y: 1.5}],
+                        backgroundColor: '#e74c3c',
+                        pointRadius: 10
+                    }, {
+                        label: 'Doc1 (High Similarity)',
+                        data: [{x: 2.3, y: 1.4}],
+                        backgroundColor: '#27ae60',
+                        pointRadius: 8
+                    }, {
+                        label: 'Doc2 (Medium Similarity)',
+                        data: [{x: 1.5, y: 2.0}],
+                        backgroundColor: '#f39c12',
+                        pointRadius: 8
+                    }, {
+                        label: 'Doc3 (Low Similarity)',
+                        data: [{x: 0.5, y: 3.0}],
+                        backgroundColor: '#95a5a6',
+                        pointRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Vector Space Model: 2D Projection'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Dimension 2' },
+                            min: 0,
+                            max: 4
+                        },
+                        x: {
+                            title: { display: true, text: 'Dimension 1' },
+                            min: 0,
+                            max: 4
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

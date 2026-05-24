@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSF Lec 8 — Identification & Authentication</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2128; --border: #30363d;
+    --blue: #58a6ff; --green: #3fb950; --red: #f85149; --orange: #ff8c00;
+    --yellow: #e3b341; --purple: #bc8cff; --cyan: #79c0ff; --pink: #ff7eb3;
+    --text: #e6edf3; --muted: #8b949e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.7; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,.95);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+    padding: 0 1rem; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; padding: .55rem .6rem;
+    font-size: .78rem; font-weight: 600; border-radius: 4px; transition: .2s; white-space: nowrap; }
+  nav a:hover, nav a.active { color: var(--blue); background: rgba(88,166,255,.1); }
+  .nav-title { color: var(--blue); font-weight: 700; font-size: .9rem; padding: .55rem .6rem; }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  section { margin-bottom: 3.5rem; scroll-margin-top: 60px; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 3rem 1rem 2rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(88,166,255,.12), transparent); }
+  .hero h1 { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 800;
+    background: linear-gradient(135deg, var(--blue), var(--cyan), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .sub { color: var(--muted); margin-top: .5rem; font-size: 1rem; }
+  .badge-row { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+  .badge { background: rgba(88,166,255,.15); border: 1px solid rgba(88,166,255,.3);
+    color: var(--cyan); padding: .25rem .75rem; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+
+  /* HEADINGS */
+  h2 { font-size: 1.5rem; font-weight: 700; color: var(--blue);
+    border-bottom: 2px solid var(--border); padding-bottom: .4rem; margin-bottom: 1.2rem; }
+  h3 { font-size: 1.1rem; font-weight: 700; color: var(--cyan); margin: 1.2rem 0 .5rem; }
+  h4 { font-size: .95rem; font-weight: 700; color: var(--yellow); margin: .8rem 0 .3rem; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem 1.4rem; margin-bottom: 1rem; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+
+  /* DEFINITION BOXES */
+  .def { border-left: 4px solid var(--blue); background: rgba(88,166,255,.07);
+    padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; }
+  .def.green { border-color: var(--green); background: rgba(63,185,80,.07); }
+  .def.orange { border-color: var(--orange); background: rgba(255,140,0,.07); }
+  .def.red { border-color: var(--red); background: rgba(248,81,73,.07); }
+  .def.purple { border-color: var(--purple); background: rgba(188,140,255,.07); }
+  .def.yellow { border-color: var(--yellow); background: rgba(227,179,65,.07); }
+  .def strong { color: var(--blue); }
+  .def.green strong { color: var(--green); }
+  .def.orange strong { color: var(--orange); }
+  .def.red strong { color: var(--red); }
+  .def.purple strong { color: var(--purple); }
+  .def.yellow strong { color: var(--yellow); }
+
+  /* AUTH FACTORS */
+  .factor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: .8rem; margin-top: .8rem; }
+  .factor-card { background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem; text-align: center; transition: transform .2s; }
+  .factor-card:hover { transform: translateY(-3px); }
+  .factor-icon { font-size: 2.2rem; margin-bottom: .4rem; }
+  .factor-label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .factor-title { font-weight: 700; margin: .3rem 0; }
+  .factor-examples { font-size: .8rem; color: var(--muted); }
+
+  /* MATH */
+  .math-box { background: #0a0e15; border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.4rem; font-family: 'Courier New', monospace; overflow-x: auto; margin: .8rem 0; }
+  .math-box .eq { color: var(--yellow); font-size: 1rem; }
+  .math-box .comment { color: var(--muted); font-size: .85rem; }
+  .formula { display: inline-block; background: rgba(227,179,65,.1);
+    border: 1px solid rgba(227,179,65,.3); border-radius: 6px;
+    padding: .2rem .7rem; font-family: monospace; color: var(--yellow); font-size: .95rem; }
+
+  /* ALGORITHM / CODE */
+  pre { background: #0a0e15; border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.4rem; overflow-x: auto; font-size: .85rem; line-height: 1.6; }
+  code { background: rgba(255,255,255,.07); padding: .1rem .35rem; border-radius: 4px;
+    font-size: .88em; font-family: 'Courier New', monospace; color: var(--green); }
+  .kw { color: var(--purple); } .fn { color: var(--blue); }
+  .cm { color: var(--muted); font-style: italic; } .str { color: var(--green); }
+  .num { color: var(--orange); }
+
+  /* KERBEROS ANIMATION */
+  .kerb-container { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; }
+  .kerb-steps { display: flex; flex-direction: column; gap: .5rem; margin-top: 1rem; }
+  .kerb-step { background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: .7rem 1rem; display: flex; align-items: flex-start;
+    gap: .8rem; cursor: pointer; transition: .2s; opacity: .5; }
+  .kerb-step.active { opacity: 1; border-color: var(--blue); background: rgba(88,166,255,.08); }
+  .kerb-step.done { opacity: .8; border-color: var(--green); }
+  .step-num { background: var(--blue); color: #000; border-radius: 50%;
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .8rem; flex-shrink: 0; margin-top: .1rem; }
+  .kerb-step.done .step-num { background: var(--green); }
+  .step-arrow { font-size: .9rem; color: var(--muted); }
+  .step-msg { font-family: monospace; font-size: .85rem; color: var(--yellow); }
+  #kerb-btn { background: var(--blue); color: #000; border: none;
+    padding: .5rem 1.2rem; border-radius: 6px; font-weight: 700; cursor: pointer;
+    margin-top: .8rem; transition: .2s; }
+  #kerb-btn:hover { background: var(--cyan); }
+
+  /* SVG DIAGRAM */
+  .diagram { background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem; overflow-x: auto; text-align: center; }
+
+  /* ATTACK VISUAL */
+  .attack-bar { display: flex; align-items: center; gap: .8rem; margin: .4rem 0; }
+  .attack-label { width: 140px; font-size: .85rem; flex-shrink: 0; }
+  .bar { height: 16px; border-radius: 8px; transition: width 1s; }
+  .bar-brute { background: linear-gradient(90deg, var(--red), #ff6b35); }
+  .bar-dict { background: linear-gradient(90deg, var(--orange), var(--yellow)); }
+  .bar-phish { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+  .bar-keylog { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+  .bar-shoulder { background: linear-gradient(90deg, var(--green), #7ee787); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th { background: var(--surface2); color: var(--blue); padding: .6rem .8rem;
+    text-align: left; border: 1px solid var(--border); }
+  td { padding: .55rem .8rem; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  td code { color: var(--yellow); }
+
+  /* EXAM QUESTIONS */
+  .exam-q { border: 1px solid rgba(88,166,255,.3); border-radius: 10px;
+    background: rgba(88,166,255,.04); margin-bottom: 1.2rem; overflow: hidden; }
+  .exam-q-header { background: rgba(88,166,255,.1); padding: .8rem 1.2rem;
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+    user-select: none; }
+  .exam-q-header:hover { background: rgba(88,166,255,.15); }
+  .exam-q-title { font-weight: 700; color: var(--blue); }
+  .exam-q-marks { background: var(--blue); color: #000; padding: .15rem .5rem;
+    border-radius: 12px; font-size: .75rem; font-weight: 700; }
+  .exam-q-body { padding: 1.2rem; display: none; }
+  .exam-q-body.open { display: block; }
+  .q-text { color: var(--text); margin-bottom: .8rem; }
+  .ans-box { background: rgba(63,185,80,.07); border: 1px solid rgba(63,185,80,.25);
+    border-radius: 8px; padding: 1rem; }
+  .ans-label { color: var(--green); font-weight: 700; font-size: .8rem;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: .5rem; }
+
+  /* QUIZ */
+  .quiz-q { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; }
+  .quiz-q p { font-weight: 600; margin-bottom: .8rem; }
+  .quiz-opt { display: flex; flex-direction: column; gap: .4rem; }
+  .quiz-opt label { display: flex; align-items: flex-start; gap: .6rem;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
+    padding: .6rem .9rem; cursor: pointer; transition: .2s; font-size: .92rem; }
+  .quiz-opt label:hover { border-color: var(--blue); background: rgba(88,166,255,.08); }
+  .quiz-opt input[type=radio] { margin-top: .2rem; accent-color: var(--blue); }
+  .quiz-feedback { display: none; margin-top: .6rem; padding: .6rem .9rem;
+    border-radius: 7px; font-size: .9rem; }
+  .quiz-feedback.correct { background: rgba(63,185,80,.1); border: 1px solid var(--green);
+    color: var(--green); display: block; }
+  .quiz-feedback.wrong { background: rgba(248,81,73,.1); border: 1px solid var(--red);
+    color: var(--red); display: block; }
+  .quiz-btn { background: var(--blue); color: #000; border: none;
+    padding: .5rem 1.4rem; border-radius: 6px; font-weight: 700; cursor: pointer;
+    transition: .2s; margin-top: .4rem; }
+  .quiz-btn:hover { background: var(--cyan); }
+
+  /* PASSWORD STRENGTH */
+  .pw-demo { background: var(--surface2); border-radius: 8px; padding: 1rem; }
+  .pw-input { width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: .5rem .8rem; border-radius: 6px; font-size: .95rem;
+    outline: none; font-family: monospace; }
+  .pw-input:focus { border-color: var(--blue); }
+  .strength-bar { height: 6px; border-radius: 3px; margin-top: .5rem;
+    background: var(--border); overflow: hidden; }
+  .strength-fill { height: 100%; border-radius: 3px; width: 0; transition: width .3s, background .3s; }
+  .pw-info { font-size: .85rem; margin-top: .4rem; color: var(--muted); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0;
+    width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 1.2rem; }
+  .tl-item::before { content: ''; position: absolute; left: -1.7rem; top: .35rem;
+    width: 12px; height: 12px; border-radius: 50%; background: var(--blue);
+    border: 2px solid var(--bg); }
+  .tl-item.green::before { background: var(--green); }
+  .tl-item.orange::before { background: var(--orange); }
+  .tl-item.red::before { background: var(--red); }
+
+  /* ALERT/TIP */
+  .alert { border-radius: 8px; padding: .8rem 1rem; margin: .8rem 0;
+    display: flex; gap: .7rem; align-items: flex-start; font-size: .9rem; }
+  .alert.tip { background: rgba(63,185,80,.08); border: 1px solid rgba(63,185,80,.25); color: var(--green); }
+  .alert.warn { background: rgba(255,140,0,.08); border: 1px solid rgba(255,140,0,.25); color: var(--orange); }
+  .alert.danger { background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.25); color: var(--red); }
+  .alert.info { background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.25); color: var(--cyan); }
+
+  /* WORKED EXAMPLE */
+  .worked { background: var(--surface2); border: 1px solid var(--yellow);
+    border-radius: 10px; padding: 1.2rem; margin: .8rem 0; }
+  .worked-title { color: var(--yellow); font-weight: 700; font-size: .85rem;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: .8rem; }
+  .worked-step { display: flex; gap: .7rem; margin: .5rem 0; }
+  .ws-num { background: var(--yellow); color: #000; border-radius: 50%;
+    width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .8rem; flex-shrink: 0; margin-top: .15rem; }
+
+  /* PROGRESS */
+  .progress-tracker { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.5rem; display: flex; gap: .5rem;
+    flex-wrap: wrap; align-items: center; }
+  .prog-item { display: flex; align-items: center; gap: .4rem; font-size: .82rem;
+    color: var(--muted); cursor: pointer; padding: .3rem .6rem; border-radius: 5px;
+    border: 1px solid transparent; transition: .2s; }
+  .prog-item:hover { border-color: var(--border); }
+  .prog-item.done { color: var(--green); }
+  .prog-check { width: 16px; height: 16px; border: 2px solid var(--border);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; }
+  .prog-item.done .prog-check { background: var(--green); border-color: var(--green); color: #000; }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .25rem; }
+  p { margin-bottom: .6rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+  .fade-in { animation: fadeIn .5s ease both; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .factor-grid { grid-template-columns: repeat(2,1fr); }
+  }
+
+  /* SCROLL HIGHLIGHT */
+  section:target > h2 { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-title">CSF Lec 8</span>
+  <a href="#overview">Overview</a>
+  <a href="#identity">Identity</a>
+  <a href="#auth-methods">Auth Methods</a>
+  <a href="#passwords">Passwords</a>
+  <a href="#attacks">Attacks</a>
+  <a href="#anderson">Anderson's Formula</a>
+  <a href="#biometrics">Biometrics</a>
+  <a href="#kerberos">Kerberos</a>
+  <a href="#sso">SSO</a>
+  <a href="#exam">Exam Q&amp;A</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <h1>Identification &amp; Authentication</h1>
+  <p class="sub">COMPSCI5063 — Cyber Security Fundamentals M &nbsp;|&nbsp; Lecture 8</p>
+  <div class="badge-row">
+    <span class="badge">Identity</span>
+    <span class="badge">Passwords</span>
+    <span class="badge">Anderson's Formula</span>
+    <span class="badge">Biometrics</span>
+    <span class="badge">Kerberos</span>
+    <span class="badge">SSO</span>
+    <span class="badge">MFA</span>
+  </div>
+</div>
+
+<!-- PROGRESS TRACKER -->
+<div class="progress-tracker fade-in" id="progress">
+  <span style="font-size:.8rem;color:var(--muted);font-weight:600;margin-right:.5rem;">TOPICS:</span>
+  <div class="prog-item" onclick="markDone(this,'#overview')"><div class="prog-check">✓</div>Overview</div>
+  <div class="prog-item" onclick="markDone(this,'#identity')"><div class="prog-check">✓</div>Identity</div>
+  <div class="prog-item" onclick="markDone(this,'#auth-methods')"><div class="prog-check">✓</div>Auth Methods</div>
+  <div class="prog-item" onclick="markDone(this,'#passwords')"><div class="prog-check">✓</div>Passwords</div>
+  <div class="prog-item" onclick="markDone(this,'#attacks')"><div class="prog-check">✓</div>Attacks</div>
+  <div class="prog-item" onclick="markDone(this,'#anderson')"><div class="prog-check">✓</div>Anderson</div>
+  <div class="prog-item" onclick="markDone(this,'#biometrics')"><div class="prog-check">✓</div>Biometrics</div>
+  <div class="prog-item" onclick="markDone(this,'#kerberos')"><div class="prog-check">✓</div>Kerberos</div>
+  <div class="prog-item" onclick="markDone(this,'#sso')"><div class="prog-check">✓</div>SSO</div>
+  <div class="prog-item" onclick="markDone(this,'#exam')"><div class="prog-check">✓</div>Exam Q&A</div>
+  <div class="prog-item" onclick="markDone(this,'#quiz')"><div class="prog-check">✓</div>Quiz</div>
+</div>
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview">
+  <h2>Overview — The Big Picture</h2>
+  <div class="card">
+    <p>Before any resource can be accessed, a system must answer two questions:</p>
+    <div class="card-grid" style="margin-top:.8rem;">
+      <div class="def"><strong>1. Who are you?</strong><br>→ <em>Identification</em> — the claim made by an entity</div>
+      <div class="def green"><strong>2. Can you prove it?</strong><br>→ <em>Authentication</em> — verification of that claim</div>
+    </div>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 700 110" style="max-width:680px;width:100%;height:auto;" font-family="Segoe UI, sans-serif" font-size="13">
+      <!-- Entity box -->
+      <rect x="10" y="30" width="130" height="50" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="75" y="52" text-anchor="middle" fill="#58a6ff" font-weight="700">Entity</text>
+      <text x="75" y="68" text-anchor="middle" fill="#8b949e" font-size="11">(User / Process)</text>
+      <!-- Arrow 1 -->
+      <path d="M 142 55 L 210 55" stroke="#58a6ff" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="176" y="48" text-anchor="middle" fill="#58a6ff" font-size="11">Claim ID</text>
+      <!-- I&A box -->
+      <rect x="212" y="20" width="160" height="70" rx="8" fill="#1c2128" stroke="#58a6ff" stroke-width="2"/>
+      <text x="292" y="45" text-anchor="middle" fill="#58a6ff" font-weight="700">ID &amp; Auth</text>
+      <text x="292" y="62" text-anchor="middle" fill="#79c0ff" font-size="11">Identification</text>
+      <text x="292" y="76" text-anchor="middle" fill="#79c0ff" font-size="11">+ Authentication</text>
+      <!-- Arrow 2 -->
+      <path d="M 374 55 L 442 55" stroke="#3fb950" stroke-width="2" marker-end="url(#arr2)"/>
+      <text x="408" y="48" text-anchor="middle" fill="#3fb950" font-size="11">Verified</text>
+      <!-- AC box -->
+      <rect x="444" y="20" width="130" height="70" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="509" y="45" text-anchor="middle" fill="#3fb950" font-weight="700">Access Control</text>
+      <!-- Arrow 3 -->
+      <path d="M 576 55 L 640 55" stroke="#e3b341" stroke-width="2" marker-end="url(#arr3)"/>
+      <!-- Resources box -->
+      <rect x="642" y="30" width="50" height="50" rx="8" fill="#1c2128" stroke="#e3b341"/>
+      <text x="667" y="55" text-anchor="middle" fill="#e3b341" font-size="11">Resources</text>
+      <!-- defs -->
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff"/>
+        </marker>
+        <marker id="arr2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#3fb950"/>
+        </marker>
+        <marker id="arr3" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e3b341"/>
+        </marker>
+      </defs>
+    </svg>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem;">Authentication gates access to resources via Access Control</p>
+  </div>
+</section>
+
+<!-- ===== IDENTITY ===== -->
+<section id="identity">
+  <h2>Identity, Identification &amp; Authentication</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Identity</h3>
+      <div class="def"><strong>Definition:</strong> A representation of an entity inside a computer system; often a unique name.</div>
+      <div class="alert warn">⚠ A person's identity can <strong>change or be falsified</strong> (e.g. last name)</div>
+      <h4>Purposes</h4>
+      <ul>
+        <li>Access control</li>
+        <li>Accountability (logging &amp; auditing)</li>
+      </ul>
+      <h4>Examples</h4>
+      <table style="margin-top:.4rem;">
+        <tr><th>Object</th><th>Identity used by…</th></tr>
+        <tr><td>File name</td><td>Human</td></tr>
+        <tr><td>File descriptor</td><td>Process</td></tr>
+        <tr><td>FAT entry</td><td>OS Kernel (MS-DOS)</td></tr>
+        <tr><td>Username</td><td>Authentication system</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Identification</h3>
+      <div class="def orange"><strong>Definition:</strong> The <em>claim</em> made by a user or application that it is a particular entity.</div>
+      <div class="alert warn">⚠ The ID or smart card could be <strong>stolen</strong></div>
+      <h4>Methods of Identification</h4>
+      <ul>
+        <li>User ID / username</li>
+        <li>Process ID (PID)</li>
+        <li>Smart card</li>
+        <li>Any unique identifier</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Authentication</h3>
+      <div class="def green"><strong>Definition:</strong> The <em>verification / proof</em> of the claimed identity.</div>
+      <p>A system must verify the claimed identity through one or more methods before granting access.</p>
+      <div class="alert tip">✓ Authentication ≠ Identification. You can <em>identify</em> without <em>authenticating</em>.</div>
+    </div>
+  </div>
+
+  <h3>Groups and Roles</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Groups</h4>
+      <p>An identity can represent a <strong>group</strong> — a collection of entities. Convenient for applying access control to many entities at once.</p>
+      <ul>
+        <li><strong>Static group:</strong> An alias for a fixed set of entities</li>
+        <li><strong>Dynamic group:</strong> Construct that groups entities based on conditions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Roles</h4>
+      <p>An identity can represent a <strong>role</strong> — a set of rights or security functions. Entities are <em>assigned</em> to roles.</p>
+      <p>Example: <code>admin</code>, <code>read-only</code>, <code>editor</code></p>
+      <div class="alert info">ℹ Roles are the foundation of <strong>RBAC</strong> (Role-Based Access Control)</div>
+    </div>
+  </div>
+
+  <h3>Identity &amp; Certificates</h3>
+  <div class="card">
+    <p>A <strong>Certificate Authority (CA)</strong> acts as a trusted third party that issues certificates to verify identity.</p>
+    <div class="card-grid">
+      <div class="def"><strong>Class 1 — Ownership</strong><br>Authenticates an email address or web application domain.</div>
+      <div class="def orange"><strong>Class 2 — Personal</strong><br>Verifies real name and physical address via online database (e.g. online purchasing).</div>
+      <div class="def red"><strong>Class 3 — Rigorous</strong><br>Background check by investigative service; highest level of assurance.</div>
+    </div>
+    <div class="alert warn">⚠ Trust of a certificate depends on the <strong>trustworthiness of the CA</strong>. Even certificates have trust issues.</div>
+  </div>
+</section>
+
+<!-- ===== AUTH METHODS ===== -->
+<section id="auth-methods">
+  <h2>Authentication Methods — The 4 Factors</h2>
+  <div class="factor-grid">
+    <div class="factor-card" style="border-color:rgba(88,166,255,.4)">
+      <div class="factor-icon">🧠</div>
+      <div class="factor-label">Knowledge</div>
+      <div class="factor-title" style="color:var(--blue)">What you KNOW</div>
+      <div class="factor-examples">Password, PIN, Date of Birth,<br>Security questions</div>
+    </div>
+    <div class="factor-card" style="border-color:rgba(63,185,80,.4)">
+      <div class="factor-icon">🪙</div>
+      <div class="factor-label">Token</div>
+      <div class="factor-title" style="color:var(--green)">What you HAVE</div>
+      <div class="factor-examples">Smart card, RSA token,<br>Badge, Key, OTP app</div>
+    </div>
+    <div class="factor-card" style="border-color:rgba(255,140,0,.4)">
+      <div class="factor-icon">👁️</div>
+      <div class="factor-label">Biometric</div>
+      <div class="factor-title" style="color:var(--orange)">What you ARE</div>
+      <div class="factor-examples">Fingerprint, Face, Iris,<br>Voice, Keystroke dynamics</div>
+    </div>
+    <div class="factor-card" style="border-color:rgba(188,140,255,.4)">
+      <div class="factor-icon">📍</div>
+      <div class="factor-label">Location</div>
+      <div class="factor-title" style="color:var(--purple)">Where you ARE</div>
+      <div class="factor-examples">Specific terminal, GPS location,<br>Network IP range</div>
+    </div>
+  </div>
+  <div class="alert tip" style="margin-top:1rem;">✓ <strong>Multi-Factor Authentication (MFA)</strong> combines two or more factors, making it significantly harder to compromise an account.</div>
+
+  <h3>Authentication Components — Formal Model</h3>
+  <div class="card">
+    <p>The authentication system has three formal components:</p>
+    <div class="card-grid">
+      <div class="def">
+        <strong>A — Authentication Information</strong><br>
+        The credential used by an entity to prove identity (e.g. password typed by user).<br>
+        <span class="formula">A = password entered</span>
+      </div>
+      <div class="def green">
+        <strong>C — Complementary Information</strong><br>
+        Stored version of the credential used by the <em>system</em> to verify A.<br>
+        <span class="formula">C = hash(password) stored</span>
+      </div>
+      <div class="def orange">
+        <strong>F — Complementary Functions</strong><br>
+        Transforms A into C. For f ∈ F:<br>
+        <span class="formula">f: A → C</span><br>
+        Usually a one-way hash function.
+      </div>
+      <div class="def purple">
+        <strong>L — Authentication Functions</strong><br>
+        Verifies the identity. For l ∈ L:<br>
+        <span class="formula">l(A, C) → {true, false}</span>
+      </div>
+    </div>
+    <div class="math-box" style="margin-top:1rem;">
+      <div class="eq">Flow: User types A → System computes f(A) → Compares with stored C → l(A, C) = true/false</div>
+      <div class="comment"># f is a one-way hash: easy to compute forward, infeasible to reverse</div>
+    </div>
+  </div>
+
+  <h3>Password Hashing — How It Works</h3>
+  <pre><code><span class="cm">// Registration: store hash, not plaintext</span>
+<span class="kw">function</span> <span class="fn">registerUser</span>(username, plaintext_password):
+    salt = <span class="fn">generateRandomSalt</span>()        <span class="cm">// random bytes to prevent rainbow tables</span>
+    hash = <span class="fn">bcrypt</span>(plaintext_password + salt)  <span class="cm">// one-way hash: A → C</span>
+    db.<span class="fn">store</span>(username, hash, salt)
+
+<span class="cm">// Login: verify without storing plaintext</span>
+<span class="kw">function</span> <span class="fn">loginUser</span>(username, plaintext_password):
+    (hash, salt) = db.<span class="fn">lookup</span>(username)
+    candidate_hash = <span class="fn">bcrypt</span>(plaintext_password + salt)
+    <span class="kw">return</span> candidate_hash == hash   <span class="cm">// l(A, C) → {true, false}</span>
+</code></pre>
+</section>
+
+<!-- ===== PASSWORDS ===== -->
+<section id="passwords">
+  <h2>Passwords</h2>
+
+  <h3>Password Selection &amp; Strength</h3>
+  <div class="card">
+    <p><strong>Theorem:</strong> When passwords are chosen uniformly at random from the full password space, the expected time to crack is <em>maximised</em>.</p>
+    <h4>Strong Password Requirements</h4>
+    <ul>
+      <li>At least one <strong>digit</strong> (0–9)</li>
+      <li>At least one <strong>uppercase</strong> and one <strong>lowercase</strong> letter</li>
+      <li>At least one <strong>special character</strong> (punctuation, symbols)</li>
+      <li>Sufficient <strong>length</strong> (minimum 8–12 characters)</li>
+    </ul>
+
+    <h4>Live Password Strength Checker</h4>
+    <div class="pw-demo">
+      <input type="text" class="pw-input" id="pwInput" placeholder="Type a password to analyse…" oninput="checkStrength()">
+      <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+      <div class="pw-info" id="pwInfo">Start typing to see strength analysis.</div>
+    </div>
+  </div>
+
+  <h3>Methods Against Password Guessing</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>1. Exponential Back-off</h4>
+      <p>After the <em>n</em>-th failed attempt, wait <span class="formula">t<sup>n−1</sup></span> seconds before allowing the next attempt. Grows rapidly:</p>
+      <div class="math-box">
+        <div class="eq">t=2: delays → 1s, 2s, 4s, 8s, 16s, 32s, …</div>
+        <div class="comment"># Effective against online brute-force</div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>2. Disconnection</h4>
+      <p>Disconnect the session after <em>k</em> consecutive failed login attempts. Forces attacker to reconnect, adding latency.</p>
+    </div>
+    <div class="card">
+      <h4>3. Account Disabling</h4>
+      <p>Permanently (or temporarily) disable the account after <em>k</em> failures. Requires manual re-activation or admin intervention.</p>
+    </div>
+    <div class="card">
+      <h4>4. Jailing (Honeypot)</h4>
+      <p>Appear to accept the wrong password and let the attacker "in" to a fake environment. <strong>Record all their activities</strong> for forensic analysis.</p>
+      <div class="alert info">ℹ Also called a <strong>Honeypot</strong> — deceives attacker while logging evidence.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ATTACKS ===== -->
+<section id="attacks">
+  <h2>Password Attacks</h2>
+
+  <h3>Attack Type Comparison</h3>
+  <div class="card">
+    <div style="margin-bottom:1rem;">
+      <div class="attack-bar"><div class="attack-label">Brute Force</div><div class="bar bar-brute" id="b1" style="width:0%"></div><span id="b1v" style="font-size:.8rem;margin-left:.5rem;color:var(--muted)">95%</span></div>
+      <div class="attack-bar"><div class="attack-label">Dictionary</div><div class="bar bar-dict" id="b2" style="width:0%"></div><span id="b2v" style="font-size:.8rem;margin-left:.5rem;color:var(--muted)">80%</span></div>
+      <div class="attack-bar"><div class="attack-label">Phishing</div><div class="bar bar-phish" id="b3" style="width:0%"></div><span id="b3v" style="font-size:.8rem;margin-left:.5rem;color:var(--muted)">85%</span></div>
+      <div class="attack-bar"><div class="attack-label">Keylogging</div><div class="bar bar-keylog" id="b4" style="width:0%"></div><span id="b4v" style="font-size:.8rem;margin-left:.5rem;color:var(--muted)">90%</span></div>
+      <div class="attack-bar"><div class="attack-label">Shoulder Surfing</div><div class="bar bar-shoulder" id="b5" style="width:0%"></div><span id="b5v" style="font-size:.8rem;margin-left:.5rem;color:var(--muted)">40%</span></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted)">← Relative effectiveness against weak passwords. Strong passwords + MFA negate most of these.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3 style="color:var(--red)">Brute-Force Attack</h3>
+      <p>Tries <strong>every possible combination</strong> of characters until the correct password is found (exhaustive attack).</p>
+      <div class="math-box">
+        <div class="eq">Password space N = Σᵢ₌₁ˢ Aⁱ</div>
+        <div class="comment"># A = alphabet size, S = max length</div>
+        <div class="eq" style="margin-top:.5rem">A=94 chars (all printable), S=8:</div>
+        <div class="eq">N = 94¹+94²+…+94⁸ ≈ 6.1 × 10¹⁵</div>
+      </div>
+      <div class="alert danger">⚠ Knowing password <em>standards</em> (min length, required characters) <strong>reduces</strong> the search space and is a security risk!</div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--orange)">Dictionary Attack</h3>
+      <p>Passwords are rarely truly random. People use <strong>common words, names, and acronyms</strong> like "Betty23" or "ChocolateFrog".</p>
+      <p>Uses a pre-compiled list of likely passwords to systematically try each one.</p>
+      <div class="alert warn">⚠ Vastly <strong>reduces the search space</strong> compared to brute force. Even 8-char passwords fall quickly if dictionary words.</div>
+      <h4>Defence: Salted Hashing</h4>
+      <pre><code><span class="cm"># Salt makes pre-computed rainbow tables useless</span>
+H = <span class="fn">hash</span>(password + salt)
+<span class="cm"># Attacker must re-hash entire dictionary per user</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3 style="color:var(--purple)">Phishing</h3>
+      <p>Attacker creates a <strong>fake login page</strong> resembling a legitimate site. User unknowingly submits credentials to attacker's server.</p>
+      <h4>Red Flags to Check</h4>
+      <ul>
+        <li>Sender email address doesn't match domain</li>
+        <li>Grammar mistakes / urgency in message</li>
+        <li>Unexpected requests (login, download, pay)</li>
+        <li>Suspicious attachment names</li>
+        <li>URL doesn't use HTTPS or looks spoofed</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--cyan)">Keylogging / Malware</h3>
+      <p>Malware installed on the victim's device <strong>records keystrokes</strong> including passwords as they are typed.</p>
+      <h4>Defences</h4>
+      <ul>
+        <li>Antivirus / endpoint detection</li>
+        <li>Don't store passwords in plaintext on clients</li>
+        <li>Use password managers (encrypted vault)</li>
+        <li>Audit system for malware presence</li>
+        <li>Virtual keyboard for critical logins</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ANDERSON'S FORMULA ===== -->
+<section id="anderson">
+  <h2>Anderson's Formula — Password Length Calculation</h2>
+  <div class="card">
+    <p>Anderson's formula lets you calculate the <strong>minimum required password length</strong> to resist guessing attacks with acceptable probability.</p>
+    <div class="math-box">
+      <div class="eq">Variables:</div>
+      <div class="eq">  P = probability of correctly guessing in time T (e.g. P = 0.5)</div>
+      <div class="eq">  G = guesses per time unit (e.g. 10⁴/second)</div>
+      <div class="eq">  T = time period in time units (e.g. 365 days in seconds)</div>
+      <div class="eq">  N = total number of possible passwords</div>
+      <div class="eq" style="margin-top:.8rem;border-top:1px solid var(--border);padding-top:.8rem;">Anderson's Formula:</div>
+      <div class="eq" style="font-size:1.1rem;color:var(--yellow)">  P ≥ TG/N   ⟺   N ≥ TG/P</div>
+      <div class="comment"># Rearrange to find minimum N, then find minimum password length S</div>
+    </div>
+  </div>
+
+  <div class="worked">
+    <div class="worked-title">Worked Example — Lecture Example</div>
+    <p style="color:var(--muted);font-size:.85rem;">Find minimum password length S for a system with A=96 characters:</p>
+    <div class="worked-step">
+      <div class="ws-num">1</div>
+      <div>Given: A = 96 characters, G = 10⁴ guesses/sec, P = 0.5, T = 365 days</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">2</div>
+      <div>Convert T to seconds: T = 365 × 24 × 60 × 60 = <strong>31,536,000</strong> seconds = 3.1536 × 10⁷</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">3</div>
+      <div>Apply Anderson's Formula: N ≥ TG/P = (3.1536 × 10⁷ × 10⁴) / 0.5 = <strong>6.31 × 10¹¹</strong></div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">4</div>
+      <div>Find minimum S: N = Σᵢ₌₁ˢ 96ⁱ ≥ 6.31 × 10¹¹</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">5</div>
+      <div>
+        Try S = 5: Σ = 96¹+96²+96³+96⁴+96⁵ ≈ 8.15 × 10⁹ &nbsp;❌ too small<br>
+        Try S = 6: Σ ≈ 7.83 × 10¹¹ &nbsp;✓ ≥ 6.31 × 10¹¹<br>
+        <strong>Answer: Minimum password length S = 6</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="worked">
+    <div class="worked-title">Exam-Style Example — Key Size Brute Force</div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem;">Q: Speed = 2⁸ encryptions/sec, key size = 16 bits. How long does a brute-force attack take?</p>
+    <div class="worked-step">
+      <div class="ws-num">1</div>
+      <div>Total keys = 2¹⁶ = 65,536</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">2</div>
+      <div>Speed = 2⁸ = 256 encryptions/second</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">3</div>
+      <div>Worst case time = 2¹⁶ / 2⁸ = 2⁸ = 256 seconds ≈ <strong>4.3 minutes</strong></div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">4</div>
+      <div><strong>Practical scenario:</strong> Protecting a low-value resource (a casual game save). 4 min is too long to wait, so attacker gives up. ✓<br>
+      <strong>Not practical:</strong> Bank encryption — 4 min is completely feasible. A determined attacker will try all keys. ✗</div>
+    </div>
+    <div class="worked-step">
+      <div class="ws-num">5</div>
+      <div><strong>Double key size to 32 bits:</strong> 2³² / 2⁸ = 2²⁴ ≈ 16.7 million seconds ≈ <strong>194 days</strong>. Now impractical.</div>
+    </div>
+    <div class="math-box" style="margin-top:.8rem;">
+      <div class="eq">Key doubling rule: each extra bit DOUBLES the search space</div>
+      <div class="eq">16 bits → 32 bits: multiply time by 2¹⁶ = 65,536×</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BIOMETRICS ===== -->
+<section id="biometrics">
+  <h2>Biometrics</h2>
+  <div class="card">
+    <p><strong>Definition:</strong> Automated measurement of <em>biological or behavioural features</em> to characterise and identify an entity.</p>
+    <div class="alert info">ℹ Biometrics require <strong>special sensors</strong> and cannot be easily changed if compromised (unlike passwords).</div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Physiological (What You ARE)</h3>
+      <ul>
+        <li>Fingerprints (ridges, minutiae)</li>
+        <li>Iris / Retina scan</li>
+        <li>Face recognition</li>
+        <li>Hand geometry</li>
+        <li>DNA</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Behavioural (How You ACT)</h3>
+      <ul>
+        <li>Keystroke dynamics (pressure, interval, duration)</li>
+        <li>Gait and motion biometrics</li>
+        <li>Voice recognition</li>
+        <li>Signature dynamics</li>
+      </ul>
+      <div class="alert tip" style="margin-top:.6rem;">✓ <strong>Behavioural biometrics</strong> can enable <em>continuous authentication</em> — verifying identity throughout a session, not just at login.</div>
+    </div>
+  </div>
+
+  <h3>Biometric Error Rates</h3>
+  <div class="card">
+    <table>
+      <tr><th>Metric</th><th>Definition</th><th>Trade-off</th></tr>
+      <tr><td><strong>FAR</strong> (False Acceptance Rate)</td><td>Imposter incorrectly accepted</td><td>Security risk if high</td></tr>
+      <tr><td><strong>FRR</strong> (False Rejection Rate)</td><td>Genuine user incorrectly rejected</td><td>Usability issue if high</td></tr>
+      <tr><td><strong>EER</strong> (Equal Error Rate)</td><td>Point where FAR = FRR</td><td>Lower EER = better system</td></tr>
+    </table>
+    <div class="math-box" style="margin-top:.8rem;">
+      <div class="eq">Stricter threshold → FAR↓, FRR↑ (more secure, less usable)</div>
+      <div class="eq">Looser threshold  → FAR↑, FRR↓ (more usable, less secure)</div>
+    </div>
+  </div>
+
+  <h3>Which Biometrics Support Continuous Authentication?</h3>
+  <div class="alert info">ℹ Keystroke dynamics and gait/motion biometrics can run <strong>passively in the background</strong> throughout a session — ideal for continuous authentication. Fingerprint and face recognition require active interaction at specific moments.</div>
+</section>
+
+<!-- ===== KERBEROS ===== -->
+<section id="kerberos">
+  <h2>Kerberos Authentication Protocol</h2>
+  <div class="card">
+    <p><strong>Foundation:</strong> Based on the Needham-Schroeder protocol + Denning-Sacco modification. Uses <strong>secret-key cryptography</strong>.</p>
+    <p><strong>Use:</strong> Widely used in corporate networks (Windows Active Directory), financial systems, and large-scale e-commerce.</p>
+  </div>
+
+  <h3>Key Components</h3>
+  <div class="card-grid">
+    <div class="def">
+      <strong>AS — Authentication Server</strong><br>
+      Shares a secret key with every user and with TGS. Authenticates users to the Kerberos system.
+    </div>
+    <div class="def green">
+      <strong>TGS — Ticket-Granting Server</strong><br>
+      Shares a secret key with each application server S₁…Sₙ. Issues service tickets.
+    </div>
+    <div class="def orange">
+      <strong>S₁…Sₙ — Application Servers</strong><br>
+      The actual resources. Accessed by presenting tickets issued by TGS.
+    </div>
+  </div>
+
+  <h3>Kerberos Data Structures</h3>
+  <div class="card">
+    <h4>Ticket</h4>
+    <div class="math-box">
+      <div class="eq">T_Alice,Server = {Alice ‖ Alice's address ‖ valid time ‖ K_Alice,Server} K_server</div>
+      <div class="comment"># K_Alice,Server = session key (shared between Alice &amp; Server)</div>
+      <div class="comment"># K_server = Server's secret key (encrypts the whole ticket)</div>
+      <div class="comment"># Only Server can decrypt — Alice cannot read the ticket contents</div>
+    </div>
+    <h4>Authenticator</h4>
+    <div class="math-box">
+      <div class="eq">A_Alice,Server = {Alice ‖ t ‖ K_t} K_Alice,Server</div>
+      <div class="comment"># t = timestamp (prevents replay attacks)</div>
+      <div class="comment"># K_t = alternative session key</div>
+      <div class="comment"># Proves Alice possesses the session key — freshly created</div>
+    </div>
+  </div>
+
+  <h3>The Protocol — Step by Step (Click to Animate)</h3>
+  <div class="kerb-container">
+    <div class="diagram" style="margin-bottom:1rem;">
+      <svg viewBox="0 0 700 160" style="max-width:680px;width:100%;height:auto;" font-family="Segoe UI,sans-serif" font-size="12">
+        <!-- Boxes -->
+        <rect x="10" y="60" width="80" height="40" rx="6" fill="#58a6ff" opacity=".2" stroke="#58a6ff"/>
+        <text x="50" y="85" text-anchor="middle" fill="#58a6ff" font-weight="700">AS</text>
+        <rect x="285" y="10" width="90" height="40" rx="6" fill="#3fb950" opacity=".2" stroke="#3fb950"/>
+        <text x="330" y="35" text-anchor="middle" fill="#3fb950" font-weight="700">TGS</text>
+        <rect x="285" y="110" width="90" height="40" rx="6" fill="#e3b341" opacity=".2" stroke="#e3b341"/>
+        <text x="330" y="135" text-anchor="middle" fill="#e3b341" font-weight="700">Alice</text>
+        <rect x="590" y="60" width="80" height="40" rx="6" fill="#bc8cff" opacity=".2" stroke="#bc8cff"/>
+        <text x="630" y="85" text-anchor="middle" fill="#bc8cff" font-weight="700">Server S</text>
+        <!-- Arrows with labels -->
+        <path d="M 330 150 L 90 100" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ka)"/>
+        <text x="185" y="138" fill="#58a6ff" font-size="10">① Alice‖TGS</text>
+        <path d="M 90 80 L 330 35" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#kb)"/>
+        <text x="175" y="48" fill="#3fb950" font-size="10">② {K_Alice,TGS}K_Alice ‖ T_Alice,TGS</text>
+        <path d="M 330 130 L 330 52" stroke="#3fb950" stroke-width="1.5" marker-end="url(#kb)"/>
+        <text x="337" y="95" fill="#3fb950" font-size="10">③ S‖A_Alice,TGS‖T_Alice,TGS</text>
+        <path d="M 330 130 L 355 52" stroke="#e3b341" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#kc)"/>
+        <text x="368" y="90" fill="#e3b341" font-size="10">④ Alice‖{K_A,S}K_A,TGS‖T_Alice,S</text>
+        <path d="M 330 150 L 590 90" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#kd)"/>
+        <text x="450" y="132" fill="#bc8cff" font-size="10">⑤ A_Alice,S ‖ T_Alice,S</text>
+        <defs>
+          <marker id="ka" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#58a6ff"/></marker>
+          <marker id="kb" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#3fb950"/></marker>
+          <marker id="kc" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#e3b341"/></marker>
+          <marker id="kd" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#bc8cff"/></marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="kerb-steps" id="kerbSteps">
+      <div class="kerb-step" id="ks1">
+        <div class="step-num">1</div>
+        <div>
+          <div><strong>Alice → AS</strong></div>
+          <div class="step-msg">Alice ‖ TGS</div>
+          <div class="step-arrow">Alice sends her identity and the name of the TGS she wants access to.</div>
+        </div>
+      </div>
+      <div class="kerb-step" id="ks2">
+        <div class="step-num">2</div>
+        <div>
+          <div><strong>AS → Alice</strong></div>
+          <div class="step-msg">{K_Alice,TGS} K_Alice ‖ T_Alice,TGS</div>
+          <div class="step-arrow">AS sends: (1) session key encrypted with Alice's key, (2) a Ticket-Granting Ticket (TGT) for TGS.</div>
+        </div>
+      </div>
+      <div class="kerb-step" id="ks3">
+        <div class="step-num">3</div>
+        <div>
+          <div><strong>Alice → TGS</strong></div>
+          <div class="step-msg">S ‖ A_Alice,TGS ‖ T_Alice,TGS</div>
+          <div class="step-arrow">Alice presents her TGT + an Authenticator (proving she has the session key) + name of desired server S.</div>
+        </div>
+      </div>
+      <div class="kerb-step" id="ks4">
+        <div class="step-num">4</div>
+        <div>
+          <div><strong>TGS → Alice</strong></div>
+          <div class="step-msg">Alice ‖ {K_Alice,S} K_Alice,TGS ‖ T_Alice,S</div>
+          <div class="step-arrow">TGS issues a service ticket T_Alice,S for server S, plus a new session key K_Alice,S encrypted for Alice.</div>
+        </div>
+      </div>
+      <div class="kerb-step" id="ks5">
+        <div class="step-num">5</div>
+        <div>
+          <div><strong>Alice → Server S</strong></div>
+          <div class="step-msg">A_Alice,S ‖ T_Alice,S</div>
+          <div class="step-arrow">Alice presents service ticket + fresh Authenticator. Server decrypts ticket to get K_Alice,S and verifies authenticator. Access granted!</div>
+        </div>
+      </div>
+    </div>
+    <button id="kerb-btn" onclick="animateKerberos()">▶ Animate Protocol Steps</button>
+  </div>
+
+  <h3>Security Properties of Kerberos</h3>
+  <div class="card-grid">
+    <div class="def green">
+      <strong>Mutual Authentication</strong><br>
+      Both client and server verify each other's identity.
+    </div>
+    <div class="def">
+      <strong>Replay Attack Prevention</strong><br>
+      Timestamps and limited ticket validity periods prevent replayed messages.
+    </div>
+    <div class="def orange">
+      <strong>Eavesdropping Protection</strong><br>
+      All sensitive data is encrypted; session keys are never transmitted in plaintext.
+    </div>
+    <div class="def purple">
+      <strong>Single Sign-On</strong><br>
+      Log in once to AS; TGT allows transparent access to all application servers.
+    </div>
+  </div>
+</section>
+
+<!-- ===== SSO ===== -->
+<section id="sso">
+  <h2>Single Sign-On (SSO)</h2>
+  <div class="card">
+    <p>SSO allows a user to authenticate <strong>once</strong> and gain access to multiple services without re-authenticating. Used by Google, Amazon, Microsoft, university systems, etc.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3 style="color:var(--green)">Advantages of SSO</h3>
+      <div class="timeline">
+        <div class="tl-item green"><strong>Convenience:</strong> Single password reduces cognitive load and password fatigue.</div>
+        <div class="tl-item green"><strong>Fewer weak passwords:</strong> Users don't need to create many passwords, so the one password is (usually) stronger.</div>
+        <div class="tl-item green"><strong>Centralised control:</strong> IT can revoke all access for a user in one action.</div>
+        <div class="tl-item green"><strong>Reduced attack surface:</strong> Fewer passwords means fewer credential stores to breach.</div>
+        <div class="tl-item green"><strong>Audit trail:</strong> Central point means comprehensive logging of authentication events.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--red)">Disadvantages of SSO</h3>
+      <div class="timeline">
+        <div class="tl-item red"><strong>Single point of failure:</strong> If the SSO provider goes down, ALL services become inaccessible.</div>
+        <div class="tl-item red"><strong>Single point of compromise:</strong> One stolen credential → access to ALL linked services.</div>
+        <div class="tl-item red"><strong>Third-party dependency:</strong> Reliance on Google/Microsoft raises vendor lock-in and data concerns.</div>
+        <div class="tl-item red"><strong>Session hijacking risk:</strong> A stolen SSO token grants access to everything (vs. one service).</div>
+        <div class="tl-item red"><strong>Privacy:</strong> The SSO provider can track user logins across all connected services.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>SSO and the Security Properties (CIA + AN)</h3>
+  <div class="card">
+    <table>
+      <tr><th>Property</th><th>Definition</th><th>SSO Impact</th></tr>
+      <tr>
+        <td><strong style="color:var(--blue)">Confidentiality</strong></td>
+        <td>Data only accessible to authorised parties</td>
+        <td>✓ Central auth reduces password exposure<br>✗ Single token compromise exposes all services</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--green)">Integrity</strong></td>
+        <td>Data has not been tampered with</td>
+        <td>✓ Centralised auth logs detect anomalies early<br>✗ Compromised SSO could allow data manipulation across services</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange)">Authenticity</strong></td>
+        <td>Entity is who they claim to be</td>
+        <td>✓ Strong central auth (MFA at SSO layer) raises bar<br>✗ Once SSO is compromised, authenticity fails everywhere</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--purple)">Accountability</strong></td>
+        <td>Actions can be traced to a specific entity</td>
+        <td>✓ Central audit log provides comprehensive trail<br>✓ Easier to detect unusual patterns across services</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--pink)">Non-repudiation</strong></td>
+        <td>Entity cannot deny an action</td>
+        <td>✓ Central log is authoritative evidence<br>✗ If SSO is compromised, actions could be misattributed</td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>URL Session IDs — Vulnerability</h3>
+  <div class="card">
+    <p>Some websites pass the session ID in the URL (e.g. <code>example.com/search?session=ABC123</code>).</p>
+    <div class="card-grid">
+      <div class="def red">
+        <strong>Vulnerability: Session Hijacking</strong><br>
+        <ul style="margin-top:.4rem;">
+          <li>URL stored in browser history → leaked</li>
+          <li>URL appears in server access logs → leaked</li>
+          <li>URL shared via Referer headers to other sites</li>
+          <li>Predictable session IDs can be guessed</li>
+          <li>Session fixation attacks possible</li>
+          <li>XSS can extract session IDs from URLs</li>
+        </ul>
+      </div>
+      <div class="def green">
+        <strong>Defence Mechanisms</strong><br>
+        <ul style="margin-top:.4rem;">
+          <li>Store session ID in <strong>HttpOnly cookies</strong> (not URL)</li>
+          <li>Use cryptographically <strong>random session IDs</strong></li>
+          <li>Implement <strong>session timeouts</strong></li>
+          <li>Regenerate session ID after login</li>
+          <li>Use <strong>HTTPS</strong> to encrypt transmission</li>
+          <li>Validate IP / user-agent binding</li>
+          <li>CSRF tokens for state-changing requests</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert warn" style="margin-top:.8rem;">⚠ The Travelsafe scenario (exam Q1): the search box could also be vulnerable to <strong>SQL injection</strong> or <strong>XSS</strong>, which in turn could steal session IDs.</div>
+  </div>
+</section>
+
+<!-- ===== EXAM Q&A ===== -->
+<section id="exam">
+  <h2>Exam Questions &amp; Model Answers</h2>
+  <div class="alert info" style="margin-bottom:1rem;">ℹ Questions Q1–Q2 from May 2025 paper are directly from Lec 8. Tutorial questions and additional exam-style questions are also included.</div>
+
+  <!-- Q1 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Q1 — May 2025 (5 marks) | Travelsafe URL Session IDs</span>
+      <span class="exam-q-marks">5 marks</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">
+        A company called Travelsafe operates through a website that uses URL session IDs. The website has a search box for visitors to identify holiday locations. Mention and describe a potential vulnerability and the corresponding defence mechanisms that can be employed to mitigate it.
+      </div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Vulnerability 1: Session Hijacking via Exposed URL Session ID</h4>
+        <p>URL session IDs are visible in browser history, server logs, and Referer headers. An attacker who obtains the session ID can impersonate the authenticated user without knowing their password. This is called <strong>session hijacking</strong>.</p>
+        <p><strong>Defence mechanisms:</strong></p>
+        <ul>
+          <li>Store session IDs in <strong>HttpOnly, Secure cookies</strong> instead of the URL — prevents JavaScript access and ensures HTTPS-only transmission.</li>
+          <li>Generate <strong>cryptographically random</strong>, sufficiently long session IDs — prevents guessing.</li>
+          <li>Implement <strong>session timeouts</strong> — limits the window of exploitation if a session ID is leaked.</li>
+          <li>Regenerate session ID after login to prevent <strong>session fixation</strong>.</li>
+          <li>Bind sessions to IP address / user-agent for additional verification.</li>
+        </ul>
+        <h4>Vulnerability 2: Cross-Site Scripting (XSS) via Search Box</h4>
+        <p>The search box may be vulnerable to reflected or stored XSS. An attacker could inject malicious JavaScript that steals the session cookie or redirects users to a phishing page.</p>
+        <p><strong>Defence mechanisms:</strong></p>
+        <ul>
+          <li><strong>Input validation and output encoding</strong> — encode all user input before rendering in HTML.</li>
+          <li>Implement a <strong>Content Security Policy (CSP)</strong> to restrict script execution.</li>
+          <li>Use <strong>HttpOnly cookies</strong> so JavaScript cannot access session tokens.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Q2 — May 2025 (7 marks) | Single Sign-On (SSO)</span>
+      <span class="exam-q-marks">7 marks</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">
+        Some companies, including Google and Amazon, use Single Sign-On (SSO) for user authentication. 1) Argue for the advantages and disadvantages of using SSO over traditional approaches. 2) Explain what SSO means for Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation.
+      </div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Part 1: SSO Advantages vs. Traditional (3 marks)</h4>
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li><strong>Usability:</strong> One login for many services — reduces password fatigue and forgotten passwords.</li>
+          <li><strong>Stronger security posture:</strong> Users maintain one strong password rather than many weak ones.</li>
+          <li><strong>Centralised administration:</strong> Admins can revoke all access in one action (e.g. on employee departure).</li>
+          <li><strong>Reduced attack surface:</strong> Fewer credential stores to protect against breaches.</li>
+        </ul>
+        <p><strong>Disadvantages:</strong></p>
+        <ul>
+          <li><strong>Single point of failure:</strong> SSO system downtime → all services inaccessible.</li>
+          <li><strong>Single point of compromise:</strong> One stolen SSO credential → all linked services compromised.</li>
+          <li><strong>Vendor dependency:</strong> Reliance on Google/Microsoft creates lock-in and privacy concerns.</li>
+        </ul>
+        <h4>Part 2: CIA + AN Implications (4 marks)</h4>
+        <table>
+          <tr><th>Property</th><th>Impact of SSO</th></tr>
+          <tr><td><strong>Confidentiality</strong></td><td>Reduced risk of credential interception (fewer passwords). But a compromised SSO token exposes all services simultaneously.</td></tr>
+          <tr><td><strong>Integrity</strong></td><td>Centralised auth allows early anomaly detection. But if SSO is breached, the attacker can manipulate data across all connected services.</td></tr>
+          <tr><td><strong>Authenticity</strong></td><td>A strong, MFA-protected SSO system raises the authentication bar. However, if the SSO IdP is compromised, authenticity fails everywhere.</td></tr>
+          <tr><td><strong>Accountability</strong></td><td>SSO provides a single, comprehensive audit log of all authentication events — strengthens accountability and forensic capability.</td></tr>
+          <tr><td><strong>Non-repudiation</strong></td><td>The central log serves as authoritative, time-stamped evidence. However, if the SSO is compromised, an attacker's actions may be misattributed to a legitimate user.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Q1 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Tutorial Q1 — Password Threat Models &amp; Mitigations</span>
+      <span class="exam-q-marks">Tutorial</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">What are the threat models for password-based user authentication? What are the mitigation methods?</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Threat Models</h4>
+        <table>
+          <tr><th>Threat</th><th>Description</th></tr>
+          <tr><td><strong>Brute Force</strong></td><td>Trying every possible password combination; effective against short/simple passwords.</td></tr>
+          <tr><td><strong>Dictionary Attack</strong></td><td>Using a pre-compiled list of common passwords and words. Vastly reduces search space.</td></tr>
+          <tr><td><strong>Phishing</strong></td><td>Tricking the user into entering their password on a fake (malicious) login page.</td></tr>
+          <tr><td><strong>Malware / Keylogging</strong></td><td>Malware records keystrokes and exfiltrates passwords to the attacker.</td></tr>
+          <tr><td><strong>Shoulder Surfing</strong></td><td>An attacker physically observes the user typing their password.</td></tr>
+          <tr><td><strong>Rainbow Table Attack</strong></td><td>Pre-computed hash table used to reverse unsalted password hashes.</td></tr>
+        </table>
+        <h4>Mitigations</h4>
+        <ul>
+          <li><strong>Account lockout / exponential back-off</strong> — defeats online brute-force</li>
+          <li><strong>Strong password policy</strong> — long passwords with mixed characters</li>
+          <li><strong>Multi-Factor Authentication (MFA)</strong> — even if password leaked, second factor required</li>
+          <li><strong>Salted hashing</strong> — bcrypt/Argon2 defeats rainbow tables</li>
+          <li><strong>Anti-phishing training + HTTPS + certificate verification</strong></li>
+          <li><strong>Endpoint security</strong> — antivirus, no plaintext password storage on clients</li>
+          <li><strong>Privacy screen protectors / secure environment</strong> — counter shoulder surfing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Q2 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Tutorial Q2 — Web App Security: Login &amp; Email Access</span>
+      <span class="exam-q-marks">Tutorial</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">Explain how web application security mechanisms protect the user during the login and email access process. Include: Secure authentication, Session management, Data encryption.</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Secure Authentication</h4>
+        <ul>
+          <li>User submits username + password over HTTPS login page.</li>
+          <li>Password stored server-side as a <strong>salted hash</strong> (bcrypt/Argon2), never plaintext.</li>
+          <li>Many systems enforce <strong>2FA/MFA</strong>: code sent to mobile or authenticator app.</li>
+          <li>Login attempt limits prevent <strong>automated brute-force</strong> attacks.</li>
+        </ul>
+        <h4>Session Management</h4>
+        <ul>
+          <li>After authentication, server generates a <strong>cryptographically random session ID</strong>.</li>
+          <li>Stored in a <strong>Secure, HttpOnly cookie</strong> — not visible to JavaScript, only sent over HTTPS.</li>
+          <li>Session ID is used for subsequent requests (stateless auth).</li>
+          <li><strong>Session timeout</strong> after inactivity invalidates the session.</li>
+          <li><strong>Session ID regeneration</strong> after login prevents session fixation.</li>
+        </ul>
+        <h4>Data Encryption</h4>
+        <ul>
+          <li>All communication over <strong>HTTPS / TLS</strong> — encrypts credentials, email content, attachments.</li>
+          <li>Prevents interception and MITM attacks, especially on public Wi-Fi.</li>
+          <li>TLS certificates validated by the browser to prevent spoofing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Q3 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Tutorial Q3 — Aleta's Phishing Email (XCORP Scenario)</span>
+      <span class="exam-q-marks">Tutorial</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">Aleta received an email urging her to log in and download "salary summary 2019.pdf". She suspects it could be malicious. a) What should Aleta check and do? b) What 3 things can the risk management team identify?</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Part a) Advice for Aleta</h4>
+        <p><strong>Red flags to check in the email:</strong></p>
+        <ul>
+          <li>Is the <strong>sender address</strong> from the official company domain?</li>
+          <li>Are there <strong>grammar mistakes</strong> or unusual language?</li>
+          <li>Does it create <strong>urgency</strong> or ask for unusual action (login, download, payment)?</li>
+          <li>Is the <strong>link URL</strong> actually the company's official site?</li>
+          <li>Is the PDF filename unusual? ("2019" when it's a different year is suspicious.)</li>
+          <li>Is the attachment <strong>password-protected</strong> to evade antivirus?</li>
+        </ul>
+        <p><strong>Best next step:</strong> <strong>Do not click any links or download the attachment.</strong> Report the email to the company's information security / IT team immediately. Inform colleagues to be aware.</p>
+        <h4>Part b) What the Risk Team Can Identify</h4>
+        <ol>
+          <li><strong>Sender IP address</strong>: Examine email headers (via email client investigation / pseudocode) to extract originating IP.</li>
+          <li><strong>Sender domain</strong>: Check the domain via open-source intelligence tools (e.g. ipvoid, VirusTotal) to determine if it is blacklisted or recently registered.</li>
+          <li><strong>Attachment malware analysis</strong>: Extract and sandbox the PDF in an isolated environment; check for embedded scripts, macros, or exploit code using tools like PDF analysers or VirusTotal.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Q1 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Additional Q1 — Anderson's Formula Calculation</span>
+      <span class="exam-q-marks">Exam-Style</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">A system allows A = 64 characters, G = 10³ guesses/second. You require P = 0.5 probability of guessing within T = 30 days. What is the minimum password length S?</div>
+      <div class="ans-box">
+        <div class="ans-label">Worked Solution</div>
+        <div class="worked" style="border-color:var(--green);margin-top:.5rem;">
+          <div class="worked-step"><div class="ws-num">1</div><div>T = 30 × 24 × 60 × 60 = 2,592,000 seconds = 2.592 × 10⁶</div></div>
+          <div class="worked-step"><div class="ws-num">2</div><div>N ≥ TG/P = (2.592 × 10⁶ × 10³) / 0.5 = 5.184 × 10⁹</div></div>
+          <div class="worked-step"><div class="ws-num">3</div><div>N = Σᵢ₌₁ˢ 64ⁱ ≥ 5.184 × 10⁹<br>S=5: 64¹+…+64⁵ ≈ 1.07 × 10⁹ ❌<br>S=6: +64⁶ ≈ 6.88 × 10¹⁰ ✓</div></div>
+          <div class="worked-step"><div class="ws-num">4</div><div><strong>Minimum password length S = 6</strong></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Q2 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Additional Q2 — Kerberos Protocol Understanding</span>
+      <span class="exam-q-marks">Exam-Style</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">Explain the role of each component in Kerberos (AS, TGS, Application Server). Why does the Kerberos protocol use timestamps in the Authenticator? How does Kerberos provide Single Sign-On?</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Component Roles</h4>
+        <ul>
+          <li><strong>AS (Authentication Server):</strong> Verifies the user's identity using their long-term secret key (derived from password). Issues a Ticket-Granting Ticket (TGT) encrypted for TGS.</li>
+          <li><strong>TGS (Ticket-Granting Server):</strong> Issues service-specific tickets for application servers. Validates the TGT presented by the user — does not re-check the password.</li>
+          <li><strong>Application Server:</strong> The resource being accessed. Validates the service ticket (containing session key and validity window) and the Authenticator.</li>
+        </ul>
+        <h4>Why Timestamps in Authenticator?</h4>
+        <p>The Authenticator contains a timestamp <em>t</em> freshly created by Alice. The server checks that <em>t</em> is within a small window (e.g. 5 minutes) of its own clock. This prevents <strong>replay attacks</strong>: an intercepted Authenticator becomes invalid after the time window expires, so an attacker cannot reuse it.</p>
+        <h4>How Kerberos Provides SSO</h4>
+        <p>The user authenticates to AS <strong>once</strong> (entering their password). AS returns a TGT valid for the session duration (e.g. 8 hours). The user then presents the TGT to TGS to obtain tickets for any application server — <em>without re-entering their password</em>. From the user's perspective, access to all services is seamless and transparent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Q3 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Additional Q3 — Biometrics: FAR, FRR, Continuous Auth</span>
+      <span class="exam-q-marks">Exam-Style</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">Define FAR and FRR in biometric systems. Explain the trade-off between them. Which biometric methods can be used for continuous authentication and why?</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <p><strong>FAR (False Acceptance Rate):</strong> The probability that the system incorrectly grants access to an imposter. High FAR = security risk.</p>
+        <p><strong>FRR (False Rejection Rate):</strong> The probability that the system incorrectly denies access to a genuine user. High FRR = usability problem.</p>
+        <p><strong>Trade-off:</strong> Tightening the acceptance threshold decreases FAR but increases FRR (and vice versa). The Equal Error Rate (EER) is the operating point where FAR = FRR — a useful single metric for comparing systems.</p>
+        <h4>Continuous Authentication</h4>
+        <p>Continuous authentication verifies identity <em>throughout</em> a session, not just at login. It requires methods that operate <strong>passively and non-intrusively</strong>:</p>
+        <ul>
+          <li><strong>Keystroke dynamics</strong> — analyses typing rhythm, pressure, key hold durations in the background.</li>
+          <li><strong>Gait / motion biometrics</strong> — uses accelerometer/gyroscope data on mobile devices to recognise walking pattern.</li>
+          <li><strong>Mouse dynamics</strong> — analyses cursor movement patterns.</li>
+        </ul>
+        <p>These do not require the user to stop and re-authenticate, making them suitable for continuous verification. In contrast, fingerprint and face recognition require active user interaction.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Q4 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Additional Q4 — Authentication Components: Formal Model</span>
+      <span class="exam-q-marks">Exam-Style</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">Define the three formal components A, C, and F in the authentication model. Why must the function f: A → C be a one-way function? Give a concrete example.</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <p><strong>A (Authentication Information):</strong> The credential the user provides to prove their identity (e.g. the password they type).</p>
+        <p><strong>C (Complementary Information):</strong> The stored representation of the credential on the server (e.g. the stored password hash).</p>
+        <p><strong>F (Complementary Functions):</strong> The set of functions f: A → C used to transform A into C. The authentication function l: l(A, C) → {true, false} verifies the claim.</p>
+        <h4>Why One-Way?</h4>
+        <p>If f were reversible, an attacker who reads the database (e.g. SQL injection) could recover the original password A from C. A one-way hash makes this computationally infeasible: given C = f(A), it is practically impossible to find A.</p>
+        <h4>Concrete Example</h4>
+        <pre><code>A = "MyPassword123!"          # what user types
+salt = "a8f3bc9d"             # random, stored alongside hash
+C = SHA-256(A + salt)         # stored in database
+<span class="cm"># f: A → C is SHA-256 (one-way)</span>
+<span class="cm"># l(A, C): recompute SHA-256(input + salt), compare with C</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Q5 -->
+  <div class="exam-q">
+    <div class="exam-q-header" onclick="toggleExam(this)">
+      <span class="exam-q-title">Additional Q5 — MFA Scenario Analysis</span>
+      <span class="exam-q-marks">Exam-Style</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">A bank requires customers to enter (1) a password and (2) a one-time code sent to their registered phone. Which authentication factors does this represent? Analyse the security benefits and remaining vulnerabilities.</div>
+      <div class="ans-box">
+        <div class="ans-label">Model Answer</div>
+        <h4>Factors Used</h4>
+        <ul>
+          <li><strong>Password</strong> = "What you know" (knowledge-based)</li>
+          <li><strong>OTP to phone</strong> = "What you have" (token-based)</li>
+        </ul>
+        <p>This is <strong>Two-Factor Authentication (2FA)</strong> combining factors 1 (knowledge) and 2 (possession).</p>
+        <h4>Security Benefits</h4>
+        <ul>
+          <li>Password alone is insufficient — a stolen password doesn't grant access.</li>
+          <li>Physical possession of the phone is required — remote attackers are blocked.</li>
+          <li>OTPs expire quickly — replay attacks are ineffective.</li>
+        </ul>
+        <h4>Remaining Vulnerabilities</h4>
+        <ul>
+          <li><strong>SIM swapping:</strong> Attacker socially engineers the phone company to transfer the victim's number.</li>
+          <li><strong>Phishing in real-time:</strong> Attacker proxies the login page and forwards the OTP immediately.</li>
+          <li><strong>Phone malware:</strong> If the phone is infected, both password and OTP can be intercepted.</li>
+          <li><strong>Social engineering:</strong> Attacker calls victim pretending to be the bank and asks for the OTP.</li>
+        </ul>
+        <div class="alert tip">✓ Adding a <strong>third factor</strong> (biometric: fingerprint) would make this a 3FA system, significantly raising the attack complexity.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section id="quiz">
+  <h2>Interactive Quiz — Test Your Knowledge</h2>
+  <p style="color:var(--muted);margin-bottom:1rem;">10 questions covering all Lec 8 topics. Click an option to get immediate feedback.</p>
+
+  <div class="quiz-q" id="qq1">
+    <p>1. What is the difference between Identification and Authentication?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q1" value="a" onchange="checkQ('q1','a','b')"> A) Identification verifies identity; authentication claims identity</label>
+      <label><input type="radio" name="q1" value="b" onchange="checkQ('q1','b','b')"> B) Identification is the claim; authentication is the verification</label>
+      <label><input type="radio" name="q1" value="c" onchange="checkQ('q1','c','b')"> C) They are synonymous in security systems</label>
+      <label><input type="radio" name="q1" value="d" onchange="checkQ('q1','d','b')"> D) Authentication is a subset of identification</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q1"></div>
+  </div>
+
+  <div class="quiz-q" id="qq2">
+    <p>2. In Anderson's formula N ≥ TG/P, what does G represent?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q2" value="a" onchange="checkQ('q2','a','c')"> A) Total number of possible passwords</label>
+      <label><input type="radio" name="q2" value="b" onchange="checkQ('q2','b','c')"> B) Probability of guessing correctly</label>
+      <label><input type="radio" name="q2" value="c" onchange="checkQ('q2','c','c')"> C) Number of password guesses per time unit</label>
+      <label><input type="radio" name="q2" value="d" onchange="checkQ('q2','d','c')"> D) Length of the password</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q2"></div>
+  </div>
+
+  <div class="quiz-q" id="qq3">
+    <p>3. Which authentication factor does a fingerprint represent?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q3" value="a" onchange="checkQ('q3','a','b')"> A) What you know</label>
+      <label><input type="radio" name="q3" value="b" onchange="checkQ('q3','b','b')"> B) What you are</label>
+      <label><input type="radio" name="q3" value="c" onchange="checkQ('q3','c','b')"> C) What you have</label>
+      <label><input type="radio" name="q3" value="d" onchange="checkQ('q3','d','b')"> D) Where you are</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q3"></div>
+  </div>
+
+  <div class="quiz-q" id="qq4">
+    <p>4. In Kerberos, why does the Authenticator contain a timestamp?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q4" value="a" onchange="checkQ('q4','a','a')"> A) To prevent replay attacks by making each authenticator time-limited</label>
+      <label><input type="radio" name="q4" value="b" onchange="checkQ('q4','b','a')"> B) To record when the user first logged in</label>
+      <label><input type="radio" name="q4" value="c" onchange="checkQ('q4','c','a')"> C) To synchronise the ticket-granting ticket expiry</label>
+      <label><input type="radio" name="q4" value="d" onchange="checkQ('q4','d','a')"> D) To encrypt the session key</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q4"></div>
+  </div>
+
+  <div class="quiz-q" id="qq5">
+    <p>5. What is the main disadvantage of storing session IDs in URLs?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q5" value="a" onchange="checkQ('q5','a','b')"> A) URLs are slower than cookies</label>
+      <label><input type="radio" name="q5" value="b" onchange="checkQ('q5','b','b')"> B) Session IDs are exposed in browser history, logs, and Referer headers</label>
+      <label><input type="radio" name="q5" value="c" onchange="checkQ('q5','c','b')"> C) URLs cannot store long enough session IDs</label>
+      <label><input type="radio" name="q5" value="d" onchange="checkQ('q5','d','b')"> D) URL session IDs cannot be encrypted</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q5"></div>
+  </div>
+
+  <div class="quiz-q" id="qq6">
+    <p>6. In the formal authentication model, what is C = f(A)?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q6" value="a" onchange="checkQ('q6','a','c')"> A) The plaintext password sent over the network</label>
+      <label><input type="radio" name="q6" value="b" onchange="checkQ('q6','b','c')"> B) The username submitted by the entity</label>
+      <label><input type="radio" name="q6" value="c" onchange="checkQ('q6','c','c')"> C) The stored credential (e.g. hash) derived from authentication info A</label>
+      <label><input type="radio" name="q6" value="d" onchange="checkQ('q6','d','c')"> D) The session ID generated after login</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q6"></div>
+  </div>
+
+  <div class="quiz-q" id="qq7">
+    <p>7. Which biometric methods are BEST suited for continuous authentication?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q7" value="a" onchange="checkQ('q7','a','b')"> A) Fingerprint and iris scan</label>
+      <label><input type="radio" name="q7" value="b" onchange="checkQ('q7','b','b')"> B) Keystroke dynamics and gait/motion biometrics</label>
+      <label><input type="radio" name="q7" value="c" onchange="checkQ('q7','c','b')"> C) Face recognition and retina scan</label>
+      <label><input type="radio" name="q7" value="d" onchange="checkQ('q7','d','b')"> D) DNA and hand geometry</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q7"></div>
+  </div>
+
+  <div class="quiz-q" id="qq8">
+    <p>8. What is "Jailing" (Honeypot) in the context of password security?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q8" value="a" onchange="checkQ('q8','a','b')"> A) Locking the account after 3 failed attempts</label>
+      <label><input type="radio" name="q8" value="b" onchange="checkQ('q8','b','b')"> B) Appearing to accept wrong credentials and recording all attacker activity in a fake environment</label>
+      <label><input type="radio" name="q8" value="c" onchange="checkQ('q8','c','b')"> C) Sending the password in a one-time encrypted token</label>
+      <label><input type="radio" name="q8" value="d" onchange="checkQ('q8','d','b')"> D) Using exponential delays between login attempts</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q8"></div>
+  </div>
+
+  <div class="quiz-q" id="qq9">
+    <p>9. A key space has 2¹⁶ keys. At 2⁸ encryptions/sec, the worst-case brute-force time is:</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q9" value="a" onchange="checkQ('q9','a','c')"> A) 2²⁴ seconds (≈ 194 days)</label>
+      <label><input type="radio" name="q9" value="b" onchange="checkQ('q9','b','c')"> B) 2¹⁶ seconds (≈ 18 hours)</label>
+      <label><input type="radio" name="q9" value="c" onchange="checkQ('q9','c','c')"> C) 2⁸ seconds (≈ 4.3 minutes)</label>
+      <label><input type="radio" name="q9" value="d" onchange="checkQ('q9','d','c')"> D) 2³² seconds (≈ 136 years)</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q9"></div>
+  </div>
+
+  <div class="quiz-q" id="qq10">
+    <p>10. In Kerberos, who issues the Ticket-Granting Ticket (TGT)?</p>
+    <div class="quiz-opt">
+      <label><input type="radio" name="q10" value="a" onchange="checkQ('q10','a','a')"> A) The Authentication Server (AS)</label>
+      <label><input type="radio" name="q10" value="b" onchange="checkQ('q10','b','a')"> B) The Ticket-Granting Server (TGS)</label>
+      <label><input type="radio" name="q10" value="c" onchange="checkQ('q10','c','a')"> C) The Application Server</label>
+      <label><input type="radio" name="q10" value="d" onchange="checkQ('q10','d','a')"> D) The user generates it locally</label>
+    </div>
+    <div class="quiz-feedback" id="fb_q10"></div>
+  </div>
+
+  <div id="quizScore" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-top:1rem;text-align:center;">
+    <h3 id="scoreText" style="color:var(--blue)">Quiz Complete!</h3>
+    <p id="scoreDetail" style="color:var(--muted);margin-top:.4rem;"></p>
+  </div>
+</section>
+
+<!-- QUICK REFERENCE -->
+<section>
+  <h2>Quick Reference Cheat Sheet</h2>
+  <div class="card">
+    <div class="card-grid">
+      <div>
+        <h4>Key Formulas</h4>
+        <div class="math-box">
+          <div class="eq">Anderson's: N ≥ TG/P</div>
+          <div class="eq">Password space: N = Σᵢ₌₁ˢ Aⁱ</div>
+          <div class="eq">Brute-force time: 2^keysize / speed</div>
+          <div class="eq">Key doubling: time × 2^(extra bits)</div>
+          <div class="eq">Auth model: l(A,C) → {T,F}</div>
+          <div class="eq">               f: A → C (one-way)</div>
+        </div>
+      </div>
+      <div>
+        <h4>Kerberos Steps Quick View</h4>
+        <div class="math-box" style="font-size:.8rem;">
+          <div class="eq">1. Alice → AS: Alice‖TGS</div>
+          <div class="eq">2. AS → Alice: {K_A,TGS}K_A ‖ T_A,TGS</div>
+          <div class="eq">3. Alice → TGS: S‖A_A,TGS‖T_A,TGS</div>
+          <div class="eq">4. TGS → Alice: {K_A,S}K_A,TGS‖T_A,S</div>
+          <div class="eq">5. Alice → S: A_A,S ‖ T_A,S</div>
+        </div>
+      </div>
+      <div>
+        <h4>4 Auth Factors</h4>
+        <div class="math-box" style="font-size:.85rem;">
+          <div class="eq">Know  → password, PIN</div>
+          <div class="eq">Have  → smart card, OTP</div>
+          <div class="eq">Are   → fingerprint, iris</div>
+          <div class="eq">Where → location, terminal</div>
+        </div>
+      </div>
+      <div>
+        <h4>SSO Security Properties</h4>
+        <div class="math-box" style="font-size:.82rem;">
+          <div class="eq">Conf ✓ fewer passwords, ✗ token exposure</div>
+          <div class="eq">Int  ✓ central detection, ✗ breach spreads</div>
+          <div class="eq">Auth ✓ MFA at centre, ✗ single failure</div>
+          <div class="eq">Acc  ✓ central audit log</div>
+          <div class="eq">NR   ✓ authoritative log, ✗ misattribution</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<script>
+// ===== NAV ACTIVE =====
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+
+// ===== EXAM ACCORDION =====
+function toggleExam(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  header.style.borderBottom = body.classList.contains('open') ? '1px solid var(--border)' : 'none';
+}
+
+// ===== KERBEROS ANIMATION =====
+let kStep = 0;
+const steps = ['ks1','ks2','ks3','ks4','ks5'];
+function animateKerberos() {
+  if (kStep === 0) {
+    steps.forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('active','done');
+    });
+  }
+  if (kStep < steps.length) {
+    if (kStep > 0) document.getElementById(steps[kStep-1]).classList.replace('active','done');
+    document.getElementById(steps[kStep]).classList.add('active');
+    kStep++;
+    document.getElementById('kerb-btn').textContent = kStep < steps.length ? '▶ Next Step' : '↺ Restart';
+  } else {
+    // restart
+    kStep = 0;
+    document.getElementById('kerb-btn').textContent = '▶ Animate Protocol Steps';
+    steps.forEach(id => document.getElementById(id).classList.remove('active','done'));
+  }
+}
+
+// ===== QUIZ =====
+const answers = { q1:'b', q2:'c', q3:'b', q4:'a', q5:'b', q6:'c', q7:'b', q8:'b', q9:'c', q10:'a' };
+const explanations = {
+  q1: 'Identification = claiming an identity. Authentication = proving/verifying it.',
+  q2: 'G = guesses per time unit (rate of attack). N = total passwords, T = time, P = probability.',
+  q3: 'Fingerprint is physiological biometric — "what you are".',
+  q4: 'Timestamps expire quickly (~5 min), making replayed Authenticators invalid.',
+  q5: 'URLs leak into browser history, server logs, and Referer headers — classic session hijacking vector.',
+  q6: 'C is the stored credential (e.g. bcrypt hash) derived from A (the plaintext password). f must be one-way.',
+  q7: 'Keystroke dynamics and gait run passively without interrupting the user — ideal for continuous auth.',
+  q8: 'Honeypot/jailing: accept the wrong password, let attacker into a fake env, record all their actions.',
+  q9: 'Time = 2¹⁶ / 2⁸ = 2⁸ = 256 seconds ≈ 4.3 min.',
+  q10: 'AS issues the TGT after verifying the user\'s password (step 2 of Kerberos).'
+};
+let score = 0; let answered = 0;
+function checkQ(qid, chosen, correct) {
+  const fb = document.getElementById('fb_' + qid);
+  if (fb.classList.contains('correct') || fb.classList.contains('wrong')) return;
+  answered++;
+  if (chosen === correct) {
+    score++;
+    fb.className = 'quiz-feedback correct';
+    fb.textContent = '✓ Correct! ' + explanations[qid];
+  } else {
+    fb.className = 'quiz-feedback wrong';
+    fb.textContent = '✗ Incorrect. Correct answer: ' + correct.toUpperCase() + '. ' + explanations[qid];
+  }
+  if (answered === 10) {
+    const scoreDiv = document.getElementById('quizScore');
+    scoreDiv.style.display = 'block';
+    document.getElementById('scoreText').textContent = `Score: ${score}/10`;
+    const pct = score * 10;
+    let msg = pct >= 80 ? '🎉 Excellent — exam ready!' : pct >= 60 ? '👍 Good — review missed topics.' : '📚 Review the notes again.';
+    document.getElementById('scoreDetail').textContent = msg;
+    document.getElementById('scoreText').style.color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+  }
+}
+
+// ===== PROGRESS TRACKER =====
+function markDone(el, href) {
+  el.classList.toggle('done');
+  if (href) document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== PASSWORD STRENGTH =====
+function checkStrength() {
+  const pw = document.getElementById('pwInput').value;
+  const fill = document.getElementById('strengthFill');
+  const info = document.getElementById('pwInfo');
+  let score = 0;
+  let msgs = [];
+  if (pw.length >= 8) score += 20; else msgs.push('need 8+ chars');
+  if (pw.length >= 12) score += 10;
+  if (/[a-z]/.test(pw)) score += 15; else msgs.push('add lowercase');
+  if (/[A-Z]/.test(pw)) score += 15; else msgs.push('add uppercase');
+  if (/[0-9]/.test(pw)) score += 15; else msgs.push('add a digit');
+  if (/[^a-zA-Z0-9]/.test(pw)) score += 25; else msgs.push('add special char');
+  fill.style.width = score + '%';
+  fill.style.background = score < 40 ? 'var(--red)' : score < 70 ? 'var(--orange)' : score < 90 ? 'var(--yellow)' : 'var(--green)';
+  const label = score < 40 ? 'Weak' : score < 70 ? 'Fair' : score < 90 ? 'Strong' : 'Very Strong';
+  info.textContent = label + (msgs.length ? ' — ' + msgs.join(', ') : ' — great password!');
+  info.style.color = score < 40 ? 'var(--red)' : score < 70 ? 'var(--orange)' : score < 90 ? 'var(--yellow)' : 'var(--green)';
+}
+
+// ===== ANIMATE ATTACK BARS ON SCROLL =====
+let barsAnimated = false;
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !barsAnimated) {
+      barsAnimated = true;
+      setTimeout(() => {
+        document.getElementById('b1').style.width = '85%';
+        document.getElementById('b2').style.width = '70%';
+        document.getElementById('b3').style.width = '75%';
+        document.getElementById('b4').style.width = '80%';
+        document.getElementById('b5').style.width = '30%';
+      }, 200);
+    }
+  });
+}, { threshold: 0.3 });
+const barSection = document.getElementById('attacks');
+if (barSection) observer.observe(barSection);
+
+// ===== FADE IN SECTIONS =====
+const fadeObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.animation = 'fadeIn .5s ease both'; }
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('section').forEach(s => {
+  s.style.opacity = '0';
+  s.style.animation = 'none';
+  fadeObserver.observe(s);
+});
+setTimeout(() => { document.querySelector('section').style.opacity = '1'; }, 100);
+</script>
+</body>
+</html>

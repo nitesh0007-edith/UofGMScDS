@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Question 2024 - Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #e67e22;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #e67e22;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #fef5e7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #e67e22;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #e67e22;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .special-badge {
+            background-color: #e67e22;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="special-badge">2024 CLASSIFICATION QUESTION</div>
+        <h1>Classification Question 2024</h1>
+        <h2>Detailed Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Topic:</strong> Classification Methods<br>
+            <strong>Focus:</strong> k-NN, Decision Trees, Performance Metrics<br>
+            <strong>Year:</strong> 2024
+        </div>
+
+        <!-- MAIN QUESTION -->
+        <h2>Classification Problem</h2>
+
+        <div class="question">
+            <h3>Part (a): k-Nearest Neighbors Classification <span class="marks">[10 marks]</span></h3>
+            <p>Consider the following 2D dataset:</p>
+            <table style="width: 70%;">
+                <tr>
+                    <th>Point</th>
+                    <th>x₁</th>
+                    <th>x₂</th>
+                    <th>Class</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>Red</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>Red</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>Blue</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>Blue</td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>7</td>
+                    <td>6</td>
+                    <td>Blue</td>
+                </tr>
+            </table>
+
+            <p>(i) Using k-NN with k=3, classify the test point T=(4,4). Show all distance calculations. [7 marks]</p>
+            <p>(ii) How would the classification change if k=1? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Classification with k=3:</strong> <strong>[7 marks]</strong></p>
+
+            <p><strong>Step 1: Calculate Euclidean distances from T=(4,4) to all training points:</strong> <strong>[5 marks]</strong></p>
+
+            <div class="formula-box">
+                <p><strong>Distance to A (1,2):</strong></p>
+                <p>\[d(T,A) = \sqrt{(4-1)^2 + (4-2)^2} = \sqrt{9 + 4} = \sqrt{13} \approx 3.61\]</p>
+
+                <p><strong>Distance to B (2,3):</strong></p>
+                <p>\[d(T,B) = \sqrt{(4-2)^2 + (4-3)^2} = \sqrt{4 + 1} = \sqrt{5} \approx 2.24\]</p>
+
+                <p><strong>Distance to C (3,3):</strong></p>
+                <p>\[d(T,C) = \sqrt{(4-3)^2 + (4-3)^2} = \sqrt{1 + 1} = \sqrt{2} \approx 1.41\]</p>
+
+                <p><strong>Distance to D (6,5):</strong></p>
+                <p>\[d(T,D) = \sqrt{(4-6)^2 + (4-5)^2} = \sqrt{4 + 1} = \sqrt{5} \approx 2.24\]</p>
+
+                <p><strong>Distance to E (7,6):</strong></p>
+                <p>\[d(T,E) = \sqrt{(4-7)^2 + (4-6)^2} = \sqrt{9 + 4} = \sqrt{13} \approx 3.61\]</p>
+            </div>
+
+            <p><strong>Step 2: Identify the 3 nearest neighbors:</strong> <strong>[1 mark]</strong></p>
+            <p>Sorted by distance:</p>
+            <ol>
+                <li>C (Blue): 1.41</li>
+                <li>B (Red): 2.24</li>
+                <li>D (Blue): 2.24</li>
+            </ol>
+
+            <p><strong>Step 3: Majority vote among k=3 neighbors:</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li>Blue class: 2 votes (C and D)</li>
+                <li>Red class: 1 vote (B)</li>
+            </ul>
+
+            <p><strong>Prediction: BLUE class</strong></p>
+
+            <p><strong>(ii) Classification with k=1:</strong> <strong>[3 marks]</strong></p>
+            <p>With k=1, we only consider the single nearest neighbor. <strong>[1 mark]</strong></p>
+            <p>The nearest neighbor is C (Blue) with distance 1.41. <strong>[1 mark]</strong></p>
+            <p><strong>Prediction: BLUE class</strong> (same result as k=3 in this case) <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Key Observations:</strong>
+                <ul>
+                    <li>Point T=(4,4) is geometrically closer to the Blue cluster</li>
+                    <li>Both k=1 and k=3 give the same classification, indicating T is clearly in the Blue region</li>
+                    <li>Using k=3 is generally more robust as it reduces sensitivity to outliers</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Part (b): Decision Tree Construction <span class="marks">[10 marks]</span></h3>
+            <p>Given the following dataset for weather prediction:</p>
+
+            <table>
+                <tr>
+                    <th>Outlook</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Play Tennis?</th>
+                </tr>
+                <tr><td>Sunny</td><td>Hot</td><td>High</td><td>No</td></tr>
+                <tr><td>Sunny</td><td>Hot</td><td>High</td><td>No</td></tr>
+                <tr><td>Overcast</td><td>Hot</td><td>High</td><td>Yes</td></tr>
+                <tr><td>Rain</td><td>Mild</td><td>High</td><td>Yes</td></tr>
+                <tr><td>Rain</td><td>Cool</td><td>Normal</td><td>Yes</td></tr>
+                <tr><td>Overcast</td><td>Cool</td><td>Normal</td><td>Yes</td></tr>
+            </table>
+
+            <p>(i) Calculate the entropy of the target variable (Play Tennis). [4 marks]</p>
+            <p>(ii) Which feature would you choose as the root node? Explain your reasoning. [6 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Entropy of Target Variable:</strong> <strong>[4 marks]</strong></p>
+
+            <p><strong>Count class frequencies:</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li>Yes: 4 instances</li>
+                <li>No: 2 instances</li>
+                <li>Total: 6 instances</li>
+            </ul>
+
+            <p><strong>Calculate probabilities:</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li>P(Yes) = 4/6 = 2/3</li>
+                <li>P(No) = 2/6 = 1/3</li>
+            </ul>
+
+            <p><strong>Apply entropy formula:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[H(S) = -\sum_{i} p_i \log_2(p_i)\]</p>
+                <p>\[H(\text{Play Tennis}) = -\frac{2}{3}\log_2\left(\frac{2}{3}\right) - \frac{1}{3}\log_2\left(\frac{1}{3}\right)\]</p>
+                <p>\[= -\frac{2}{3}(-0.585) - \frac{1}{3}(-1.585)\]</p>
+                <p>\[= 0.390 + 0.528 = 0.918 \text{ bits}\]</p>
+            </div>
+
+            <p><strong>(ii) Choosing Root Node:</strong> <strong>[6 marks]</strong></p>
+
+            <p><strong>Calculate Information Gain for each feature:</strong></p>
+
+            <p><strong>Feature: Outlook</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li><strong>Sunny:</strong> 2 instances (0 Yes, 2 No) → Entropy = 0</li>
+                <li><strong>Overcast:</strong> 2 instances (2 Yes, 0 No) → Entropy = 0</li>
+                <li><strong>Rain:</strong> 2 instances (2 Yes, 0 No) → Entropy = 0</li>
+            </ul>
+
+            <div class="formula-box">
+                <p>\[\text{Weighted Entropy} = \frac{2}{6}(0) + \frac{2}{6}(0) + \frac{2}{6}(0) = 0\]</p>
+                <p>\[\text{Info Gain(Outlook)} = 0.918 - 0 = 0.918\]</p>
+            </div>
+
+            <p><strong>Feature: Temperature</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li><strong>Hot:</strong> 3 instances (1 Yes, 2 No)</li>
+                <li><strong>Mild:</strong> 1 instance (1 Yes, 0 No)</li>
+                <li><strong>Cool:</strong> 2 instances (2 Yes, 0 No)</li>
+            </ul>
+            <p>Entropy for Hot = -1/3·log₂(1/3) - 2/3·log₂(2/3) ≈ 0.918</p>
+            <p>Weighted Entropy ≈ 3/6(0.918) + 1/6(0) + 2/6(0) ≈ 0.459</p>
+            <p>Info Gain(Temperature) ≈ 0.918 - 0.459 = 0.459</p>
+
+            <p><strong>Feature: Humidity</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li><strong>High:</strong> 4 instances (2 Yes, 2 No) → Entropy = 1.0</li>
+                <li><strong>Normal:</strong> 2 instances (2 Yes, 0 No) → Entropy = 0</li>
+            </ul>
+            <p>Weighted Entropy = 4/6(1.0) + 2/6(0) ≈ 0.667</p>
+            <p>Info Gain(Humidity) ≈ 0.918 - 0.667 = 0.251</p>
+
+            <p><strong>Decision:</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Choose "Outlook" as the root node</strong> because it has the highest information gain (0.918), which means it provides the most information about the target variable. In fact, it perfectly separates the classes!</p>
+
+            <div class="note">
+                <strong>Summary of Information Gains:</strong>
+                <ul>
+                    <li>Outlook: 0.918 (highest - best choice) ✓</li>
+                    <li>Temperature: 0.459</li>
+                    <li>Humidity: 0.251</li>
+                </ul>
+                <p>Outlook creates pure leaf nodes (all Sunny→No, all Overcast→Yes, all Rain→Yes), making it the ideal root split.</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Part (c): Performance Evaluation <span class="marks">[10 marks]</span></h3>
+            <p>A binary classifier is tested on 100 samples with the following results:</p>
+            <ul>
+                <li>40 actual positives: 35 correctly predicted, 5 missed</li>
+                <li>60 actual negatives: 50 correctly predicted, 10 incorrectly predicted as positive</li>
+            </ul>
+
+            <p>(i) Construct the confusion matrix. [2 marks]</p>
+            <p>(ii) Calculate Accuracy, Precision, Recall, and F1-score. [6 marks]</p>
+            <p>(iii) Is this classifier better at identifying positives or negatives? Explain. [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Confusion Matrix:</strong> <strong>[2 marks]</strong></p>
+
+            <table style="width: 70%; margin: 20px auto;">
+                <tr>
+                    <th></th>
+                    <th>Predicted Positive</th>
+                    <th>Predicted Negative</th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <th>Actual Positive</th>
+                    <td style="background-color: #d5f4e6;"><strong>35</strong> (TP)</td>
+                    <td style="background-color: #fadbd8;"><strong>5</strong> (FN)</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <th>Actual Negative</th>
+                    <td style="background-color: #fadbd8;"><strong>10</strong> (FP)</td>
+                    <td style="background-color: #d5f4e6;"><strong>50</strong> (TN)</td>
+                    <td>60</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>45</td>
+                    <td>55</td>
+                    <td>100</td>
+                </tr>
+            </table>
+
+            <p><strong>(ii) Performance Metrics:</strong> <strong>[6 marks]</strong></p>
+
+            <p><strong>Accuracy:</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Accuracy} = \frac{TP + TN}{\text{Total}} = \frac{35 + 50}{100} = \frac{85}{100} = 0.85 = 85\%\]</p>
+            </div>
+
+            <p><strong>Precision:</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Precision} = \frac{TP}{TP + FP} = \frac{35}{35 + 10} = \frac{35}{45} \approx 0.778 = 77.8\%\]</p>
+            </div>
+            <p>When the classifier predicts positive, it's correct 77.8% of the time.</p>
+
+            <p><strong>Recall (Sensitivity):</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Recall} = \frac{TP}{TP + FN} = \frac{35}{35 + 5} = \frac{35}{40} = 0.875 = 87.5\%\]</p>
+            </div>
+            <p>The classifier correctly identifies 87.5% of all actual positive cases.</p>
+
+            <p><strong>F1-Score:</strong> <strong>[1.5 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]</p>
+                <p>\[= 2 \times \frac{0.778 \times 0.875}{0.778 + 0.875} = 2 \times \frac{0.681}{1.653} \approx 0.824 = 82.4\%\]</p>
+            </div>
+
+            <p><strong>(iii) Performance Analysis:</strong> <strong>[2 marks]</strong></p>
+            <p><strong>The classifier is better at identifying positives.</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Evidence:</strong> <strong>[1 mark]</strong></p>
+            <ul>
+                <li><strong>For positives:</strong> Recall = 87.5% (catches 35 out of 40 positives, only misses 5)</li>
+                <li><strong>For negatives:</strong> Specificity = TN/(TN+FP) = 50/60 = 83.3% (correctly identifies 50 out of 60 negatives)</li>
+                <li>The recall for positives (87.5%) is higher than the specificity for negatives (83.3%)</li>
+                <li>The classifier has lower false negative rate (5/40 = 12.5%) compared to false positive rate (10/60 = 16.7%)</li>
+            </ul>
+
+            <div class="note">
+                <strong>Summary:</strong>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Interpretation</th>
+                    </tr>
+                    <tr>
+                        <td>Accuracy</td>
+                        <td>85%</td>
+                        <td>Overall correct predictions</td>
+                    </tr>
+                    <tr>
+                        <td>Precision</td>
+                        <td>77.8%</td>
+                        <td>Reliability of positive predictions</td>
+                    </tr>
+                    <tr>
+                        <td>Recall</td>
+                        <td>87.5%</td>
+                        <td>Coverage of actual positives</td>
+                    </tr>
+                    <tr>
+                        <td>F1-Score</td>
+                        <td>82.4%</td>
+                        <td>Harmonic mean of precision & recall</td>
+                    </tr>
+                </table>
+                <p>This is a good classifier with high recall (few false negatives) but moderate precision (some false positives).</p>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Classification Question Solutions</strong></p>
+            <p>Focus on understanding distance calculations, entropy/information gain, and evaluation metrics!</p>
+        </div>
+    </div>
+</body>
+</html>

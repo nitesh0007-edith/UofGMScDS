@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS Week 5: Research Methods & Data Collection - Interactive Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 3px solid #667eea;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 10px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .nav-tab:hover {
+            background: #d0d0d0;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-top: 3px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 20px 0 10px 0;
+        }
+
+        .section h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 15px 0 10px 0;
+        }
+
+        .info-box {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid;
+        }
+
+        .info-box.definition {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+        }
+
+        .info-box.example {
+            background: #f3e5f5;
+            border-left-color: #9c27b0;
+        }
+
+        .info-box.important {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .info-box.note {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .accordion {
+            margin: 15px 0;
+        }
+
+        .accordion-item {
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .accordion-header.active::after {
+            content: '−';
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #f9f9f9;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .accordion-body {
+            padding: 20px;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        table tr:hover {
+            background: #f0f0f0;
+        }
+
+        .quiz-box {
+            background: #fff9c4;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #fbc02d;
+            margin: 20px 0;
+        }
+
+        .quiz-box h3 {
+            color: #f57f17;
+            margin-bottom: 15px;
+        }
+
+        .quiz-answer {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .show-answer-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .show-answer-btn:hover {
+            background: #45a049;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .comparison-card.quant {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #2196F3;
+        }
+
+        .comparison-card.qual {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border: 2px solid #9c27b0;
+        }
+
+        .comparison-card h4 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .five-ps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .p-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .p-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .p-card.performance { border-top-color: #f44336; }
+        .p-card.preference { border-top-color: #2196F3; }
+        .p-card.perception { border-top-color: #4caf50; }
+        .p-card.process { border-top-color: #ff9800; }
+        .p-card.product { border-top-color: #9c27b0; }
+
+        .p-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .code-flow {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-flow h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #764ba2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tab {
+                font-size: 0.9em;
+                padding: 12px 8px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Week 5: Research Methods & Data Collection</h1>
+            <p>Qualitative and Quantitative Research Methods</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="openTab(event, 'overview')">Overview</button>
+            <button class="nav-tab" onclick="openTab(event, 'quantitative')">Quantitative</button>
+            <button class="nav-tab" onclick="openTab(event, 'qualitative')">Qualitative</button>
+            <button class="nav-tab" onclick="openTab(event, 'comparison')">Comparison</button>
+            <button class="nav-tab" onclick="openTab(event, 'five-ps')">The 5 Ps</button>
+            <button class="nav-tab" onclick="openTab(event, 'data-collection')">Data Collection</button>
+            <button class="nav-tab" onclick="openTab(event, 'coding')">Coding Analysis</button>
+            <button class="nav-tab" onclick="openTab(event, 'mixed-methods')">Mixed Methods</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="section">
+                <h2>Week 5 Overview</h2>
+                <p>This week covers fundamental research methods used in computer science, particularly in areas like Human-Computer Interaction (HCI), Software Engineering, and CS Education. You'll learn about both quantitative and qualitative approaches to research, data collection methods, and analysis techniques.</p>
+
+                <div class="info-box important">
+                    <strong>Key Learning Objectives:</strong>
+                    <ul>
+                        <li>Understand the differences between quantitative and qualitative research methods</li>
+                        <li>Learn the "5 Ps" framework for data collection</li>
+                        <li>Master various data collection methods (surveys, interviews, observations, etc.)</li>
+                        <li>Apply coding techniques to analyze qualitative data (Open, Axial, Selective coding)</li>
+                        <li>Understand mixed-methods research approaches</li>
+                    </ul>
+                </div>
+
+                <h3>Session Topics</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Video Summaries
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Sample Sizes & Statistical Powers</h4>
+                                <ul>
+                                    <li>It's not feasible to evaluate an entire population in an experiment</li>
+                                    <li>Instead, we observe a subset of a population and draw conclusions for a wider population</li>
+                                    <li><span class="highlight">Important:</span> Sample must have the characteristics of the wider population being studied</li>
+                                    <li>Power analysis when possible</li>
+                                    <li>Consider "local standards" in your domain (e.g., HCI) - aim to do what peers are doing</li>
+                                </ul>
+
+                                <h4>Data Analysis Video</h4>
+                                <ul>
+                                    <li><strong>Data Collection:</strong> How to go from "variable to measure" to "collecting data to investigate the variable"</li>
+                                    <li>Ensure collected data sufficiently answers hypothesis and can be easily analyzed</li>
+                                    <li><strong>Statistical Analysis:</strong> Uses null-hypothesis significance testing and various statistical measures</li>
+                                    <li><strong>Ethics:</strong> Covers ethical frameworks for experimental work, especially with human participants</li>
+                                    <li>Glasgow's ethical process and key ethical points to adhere to during experimental work</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Why Study Research Methods?
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Research methods are essential for conducting rigorous scientific studies in computer science. Whether you're:</p>
+                                <ul>
+                                    <li><strong>Evaluating a new system:</strong> How do you measure if your new UI is better?</li>
+                                    <li><strong>Understanding user behavior:</strong> What methods reveal how users interact with technology?</li>
+                                    <li><strong>Testing hypotheses:</strong> How do you prove your algorithmic improvement actually works?</li>
+                                    <li><strong>Writing your dissertation:</strong> What methodologies should you employ for your research?</li>
+                                </ul>
+                                <p>Understanding both quantitative and qualitative methods gives you a complete toolkit for answering research questions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantitative Research Tab -->
+        <div id="quantitative" class="tab-content">
+            <div class="section">
+                <h2>Quantitative Research Methods</h2>
+
+                <div class="info-box definition">
+                    <strong>Definition:</strong>
+                    A method of research that relies on measuring variables using a numerical system, analyzing these measurements using any of a variety of statistical models, and reporting relationships and associations among the studied variables.
+                </div>
+
+                <div class="info-box note">
+                    <strong>Key Feature:</strong>
+                    Quantitative research data is often standardized and can be easily used to generalize findings.
+                </div>
+
+                <h3>12 Characteristics of Quantitative Research</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            1. Numerical Data
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Quantitative research focuses on quantifiable data, which can be measured and expressed numerically.</p>
+                                <div class="info-box example">
+                                    <strong>Examples:</strong>
+                                    <ul>
+                                        <li>Survey results</li>
+                                        <li>Statistical data</li>
+                                        <li>Experimental measurements</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            2. Objectivity and Rigor
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>The research aims to remain objective and free from researcher bias. This is achieved through standardized methods, clear protocols, and statistical tools.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            3. Structured Methodology
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Quantitative research follows a structured process, including:</p>
+                                <ol>
+                                    <li>Formulation of hypotheses</li>
+                                    <li>Data collection</li>
+                                    <li>Analysis</li>
+                                    <li>Conclusion</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            4. Use of Statistical Analysis
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Data is analyzed using statistical techniques to identify patterns, relationships, and causal effects.</p>
+                                <p>Commonly applied: <strong>Descriptive and inferential statistics</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            5. Large Sample Sizes
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Quantitative studies often involve larger sample sizes to ensure the reliability and generalizability of the results.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            6. Hypothesis Testing
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Researchers often begin with a specific hypothesis or research question and test it using empirical data.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            7. Generalizability
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>The goal is to produce results that can be generalized to a larger population, provided the sample is representative.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            8. Controlled Variables
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Experiments and studies are designed to control variables and minimize confounding factors to isolate the effects of the variable being studied.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            9. Reproducibility
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>The methods are documented in detail, allowing other researchers to replicate the study to verify results.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            10. Deductive Approach
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Quantitative research often uses a deductive reasoning process, moving from theory or hypothesis to data collection and analysis to confirm or refute the theory.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            11. Focus on Relationships and Patterns
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Quantitative research aims to identify trends, relationships, or causation between variables.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            12. Use of Numerical Tools and Instruments
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>It employs tools like surveys, questionnaires, structured interviews, and experiments to collect data systematically.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qualitative Research Tab -->
+        <div id="qualitative" class="tab-content">
+            <div class="section">
+                <h2>Qualitative Research Methods</h2>
+
+                <div class="info-box definition">
+                    <strong>What is Qualitative Research?</strong>
+                    A method of inquiry focused on understanding human behaviour and the reasons that govern such behaviour. It emphasizes subjective assessments and the exploration of phenomena in their natural settings through methods like interviews, observations, and analysis of texts and artifacts.
+                </div>
+
+                <div class="info-box note">
+                    <strong>Historical Context:</strong>
+                    Early development of qualitative research is often associated with the field of sociology and anthropology.
+                </div>
+
+                <h3>Qualitative Research in Computer Science</h3>
+                <p>Although most of scientific research is quantitative, qualitative research methods are common in some areas, such as: <strong>HCI, CS Education, and Software Engineering</strong>.</p>
+
+                <div class="info-box example">
+                    <strong>Examples:</strong>
+                    <ul>
+                        <li><strong>Software Engineering:</strong> Investigating software adoption or user behaviour towards a new release</li>
+                        <li><strong>HCI:</strong> How do users perceive and experience the integration of artificial intelligence in everyday personal technology devices?</li>
+                    </ul>
+                </div>
+
+                <div class="info-box important">
+                    <strong>Mixed Methods:</strong>
+                    Combining quantitative and qualitative methods are referred to as "mixed methods" - can provide a comprehensive understanding of a research problem.
+                </div>
+
+                <h3>Qualitative Research Characteristics</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            1. Data Collection
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Qualitative research often involves collecting data through:</p>
+                                <ul>
+                                    <li>Direct observation</li>
+                                    <li>Interviews</li>
+                                    <li>Questionnaires</li>
+                                    <li>Focus groups</li>
+                                    <li>Participants' diaries</li>
+                                    <li>Other methods that allow researchers to access the perspectives and experiences of their subjects</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            2. Subjective Perspective
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>This approach often seeks to understand how individuals construct their own meaning and experience of the world. It acknowledges that the researcher's own background and perspective can influence the interpretation of the data.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            3. Exploratory Nature
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>It is typically exploratory and is used to gain an understanding of underlying reasons, opinions, and motivations. It provides insights into the problem or helps to develop ideas or hypotheses for potential quantitative research.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            4. Contextual Detail
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Qualitative research is good at providing rich, detailed descriptions that bring out the nuances of complex situations or phenomena.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            5. Analysis
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Data analysis in qualitative research is often more interpretative, subjective, and involves identifying patterns and themes in data.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            6. Flexibility
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Research design in qualitative research is often less structured than in quantitative research, and can evolve as the research progresses.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            7. Inductive Approach
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>In qualitative research, the focus is on exploring and discovering patterns in data, then building theory from the ground up. This is the opposite of the deductive approach used in quantitative research.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            8. Small Sample Sizes
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Qualitative research often involves smaller sample sizes compared to quantitative research. The emphasis is on depth rather than breadth, providing rich and detailed insights from fewer participants.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            9. Natural Settings
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>Qualitative research often takes place in natural settings, where researchers observe and interact with participants in their everyday environments rather than in controlled laboratory conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            10. Researcher as Instrument
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p>The researcher is often the primary instrument for data collection and analysis. Their observations, interpretations, and interactions with participants are central to the research process.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Tab -->
+        <div id="comparison" class="tab-content">
+            <div class="section">
+                <h2>Quantitative vs Qualitative: Detailed Comparison</h2>
+
+                <div class="info-box note">
+                    <strong>Important Note:</strong>
+                    Both approaches are valuable and often complement each other. The choice depends on your research question, objectives, and the nature of the phenomenon you're studying.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Quantitative Research</th>
+                            <th>Qualitative Research</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Purpose</strong></td>
+                            <td>Test theories, examine relationships between variables, make predictions</td>
+                            <td>Explore phenomena, understand experiences, develop theories</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Type</strong></td>
+                            <td>Numerical, standardized</td>
+                            <td>Textual, visual, audio - rich descriptions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sample Size</strong></td>
+                            <td>Large samples for statistical power</td>
+                            <td>Smaller, purposeful samples for depth</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Collection</strong></td>
+                            <td>Structured instruments (surveys, experiments, tests)</td>
+                            <td>Flexible methods (interviews, observations, documents)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Analysis</strong></td>
+                            <td>Statistical analysis, mathematical models</td>
+                            <td>Thematic analysis, coding, pattern identification</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approach</strong></td>
+                            <td>Deductive - starts with theory/hypothesis</td>
+                            <td>Inductive - builds theory from data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Objectivity</strong></td>
+                            <td>Emphasizes objectivity and removing bias</td>
+                            <td>Acknowledges researcher's role and subjectivity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Generalizability</strong></td>
+                            <td>High - results can generalize to population</td>
+                            <td>Lower - focuses on transferability to similar contexts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Research Questions</strong></td>
+                            <td>"How many?", "How much?", "What is the relationship?"</td>
+                            <td>"Why?", "How?", "What does it mean?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexibility</strong></td>
+                            <td>Structured, predetermined design</td>
+                            <td>Flexible, emergent design that can evolve</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reporting Style</strong></td>
+                            <td>Numbers, statistics, tables, graphs</td>
+                            <td>Narratives, quotes, themes, descriptions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Time Investment</strong></td>
+                            <td>Can collect data quickly from many participants</td>
+                            <td>Time-intensive data collection and analysis</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Visual Comparison</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-card quant">
+                        <h4>Quantitative Strengths</h4>
+                        <ul>
+                            <li>Objective and reliable measurements</li>
+                            <li>Can study large populations</li>
+                            <li>Results are generalizable</li>
+                            <li>Replicable studies</li>
+                            <li>Clear statistical analysis</li>
+                            <li>Tests specific hypotheses</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card qual">
+                        <h4>Qualitative Strengths</h4>
+                        <ul>
+                            <li>Rich, detailed insights</li>
+                            <li>Explores complex phenomena</li>
+                            <li>Flexible and adaptable</li>
+                            <li>Captures context and meaning</li>
+                            <li>Understands "why" and "how"</li>
+                            <li>Discovers unexpected findings</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quiz-box">
+                    <h3>Quick Check: Which Method?</h3>
+                    <p><strong>Question:</strong> You want to understand why students prefer one programming language over another for their projects. Which method would be most appropriate?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</button>
+                    <div class="quiz-answer">
+                        <p><strong>Answer:</strong> Qualitative research would be most appropriate here. The research question asks "why" which requires understanding students' reasoning, experiences, and motivations. Qualitative methods like interviews or focus groups would allow you to explore the depth of their preferences and the reasons behind them.</p>
+                        <p>A quantitative approach could tell you <em>how many</em> students prefer each language, but wouldn't explain the <em>why</em> behind their preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The 5 Ps Tab -->
+        <div id="five-ps" class="tab-content">
+            <div class="section">
+                <h2>The 5 Ps Framework</h2>
+
+                <div class="info-box definition">
+                    <strong>What are the 5 Ps?</strong>
+                    The 5 Ps is a framework for understanding what types of data can be collected in research. It helps researchers think systematically about different aspects they can measure or observe.
+                </div>
+
+                <div class="five-ps-grid">
+                    <div class="p-card performance">
+                        <h4>Performance</h4>
+                        <p><strong>What it measures:</strong> How well users complete tasks or achieve goals.</p>
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>Task completion time</li>
+                            <li>Error rates</li>
+                            <li>Accuracy</li>
+                            <li>Success rates</li>
+                            <li>Learning curves</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-card preference">
+                        <h4>Preference</h4>
+                        <p><strong>What it measures:</strong> What users like or choose when given options.</p>
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>User rankings</li>
+                            <li>Choice between options</li>
+                            <li>Favorite features</li>
+                            <li>Preferred interfaces</li>
+                            <li>Design choices</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-card perception">
+                        <h4>Perception</h4>
+                        <p><strong>What it measures:</strong> How users feel about or experience the system.</p>
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>Satisfaction ratings</li>
+                            <li>Ease of use</li>
+                            <li>Enjoyment</li>
+                            <li>Frustration levels</li>
+                            <li>Confidence</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-card process">
+                        <h4>Process</h4>
+                        <p><strong>What it measures:</strong> How users interact with the system and their behavior.</p>
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>Click patterns</li>
+                            <li>Navigation paths</li>
+                            <li>Interaction sequences</li>
+                            <li>Eye tracking data</li>
+                            <li>Usage patterns</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-card product">
+                        <h4>Product</h4>
+                        <p><strong>What it measures:</strong> What users create or produce using the system.</p>
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>Documents created</li>
+                            <li>Code written</li>
+                            <li>Designs produced</li>
+                            <li>Quality of output</li>
+                            <li>Artifacts generated</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box important">
+                    <strong>Using the 5 Ps in Your Research:</strong>
+                    <p>When designing a study, consider which of the 5 Ps are most relevant to your research question. You might collect data on one, several, or all five Ps depending on your objectives.</p>
+                    <ul>
+                        <li><strong>For usability studies:</strong> Performance, Perception, and Process are often key</li>
+                        <li><strong>For comparative studies:</strong> Preference becomes crucial</li>
+                        <li><strong>For productivity tools:</strong> Product and Performance are important</li>
+                    </ul>
+                </div>
+
+                <h3>Example Research Study Using the 5 Ps</h3>
+                <div class="info-box example">
+                    <strong>Study: Evaluating a New Code Editor for Students</strong>
+                    <ul>
+                        <li><strong>Performance:</strong> Measure how quickly students can complete coding tasks, number of syntax errors</li>
+                        <li><strong>Preference:</strong> Ask students which editor they prefer (new vs. old) and why</li>
+                        <li><strong>Perception:</strong> Survey students about ease of use, satisfaction, frustration levels</li>
+                        <li><strong>Process:</strong> Record which features students use, how they navigate the interface, common workflows</li>
+                        <li><strong>Product:</strong> Analyze the quality and correctness of the code students produce</li>
+                    </ul>
+                </div>
+
+                <div class="quiz-box">
+                    <h3>Practice: Identify the P</h3>
+                    <p><strong>Question:</strong> You're studying a new email application and you record which folders users create and how they organize their messages. Which P is this?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</button>
+                    <div class="quiz-answer">
+                        <p><strong>Answer:</strong> This is <strong>Product</strong> - the folders and organizational structure are artifacts that users create/produce using the email application.</p>
+                        <p>Note: If you were tracking <em>how</em> they create folders (the steps they take), that would be Process. If you were measuring <em>how quickly</em> they organize emails, that would be Performance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Collection Tab -->
+        <div id="data-collection" class="tab-content">
+            <div class="section">
+                <h2>Data Collection Methods</h2>
+
+                <div class="info-box note">
+                    <strong>Key Terminology:</strong>
+                    Understanding the language of data collection is essential for designing and conducting research.
+                </div>
+
+                <h3>Important Terminology</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Quantitative vs Qualitative Data
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Quantitative Data:</strong> Numerical data that can be measured and analyzed statistically</p>
+                                <ul>
+                                    <li>Numbers, counts, measurements</li>
+                                    <li>Example: Time taken to complete a task (45 seconds), satisfaction score (7/10)</li>
+                                </ul>
+                                <p><strong>Qualitative Data:</strong> Non-numerical data that describes qualities or characteristics</p>
+                                <ul>
+                                    <li>Words, images, observations, descriptions</li>
+                                    <li>Example: User interview transcripts, observational notes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Open vs Closed Questions
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Closed Questions:</strong> Have a fixed set of possible responses</p>
+                                <ul>
+                                    <li>Yes/No questions</li>
+                                    <li>Multiple choice</li>
+                                    <li>Rating scales (1-5)</li>
+                                    <li>Example: "On a scale of 1-10, how satisfied are you?"</li>
+                                    <li><strong>Advantage:</strong> Easy to analyze, good for quantitative data</li>
+                                </ul>
+                                <p><strong>Open Questions:</strong> Allow free-form responses</p>
+                                <ul>
+                                    <li>No predetermined answers</li>
+                                    <li>Example: "What did you think about the interface?"</li>
+                                    <li><strong>Advantage:</strong> Rich insights, discover unexpected information</li>
+                                    <li><strong>Challenge:</strong> Time-consuming to analyze</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Six Main Data Collection Methods</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            1. Questionnaires (Surveys)
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> A set of written questions that participants answer</p>
+
+                                <p><strong>Best for:</strong></p>
+                                <ul>
+                                    <li>Gathering data from large numbers of people</li>
+                                    <li>Collecting standardized information</li>
+                                    <li>Quantitative data collection</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Can reach many participants quickly</li>
+                                    <li>Cost-effective</li>
+                                    <li>Standardized responses easy to analyze</li>
+                                    <li>Participants can complete at their convenience</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>No opportunity to ask follow-up questions</li>
+                                    <li>Risk of misunderstanding questions</li>
+                                    <li>May have low response rates</li>
+                                    <li>Limited depth of responses</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Surveying 500 students about their study habits and tool preferences using Google Forms with Likert scale questions and multiple choice.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            2. Interviews
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> One-on-one conversations with participants to gather in-depth information</p>
+
+                                <p><strong>Types:</strong></p>
+                                <ul>
+                                    <li><strong>Structured:</strong> Fixed questions, same order for all participants</li>
+                                    <li><strong>Semi-structured:</strong> Key questions prepared, but flexible to explore interesting topics</li>
+                                    <li><strong>Unstructured:</strong> Informal, conversational approach</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Rich, detailed data</li>
+                                    <li>Can ask follow-up questions</li>
+                                    <li>Can clarify misunderstandings</li>
+                                    <li>Observe non-verbal cues</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>Time-consuming to conduct and analyze</li>
+                                    <li>Requires skilled interviewer</li>
+                                    <li>Difficult to generalize findings</li>
+                                    <li>Potential for interviewer bias</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Conducting 15 semi-structured interviews with developers to understand their experiences with a new IDE feature.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            3. Task Sheets / Think-Aloud Protocol
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> Participants complete specific tasks while verbalizing their thoughts</p>
+
+                                <p><strong>How it works:</strong></p>
+                                <ul>
+                                    <li>Give participants specific tasks to complete</li>
+                                    <li>Ask them to "think aloud" - say what they're thinking</li>
+                                    <li>Record their actions and verbalizations</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Reveals user's thought process</li>
+                                    <li>Identifies usability issues in real-time</li>
+                                    <li>Combines performance data with qualitative insights</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>Thinking aloud can affect task performance</li>
+                                    <li>Not all thoughts are verbalized</li>
+                                    <li>Some users find it unnatural</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Usability testing where users think aloud while trying to book a flight on a new travel website.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            4. Observation
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> Watching and recording user behavior in natural or controlled settings</p>
+
+                                <p><strong>Types:</strong></p>
+                                <ul>
+                                    <li><strong>Direct observation:</strong> Researcher is present</li>
+                                    <li><strong>Indirect observation:</strong> Video recording for later analysis</li>
+                                    <li><strong>Participant observation:</strong> Researcher participates in the activity</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Captures actual behavior, not reported behavior</li>
+                                    <li>Provides contextual understanding</li>
+                                    <li>Can reveal unconscious actions</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>Observer's presence may influence behavior (Hawthorne effect)</li>
+                                    <li>Time and resource intensive</li>
+                                    <li>Difficult to record everything</li>
+                                    <li>Interpretation can be subjective</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Observing how students collaborate in a computer lab to understand their natural workflows and tool usage.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            5. Automatic Data Collection
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> Using software or sensors to automatically record user behavior and system events</p>
+
+                                <p><strong>Examples:</strong></p>
+                                <ul>
+                                    <li>Web analytics (Google Analytics)</li>
+                                    <li>Application logging</li>
+                                    <li>Click tracking and heatmaps</li>
+                                    <li>Eye tracking</li>
+                                    <li>Biometric sensors (heart rate, skin conductance)</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Objective, precise measurements</li>
+                                    <li>Can collect massive amounts of data</li>
+                                    <li>No observer bias</li>
+                                    <li>Captures data unobtrusively</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>Privacy and ethical concerns</li>
+                                    <li>Doesn't capture "why" - only "what"</li>
+                                    <li>Requires technical setup</li>
+                                    <li>Can generate overwhelming amounts of data</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Using eye tracking to see where users look on a webpage, combined with click tracking to understand navigation patterns.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            6. Artefacts / Document Analysis
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>What it is:</strong> Analyzing existing documents, records, or products created by users</p>
+
+                                <p><strong>Examples:</strong></p>
+                                <ul>
+                                    <li>Code repositories (GitHub commits, pull requests)</li>
+                                    <li>Design documents</li>
+                                    <li>Bug reports and issue trackers</li>
+                                    <li>Forum posts and discussions</li>
+                                    <li>Student assignments and projects</li>
+                                    <li>Social media content</li>
+                                </ul>
+
+                                <p><strong>Advantages:</strong></p>
+                                <ul>
+                                    <li>Non-intrusive - data already exists</li>
+                                    <li>Can analyze historical data</li>
+                                    <li>Cost-effective</li>
+                                    <li>Reflects authentic behavior</li>
+                                </ul>
+
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul>
+                                    <li>Limited to available documents</li>
+                                    <li>May lack context</li>
+                                    <li>Quality and completeness vary</li>
+                                    <li>Potential privacy/ethical issues</li>
+                                </ul>
+
+                                <div class="info-box example">
+                                    <strong>Example Use Case:</strong>
+                                    Analyzing StackOverflow posts to understand common programming challenges students face with a particular library.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box important">
+                    <strong>Combining Methods:</strong>
+                    <p>Often the best research uses multiple data collection methods (triangulation). For example:</p>
+                    <ul>
+                        <li>Questionnaire to identify trends + Interviews to understand why</li>
+                        <li>Automatic data collection for behavior + Survey for perceptions</li>
+                        <li>Observation during tasks + Think-aloud for insights into thought process</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coding Analysis Tab -->
+        <div id="coding" class="tab-content">
+            <div class="section">
+                <h2>Analyzing Qualitative Data: Coding</h2>
+
+                <div class="info-box definition">
+                    <strong>What is Coding?</strong>
+                    Coding is the process of organizing and making sense of qualitative data (like interview transcripts, observations, open-ended survey responses) by identifying patterns, themes, and categories.
+                </div>
+
+                <p>Qualitative data analysis often involves coding, a systematic approach to categorizing and interpreting textual data. The most common coding approach follows three stages:</p>
+
+                <div class="code-flow">
+                    <h4>The Three-Stage Coding Process</h4>
+
+                    <div class="flow-step">
+                        <h4 style="color: #f44336; margin-bottom: 10px;">Stage 1: Open Coding</h4>
+                        <p><strong>What it is:</strong> Breaking down data into discrete parts and labeling them</p>
+                        <p><strong>Goal:</strong> Identify concepts and categories from the data</p>
+                        <p><strong>Process:</strong></p>
+                        <ul>
+                            <li>Read through your data (transcripts, notes, etc.)</li>
+                            <li>Assign labels (codes) to meaningful chunks of text</li>
+                            <li>Stay close to the data - use participants' own words when possible</li>
+                            <li>Ask: "What is this about?" "What is happening here?"</li>
+                        </ul>
+                        <div class="info-box example">
+                            <strong>Example:</strong>
+                            <p><em>Interview quote:</em> "I find the IDE really slow when I'm trying to autocomplete. It freezes for a few seconds and I lose my train of thought."</p>
+                            <p><strong>Open codes:</strong> "performance issues", "autocomplete lag", "interrupts workflow", "cognitive disruption"</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <h4 style="color: #2196F3; margin-bottom: 10px;">Stage 2: Axial Coding</h4>
+                        <p><strong>What it is:</strong> Identifying relationships between the categories from open coding</p>
+                        <p><strong>Goal:</strong> Connect categories and subcategories, understand how they relate</p>
+                        <p><strong>Process:</strong></p>
+                        <ul>
+                            <li>Look for connections between open codes</li>
+                            <li>Group related codes together</li>
+                            <li>Identify main categories and subcategories</li>
+                            <li>Ask: "How are these codes related?" "What patterns emerge?"</li>
+                        </ul>
+                        <div class="info-box example">
+                            <strong>Example:</strong>
+                            <p>Grouping codes: "performance issues", "autocomplete lag", "slow compilation", "freezing" → Main category: <strong>"System Performance Problems"</strong></p>
+                            <p>"interrupts workflow", "cognitive disruption", "loses focus" → Main category: <strong>"Impact on User Experience"</strong></p>
+                            <p>Relationship: System performance problems CAUSE impact on user experience</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">Stage 3: Selective Coding</h4>
+                        <p><strong>What it is:</strong> Integrating and refining categories to form a coherent theory or narrative</p>
+                        <p><strong>Goal:</strong> Identify the core category that ties everything together</p>
+                        <p><strong>Process:</strong></p>
+                        <ul>
+                            <li>Identify the central phenomenon or core category</li>
+                            <li>Relate all major categories to the core category</li>
+                            <li>Validate relationships against the data</li>
+                            <li>Fill in any gaps in categories</li>
+                            <li>Ask: "What is the main story here?" "What is the overarching theme?"</li>
+                        </ul>
+                        <div class="info-box example">
+                            <strong>Example:</strong>
+                            <p><strong>Core category:</strong> "Developer Productivity Barriers in IDE Usage"</p>
+                            <p>This core category encompasses:
+                                <ul>
+                                    <li>System Performance Problems (cause)</li>
+                                    <li>Impact on User Experience (consequence)</li>
+                                    <li>Workaround Strategies (user response)</li>
+                                    <li>Tool Abandonment (final outcome)</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Best Practices for Coding</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Tips for Effective Coding
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li><strong>Start broad, then refine:</strong> It's okay if your initial codes are messy - you'll refine them</li>
+                                    <li><strong>Use participants' language:</strong> "In vivo codes" (using participants' actual words) can be powerful</li>
+                                    <li><strong>Be consistent:</strong> Apply codes consistently across your data</li>
+                                    <li><strong>Keep a codebook:</strong> Document what each code means</li>
+                                    <li><strong>Iterate:</strong> You'll likely go back and re-code as your understanding develops</li>
+                                    <li><strong>Check reliability:</strong> Have another researcher code some data to check agreement</li>
+                                    <li><strong>Use software:</strong> Tools like NVivo, Atlas.ti, or even Excel can help manage codes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Common Challenges
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li><strong>Too many codes:</strong> Start with too many rather than too few, then consolidate</li>
+                                    <li><strong>Overlapping codes:</strong> Normal in the early stages - merge or differentiate as you progress</li>
+                                    <li><strong>Bias:</strong> Be aware of your own assumptions affecting how you code</li>
+                                    <li><strong>Time consuming:</strong> Coding takes time - plan accordingly</li>
+                                    <li><strong>Knowing when to stop:</strong> Stop when you reach "saturation" - no new codes emerge</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-box">
+                    <h3>Practice Scenario</h3>
+                    <p><strong>Scenario:</strong> You're analyzing interview data about students' experiences with online learning. One student says: "The recorded lectures are helpful because I can watch them at my own pace, but I really miss the interaction with classmates."</p>
+                    <p><strong>Question:</strong> What are some potential open codes for this quote?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</button>
+                    <div class="quiz-answer">
+                        <p><strong>Possible open codes:</strong></p>
+                        <ul>
+                            <li>"flexibility benefits" or "self-paced learning"</li>
+                            <li>"recorded lecture advantages"</li>
+                            <li>"missing social interaction"</li>
+                            <li>"peer interaction valued"</li>
+                            <li>"trade-offs in online learning"</li>
+                        </ul>
+                        <p>In axial coding, you might group "flexibility benefits" and "recorded lecture advantages" under a category like <strong>"Asynchronous Learning Benefits"</strong>, while "missing social interaction" and "peer interaction valued" might form <strong>"Social Learning Challenges"</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mixed Methods Tab -->
+        <div id="mixed-methods" class="tab-content">
+            <div class="section">
+                <h2>Mixed Methods Research</h2>
+
+                <div class="info-box definition">
+                    <strong>What is Mixed Methods Research?</strong>
+                    Mixed methods research combines both quantitative and qualitative approaches in a single study to provide a more comprehensive understanding of a research problem.
+                </div>
+
+                <div class="info-box note">
+                    <strong>Why Use Mixed Methods?</strong>
+                    <p>The combination allows you to leverage the strengths of both approaches:</p>
+                    <ul>
+                        <li>Quantitative methods provide breadth, generalizability, and statistical rigor</li>
+                        <li>Qualitative methods provide depth, context, and understanding of "why"</li>
+                        <li>Together, they can validate findings and provide richer insights</li>
+                    </ul>
+                </div>
+
+                <h3>Common Mixed Methods Designs</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            1. Explanatory Sequential Design
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Sequence:</strong> QUANTITATIVE → qualitative</p>
+                                <p><strong>How it works:</strong></p>
+                                <ol>
+                                    <li>Collect and analyze quantitative data first</li>
+                                    <li>Use quantitative results to inform qualitative data collection</li>
+                                    <li>Collect qualitative data to help explain quantitative findings</li>
+                                </ol>
+                                <div class="info-box example">
+                                    <strong>Example:</strong>
+                                    <p>First, survey 200 developers about their IDE preferences (quantitative). The survey shows 70% prefer IDE A over IDE B, but you don't know why. Then, conduct interviews with 15 developers to understand the reasons behind their preferences (qualitative).</p>
+                                </div>
+                                <p><strong>Best for:</strong> When you want to explain or explore quantitative results in more depth</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            2. Exploratory Sequential Design
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Sequence:</strong> QUALITATIVE → quantitative</p>
+                                <p><strong>How it works:</strong></p>
+                                <ol>
+                                    <li>Collect and analyze qualitative data first to explore the phenomenon</li>
+                                    <li>Use qualitative findings to develop instruments or hypotheses</li>
+                                    <li>Test these with a larger sample using quantitative methods</li>
+                                </ol>
+                                <div class="info-box example">
+                                    <strong>Example:</strong>
+                                    <p>First, interview 10 students to understand their challenges with learning programming (qualitative). Based on these interviews, identify key themes (e.g., syntax confusion, lack of debugging skills). Then, create a survey based on these themes and distribute it to 500 students to see how widespread these issues are (quantitative).</p>
+                                </div>
+                                <p><strong>Best for:</strong> When little is known about the phenomenon and you need to develop instruments or test emerging theories</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            3. Convergent Parallel Design
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Sequence:</strong> QUANTITATIVE + QUALITATIVE (simultaneously)</p>
+                                <p><strong>How it works:</strong></p>
+                                <ol>
+                                    <li>Collect quantitative and qualitative data at the same time</li>
+                                    <li>Analyze both datasets separately</li>
+                                    <li>Compare and integrate findings to see if they converge or diverge</li>
+                                </ol>
+                                <div class="info-box example">
+                                    <strong>Example:</strong>
+                                    <p>While conducting a usability study, simultaneously collect: (1) Task completion times and error rates (quantitative), and (2) Think-aloud protocol data and observations (qualitative). Compare both to get a complete picture of usability.</p>
+                                </div>
+                                <p><strong>Best for:</strong> When you want to validate findings through triangulation or get different perspectives on the same issue</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            4. Embedded Design
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Structure:</strong> One method is primary, the other is embedded within it</p>
+                                <p><strong>How it works:</strong></p>
+                                <ul>
+                                    <li>One method (quantitative or qualitative) plays a dominant role</li>
+                                    <li>The other method supports or enhances the primary method</li>
+                                    <li>The secondary method addresses a different question or provides supporting evidence</li>
+                                </ul>
+                                <div class="info-box example">
+                                    <strong>Example:</strong>
+                                    <p>Primary: Large-scale experiment testing the effectiveness of a new teaching method (quantitative). Embedded: Brief interviews with a subset of participants to understand their experience and any implementation issues (qualitative support).</p>
+                                </div>
+                                <p><strong>Best for:</strong> When one approach alone is insufficient, but you want to maintain a clear primary focus</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Advantages of Mixed Methods</h3>
+                <div class="info-box important">
+                    <strong>Strengths of the Mixed Methods Approach:</strong>
+                    <ul>
+                        <li><strong>Triangulation:</strong> Validate findings by approaching the question from multiple angles</li>
+                        <li><strong>Complementarity:</strong> Get both breadth and depth of understanding</li>
+                        <li><strong>Development:</strong> Use one method to inform and improve the other</li>
+                        <li><strong>Expansion:</strong> Extend the scope and breadth of your research</li>
+                        <li><strong>Corroboration:</strong> Strengthen conclusions when different methods converge on the same findings</li>
+                    </ul>
+                </div>
+
+                <h3>Challenges of Mixed Methods</h3>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Common Challenges and Solutions
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Challenge 1: Time and Resources</strong></p>
+                                <ul>
+                                    <li>Mixed methods requires more time, expertise, and resources</li>
+                                    <li>Solution: Plan carefully, consider embedded designs, or work in teams</li>
+                                </ul>
+
+                                <p><strong>Challenge 2: Integration</strong></p>
+                                <ul>
+                                    <li>Combining quantitative and qualitative findings can be complex</li>
+                                    <li>Solution: Plan integration from the start, be explicit about how methods connect</li>
+                                </ul>
+
+                                <p><strong>Challenge 3: Conflicting Results</strong></p>
+                                <ul>
+                                    <li>What if quantitative and qualitative findings disagree?</li>
+                                    <li>Solution: Don't hide divergences - they can reveal important insights about the complexity of the phenomenon</li>
+                                </ul>
+
+                                <p><strong>Challenge 4: Expertise Required</strong></p>
+                                <ul>
+                                    <li>Researchers need skills in both quantitative and qualitative methods</li>
+                                    <li>Solution: Collaborate with others, invest in training, or use simpler designs</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Example Mixed Methods Study</h3>
+                <div class="info-box example">
+                    <strong>Research Question:</strong> How effective is pair programming for novice programmers, and what factors influence its success?
+
+                    <p><strong>Mixed Methods Approach (Explanatory Sequential):</strong></p>
+
+                    <p><strong>Phase 1 - Quantitative:</strong></p>
+                    <ul>
+                        <li>Controlled experiment with 100 students</li>
+                        <li>Measure: code quality, task completion time, test scores</li>
+                        <li>Compare pair programming vs. solo programming</li>
+                        <li><em>Finding: Pair programming students score 15% higher on average</em></li>
+                    </ul>
+
+                    <p><strong>Phase 2 - Qualitative:</strong></p>
+                    <ul>
+                        <li>Interviews with 20 students from the experiment</li>
+                        <li>Questions: What did you like/dislike? What helped you learn? What challenges did you face?</li>
+                        <li>Code interview data to identify themes</li>
+                        <li><em>Findings: Success depends on personality compatibility, communication skills, and clear role division</em></li>
+                    </ul>
+
+                    <p><strong>Integration:</strong></p>
+                    <p>The quantitative data shows pair programming is effective, while the qualitative data explains why it works and under what conditions. Together, they provide actionable insights for educators implementing pair programming.</p>
+                </div>
+
+                <div class="quiz-box">
+                    <h3>Quick Check: Choose Your Design</h3>
+                    <p><strong>Scenario:</strong> You want to study student engagement in online courses. You're not sure what factors affect engagement, so you start by interviewing 12 students. Based on themes from interviews, you create a survey and send it to 400 students.</p>
+                    <p><strong>Question:</strong> Which mixed methods design is this?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</button>
+                    <div class="quiz-answer">
+                        <p><strong>Answer:</strong> This is an <strong>Exploratory Sequential Design</strong> (QUALITATIVE → quantitative).</p>
+                        <p>You started with qualitative data (interviews) to explore and understand the phenomenon, then used those findings to develop a quantitative instrument (survey) to test with a larger sample.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>RPS Week 5: Research Methods & Data Collection | Interactive Study Notes</p>
+            <p>Created for comprehensive exam preparation</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function openTab(evt, tabName) {
+            var i, tabContent, navTabs;
+
+            // Hide all tab content
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+
+            // Remove active class from all tabs
+            navTabs = document.getElementsByClassName("nav-tab");
+            for (i = 0; i < navTabs.length; i++) {
+                navTabs[i].classList.remove("active");
+            }
+
+            // Show current tab and mark button as active
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Accordion Toggle
+        function toggleAccordion(element) {
+            var content = element.nextElementSibling;
+            var isActive = element.classList.contains("active");
+
+            // Close all accordions in the same section
+            var allHeaders = element.closest('.accordion').getElementsByClassName('accordion-header');
+            var allContents = element.closest('.accordion').getElementsByClassName('accordion-content');
+
+            for (var i = 0; i < allHeaders.length; i++) {
+                allHeaders[i].classList.remove('active');
+                allContents[i].classList.remove('active');
+            }
+
+            // If this wasn't active, open it
+            if (!isActive) {
+                element.classList.add("active");
+                content.classList.add("active");
+            }
+        }
+
+        // Toggle Quiz Answer
+        function toggleAnswer(button) {
+            var answer = button.nextElementSibling;
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                button.textContent = "Show Answer";
+            } else {
+                answer.style.display = "block";
+                button.textContent = "Hide Answer";
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

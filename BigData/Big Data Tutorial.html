@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Big Data — Exam Mastery Tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #F6F1E7;
+    --paper-2: #EFE8D8;
+    --card: #FBF7EE;
+    --ink: #1B1814;
+    --ink-2: #322C24;
+    --muted: #6E6557;
+    --muted-2: #8C8474;
+    --rule: #D9CFB8;
+    --rule-2: #C9BD9F;
+    --accent: oklch(0.52 0.14 38);     /* terracotta */
+    --accent-soft: oklch(0.93 0.04 60);
+    --teal: oklch(0.45 0.08 200);
+    --moss: oklch(0.5 0.09 145);
+    --warn: oklch(0.55 0.16 25);
+    --warn-soft: oklch(0.94 0.05 30);
+    --gold-soft: oklch(0.93 0.06 90);
+    --shadow: 0 1px 0 rgba(27,24,20,0.04), 0 8px 24px -16px rgba(27,24,20,0.18);
+    --shadow-soft: 0 1px 0 rgba(27,24,20,0.04), 0 4px 12px -8px rgba(27,24,20,0.12);
+    --serif: 'Newsreader', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(217, 138, 87, 0.04), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(110, 101, 87, 0.05), transparent 40%);
+  }
+
+  /* ---------- Layout ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 48px;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 48px 40px 96px;
+  }
+  .toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding-right: 8px;
+    font-size: 13.5px;
+  }
+  .toc::-webkit-scrollbar { width: 6px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+  .toc-brand {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .toc-sub {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .toc-group { margin-bottom: 18px; }
+  .toc-group-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc a {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 0;
+    color: var(--ink-2);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s, padding 0.15s;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc a.active { color: var(--accent); font-weight: 600; padding-left: 6px; }
+  .toc a .num { color: var(--muted-2); font-family: var(--mono); font-size: 11px; flex-shrink: 0; padding-top: 2px; }
+
+  main { min-width: 0; }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.015em; color: var(--ink); }
+  h1 { font-size: 56px; line-height: 1.02; margin: 0 0 8px; font-weight: 500; }
+  h2 { font-size: 36px; line-height: 1.1; margin: 0 0 12px; }
+  h3 { font-size: 22px; line-height: 1.25; margin: 28px 0 8px; }
+  h4 { font-size: 17px; line-height: 1.3; margin: 18px 0 6px; font-weight: 600; }
+  p { margin: 0 0 12px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  code, .mono { font-family: var(--mono); font-size: 0.88em; }
+  em { font-style: italic; color: var(--ink-2); }
+  strong { font-weight: 600; color: var(--ink); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .hero-lede {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 780px;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--rule);
+  }
+  .hero-meta div { display: flex; flex-direction: column; }
+  .hero-meta .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .hero-meta .value {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 2px;
+  }
+
+  /* ---------- Section ---------- */
+  section { margin-bottom: 72px; scroll-margin-top: 32px; }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .section-tag::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    max-width: 720px;
+    margin: 0 0 24px;
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 16px 0;
+    box-shadow: var(--shadow-soft);
+  }
+  .card.plain { background: transparent; box-shadow: none; }
+  .card-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .card-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  /* Pattern card (exam pattern callouts) */
+  .pattern {
+    background: var(--gold-soft);
+    border-left: 3px solid oklch(0.7 0.13 75);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .pattern .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: oklch(0.45 0.13 65);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* Warning card */
+  .warn {
+    background: var(--warn-soft);
+    border-left: 3px solid var(--warn);
+    padding: 14px 18px;
+    margin: 14px 0;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .warn .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warn);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* Memory hook */
+  .hook {
+    background: linear-gradient(180deg, #FBF6E9 0%, #F8F2E0 100%);
+    border: 1px solid var(--rule-2);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    position: relative;
+  }
+  .hook::before {
+    content: '🜔';
+    position: absolute;
+    left: -10px; top: -10px;
+    width: 22px; height: 22px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-family: var(--serif);
+  }
+  .hook .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .hook .mnemonic {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+    margin: 2px 0 6px;
+  }
+
+  /* Model answer block */
+  details.model {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin: 12px 0;
+    padding: 0 18px;
+    transition: padding 0.2s;
+  }
+  details.model[open] { padding-bottom: 14px; }
+  details.model summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 12px 0;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+  details.model summary::-webkit-details-marker { display: none; }
+  details.model summary::after {
+    content: '+';
+    margin-left: auto;
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--accent);
+    transition: transform 0.2s;
+  }
+  details.model[open] summary::after { content: '−'; }
+  details.model summary .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  details.model .answer {
+    padding-top: 4px;
+    border-top: 1px solid var(--rule);
+    font-size: 14.5px;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  th {
+    text-align: left;
+    background: var(--paper-2);
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(217, 138, 87, 0.03); }
+
+  /* ---------- Lists ---------- */
+  ul, ol { padding-left: 22px; margin: 8px 0 12px; }
+  li { margin-bottom: 6px; color: var(--ink-2); }
+  ul.clean { list-style: none; padding-left: 0; }
+  ul.clean li {
+    padding-left: 22px;
+    position: relative;
+  }
+  ul.clean li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 9px;
+    top: 6px;
+  }
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps li {
+    counter-increment: step;
+    padding: 6px 0 6px 38px;
+    position: relative;
+    border-bottom: 1px dashed var(--rule);
+  }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 6px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--paper-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ---------- Marks bubble ---------- */
+  .marks {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    vertical-align: 0.05em;
+  }
+  .marks.muted { background: var(--muted); }
+  .marks.accent { background: var(--accent); }
+
+  /* ---------- Code blocks ---------- */
+  pre {
+    background: var(--ink);
+    color: #F1ECDF;
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 12px 0;
+  }
+  pre .k { color: oklch(0.78 0.13 65); }    /* keyword */
+  pre .c { color: oklch(0.65 0.02 60); font-style: italic; }   /* comment */
+  pre .s { color: oklch(0.78 0.1 145); }    /* string */
+  pre .n { color: oklch(0.85 0.06 220); }   /* name */
+  pre .o { color: oklch(0.7 0.04 60); }     /* operator */
+
+  /* Inline code */
+  p code, li code, td code { background: var(--paper-2); padding: 1px 5px; border-radius: 3px; font-size: 0.85em; }
+
+  /* ---------- Formula card ---------- */
+  .formula {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 22px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 14.5px;
+    margin: 14px 0;
+    line-height: 1.7;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .formula .label {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: oklch(0.7 0.1 65);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .formula em { color: oklch(0.85 0.05 90); font-style: normal; }
+
+  /* ---------- Two column ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .shell { grid-template-columns: 1fr; padding: 24px 20px 64px; }
+    .toc { position: static; height: auto; }
+    h1 { font-size: 40px; }
+    h2 { font-size: 28px; }
+  }
+
+  /* Quick recall card */
+  .recall {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px 28px;
+    border-radius: 8px;
+    margin: 24px 0;
+    box-shadow: var(--shadow);
+  }
+  .recall .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: oklch(0.78 0.1 60);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .recall h3 { color: var(--paper); margin: 0 0 12px; font-size: 20px; }
+  .recall p, .recall li { color: oklch(0.85 0.02 80); }
+  .recall strong { color: var(--paper); }
+  .recall ul.clean li::before { color: oklch(0.78 0.13 65); }
+  .recall em { color: oklch(0.85 0.05 60); }
+
+  /* dim label inline */
+  .dim { color: var(--muted); }
+
+  /* Pill */
+  .pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    padding: 1px 7px;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+  .pill.accent { background: var(--accent); color: white; border-color: var(--accent); }
+  .pill.teal { background: var(--teal); color: white; border-color: var(--teal); }
+
+  /* Page footer */
+  footer {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  /* Print */
+  @media print {
+    .toc { display: none; }
+    .shell { grid-template-columns: 1fr; padding: 0; }
+    details.model[open] { padding-bottom: 14px; }
+    details.model > .answer { display: block; }
+    body { background: white; }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ===================== TABLE OF CONTENTS ===================== -->
+<nav class="toc" id="toc">
+  <p class="toc-brand">Big Data — Exam Mastery</p>
+  <p class="toc-sub">COMPSCI 4064 / 5088</p>
+
+  <div class="toc-group">
+    <p class="toc-group-title">Getting started</p>
+    <a href="#format"><span>Exam format</span><span class="num">2026</span></a>
+    <a href="#golden"><span>The Golden Rule</span><span class="num">★</span></a>
+    <a href="#qtypes"><span>Question types</span><span class="num">→</span></a>
+  </div>
+
+  <div class="toc-group">
+    <p class="toc-group-title">Q1 · Theory (Weeks 1–2)</p>
+    <a href="#q1a"><span>1A · Big Data dimensions</span><span class="num">6m</span></a>
+    <a href="#q1b"><span>1B · Vertical vs Horizontal</span><span class="num">8m</span></a>
+    <a href="#q1c"><span>1C · Parallelism challenges</span><span class="num">8m</span></a>
+    <a href="#q1d"><span>1D · Batch vs Streaming</span><span class="num">4m</span></a>
+    <a href="#q1e"><span>1E · Legal &amp; Ethical</span><span class="num">6m</span></a>
+    <a href="#cap"><span>1F · CAP / ACID / BASE</span><span class="num">8m</span></a>
+  </div>
+
+  <div class="toc-group">
+    <p class="toc-group-title">Q2 · Distributed Compute</p>
+    <a href="#q2a"><span>2A · Designing MapReduce</span><span class="num">14m</span></a>
+    <a href="#shuffle"><span>2B · Shuffle &amp; Sort</span><span class="num">14m</span></a>
+    <a href="#q2b"><span>2C · Hadoop overheads</span><span class="num">8m</span></a>
+    <a href="#q2c"><span>2D · Spark advantages</span><span class="num">8m</span></a>
+    <a href="#q2d"><span>2E · Narrow vs Wide deps</span><span class="num">9m</span></a>
+    <a href="#q2e"><span>2F · YARN &amp; containers</span><span class="num">8m</span></a>
+    <a href="#q2f"><span>2G · Full pipeline (7 steps)</span><span class="num">14m</span></a>
+    <a href="#q2g"><span>2H · Reducer slowstart</span><span class="num">3m</span></a>
+    <a href="#q2h"><span>2I · Stateful processing</span><span class="num">6m</span></a>
+  </div>
+
+  <div class="toc-group">
+    <p class="toc-group-title">Q3 · Distributed Data</p>
+    <a href="#hdfs"><span>3A · HDFS architecture</span><span class="num">10m</span></a>
+    <a href="#hdfs-read"><span>3B · HDFS read process</span><span class="num">10m</span></a>
+    <a href="#hdfs-write"><span>3C · HDFS write pipeline</span><span class="num">8m</span></a>
+    <a href="#hdfs-rep"><span>3D · Replication factor</span><span class="num">15m</span></a>
+    <a href="#lsm"><span>3E · LSM trees</span><span class="num">10m</span></a>
+    <a href="#bloom"><span>3F · Bloom filters</span><span class="num">3m</span></a>
+    <a href="#hbase"><span>3G · HBase / BigTable</span><span class="num">10m</span></a>
+    <a href="#cassandra"><span>3H · Cassandra</span><span class="num">8m</span></a>
+    <a href="#hash"><span>3I · Consistent hashing</span><span class="num">8m</span></a>
+    <a href="#quorum"><span>3J · Quorum &amp; consistency</span><span class="num">6m</span></a>
+    <a href="#kube"><span>3K · Kubernetes</span><span class="num">5m</span></a>
+    <a href="#zoo"><span>3L · ZooKeeper</span><span class="num">3m</span></a>
+  </div>
+
+  <div class="toc-group">
+    <p class="toc-group-title">Reference &amp; revision</p>
+    <a href="#spark-crib"><span>Spark crib sheet</span><span class="num">↗</span></a>
+    <a href="#formulas"><span>Formulas to memorise</span><span class="num">∑</span></a>
+    <a href="#top10"><span>Top 10 predicted questions</span><span class="num">!</span></a>
+    <a href="#strategy"><span>Final exam strategy</span><span class="num">⚑</span></a>
+  </div>
+</nav>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="eyebrow">COMPSCI 4064 / 5088 · Application-focused revision · 2026</p>
+  <h1>Big Data,<br/><em>without the panic.</em></h1>
+  <p class="hero-lede">One handbook for the whole exam. Every topic the past papers test &mdash; theory, MapReduce, HDFS, HBase, Cassandra, Spark, LSM trees, Kubernetes &mdash; rebuilt as a tutorial. Concept first. Then the trick to remember it. Then the model answer that scores full marks.</p>
+  <div class="hero-meta">
+    <div><span class="label">Total marks</span><span class="value">60</span></div>
+    <div><span class="label">Duration</span><span class="value">1 h 30 min</span></div>
+    <div><span class="label">Format</span><span class="value">3 compulsory Q's</span></div>
+    <div><span class="label">Crib sheet</span><span class="value">Spark only</span></div>
+    <div><span class="label">Pace</span><span class="value">1.5 min / mark</span></div>
+  </div>
+</header>
+
+<!-- =================== EXAM FORMAT =================== -->
+<section id="format">
+  <p class="section-tag">00 — Orientation</p>
+  <h2>How the exam works</h2>
+  <p class="lede">Three compulsory questions. Each one is scenario-based: you'll be handed a fictional company or system and asked to analyse it using the unit's vocabulary.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <p class="card-meta">Question 1 · ≈ 20 marks</p>
+      <p class="card-title">Theory</p>
+      <p>Big Data dimensions, vertical vs horizontal scaling, parallelism challenges, batch vs streaming. Drawn from Weeks 1–2.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">Question 2 · ≈ 20 marks</p>
+      <p class="card-title">Distributed Compute</p>
+      <p>MapReduce design, Hadoop overheads, Spark advantages, YARN, narrow vs wide dependencies, stateful processing.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">Question 3 · ≈ 20 marks</p>
+      <p class="card-title">Distributed Data</p>
+      <p>HDFS, LSM trees, HBase &amp; Cassandra, consistent hashing, quorum, Kubernetes. Week 10 (legal/ethical) is mixed in.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== GOLDEN RULE =================== -->
+<section id="golden">
+  <p class="section-tag">01 — The single most important habit</p>
+  <h2>Concept&nbsp;+&nbsp;Context&nbsp;=&nbsp;Marks</h2>
+  <p class="lede">Almost every mark is awarded in <em>pairs</em>: one for naming the concept, one for linking it to the scenario in front of you. Miss either half and you halve the score.</p>
+
+  <div class="grid-2">
+    <div class="card" style="border-color: var(--moss); border-left-width: 4px;">
+      <p class="card-meta" style="color: var(--moss);">✓ Full marks · 2 / 2</p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink);">"Mainframes are a single point of failure <span class="marks">1</span>, meaning if the mainframe breaks the satellite processing stops entirely <span class="marks">1</span>."</p>
+    </div>
+    <div class="card" style="border-color: var(--warn); border-left-width: 4px;">
+      <p class="card-meta" style="color: var(--warn);">✗ Half-marks at best · 0–1 / 2</p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink);">"Mainframes are a single point of failure." <span class="dim">— concept only, no link. Or worse: "If the system breaks everything stops" — link only, no concept name. <strong>Zero marks.</strong></span></p>
+    </div>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · CCM</p>
+    <p class="mnemonic">"Concept · Connect · Mark."</p>
+    <p>Three beats. Every paragraph you write should hit all three. Concept (name the textbook idea). Connect (the satellite images / trades / videos in the scenario). Mark (mentally tick the 2-mark pair).</p>
+  </div>
+
+  <div class="warn">
+    <p class="label">Warning · MCQs are worth zero</p>
+    <p>Multiple-choice options in this paper score <strong>0 marks</strong> for the choice itself. All marks are in the <strong>"explain your answer"</strong> follow-up. If you pick the right letter and skip the explanation, you score nothing.</p>
+  </div>
+</section>
+
+<!-- =================== QUESTION TYPES =================== -->
+<section id="qtypes">
+  <p class="section-tag">02 — Decoding the rubric</p>
+  <h2>Question types &amp; how to structure each</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width: 22%;">Keyword</th><th style="width: 38%;">What they want</th><th>How to write it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Discuss / Describe</strong></td><td>Flowing prose. Number of sentences ≈ marks ÷ 2.</td><td>Weave concept + scenario together as paragraphs.</td></tr>
+        <tr><td><strong>List / X points expected</strong></td><td>Bullet points, one per expected point.</td><td><code>[Concept]: [why it matters for this scenario].</code></td></tr>
+        <tr><td><strong>True/False + explain</strong></td><td>State T/F, then justify with reasoning.</td><td>T/F → 1–2 reasoning sentences → link to scenario. <em>If your reasoning is right, examiners forgive a wrong T/F.</em></td></tr>
+        <tr><td><strong>MCQ + explain</strong></td><td>Pick the option (0 marks), then explain WHY.</td><td>Spend 90% of your time on the explanation, not the letter.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--                    QUESTION 1 — THEORY                       -->
+<!-- ============================================================ -->
+
+<!-- =================== Q1A · DIMENSIONS =================== -->
+<section id="q1a">
+  <p class="section-tag">Q1 · A — appears every year</p>
+  <h2>Big Data dimensions, applied</h2>
+  <p class="lede">You'll be given a scenario and asked which dimensions make it a Big Data problem. Six dimensions exist; not all six apply to every scenario. Pick the 2–4 most relevant and quantify them with numbers from the question.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>What it means</th><th>Scenario triggers</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Volume</strong></td><td>Large amounts of data</td><td>TB/PB, millions of records, high-res images, large files</td></tr>
+        <tr><td><strong>Velocity</strong></td><td>Speed required for processing</td><td>Real-time, alerts, live, latency, "within X seconds"</td></tr>
+        <tr><td><strong>Variety</strong></td><td>Multiple data types / formats</td><td>Video + audio + text; structured + unstructured</td></tr>
+        <tr><td><strong>Veracity</strong></td><td>Data quality, error, trustworthiness</td><td>Poor quality, sensor errors, missing values, cleaning needed</td></tr>
+        <tr><td><strong>Variability</strong></td><td>Workload changes over time</td><td>Peaks, seasonal, "scales up/down", "20% active but may rise"</td></tr>
+        <tr><td><strong>Complexity</strong></td><td>Multi-stage processing &amp; dependencies</td><td>Entity hierarchies, dependent pipeline stages</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · the 6 V's</p>
+    <p class="mnemonic">Volume · Velocity · Variety · Veracity · Variability · Complexity</p>
+    <p>Five start with V, one cheats. Picture five soldiers in a "V" formation with a sixth — Complexity — running late, tripping over wires. <em>If you can't recite all six in 10 seconds, you'll waste exam time.</em></p>
+  </div>
+
+  <h3>How to write a 2-mark dimension answer</h3>
+  <p>Pattern: <strong>[Dimension] <span class="marks">1</span>:</strong> [calculate / quote numbers from the scenario] + [why this makes it a Big Data problem] <span class="marks">1</span>.</p>
+
+  <details class="model" open>
+    <summary><span class="tag">2023 · satellites</span> Volume — full-marks model</summary>
+    <div class="answer">
+      <p><strong>Volume</strong> <span class="marks">1</span>: up to <em>500 MB/s</em> of images arrive each second (100 satellites × 20% active × 10 MB each = 200 MB/s normal; 500 MB/s peak), which constitutes a large volume that cannot be processed on a single machine <span class="marks">1</span>.</p>
+      <p><strong>Velocity</strong> <span class="marks">1</span>: imagery must be analysed for disaster alerting <em>in real time</em>; delays would mean missing the alerting window <span class="marks">1</span>.</p>
+      <p><strong>Variability</strong> <span class="marks">1</span>: only 20% of satellites are active at any one time, but the fleet doubles in two years &mdash; load will rise sharply and unpredictably <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <div class="warn">
+    <p class="label">Trap · 2025</p>
+    <p>The 2025 paper asked <em>"is tracking these goods a Big Data problem?"</em> — and the correct answer was <strong>NO, it isn't</strong>. Read the numbers. If volume is small and velocity isn't urgent, <em>say so</em> and explain which V's <em>fail</em>.</p>
+  </div>
+</section>
+
+<!-- =================== Q1B · SCALING =================== -->
+<section id="q1b">
+  <p class="section-tag">Q1 · B — paired with dimensions</p>
+  <h2>Vertical vs Horizontal scaling</h2>
+  <p class="lede">A company is offered one giant mainframe instead of a cluster. Explain why that's a bad idea. Eight marks = four points × two marks.</p>
+
+  <h3>The four canonical reasons mainframes lose</h3>
+  <ol class="steps">
+    <li><strong>Scaling limit.</strong> Mainframes have a maximum compute &amp; storage capacity <span class="marks">1</span>. The company plans to double operations &mdash; they will outgrow it <span class="marks">1</span>.</li>
+    <li><strong>Cost.</strong> Mainframes cost far more per FLOP than commodity hardware <span class="marks">1</span>. For embarrassingly parallel image processing, many cheap nodes win on £/throughput <span class="marks">1</span>.</li>
+    <li><strong>Single point of failure.</strong> One machine = one outage <span class="marks">1</span>. For disaster alerting / live trading, downtime is unacceptable <span class="marks">1</span>.</li>
+    <li><strong>Future-proofing.</strong> You cannot scale a mainframe incrementally <span class="marks">1</span>. Horizontal scaling lets you add nodes as the fleet grows <span class="marks">1</span>.</li>
+  </ol>
+
+  <div class="hook">
+    <p class="label">Memory hook · SCSF</p>
+    <p class="mnemonic">"Scaling, Cost, SPoF, Future."</p>
+    <p>SCSF = "<em>Small Clusters Scale Faster</em>". Four reasons, in order of increasing severity. Recite them as a checklist.</p>
+  </div>
+
+  <h3>The horizontal side &mdash; what you trade for that</h3>
+  <p>Horizontal scaling brings its own pain: load balancing, communication overheads, fault tolerance, orchestration, and programmer complexity. That's the next question.</p>
+</section>
+
+<!-- =================== Q1C · PARALLELISM =================== -->
+<section id="q1c">
+  <p class="section-tag">Q1 · C — distributed challenges</p>
+  <h2>Parallelism challenges</h2>
+  <p class="lede">"Discuss the challenges of building this multi-stage pipeline in a distributed way." Eight marks = four challenges × two marks. Each: name the concept + link to scenario.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-title">① Data splitting &amp; load balancing</p>
+      <p>The dataset must be divided so all machines stay busy. Uneven splits cause stragglers. <em>"The video frames must be chunked equally so all encoders finish at the same time."</em></p>
+    </div>
+    <div class="card">
+      <p class="card-title">② Communication / network overhead</p>
+      <p>Intermediate data must move between stages over the network — bandwidth-bound. <em>"Topic-tagged paragraphs from every mapper must reach the right reducer."</em></p>
+    </div>
+    <div class="card">
+      <p class="card-title">③ Data explosion / duplication</p>
+      <p>Each input item produces many outputs, ballooning the intermediate state. <em>"Every article emits ~10 paragraphs, multiplying data 10× before reduce."</em></p>
+    </div>
+    <div class="card">
+      <p class="card-title">④ Fault tolerance</p>
+      <p>With hundreds of machines, failure is the norm. Lost data must be recomputed without restarting the whole job.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">⑤ Synchronisation</p>
+      <p>Stage N+1 cannot start until Stage N finishes for the relevant key. This creates idle gaps in the pipeline.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">⑥ Heterogeneous hardware</p>
+      <p>Different nodes process at different speeds. The slowest dictates throughput unless you handle <em>stragglers</em> via speculative execution.</p>
+    </div>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · "<em>SCFS-HD</em>"</p>
+    <p class="mnemonic">Splitting · Communication · Fault · Sync · Heterogeneous · Duplication</p>
+    <p>Imagine a SCFS-HD network drive cracking under load. Six headaches of going wide.</p>
+  </div>
+</section>
+
+<!-- =================== Q1D · BATCH vs STREAMING =================== -->
+<section id="q1d">
+  <p class="section-tag">Q1 · D — pick a side</p>
+  <h2>Batch vs Streaming</h2>
+  <p class="lede">"Which is better, and why?" Four marks: state your choice + two contrasted points × two marks each. You <em>must</em> contrast against the alternative — don't just praise streaming, say <em>why batch would fail here</em>.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-meta">Argue FOR Batch when…</p>
+      <ul class="clean">
+        <li>Data needs to be complete before processing.</li>
+        <li>Processing can wait (end-of-day reports).</li>
+        <li>Parallelisable by chunks (video segments).</li>
+        <li>Simpler error handling on complete data.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="card-meta">Argue FOR Streaming when…</p>
+      <ul class="clean">
+        <li>Low-latency, real-time output is required.</li>
+        <li>Data arrives continuously, must be acted on.</li>
+        <li>Avoids storing the raw firehose (process &amp; discard).</li>
+        <li>Pipeline stages can overlap (CPU + GPU in parallel).</li>
+      </ul>
+    </div>
+  </div>
+
+  <details class="model" open>
+    <summary><span class="tag">2025 · WhiskyAI ML</span> Why streaming beats batch for online training</summary>
+    <div class="answer">
+      <p>Streaming is the better solution because:</p>
+      <p>(1) Stream processing defines computation as a <strong>pipeline where items at different stages can be processed in parallel</strong> <span class="marks">1</span>. The next batch of training data can be prepared on the CPU while the GPU is still learning from the current batch <span class="marks">1</span>.</p>
+      <p>(2) This avoids the <strong>idle-resource problem</strong> <span class="marks">1</span>, whereas batch processing would force the CPU and GPU to take turns &mdash; one always idle while the other works <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <h3>Why streaming is hard (separate question, asked 2025)</h3>
+  <ul class="clean">
+    <li><strong>No equal-sized blocks</strong> → load balancing is harder.</li>
+    <li><strong>Variable velocity</strong> → input rate spikes unpredictably.</li>
+    <li><strong>End-to-end latency is critical</strong> — a human is waiting.</li>
+    <li><strong>Back-pressure cascade.</strong> Full input buffers stop upstream stages, which fills <em>their</em> buffers, which... eventually crashes the job.</li>
+    <li><strong>Stateful routing.</strong> Specific items must hit the specific instance that holds their state.</li>
+  </ul>
+</section>
+
+<!-- =================== Q1E · LEGAL =================== -->
+<section id="q1e">
+  <p class="section-tag">Q1 · E — Week 10 content, mixed in</p>
+  <h2>Legal &amp; Ethical implications</h2>
+  <p class="lede">When data about people is collected, name a <em>specific</em> legal/ethical concept and link it to the scenario. Generic answers like "it's bad for privacy" earn zero.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Concept</th><th>When to invoke it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Privacy</strong></td><td>Video/images capturing faces, location tracking, personal data. ECHR &amp; DPA 1998 underpin it.</td></tr>
+        <tr><td><strong>Informed consent</strong></td><td>Subjects didn't agree to <em>this</em> use. T&amp;Cs are debatable consent at best.</td></tr>
+        <tr><td><strong>Data retention (GDPR)</strong></td><td>Limits how long data can be stored — affects model retraining and audit trails.</td></tr>
+        <tr><td><strong>Purpose limitation</strong></td><td>Data collected for X is being used for Y without permission.</td></tr>
+        <tr><td><strong>De-identification</strong></td><td>Faces, plates, IDs must be removed. <em>Now seen as a continuum</em> — risks rise when datasets are linkable.</td></tr>
+        <tr><td><strong>Right to erasure</strong></td><td>Individuals can request deletion. Painful once data is baked into a trained model.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · PIRPDE</p>
+    <p class="mnemonic">"<em>Privacy, Informed-consent, Retention, Purpose, De-identification, Erasure.</em>"</p>
+    <p>Read it as <em>"Pi-R-P-Dee"</em>. Six concepts, six marks. Pick three relevant ones for the scenario and write a clean concept + link sentence for each.</p>
+  </div>
+
+  <h4>Key laws you can name-drop</h4>
+  <ul class="clean">
+    <li><strong>GDPR</strong> — explicit consent, declared lawful basis &amp; purpose, retention period, DPO required.</li>
+    <li><strong>DPA 1998</strong> — fair/lawful, specified purpose, adequate, accurate, not kept too long, respecting rights, secure, no EEA transfer without protection.</li>
+  </ul>
+</section>
+
+<!-- =================== Q1F · CAP / BASE / ACID =================== -->
+<section id="cap">
+  <p class="section-tag">Q1 · F — system selection</p>
+  <h2>CAP · BASE · ACID</h2>
+  <p class="lede">A distributed system can guarantee <em>only two</em> of three properties. Which two you choose is a design decision &mdash; and the exam tests whether you can match the right pair to the right use case.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <p class="card-meta">C — Consistency</p>
+      <p>Every read sees the latest write. All nodes agree on the same value at the same time.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">A — Availability</p>
+      <p>Every request gets a (non-error) response, even if the data might be stale.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">P — Partition tolerance</p>
+      <p>The system keeps working when the network splits nodes into isolated groups.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Combination</th><th>Properties</th><th>Real systems</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CA</strong></td><td>Consistency + Availability</td><td>Traditional RDBMS (Oracle, MySQL). <em>Can't survive a network partition.</em></td></tr>
+        <tr><td><strong>CP</strong></td><td>Consistency + Partition tolerance</td><td>HBase, MongoDB. <em>Will refuse requests during a partition to stay correct.</em></td></tr>
+        <tr><td><strong>AP</strong></td><td>Availability + Partition tolerance</td><td>Cassandra, CouchDB. <em>Returns possibly-stale data rather than fail.</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-meta">ACID — traditional DBs</p>
+      <p><strong>A</strong>tomicity · <strong>C</strong>onsistency · <strong>I</strong>solation · <strong>D</strong>urability. Strong guarantees, limited scalability. Banking, accounting, anything where wrong-answer-now is worse than no-answer-now.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">BASE — Big Data DBs</p>
+      <p><strong>B</strong>asically <strong>A</strong>vailable · <strong>S</strong>oft state · <strong>E</strong>ventually consistent. Trade strict consistency for availability and scale. Chat apps, social feeds, IoT.</p>
+    </div>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · "Pick your pain"</p>
+    <p class="mnemonic">Partitions <em>will</em> happen — so you only really pick between C and A.</p>
+    <p>If the scenario is <em>banking</em>, pick CP (HBase). If it's a <em>chat app</em>, pick AP (Cassandra). Once you internalise this, CAP questions are free marks.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--               QUESTION 2 — DISTRIBUTED COMPUTE               -->
+<!-- ============================================================ -->
+
+<!-- =================== Q2A · MAPREDUCE DESIGN =================== -->
+<section id="q2a">
+  <p class="section-tag">Q2 · A — appears every single year</p>
+  <h2>Designing a MapReduce solution</h2>
+  <p class="lede">The hardest question type. You're given a multi-stage processing task and must map it onto Map/Reduce. To do this in your head, ask three questions in this order.</p>
+
+  <div class="card" style="border-left: 4px solid var(--accent);">
+    <p class="card-title">The MapReduce design formula</p>
+    <ol class="steps">
+      <li><strong>What needs to be GROUPED?</strong> That becomes your <strong>key</strong>.</li>
+      <li><strong>What can be done per-record independently?</strong> That's your <strong>Map</strong>.</li>
+      <li><strong>What needs all records for a group?</strong> That's your <strong>Reduce</strong>.</li>
+    </ol>
+    <p>Then for each operation, write 4 things: <em>operation type · what it does · input <code>&lt;key, value&gt;</code> · output <code>&lt;key, value&gt;</code></em>. Each = 1 mark.</p>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · GKM</p>
+    <p class="mnemonic">"Group &rarr; Key. Per-record &rarr; Map. All-of-group &rarr; Reduce."</p>
+    <p>Recite this before you write a single line. The hardest part of MapReduce design is deciding the key — once the key is right, everything follows.</p>
+  </div>
+
+  <h3>Worked example — News Summarizer (2023, 9 marks)</h3>
+  <p><strong>Scenario:</strong> 4 stages — content extraction → topic identification → paragraph grouping → summarization.</p>
+
+  <details class="model" open>
+    <summary><span class="tag">Full marks · 9/9</span> Model answer</summary>
+    <div class="answer">
+      <p><strong>Map:</strong> performs content extraction + topic identification per article <span class="marks">1</span>. Input: <code>&lt;articleID, article&gt;</code> <span class="marks">1</span>. Output: <code>&lt;topic, paragraph&gt;</code> <span class="marks">1</span>.</p>
+      <p><strong>Reduce:</strong> performs summarization across all paragraphs for a topic <span class="marks">1</span>. Input: <code>&lt;topic, List&lt;paragraph&gt;&gt;</code> <span class="marks">1</span>. Output: <code>summary</code> <span class="marks">1</span>.</p>
+      <p><strong>Why these choices:</strong> extraction and topic ID are per-article so they aggregate into a single Map step <span class="marks">1</span>. Emitting <em>topic</em> as the key means the shuffle automatically groups paragraphs by topic <span class="marks">1</span>. Summarization needs <em>all</em> paragraphs on a topic, so it must be a reducer <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <h3>Worked example — SELECT DISTINCT (2020)</h3>
+  <p><strong>Scenario:</strong> Each line of a text file has two integers (weight, volume). Implement <code>SELECT DISTINCT Weight, Volume</code>.</p>
+
+  <details class="model" open>
+    <summary><span class="tag">5/5 + combiner bonus</span> Model answer</summary>
+    <div class="answer">
+      <p><strong>Map:</strong> Parse the two integers per line. Emit <code>key = concat(weight, volume)</code>, <code>value = null</code> <span class="marks">3</span>.</p>
+      <p><strong>Reduce:</strong> Output the key regardless of values — duplicates have already been merged by the shuffle <span class="marks">2</span>.</p>
+      <p><strong>Insight:</strong> MapReduce's shuffle-and-sort groups identical keys together for free. By making the <em>pair</em> the key, DISTINCT happens during grouping.</p>
+      <p><strong>Combiner extension:</strong> A combiner acts as a "mini reducer" &mdash; emit one <code>&lt;key, null&gt;</code> per unique key. <em>Often no amendments to map/reduce are needed</em> because the operation is already commutative &amp; associative.</p>
+    </div>
+  </details>
+
+  <h3>Worked example — counting in-links in a graph (2018, 18 marks)</h3>
+  <details class="model">
+    <summary><span class="tag">2018</span> Basic count + top-k variant</summary>
+    <div class="answer">
+      <p><strong>Basic:</strong></p>
+      <ul class="clean">
+        <li><strong>Map:</strong> for each edge <code>(src, tgt)</code> emit <code>&lt;tgt, 1&gt;</code>.</li>
+        <li><strong>Combiner:</strong> local sum per <code>tgt</code>.</li>
+        <li><strong>Reduce:</strong> sum all <code>1</code>s per <code>tgt</code>, emit <code>&lt;tgt, total&gt;</code>.</li>
+      </ul>
+      <p><strong>Top-k variant:</strong> same mappers/combiners. Each reducer maintains an in-memory sorted list initialised in <code>setup()</code>, inserts pairs, trims past position k, emits final list in <code>cleanup()</code>. The driver merges the k-sized outputs from each reducer.</p>
+    </div>
+  </details>
+
+  <h3>Beyond Map / Reduce / Main — supporting classes (2025)</h3>
+  <ul class="clean">
+    <li><strong>InputFormat</strong> — converts raw HDFS blocks into KV pairs. <em>TextInputFormat, KeyValueTextInputFormat, SequenceFileInputFormat, DBInputFormat.</em></li>
+    <li><strong>OutputFormat</strong> — controls how reduce output is written.</li>
+    <li><strong>Partitioner</strong> — decides which reducer gets which keys. Default is hash-based. Custom partitioners balance load.</li>
+    <li><strong>Combiner</strong> — optional local pre-aggregation. Must be <em>commutative &amp; associative</em>.</li>
+  </ul>
+</section>
+
+<!-- =================== SHUFFLE & SORT =================== -->
+<section id="shuffle">
+  <p class="section-tag">Q2 · B — 14-mark question, 2018</p>
+  <h2>The Shuffle &amp; Sort phase</h2>
+  <p class="lede">Between Map and Reduce, MapReduce does a complex reorganisation that the exam loves to test in detail. Memorise the eight steps below — each one is worth marks.</p>
+
+  <ol class="steps">
+    <li>Map output is buffered in an in-memory <strong>circular buffer</strong> (default 100 MB).</li>
+    <li>When the buffer reaches the threshold (80%), contents are <strong>sorted by key</strong>, <strong>partitioned by reducer</strong>, and <strong>spilled to disk</strong>.</li>
+    <li><strong>Combiners</strong> may run on the spilled data to locally pre-aggregate and shrink transfer volume.</li>
+    <li>Once the mapper finishes its input, all spill files are <strong>merge-sorted</strong> into a single sorted, partitioned file.</li>
+    <li>Mapper notifies the JobTracker via heartbeat that it has completed.</li>
+    <li>Each <strong>reducer contacts completed mappers</strong> and transfers <em>only its own partition</em>. This is "the shuffle".</li>
+    <li>Reducer performs a <strong>recursive merge-sort</strong> on the incoming data (mix of in-memory and on-disk).</li>
+    <li>Merged, sorted data is fed to <code>reduce()</code>.</li>
+  </ol>
+
+  <div class="hook">
+    <p class="label">Memory hook · "Buffer · Spill · Merge · Pull · Merge · Reduce"</p>
+    <p class="mnemonic">Two merges, two transfers, one reduce.</p>
+    <p>The mapper merges its spills. The reducer pulls from many mappers and merges <em>those</em>. Then it actually reduces.</p>
+  </div>
+</section>
+
+<!-- =================== Q2C · HADOOP OVERHEADS =================== -->
+<section id="q2b">
+  <p class="section-tag">Q2 · C — follow-up to MapReduce design</p>
+  <h2>Hadoop overhead costs</h2>
+  <p class="lede">"After you designed the solution, what are the overhead costs?" Critically: they are <em>not</em> asking about the cost of <em>your operations</em>. They are asking about Hadoop's inherent inefficiencies.</p>
+
+  <div class="warn">
+    <p class="label">Read the rubric carefully</p>
+    <p>The 2023 paper explicitly says: <em>"We do NOT expect you to discuss the cost of the operations themselves... but rather aspects of Hadoop that will result in efficiency overheads."</em></p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-title">① Small-file problem</p>
+      <p>Loading is slow because <strong>HDFS isn't optimised for many small files</strong> &mdash; the NameNode stores metadata per file in RAM. <em>"Each news article is one file."</em></p>
+    </div>
+    <div class="card">
+      <p class="card-title">② Intermediate sort cost</p>
+      <p>The mapper must sort all output by key before spill. Sorting is <em>O(n log n)</em> per partition.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">③ Network shuffle</p>
+      <p>Map output is transferred across the network from mappers to reducers. Latency-bound.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">④ Disk write cost</p>
+      <p>After the map sort, intermediate data is <strong>persisted to disk</strong>. Adds I/O overhead unavoidable in Hadoop's design.</p>
+    </div>
+  </div>
+
+  <div class="hook">
+    <p class="label">Memory hook · "SSND"</p>
+    <p class="mnemonic">Small files · Sort · Network · Disk</p>
+    <p>Four Hadoop overheads, four letters. <em>Always</em> link each to the scenario: "in this case, the satellite images are…".</p>
+  </div>
+
+  <div class="warn">
+    <p class="label">2025 variant — "why is this difficult in Hadoop"</p>
+    <p>The pattern shifts to <strong>Hadoop limitations</strong>, not just overheads. Add: (1) <strong>keyless-transformation problem</strong> &mdash; Map and Reduce both require keys, awkward for transformations that don't naturally have one. (2) <strong>High job startup cost</strong> &mdash; makes frequent computation (every 10 seconds) impractical.</p>
+  </div>
+</section>
+
+<!-- =================== Q2C · SPARK ADV =================== -->
+<section id="q2c">
+  <p class="section-tag">Q2 · D — paired with overheads</p>
+  <h2>Spark advantages over Hadoop</h2>
+  <p class="lede">Right after Hadoop's problems comes "why would Spark be better?" Pick the four advantages that actually apply to the scenario — don't list all four blindly.</p>
+
+  <ol class="steps">
+    <li><strong>No HDFS dependency.</strong> Spark doesn't require HDFS for data <span class="marks">1</span> — initial read costs are lower, can use local/cloud storage <span class="marks">1</span>.</li>
+    <li><strong>In-memory processing.</strong> Spark doesn't write intermediate data to disk <span class="marks">1</span> — eliminates the I/O overhead of Hadoop's shuffle spill <span class="marks">1</span>.</li>
+    <li><strong>Better serialisation.</strong> Transformation overheads are lower <span class="marks">1</span> due to more efficient binary formats <span class="marks">1</span>.</li>
+    <li><strong>Flexible programming model.</strong> Operations are defined as a DAG of transformations <span class="marks">1</span> instead of a rigid Map–Reduce shape <span class="marks">1</span>.</li>
+  </ol>
+
+  <div class="warn">
+    <p class="label">Zero-mark answers</p>
+    <p>"Chaining maps", "streaming support", "language support" — these are <strong>invalid</strong> unless the scenario explicitly involves them. Use them only when applicable (e.g. mobile-phone scenarios benefit from low-bandwidth in-memory work; UI startup wants quick interactive jobs).</p>
+  </div>
+</section>
+
+<!-- =================== Q2D · NARROW vs WIDE =================== -->
+<section id="q2d">
+  <p class="section-tag">Q2 · E — 2020, 9 marks</p>
+  <h2>Narrow vs Wide dependencies</h2>
+  <p class="lede">Spark groups transformations into stages based on dependency type. The MCQ is worth 0; the explanation is worth 9.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Definition</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Narrow</strong></td><td>Each parent partition feeds <em>at most one</em> child partition</td><td>Pipelined within a single stage. No shuffle. Examples: <code>map</code>, <code>filter</code>, <code>union</code>.</td></tr>
+        <tr><td><strong>Wide</strong></td><td>Each parent partition feeds <em>multiple</em> child partitions</td><td>Requires a shuffle across the network. Marks a <strong>stage boundary</strong>. Examples: <code>groupByKey</code>, <code>reduceByKey</code>, <code>join</code>, <code>repartition</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details class="model" open>
+    <summary><span class="tag">2020 · 9/9</span> Full-marks explanation</summary>
+    <div class="answer">
+      <p><strong>Stage creation</strong> <span class="marks">3</span>: narrow operations are grouped and pipelined into a single stage. Tasks operating on partitions with narrow dependencies are scheduled on the executor that already holds the parent partition. Wide operations require data to be shuffled across nodes and mark stage boundaries in the DAG.</p>
+      <p><strong>Performance reasoning</strong> <span class="marks">6</span>: this replicates what a seasoned MapReduce programmer would do by hand &mdash; identify operations needing only local data and execute them pipelined <span class="marks">2</span>. If producing output for partition Z only needs computation on one partition of Y, which only needs one partition of X, all three computations happen in-memory sequentially on the <em>same</em> executor <span class="marks">3</span>. This gives a significant reduction in network overhead for negligible memory overhead <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <div class="hook">
+    <p class="label">Memory hook · the funnel test</p>
+    <p class="mnemonic">"One parent → one child = narrow. One parent → many children = wide."</p>
+    <p>Wide is wide because data <em>fans out</em>. Narrow is narrow because it stays in its lane.</p>
+  </div>
+</section>
+
+<!-- =================== Q2E · YARN =================== -->
+<section id="q2e">
+  <p class="section-tag">Q2 · F — 2023</p>
+  <h2>YARN &amp; containers</h2>
+  <p class="lede">YARN separates cluster <em>resource management</em> from <em>job coordination</em>. It replaces Hadoop v1's JobTracker bottleneck.</p>
+
+  <h3>Why YARN beats classic MR1</h3>
+  <ol class="steps">
+    <li><strong>Better resource utilisation</strong> <span class="marks">1</span> — handles variable-size resource requests instead of MR1's fixed task slots <span class="marks">1</span>.</li>
+    <li><strong>Multi-application support</strong> <span class="marks">1</span> — Spark, HBase, Flink can all run concurrently on the same cluster <span class="marks">1</span>.</li>
+    <li><strong>Decentralised coordination</strong> <span class="marks">1</span> — each job's <em>Application Master</em> runs on a worker node, removing the central JobTracker bottleneck <span class="marks">1</span>.</li>
+  </ol>
+
+  <h3>YARN containers vs Docker/Kubernetes containers</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>YARN container</th><th>Docker / K8s container</th></tr></thead>
+      <tbody>
+        <tr><td>What it is</td><td>Unit of work — usually a JVM process</td><td>Code + OS context + libraries bundled together</td></tr>
+        <tr><td>Run by</td><td>Node Manager</td><td>OS-level virtualisation engine</td></tr>
+        <tr><td>Scope</td><td>Hadoop ecosystem only</td><td>Any application</td></tr>
+        <tr><td>Isolation</td><td>Shares host OS environment</td><td>Sandboxed with own drivers &amp; libs</td></tr>
+        <tr><td>Visibility</td><td>Can see entire host</td><td>Can only see allocated resources</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== Q2F · 7 STEPS =================== -->
+<section id="q2f">
+  <p class="section-tag">Q2 · G — 2023 Practice, 14 marks</p>
+  <h2>The full MapReduce pipeline — 7 steps</h2>
+  <p class="lede">Generic shape: <strong>Read → Map → Sort → Write → Shuffle/Read → Reduce → Write.</strong> In the exam, describe each step in <em>scenario-specific</em> nouns (frames, blocks, key-frames — not "data").</p>
+
+  <ol class="steps">
+    <li><strong>Read (HDFS → Map).</strong> Input is read from HDFS as a series of blocks; each block = a batch of records.</li>
+    <li><strong>Map.</strong> The user function runs per record, emitting <code>&lt;key, value&gt;</code> pairs.</li>
+    <li><strong>Sort.</strong> Map output is sorted by key (in the in-memory buffer, then on spill).</li>
+    <li><strong>Write (Map → Disk).</strong> Sorted output is written to the local DataNode.</li>
+    <li><strong>Read (Disk → Reduce).</strong> Reducers fetch their partition from each mapper and merge.</li>
+    <li><strong>Reduce.</strong> Reads all values for a key and produces the output value(s).</li>
+    <li><strong>Write (Reduce → HDFS).</strong> Reducer output is written to HDFS and replicated.</li>
+  </ol>
+
+  <div class="hook">
+    <p class="label">Memory hook · "Read, Map, Sort, Write, Read, Reduce, Write"</p>
+    <p class="mnemonic">R-M-S-W-R-R-W. Two reads, three writes, one map, one reduce.</p>
+  </div>
+</section>
+
+<!-- =================== Q2G · SLOWSTART =================== -->
+<section id="q2g">
+  <p class="section-tag">Q2 · H — 2020 synthesis question</p>
+  <h2>Can reducers start before mappers finish?</h2>
+  <details class="model" open>
+    <summary><span class="tag">3/3</span> Complete answer</summary>
+    <div class="answer">
+      <p>Reducers cannot start <strong>processing</strong> before all mappers finish <span class="marks">1</span>, because each reducer needs to merge output from <em>potentially all</em> mappers before it can call <code>reduce()</code> on a key.</p>
+      <p>However, reducers <strong>can</strong> start <strong>transferring</strong> data while mappers are still running — this is the <em>slowstart mechanism</em> <span class="marks">1</span>.</p>
+      <p>This overlaps CPU-intensive map computation with I/O-intensive shuffle transfers, improving overall cluster utilisation <span class="marks">1</span>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- =================== Q2H · STATEFUL =================== -->
+<section id="q2h">
+  <p class="section-tag">Q2 · I — new in 2025</p>
+  <h2>Stateful distributed processing</h2>
+  <p class="lede">If a scenario involves periodic synchronisation (e.g. ML training updating shared weights), name it as <em>stateful</em> and explain why that's hard.</p>
+
+  <details class="model" open>
+    <summary><span class="tag">6 marks</span> Answer template</summary>
+    <div class="answer">
+      <p>This training process requires global state shared across all tasks — the application is <strong>stateful</strong> <span class="marks">2</span>.</p>
+      <p>Stateful distributed processing is difficult because:</p>
+      <ol class="steps">
+        <li><strong>Synchronisation</strong> adds an intermediate step where cluster machines wait idle while state is collected <span class="marks">2</span>.</li>
+        <li>Each task stores additional state (e.g. neural network weights) which, over time, risks <strong>out-of-memory errors</strong> <span class="marks">2</span>.</li>
+        <li>(alt) Network transfer of state between executors adds significant cost.</li>
+        <li>(alt) Error recovery is complex — a worker failure loses its state, forcing re-execution of the entire batch since the last checkpoint.</li>
+      </ol>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================================ -->
+<!--                QUESTION 3 — DISTRIBUTED DATA                 -->
+<!-- ============================================================ -->
+
+<!-- =================== HDFS ARCH =================== -->
+<section id="hdfs">
+  <p class="section-tag">Q3 · A — HDFS fundamentals</p>
+  <h2>HDFS — the architecture</h2>
+  <p class="lede">Two roles. The NameNode keeps the map. The DataNodes keep the data. Clients talk to the NameNode <em>once</em> for location info, then go straight to the DataNodes for I/O.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-meta">NameNode (Master)</p>
+      <p>Stores <strong>all metadata in RAM</strong>: file→block mappings, block→DataNode locations, directory structure, permissions.</p>
+      <p>Recovery files on disk: <strong>Checkpoint</strong> (snapshot) + <strong>Journal</strong> (write-ahead log of changes since checkpoint).</p>
+      <p>Single point of failure until Hadoop v3.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">DataNode (Worker)</p>
+      <p>Stores actual <strong>data blocks</strong> (default 128 MB). Each block = 2 native files: contents + metadata (checksum, size).</p>
+      <p>Sends a <strong>heartbeat</strong> to the NameNode every 3 s with block reports <code>&lt;block_id, timestamp, length&gt;</code>.</p>
+    </div>
+  </div>
+
+  <h3>Why 128 MB blocks? <span class="marks accent">2019 · 8 marks</span></h3>
+  <p>Disk seek time ≈ 10 ms. At ~100 MB/s transfer, reading 128 MB takes ~1.28 s — making the seek only ~1% of total transfer time. Smaller blocks would let seek overhead dominate. HDFS is designed for <em>batch processing of large files</em>, not random access to small ones.</p>
+
+  <h3>Hardware sizing — NameNode vs DataNode</h3>
+  <ul class="clean">
+    <li><strong>NameNode:</strong> needs <em>high RAM</em> (holds entire filesystem image). Disk is less important.</li>
+    <li><strong>DataNode:</strong> needs <em>high disk capacity</em>, moderate RAM for caching.</li>
+  </ul>
+
+  <div class="hook">
+    <p class="label">Memory hook · "Brain vs Belly"</p>
+    <p class="mnemonic">NameNode is the brain (RAM-heavy). DataNode is the belly (disk-heavy).</p>
+  </div>
+
+  <h3>HDFS vs NFS / RAID — the comparison</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>NFS / RAID</th><th>HDFS</th></tr></thead>
+      <tbody>
+        <tr><td>Replication</td><td>None (relies on RAID striping)</td><td>Built-in (default 3 replicas)</td></tr>
+        <tr><td>Fault tolerance</td><td>Server = single point of failure</td><td>Survives node and rack failures</td></tr>
+        <tr><td>Small files</td><td>Efficient</td><td>Inefficient (NameNode overhead per file)</td></tr>
+        <tr><td>Large files</td><td>Limited by single server</td><td>Optimised — parallel block reads</td></tr>
+        <tr><td>Write model</td><td>Lock-based, single writer</td><td>Lease-based, write-once-read-many</td></tr>
+        <tr><td>Complexity</td><td>Simple</td><td>Requires cluster management</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== HDFS READ =================== -->
+<section id="hdfs-read">
+  <p class="section-tag">Q3 · B — 2018 &amp; 2020</p>
+  <h2>HDFS — the read process</h2>
+  <p class="lede">Two-phase. Client gets locations from NameNode. Then client reads directly from the nearest DataNode. The NameNode is <em>never</em> on the data path.</p>
+
+  <ol class="steps">
+    <li>Client contacts NameNode with the file pathname.</li>
+    <li>NameNode returns block IDs and DataNode locations, <strong>sorted by network distance</strong> (rack awareness).</li>
+    <li>Client contacts the closest DataNode <em>directly</em>.</li>
+    <li>DataNode streams the block in <strong>64 KB packets</strong>, each with a checksum.</li>
+    <li>Client verifies checksums; data is now in client memory.</li>
+  </ol>
+
+  <h4>Error handling</h4>
+  <ul class="clean">
+    <li><strong>Checksum failure</strong> → report to NameNode, try the next DataNode.</li>
+    <li><strong>Network failure</strong> → mark the faulty node, try the next replica.</li>
+    <li><strong>Retries</strong> happen a configurable number of times before giving up.</li>
+  </ul>
+
+  <details class="model" open>
+    <summary><span class="tag">2020 · 8/8</span> Why this design is chosen</summary>
+    <div class="answer">
+      <p>The client contacts the NameNode <strong>only for block locations</strong> and caches them; all I/O then goes directly to DataNodes <span class="marks">3</span>. This removes the NameNode from the data path, letting the system scale despite having a single NameNode.</p>
+      <p><strong>Requirement:</strong> NameNode must maintain very low latency, which requires <em>all metadata to fit in RAM</em>. This imposes either high RAM requirements on the NameNode or an upper limit on filesystem size <span class="marks">2</span>.</p>
+      <p><strong>Why other options are wrong:</strong> proxying data through the NameNode makes it a bottleneck <span class="marks">1</span>. Requiring all DataNodes to know all block locations creates enormous network overhead for block creation/migration <span class="marks">1</span> and forces NameNode-class RAM on every DataNode <span class="marks">1</span>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- =================== HDFS WRITE =================== -->
+<section id="hdfs-write">
+  <p class="section-tag">Q3 · C — pipelined replication</p>
+  <h2>HDFS — the write process (pipelining)</h2>
+
+  <ol class="steps">
+    <li>Client asks NameNode to choose DataNodes for the first block's replicas.</li>
+    <li>DataNodes form a sequential pipeline: <code>DN1 → DN2 → DN3</code>.</li>
+    <li>Client sends 64 KB packets through the pipeline. Each node forwards while receiving.</li>
+    <li>Multiple packets can be in flight at once (true pipelining).</li>
+    <li>Per-packet ACKs flow back. <code>hFlush()</code> periodically writes to the journal for crash safety.</li>
+    <li>Each DataNode separately reports its received block to the NameNode.</li>
+  </ol>
+
+  <h3>Default replica placement policy</h3>
+  <ul class="clean">
+    <li><strong>Replica 1:</strong> same node as writer (or a random node in the writer's rack).</li>
+    <li><strong>Replica 2:</strong> random node in a <em>different</em> rack.</li>
+    <li><strong>Replica 3:</strong> different node in the <em>same remote rack</em> as Replica 2.</li>
+  </ul>
+  <p><strong>Trade-off:</strong> balances reliability (cross-rack replica survives a rack failure) with write bandwidth (only one cross-rack network transfer needed). Read bandwidth benefits from multiple locations.</p>
+</section>
+
+<!-- =================== REPLICATION FACTOR =================== -->
+<section id="hdfs-rep">
+  <p class="section-tag">Q3 · D — 2023 Practice, 15 marks</p>
+  <h2>Replication factor — effects on the cluster</h2>
+
+  <div class="grid-3">
+    <div class="card">
+      <p class="card-meta">Write throughput</p>
+      <p>Slightly reduced. HDFS uses <strong>pipelined replication</strong>, so adding N replicas costs ~N × network latency on top of the first write — negligible on 1 Gbps+ links.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">Read latency</p>
+      <p>Potentially <em>reduced</em>. HDFS reads from the closest replica — more replicas = more candidate locations = higher chance of a nearby copy.</p>
+    </div>
+    <div class="card">
+      <p class="card-meta">Resource usage</p>
+      <p>More disk across DataNodes. More NameNode RAM to track replica locations. More bandwidth for block reports.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== LSM TREES =================== -->
+<section id="lsm">
+  <p class="section-tag">Q3 · E — 2018, 2020, 2025</p>
+  <h2>LSM trees — the engine behind HBase &amp; Cassandra</h2>
+  <p class="lede">Log-Structured Merge trees are <em>write-optimised</em> on-disk indexes. Used by both HBase RegionServers and Cassandra nodes. The whole design is a trade: fast writes, acceptable reads, expensive compaction.</p>
+
+  <h3>The five components</h3>
+  <ul class="clean">
+    <li><strong>Write-Ahead Log (WAL)</strong> — append-only persistent log. Every write goes here first. Sequential = fast. Provides crash recovery.</li>
+    <li><strong>MemTable</strong> — in-memory sorted store of recent writes. Checked first on reads (it's a cache).</li>
+    <li><strong>SSTables (Sorted String Tables)</strong> — immutable on-disk files, created when the MemTable is flushed. Sorted by key.</li>
+    <li><strong>Index</strong> — in-memory mapping of keys → which SSTables might contain them. Uses Bloom filters for O(1) lookup.</li>
+    <li><strong>Compactor</strong> — background process that merges SSTables, applies tombstones (deletes), reclaims space.</li>
+  </ul>
+
+  <h3>Write process</h3>
+  <ol class="steps">
+    <li>Append record to the <strong>WAL</strong> (sequential disk write — fast).</li>
+    <li>Insert record into the <strong>MemTable</strong> (in-memory sorted structure).</li>
+    <li>When the MemTable fills, sort it, write it as a new <strong>SSTable</strong>, update the index, clear WAL.</li>
+    <li>The <strong>Compactor</strong> periodically merges SSTables in the background.</li>
+  </ol>
+
+  <h3>Read process</h3>
+  <ol class="steps">
+    <li>Check the <strong>MemTable</strong> first — most recent data, fastest.</li>
+    <li>If not found, query the <strong>Index</strong> via Bloom filter to find candidate SSTables in O(1).</li>
+    <li>Load and scan only the candidate SSTables (sequential block reads).</li>
+  </ol>
+
+  <div class="hook">
+    <p class="label">Memory hook · "Log · Memory · Spill · Merge"</p>
+    <p class="mnemonic">Write goes <em>Log first, Memory second, Spill third, Merge eventually.</em></p>
+    <p>LSM = "logs that <em>eventually</em> become sorted".</p>
+  </div>
+
+  <h3>True/False statements you'll be asked</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Statement</th><th>T/F</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>"Lower read latency as more items are added"</td><td><strong>FALSE</strong></td><td>More SSTables = more files to scan. Caching helps only for skewed workloads.</td></tr>
+        <tr><td>"High write throughput"</td><td><strong>TRUE</strong></td><td>MemTable buffering + append-only WAL = sequential disk I/O only.</td></tr>
+        <tr><td>"Compaction reduces retrievable items"</td><td><strong>FALSE</strong></td><td>Compaction removes only <em>non-visible</em> data (old versions, tombstones). Retrievable items unchanged.</td></tr>
+        <tr><td>"Only works with master-workers architecture"</td><td><strong>FALSE</strong></td><td>LSM is per-node. HBase (master-workers) and Cassandra (peer-to-peer) both use it.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="dim" style="font-size: 13px;">The examiner has stated: if you write the wrong T/F but the reasoning is correct, you won't be penalised.</p>
+</section>
+
+<!-- =================== BLOOM FILTERS =================== -->
+<section id="bloom">
+  <p class="section-tag">Q3 · F — 2025</p>
+  <h2>Bloom filters</h2>
+  <p class="lede">A space-efficient probabilistic structure that answers "<em>is X possibly in this set?</em>" with two outcomes: <strong>possibly yes</strong>, or <strong>definitely no</strong>. Used by LSM-based stores to skip irrelevant SSTables.</p>
+
+  <h3>How they work</h3>
+  <ol class="steps">
+    <li>Bit array of <em>m</em> bits, all zero. Define <em>k</em> hash functions.</li>
+    <li>To <strong>add</strong> an item: hash it with all <em>k</em> functions, set those <em>k</em> bits to 1.</li>
+    <li>To <strong>query</strong>: hash with all <em>k</em>. If <em>all</em> bits are 1 → possibly in set. If <em>any</em> bit is 0 → definitely not.</li>
+  </ol>
+
+  <div class="formula">
+    <p class="label">Key formulas</p>
+    False-positive rate &nbsp; <em>p = (1 − e<sup>−kn/m</sup>)<sup>k</sup></em><br/>
+    Optimal hash count &nbsp; <em>k = (m/n) · ln 2</em><br/>
+    Optimal array size &nbsp; <em>m = − (n · ln p) / (ln 2)²</em>
+  </div>
+
+  <details class="model" open>
+    <summary><span class="tag">2025 · 3 marks</span> "Fewer large files reduce lookup time" — T/F</summary>
+    <div class="answer">
+      <p>The statement is <strong>FALSE</strong> <span class="marks">1</span>.</p>
+      <p>HBase uses <strong>Bloom filters</strong> for SSTable lookup <span class="marks">1</span>. Bloom filters are <em>O(k)</em> where <em>k</em> is the number of hash functions — these can run in parallel, giving effectively <strong>constant-time</strong> lookup regardless of the number of SSTables <span class="marks">1</span>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- =================== HBASE =================== -->
+<section id="hbase">
+  <p class="section-tag">Q3 · G — heavy in earlier exams</p>
+  <h2>HBase / BigTable</h2>
+  <p class="lede">Distributed, sparse, sorted, persistent, multidimensional <em>map</em>. Built on HDFS. CP in CAP. Has a master (HMaster) — and so a single point of failure.</p>
+
+  <h3>The six key properties</h3>
+  <ul class="clean">
+    <li><strong>Sparse</strong> — rows can have missing columns.</li>
+    <li><strong>Distributed</strong> — data spread across machines.</li>
+    <li><strong>Persistent</strong> — always on persistent storage.</li>
+    <li><strong>Multidimensional</strong> — indexed by RowKey + Column Qualifier + Timestamp.</li>
+    <li><strong>Sorted</strong> — lexicographically by RowKey.</li>
+    <li><strong>Map</strong> — RowKey → record.</li>
+  </ul>
+
+  <div class="hook">
+    <p class="label">Memory hook · "SDPMSM"</p>
+    <p class="mnemonic">"Sparse, Distributed, Persistent, Multi-dim, Sorted, Map."</p>
+  </div>
+
+  <h3>The data model</h3>
+  <ul class="clean">
+    <li><strong>Row</strong> — group of cells sharing a RowKey.</li>
+    <li><strong>Column Qualifier</strong> — a column inside a row. Unlimited per row.</li>
+    <li><strong>Column Family</strong> — group of columns stored together on disk in their own HDFS directory <code>/hbase/table/CF/</code>.</li>
+    <li><strong>Cell</strong> — intersection of <code>(RowKey, Column Qualifier)</code>. Can have multiple <strong>versioned timestamps</strong>.</li>
+    <li><strong>Region</strong> — contiguous block of rows. When too large, it <em>splits</em>.</li>
+  </ul>
+
+  <p><strong>Unique cell identifier (2019):</strong> the tuple <code>{RowKey, Column Qualifier, Timestamp}</code>. This is the composite key used in on-disk storage.</p>
+
+  <h3>On-disk storage format <span class="marks accent">2018 · 5 marks</span></h3>
+  <p>Data is stored as KV pairs. <strong>Key</strong> = <code>&lt;RowKey, ColumnFamily, ColumnQualifier, Timestamp&gt;</code> + size metadata. <strong>Value</strong> = column value + size. Entries sharing a RowKey are stored contiguously, sorted by the composite key. Each Column Family lives in its own HDFS directory — which is why HBase is technically <strong>column-oriented</strong> (despite often being called a "fat column store").</p>
+
+  <h3>Is HBase a row store or column store? <span class="marks accent">2020 · 4 marks</span></h3>
+  <details class="model" open>
+    <summary><span class="tag">4/4</span> Full answer</summary>
+    <div class="answer">
+      <p>HBase is essentially a <strong>row store</strong>, although often called a "fat column store" <span class="marks">1</span>.</p>
+      <p>Cells are sorted first by RowKey and then by column identifier — this is a <em>row-major</em> format <span class="marks">1</span>.</p>
+      <p>Columns are grouped into <strong>Column Families</strong>, each stored in a separate file, so queries on one CF don't touch others <span class="marks">1</span>.</p>
+      <p>For it to be a true column store, each column would need its own Column Family, or every query would only ever access a single CF <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <h3>HBase architecture</h3>
+  <ul class="clean">
+    <li><strong>HMaster</strong> — assigns regions to RegionServers, handles table create/delete, region splits, failures.</li>
+    <li><strong>RegionServer</strong> — handles data requests. Holds 4 LSM-tree structures: WAL, MemStore (writes), BlockCache (reads), HFiles (SSTables on HDFS).</li>
+    <li><strong>ZooKeeper</strong> — communication bridge; tracks state of HMaster &amp; RegionServers, triggers recovery on failure.</li>
+  </ul>
+
+  <h3>Data lookup procedure <span class="marks accent">2016 · 10 marks</span></h3>
+  <ol class="steps">
+    <li>Client asks <strong>ZooKeeper</strong> for the location of the META table.</li>
+    <li>Client reads the META table to find which RegionServer holds the target row's region.</li>
+    <li>Client contacts that RegionServer directly.</li>
+    <li>RegionServer checks <strong>MemStore</strong> first (fastest, most recent).</li>
+    <li>If not in MemStore, checks <strong>BlockCache</strong>.</li>
+    <li>If not cached, uses <strong>Bloom filters</strong> to find candidate HFiles.</li>
+    <li>Reads relevant HFiles from HDFS, returns result.</li>
+  </ol>
+
+  <div class="warn">
+    <p class="label">Trap question · 2023 Practice</p>
+    <p>"Can HBase replace HDFS for storing student files?" → <strong>NO.</strong> HBase is a column store, not a file store. It cannot store arbitrary documents. The examiner has confirmed this is a deliberate AI-catcher.</p>
+  </div>
+</section>
+
+<!-- =================== CASSANDRA =================== -->
+<section id="cassandra">
+  <p class="section-tag">Q3 · H — Cassandra</p>
+  <h2>Cassandra</h2>
+  <p class="lede">Peer-to-peer, masterless, distributed key-value store. Combines BigTable's data model with Dynamo's distribution. AP in CAP. BASE consistency.</p>
+
+  <h3>Architecture</h3>
+  <p>Cassandra <em>is</em> a distributed hash table. Nodes are arranged in a logical ring. Each node contains a Commit Log (WAL), MemTables, SSTables, an Index, and a Coordinator for inter-node communication.</p>
+
+  <p><strong>Gossip protocol:</strong> every second, each node sends a token with its own state + state of known nodes to 3 other nodes. Eventually, all nodes have global knowledge — no central coordinator needed.</p>
+
+  <h3>Partitioning</h3>
+  <ul class="clean">
+    <li><strong>RandomPartitioner</strong> — uniform hash, simple, good for point queries, no load-balancing guarantees.</li>
+    <li><strong>OrderPreservingPartitioner</strong> — if <em>x ≤ y</em> then <em>hash(x) ≤ hash(y)</em>. Enables range queries but can cluster data (hot spots).</li>
+    <li><strong>Cassandra combines both</strong>: order-preserving hash for key ordering, consistent hashing for assigning to nodes.</li>
+  </ul>
+
+  <h3>Replication &amp; arcs</h3>
+  <p>Data is assigned to a node based on the partition key hash. If no exact match, the <em>next node clockwise</em> takes it. With replication factor <em>N</em>, data is copied to the next <em>N</em> nodes clockwise — these form an <strong>arc</strong> responsible for that key. Nodes within an arc monitor each other; on failure, the arc extends to the next available node.</p>
+
+  <h3>Virtual nodes <span class="marks accent">2023</span></h3>
+  <p>One physical node is represented as multiple virtual nodes around the ring. A machine with 8 cores gets more virtual nodes than one with 4. This <strong>balances load</strong> across heterogeneous machines and smooths hash-imbalance.</p>
+  <details class="model">
+    <summary><span class="tag">5 marks</span> Are virtual nodes needed for 50 nodes?</summary>
+    <div class="answer">
+      <p>With 50 nodes, probably <strong>not</strong> <span class="marks">1</span> — 50 unique locations already provide good fault tolerance and balance <span class="marks">1</span>. Exception: if the hashing scheme causes data to cluster on a subset of nodes, virtual nodes would help <span class="marks">1</span>.</p>
+    </div>
+  </details>
+
+  <h3>Consistency levels <span class="marks accent">2018, 2019, 2020</span></h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Level</th><th>Write behaviour</th><th>Read behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ANY</strong></td><td>≥ 1 node (including hinted handoff)</td><td>Not supported</td></tr>
+        <tr><td><strong>ONE</strong></td><td>1 replica commits</td><td>Returns first replica to respond</td></tr>
+        <tr><td><strong>QUORUM</strong></td><td>⌊N/2⌋+1 replicas commit</td><td>Most recent timestamp from ⌊N/2⌋+1 replies</td></tr>
+        <tr><td><strong>LOCAL_QUORUM</strong></td><td>⌊N/2⌋+1 within local DC</td><td>Same, within local DC</td></tr>
+        <tr><td><strong>ALL</strong></td><td>All N replicas commit</td><td>Most recent after all respond</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Cassandra vs HBase</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>HBase</th><th>Cassandra</th></tr></thead>
+      <tbody>
+        <tr><td>Architecture</td><td>Master–worker (HMaster)</td><td>Peer-to-peer (no master)</td></tr>
+        <tr><td>CAP</td><td>CP — Consistency + Partition tolerance</td><td>AP — Availability + Partition tolerance</td></tr>
+        <tr><td>Single point of failure</td><td>Yes (HMaster)</td><td>No</td></tr>
+        <tr><td>Multi-datacenter</td><td>Complex</td><td>Native support</td></tr>
+        <tr><td>Consistency</td><td>Strong</td><td>Tunable (eventual → strong)</td></tr>
+        <tr><td>Storage engine</td><td>LSM tree on HDFS</td><td>LSM tree (local)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details class="model" open>
+    <summary><span class="tag">2025 · MoonShuttle · 4 marks</span> Why Cassandra over HBase for a global crypto exchange?</summary>
+    <div class="answer">
+      <p><strong>(1) No central master index:</strong> Cassandra has no central scan functionality <span class="marks">1</span>, making it hard for governments to obtain a global customer list — a privacy benefit for the exchange <span class="marks">1</span>.</p>
+      <p><strong>(2) Geographic partitioning:</strong> Cassandra's hashing scheme selects which node stores data <span class="marks">1</span>, enabling partitioning by country while keeping data searchable <span class="marks">1</span>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- =================== CONSISTENT HASHING =================== -->
+<section id="hash">
+  <p class="section-tag">Q3 · I — 2020, 2023</p>
+  <h2>Consistent hashing</h2>
+  <p class="lede">A hash space arranged as a ring. Each node owns the keys in the arc clockwise <em>before</em> it. Adding or removing a node only affects keys in its arc — not the whole space.</p>
+
+  <h3>The combination with order-preserving hashing</h3>
+  <p>Cassandra layers an <strong>order-preserving hash</strong> on top: input key <em>Y</em> maps to ID <em>A</em> such that key <em>Z &gt; Y</em> maps to ID <em>B &gt; A</em>. Combined: <em>input key → order-preserving hash → position on ring → consistent hashing → assigned to node</em>. Adjacent keys land on adjacent (or the same) nodes — enabling range queries without losing scalability.</p>
+
+  <h3>Finger tables (Chord)</h3>
+  <p>Instead of O(<em>n</em>) hops to find a key, each node stores <em>log₂(N)</em> finger entries pointing to specific nodes. Lookups complete in <em>O(log N)</em> hops without any global knowledge.</p>
+
+  <h3>True/False statements (with order-preserving hash)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Statement</th><th>T/F</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>An item is always hashed to the same node regardless of node changes</td><td><strong>FALSE</strong></td><td>If a node is added/removed in the arc containing the item, placement changes. Changes outside that arc don't affect it.</td></tr>
+        <tr><td>Storage load is balanced across nodes</td><td><strong>FALSE</strong></td><td>Order-preserving hash preserves input distribution — if input values aren't uniform, load won't be.</td></tr>
+        <tr><td>Range queries perform well</td><td><strong>TRUE</strong></td><td>That's the whole point of order-preserving hashing.</td></tr>
+        <tr><td>Point queries are better than with random hash</td><td><strong>FALSE</strong></td><td>Point queries hit one node either way. Order-preserving may be <em>worse</em> due to imbalance.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== QUORUM =================== -->
+<section id="quorum">
+  <p class="section-tag">Q3 · J — the 2020 trap question</p>
+  <h2>Quorum &amp; strong consistency</h2>
+
+  <div class="formula">
+    <p class="label">The quorum rule</p>
+    <em>R + W &gt; N</em> &nbsp;&nbsp;AND&nbsp;&nbsp; <em>2W &gt; N</em><br/>
+    <span style="font-size: 12px; color: oklch(0.7 0.05 60);">where N = replication factor, R = read replicas contacted, W = write replicas contacted</span>
+  </div>
+
+  <p>This guarantees <strong>at least one node overlaps</strong> between any read and write set — so every read sees the latest write.</p>
+
+  <details class="model" open>
+    <summary><span class="tag">2019 · 7 marks</span> RF=5, want read-your-own-write with minimum write latency</summary>
+    <div class="answer">
+      <p>Choose <strong>QUORUM / QUORUM</strong> — R=3, W=3, N=5. R+W = 6 &gt; 5 ✓.</p>
+      <p>ANY/ONE and ONE/ONE both fail: with a single-copy write, the read replica may not yet have the latest data.</p>
+    </div>
+  </details>
+
+  <div class="warn">
+    <p class="label">2020 trap · the answer is "NONE OF THE ABOVE"</p>
+    <p>You'd expect <em>R + W &gt; N</em> to guarantee strong consistency. But quorum <em>assumes</em> writes always succeed — all W replicas update fully before any read. Without an atomic-write protocol (2PC, Paxos, Raft), a partial write failure breaks the guarantee.</p>
+    <p><strong>Key insight:</strong> quorum provides strong consistency <em>only</em> when combined with atomic-write protocols.</p>
+  </div>
+</section>
+
+<!-- =================== KUBERNETES =================== -->
+<section id="kube">
+  <p class="section-tag">Q3 · K — 2025</p>
+  <h2>Kubernetes</h2>
+  <p class="lede">Open-source container orchestration system (Google → CNCF). Automates deployment, scaling, and management of containerised applications.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <p class="card-meta">Master plane</p>
+      <ul class="clean">
+        <li><strong>API server</strong> — entry point.</li>
+        <li><strong>etcd</strong> — distributed key-value store of cluster state.</li>
+        <li><strong>Scheduler</strong> — allocates pods to nodes.</li>
+        <li><strong>Controller manager</strong> — runs maintenance &amp; recovery loops.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="card-meta">Worker plane</p>
+      <ul class="clean">
+        <li><strong>Kubelet</strong> — ensures the pods on this node are running.</li>
+        <li><strong>Kube-proxy</strong> — manages network rules.</li>
+        <li><strong>cAdvisor</strong> — resource monitoring.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Building blocks</h3>
+  <ul class="clean">
+    <li><strong>Pod</strong> — smallest compute unit. One or more containers sharing the same machine and network namespace; created/destroyed together.</li>
+    <li><strong>Service</strong> — stable hostname for reaching pods (whose IPs change). Load-balances across replicas.</li>
+    <li><strong>Route / Ingress</strong> — exposes services externally at a defined hostname.</li>
+  </ul>
+
+  <details class="model" open>
+    <summary><span class="tag">2025 · 5 marks</span> What is Kubernetes &amp; how does it help?</summary>
+    <div class="answer">
+      <p>Kubernetes is an open-source <strong>container orchestration system</strong> <span class="marks">1</span> for automating deployment, scaling, and management <span class="marks">1</span>.</p>
+      <p>Benefits for a Cassandra-based deployment:</p>
+      <ol class="steps">
+        <li>Automates deployment of Cassandra nodes packaged as containers <span class="marks">1</span>.</li>
+        <li>Automatically restarts failed nodes <span class="marks">1</span>.</li>
+        <li>Abstracts physical hardware, enabling unified deployment across heterogeneous regions <span class="marks">1</span>.</li>
+      </ol>
+    </div>
+  </details>
+
+  <h3>Containers: a quick taxonomy</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Sandbox</th><th>Solves</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>JVM</strong></td><td>App + library incompatibilities</td><td>Lightweight; per-language</td></tr>
+        <tr><td><strong>Virtual Machine</strong></td><td>Everything including kernel</td><td>Heavy; large images, hypervisor overhead</td></tr>
+        <tr><td><strong>Container (Docker)</strong></td><td>App + library + executable</td><td>Lightweight; shares host kernel. <em>Does not solve driver incompatibilities.</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== ZOOKEEPER =================== -->
+<section id="zoo">
+  <p class="section-tag">Q3 · L — coordination service</p>
+  <h2>ZooKeeper</h2>
+  <p class="lede">Distributed key-value store with change notifications. Hierarchical namespace of <em>ZNodes</em>. Replicated across 5+ servers (one Leader, the rest Followers).</p>
+
+  <p><strong>Used by:</strong> HBase, Spark, Flink, Kafka.</p>
+  <p><strong>Solves:</strong> how to track the state of replicas of a distributed component without relying on the application itself.</p>
+  <p><strong>Use cases:</strong> file locking, global config, access controls, bootstrap configuration, service-replica discovery.</p>
+</section>
+
+<!-- ============================================================ -->
+<!--                      SPARK CRIB SHEET                        -->
+<!-- ============================================================ -->
+<section id="spark-crib">
+  <p class="section-tag">Reference — provided in the exam</p>
+  <h2>Spark crib sheet</h2>
+  <p class="lede">The crib sheet gives you syntax. It does not tell you <em>which</em> function to use. Memorise the meaning of each, plus the templates that solve 90% of Spark coding questions.</p>
+
+  <h3>Transformations (lazy)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Function</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td><code>map(func)</code></td><td>Transform each element 1-to-1</td></tr>
+        <tr><td><code>filter(func)</code></td><td>Keep only elements matching a condition</td></tr>
+        <tr><td><code>flatMap(func)</code></td><td>Each element produces 0 or more outputs</td></tr>
+        <tr><td><code>distinct()</code></td><td>Remove duplicates</td></tr>
+        <tr><td><code>sample(frac)</code></td><td>Take a random sample</td></tr>
+        <tr><td><code>union / intersection / subtract</code></td><td>Set operations on two RDDs</td></tr>
+        <tr><td><code>cartesian(other)</code></td><td>All pairs from both RDDs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Key–value transformations</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Function</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td><code>reduceByKey(func)</code></td><td><strong>Aggregate per key</strong> — always prefer over groupByKey</td></tr>
+        <tr><td><code>groupByKey()</code></td><td>Group values by key — <em>avoid</em>, shuffles everything</td></tr>
+        <tr><td><code>sortByKey()</code></td><td>Sort by key</td></tr>
+        <tr><td><code>join(other)</code></td><td>Combine two datasets on matching keys</td></tr>
+        <tr><td><code>mapValues / flatMapValues</code></td><td>Transform values, preserve partitioning</td></tr>
+        <tr><td><code>keys() / values()</code></td><td>Extract just keys or values</td></tr>
+        <tr><td><code>aggregateByKey(zero)(seq, comb)</code></td><td>reduceByKey but output type can differ</td></tr>
+        <tr><td><code>combineByKey(create, merge, comb)</code></td><td>Most general per-key aggregation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Actions (trigger execution)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Function</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td><code>collect()</code></td><td>Bring all results to the driver — <em>careful</em> with large data</td></tr>
+        <tr><td><code>count()</code></td><td>Count elements</td></tr>
+        <tr><td><code>reduce(func)</code></td><td>Aggregate entire RDD to a single value</td></tr>
+        <tr><td><code>first() / take(n)</code></td><td>Get first or first n elements</td></tr>
+        <tr><td><code>saveAsTextFile(path)</code></td><td>Write output to file system</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <p class="label">Critical · reduceByKey vs groupByKey</p>
+    <p><code>reduceByKey</code> combines values <em>locally on each partition first</em>, then shuffles. Efficient.</p>
+    <p><code>groupByKey</code> shuffles <em>all</em> data, <em>then</em> groups. Very expensive.</p>
+    <p>If a question asks you to count/sum/aggregate and you use <code>groupByKey</code>, expect to lose marks.</p>
+  </div>
+
+  <h3>Solution templates</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pattern</th><th>Template</th></tr></thead>
+      <tbody>
+        <tr><td>Count by category</td><td><code>input.map(r =&gt; (category, 1)).reduceByKey(_+_)</code></td></tr>
+        <tr><td>Filter + aggregate</td><td><code>input.filter(cond).map(r =&gt; (k, v)).reduceByKey(func)</code></td></tr>
+        <tr><td>Join two datasets</td><td><code>A.map(_ =&gt; (k, vA)).join(B.map(_ =&gt; (k, vB)))</code></td></tr>
+        <tr><td>Top-K</td><td><code>…reduceByKey(_+_).map(swap).sortByKey(false).take(K)</code></td></tr>
+        <tr><td>Deduplication</td><td><code>input.map(r =&gt; compositeKey).distinct()</code></td></tr>
+        <tr><td>Reverse graph edges</td><td><code>edges.map { case (s,t) =&gt; (t,s) }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== FORMULAS =================== -->
+<section id="formulas">
+  <p class="section-tag">Reference — memorise cold</p>
+  <h2>Formulas to memorise</h2>
+
+  <div class="grid-2">
+    <div class="formula">
+      <p class="label">Speed-up</p>
+      <em>Speed-up(n, p) = Serial_Time(n) / Parallel_Time(n, p)</em>
+    </div>
+    <div class="formula">
+      <p class="label">Quorum (strong consistency)</p>
+      <em>R + W &gt; N &nbsp; AND &nbsp; 2W &gt; N</em>
+    </div>
+    <div class="formula">
+      <p class="label">Bloom — false-positive rate</p>
+      <em>p = (1 − e<sup>−kn/m</sup>)<sup>k</sup></em>
+    </div>
+    <div class="formula">
+      <p class="label">Bloom — optimal hash count</p>
+      <em>k = (m / n) · ln 2</em>
+    </div>
+    <div class="formula">
+      <p class="label">Bloom — optimal array size</p>
+      <em>m = − (n · ln p) / (ln 2)²</em>
+    </div>
+    <div class="formula">
+      <p class="label">Finger table size (Chord)</p>
+      <em>log₂(N) entries per node</em>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TOP 10 =================== -->
+<section id="top10">
+  <p class="section-tag">Predicted exam — 2026</p>
+  <h2>Top 10 most likely questions</h2>
+  <p class="lede">Based on appearance frequency across 2015–2025 papers and recent topical drift. Practice these against an imagined scenario before exam day.</p>
+
+  <ol class="steps">
+    <li><strong>Identify Big Data dimensions for a given scenario</strong> <span class="marks">6</span> — appeared 2023, 2025</li>
+    <li><strong>Design a MapReduce job for a new scenario</strong> <span class="marks">9–18</span> — appeared every year</li>
+    <li><strong>Spark advantages over Hadoop</strong> <span class="marks">6–8</span> — appeared 2023, 2025</li>
+    <li><strong>HDFS read/write process or NameNode recovery</strong> <span class="marks">8–10</span> — appeared 2015–2020</li>
+    <li><strong>Cassandra consistency levels &amp; quorum calculation</strong> <span class="marks">6–8</span> — appeared 2018, 2019, 2020</li>
+    <li><strong>LSM tree write/read process in HBase</strong> <span class="marks">7–10</span> — appeared 2018, 2020, 2025</li>
+    <li><strong>Horizontal scaling challenges for a scenario</strong> <span class="marks">8</span> — appeared 2023</li>
+    <li><strong>Batch vs streaming trade-offs</strong> <span class="marks">4–6</span> — appeared 2023, 2025</li>
+    <li><strong>Legal/ethical implications of data collection</strong> <span class="marks">6</span> — appeared 2025</li>
+    <li><strong>Kubernetes / cluster management role</strong> <span class="marks">5–8</span> — appeared 2023, 2025</li>
+  </ol>
+</section>
+
+<!-- =================== STRATEGY =================== -->
+<section id="strategy">
+  <p class="section-tag">Final stretch</p>
+  <h2>Exam-day strategy</h2>
+
+  <ol class="steps">
+    <li><strong>Read the guidance first.</strong> It tells you exactly how many points to make and how marks are split. "Four points expected, 2 marks each" → write exactly four bullets.</li>
+    <li><strong>Count your points.</strong> If a question is worth 8 marks and asks for points, write four bullets. If it asks to discuss, write four sentences.</li>
+    <li><strong>Every point = concept + scenario link.</strong> Never write a concept without the link.</li>
+    <li><strong>Do the math.</strong> If numbers are in the scenario, calculate them. 100 satellites × 10 MB × 20% active = 200 MB/s.</li>
+    <li><strong>Use scenario-specific nouns.</strong> Not "the data" — "the satellite images" or "the trade records".</li>
+    <li><strong>For MCQs:</strong> spend 90% of your time on the explanation, not the letter.</li>
+    <li><strong>Time management:</strong> 60 marks in 90 minutes = <strong>1.5 minutes per mark</strong>. A 6-mark question gets at most 9 minutes.</li>
+    <li><strong>If stuck, write <em>something</em>.</strong> Concept-only sentences earn partial marks. Blank earns nothing.</li>
+  </ol>
+
+  <div class="recall">
+    <p class="label">Quick-recall · the night before</p>
+    <h3>Twelve things to know cold</h3>
+    <ul class="clean">
+      <li><strong>The 6 V's:</strong> Volume, Velocity, Variety, Veracity, Variability, Complexity</li>
+      <li><strong>Mainframes lose on:</strong> Scaling, Cost, SPoF, Future-proofing</li>
+      <li><strong>Hadoop overheads:</strong> Small files, Sort, Network, Disk</li>
+      <li><strong>Spark wins on:</strong> No HDFS, in-memory, better serialisation, DAG flexibility</li>
+      <li><strong>Narrow:</strong> 1 parent → 1 child. <strong>Wide:</strong> 1 parent → many children</li>
+      <li><strong>MapReduce 7 steps:</strong> Read · Map · Sort · Write · Read · Reduce · Write</li>
+      <li><strong>HDFS block size:</strong> 128 MB so seek is ~1% of transfer</li>
+      <li><strong>Replica placement:</strong> 1 local · 2 different rack · 3 same remote rack</li>
+      <li><strong>LSM write:</strong> WAL · MemTable · SSTable flush · compaction</li>
+      <li><strong>Quorum:</strong> R + W &gt; N <em>and</em> 2W &gt; N (and atomic writes!)</li>
+      <li><strong>CAP:</strong> CA = RDBMS · CP = HBase · AP = Cassandra</li>
+      <li><strong>Always:</strong> Concept + Context = Marks</li>
+    </ul>
+  </div>
+
+  <p style="text-align: center; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-top: 48px;">Now go score the distinction.</p>
+</section>
+
+<footer>
+  Big Data — Exam Mastery Tutorial · COMPSCI 4064 / 5088 · for revision use
+</footer>
+
+</main>
+</div>
+
+<script>
+  // TOC active highlighting on scroll
+  (function() {
+    const links = document.querySelectorAll('.toc a');
+    const targets = Array.from(links)
+      .map(a => document.getElementById(a.getAttribute('href').slice(1)))
+      .filter(Boolean);
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    targets.forEach(t => obs.observe(t));
+  })();
+</script>
+
+</body>
+</html>

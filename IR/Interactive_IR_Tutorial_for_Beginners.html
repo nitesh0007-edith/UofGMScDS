@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Information Retrieval Tutorial for Beginners</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: #f0f0f0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .book-reference {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .book-reference h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .book-reference ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .book-reference li {
+            margin: 5px 0;
+        }
+
+        .book-reference a {
+            color: #764ba2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .book-reference a:hover {
+            text-decoration: underline;
+        }
+
+        .example-box {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .architecture-diagram {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .diagram-title {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .interactive-demo {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 2px solid #667eea;
+        }
+
+        .interactive-demo h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .demo-button {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-output {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            min-height: 50px;
+        }
+
+        .quiz-container {
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 2px solid #ffc107;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .quiz-options {
+            margin-left: 20px;
+        }
+
+        .quiz-options label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .quiz-options label:hover {
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .key-concept {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .key-concept strong {
+            color: #0c5460;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #c7254e;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Information Retrieval Tutorial</h1>
+            <p>A Beginner-Friendly Guide to Search Engines and IR Systems</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#architecture">System Architecture</a></li>
+                <li><a href="#text-processing">Text Processing</a></li>
+                <li><a href="#indexing">Indexing</a></li>
+                <li><a href="#retrieval">Retrieval</a></li>
+                <li><a href="#ranking">Ranking</a></li>
+                <li><a href="#evaluation">Evaluation</a></li>
+                <li><a href="#quiz">Quiz</a></li>
+            </ul>
+        </nav>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress">0%</div>
+        </div>
+
+        <!-- Section 1: Introduction to Information Retrieval -->
+        <section id="intro" class="section">
+            <h2>1. What is Information Retrieval?</h2>
+
+            <p><strong>Information Retrieval (IR)</strong> is the science of searching for information in documents, searching for documents themselves, searching for metadata that describes documents, or searching within databases.</p>
+
+            <div class="key-concept">
+                <strong>Key Definition:</strong> Information Retrieval is finding material (usually documents) of an unstructured nature (usually text) that satisfies an information need from within large collections (usually stored on computers).
+            </div>
+
+            <h3>Real-Life Examples</h3>
+
+            <div class="example-box">
+                <h4>Example 1: Google Search</h4>
+                <p>When you search for "best pizza near me," Google's IR system:</p>
+                <ul>
+                    <li>Processes your query (tokenizes, removes stopwords like "me")</li>
+                    <li>Searches billions of indexed web pages</li>
+                    <li>Ranks results based on relevance, location, ratings, and other factors</li>
+                    <li>Returns the most relevant pizza places in seconds</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Example 2: Amazon Product Search</h4>
+                <p>Searching for "wireless headphones under $100" involves:</p>
+                <ul>
+                    <li>Understanding intent: finding products (not articles about headphones)</li>
+                    <li>Filtering by price constraint ($100)</li>
+                    <li>Ranking by relevance, reviews, sales, and personalization</li>
+                    <li>Handling synonyms (wireless = Bluetooth)</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Example 3: Email Search (Gmail)</h4>
+                <p>Finding "emails from John about meeting" demonstrates:</p>
+                <ul>
+                    <li>Structured + unstructured search (sender field + content)</li>
+                    <li>Temporal relevance (recent emails ranked higher)</li>
+                    <li>Context understanding (meeting = appointment, discussion, etc.)</li>
+                </ul>
+            </div>
+
+            <h3>IR vs. Traditional Databases</h3>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: #667eea; color: white;">
+                    <th style="padding: 12px; border: 1px solid #ddd;">Aspect</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Information Retrieval</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Database Systems</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><strong>Data Type</strong></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Unstructured text</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Structured data</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 12px; border: 1px solid #ddd;"><strong>Query Type</strong></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Natural language, keywords</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">SQL, precise queries</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><strong>Results</strong></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Ranked by relevance</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Exact matches</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 12px; border: 1px solid #ddd;"><strong>Match</strong></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Best match (approximate)</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Exact match</td>
+                </tr>
+            </table>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong> Chapter 1 - "Search Engines and Information Retrieval"
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong> Chapter 1 - "Boolean Retrieval" (Sections 1.1-1.2)
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: System Architecture -->
+        <section id="architecture" class="section">
+            <h2>2. Information Retrieval System Architecture</h2>
+
+            <p>An IR system consists of several interconnected components that work together to find and rank relevant documents.</p>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Complete IR System Architecture</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+┌─────────────────────────────────────────────────────────────────────┐
+│                         DOCUMENT COLLECTION                          │
+│              (Web pages, PDFs, Emails, Products, etc.)              │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      TEXT PROCESSING PIPELINE                        │
+├─────────────────────────────────────────────────────────────────────┤
+│  1. Tokenization    → "New York"  → ["New", "York"]                 │
+│  2. Normalization   → "HELLO"     → "hello"                         │
+│  3. Stopword Removal→ ["the","cat","sat"] → ["cat","sat"]           │
+│  4. Stemming        → "running"   → "run"                           │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         INDEXING MODULE                              │
+├─────────────────────────────────────────────────────────────────────┤
+│              Building Inverted Index Structure:                      │
+│                                                                      │
+│  Term      → Postings List (Doc ID, Position, Frequency)            │
+│  ────────────────────────────────────────────────────────            │
+│  "search"  → [(Doc1, [3,45], f:2), (Doc5, [12], f:1)]              │
+│  "engine"  → [(Doc1, [4], f:1), (Doc3, [23,67], f:2)]              │
+│  "query"   → [(Doc2, [8], f:1), (Doc5, [34], f:1)]                 │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         USER INTERFACE                               │
+│                    ┌──────────────────┐                             │
+│                    │  Search Query:   │                             │
+│                    │  [____________]  │                             │
+│                    │     [Search]     │                             │
+│                    └────────┬─────────┘                             │
+└─────────────────────────────┼──────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      QUERY PROCESSING                                │
+├─────────────────────────────────────────────────────────────────────┤
+│  • Parse query                                                       │
+│  • Apply same text processing (tokenize, stem, etc.)                │
+│  • Identify query terms: "search engines" → ["search", "engine"]    │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     RETRIEVAL & MATCHING                             │
+├─────────────────────────────────────────────────────────────────────┤
+│  • Look up query terms in inverted index                            │
+│  • Retrieve candidate documents                                     │
+│  • Calculate initial scores                                         │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      RANKING MODULE                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Scoring Factors:                                                    │
+│  • TF-IDF (Term Frequency - Inverse Document Frequency)             │
+│  • BM25 (Best Match 25)                                             │
+│  • PageRank / Link Analysis                                         │
+│  • User Signals (clicks, dwell time)                                │
+│  • Personalization                                                  │
+│  • Recency / Freshness                                              │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      RANKED RESULTS                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  1. Document A (Score: 0.95) ⭐⭐⭐⭐⭐                                │
+│  2. Document B (Score: 0.87) ⭐⭐⭐⭐                                 │
+│  3. Document C (Score: 0.76) ⭐⭐⭐                                   │
+│  ...                                                                 │
+└─────────────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+
+            <h3>Component Details</h3>
+
+            <div class="key-concept">
+                <strong>Offline Processing (Indexing Time):</strong> Documents are crawled, processed, and indexed before any user queries arrive. This happens continuously as new content is added.
+            </div>
+
+            <div class="key-concept">
+                <strong>Online Processing (Query Time):</strong> When a user submits a query, the system processes it, retrieves matching documents, ranks them, and returns results - all within milliseconds.
+            </div>
+
+            <div class="example-box">
+                <h4>Real-World: Netflix Search Architecture</h4>
+                <p>When you search for "action movies with Tom Cruise":</p>
+                <ul>
+                    <li><strong>Text Processing:</strong> Extracts ["action", "movies", "tom", "cruise"]</li>
+                    <li><strong>Index Lookup:</strong> Finds all titles matching these terms</li>
+                    <li><strong>Ranking:</strong> Considers: your viewing history, popularity, ratings, release date</li>
+                    <li><strong>Personalization:</strong> Prioritizes genres you watch frequently</li>
+                    <li><strong>Results:</strong> "Top Gun: Maverick" ranks higher than older films</li>
+                </ul>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 2 - "Architecture of a Search Engine"</li>
+                            <li>Chapter 3 - "Crawls and Feeds"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 1 - "Boolean Retrieval" (Section 1.1: Search Engines)</li>
+                            <li>Chapter 4 - "Index Construction"</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: Text Processing -->
+        <section id="text-processing" class="section">
+            <h2>3. Text Processing Pipeline</h2>
+
+            <p>Text processing transforms raw documents into a standardized format suitable for indexing and retrieval.</p>
+
+            <h3>Steps in Text Processing</h3>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Text Processing Pipeline</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+Raw Text: "The Quick Brown Fox's running speed is 45mph!"
+    │
+    ▼
+┌─────────────────────────────────┐
+│  1. TOKENIZATION                │
+│  Split into words/tokens        │
+└────────────┬────────────────────┘
+    │
+    ▼  ["The", "Quick", "Brown", "Fox's", "running", "speed", "is", "45mph", "!"]
+    │
+    ▼
+┌─────────────────────────────────┐
+│  2. LOWERCASING                 │
+│  Normalize to lowercase         │
+└────────────┬────────────────────┘
+    │
+    ▼  ["the", "quick", "brown", "fox's", "running", "speed", "is", "45mph", "!"]
+    │
+    ▼
+┌─────────────────────────────────┐
+│  3. PUNCTUATION REMOVAL         │
+│  Remove special characters      │
+└────────────┬────────────────────┘
+    │
+    ▼  ["the", "quick", "brown", "foxs", "running", "speed", "is", "45mph"]
+    │
+    ▼
+┌─────────────────────────────────┐
+│  4. STOPWORD REMOVAL            │
+│  Remove common words            │
+└────────────┬────────────────────┘
+    │
+    ▼  ["quick", "brown", "foxs", "running", "speed", "45mph"]
+    │
+    ▼
+┌─────────────────────────────────┐
+│  5. STEMMING / LEMMATIZATION    │
+│  Reduce to root form            │
+└────────────┬────────────────────┘
+    │
+    ▼  ["quick", "brown", "fox", "run", "speed", "45mph"]
+    │
+    ▼
+Final Processed Terms for Indexing
+                </pre>
+            </div>
+
+            <h3>1. Tokenization</h3>
+            <p>Breaking text into individual units (tokens), typically words.</p>
+
+            <div class="example-box">
+                <h4>Challenge: "New York City"</h4>
+                <p>Should this be 3 tokens ["New", "York", "City"] or 1 token ["New York City"]?</p>
+                <p><strong>Solution:</strong> IR systems often use both approaches - create individual tokens AND recognize common phrases (n-grams).</p>
+            </div>
+
+            <h3>2. Stopword Removal</h3>
+            <p>Removing common words that carry little meaning: "the", "a", "an", "is", "are", etc.</p>
+
+            <div class="key-concept">
+                <strong>Trade-off:</strong> Stopwords reduce index size but can affect phrase queries. "to be or not to be" becomes meaningless after stopword removal!
+            </div>
+
+            <h3>3. Stemming</h3>
+            <p>Reducing words to their root form: "running", "runs", "ran" → "run"</p>
+
+            <div class="example-box">
+                <h4>Porter Stemmer Examples</h4>
+                <ul>
+                    <li>connection, connections, connective → connect</li>
+                    <li>computing, computer, computation → comput</li>
+                    <li>excellence, excellent → excel</li>
+                </ul>
+            </div>
+
+            <div class="interactive-demo">
+                <h4>🔧 Try It: Text Processing Demo</h4>
+                <p>Enter some text to see it processed through the pipeline:</p>
+                <textarea class="demo-input" id="input-text" rows="4" placeholder="Enter text here, e.g., 'The running foxes are jumping over the lazy dogs!'"></textarea>
+                <button class="demo-button" onclick="processText()">Process Text</button>
+                <div class="demo-output" id="text-output"></div>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 4 - "Processing Text" (Sections 4.1-4.4)</li>
+                            <li>Section 4.2 - "Tokenization"</li>
+                            <li>Section 4.3 - "Stopwords"</li>
+                            <li>Section 4.4 - "Stemming and Lemmatization"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 2 - "The Term Vocabulary and Postings Lists" (Sections 2.1-2.4)</li>
+                            <li>Section 2.2.1 - "Tokenization"</li>
+                            <li>Section 2.2.2 - "Dropping Common Terms: Stop Words"</li>
+                            <li>Section 2.4 - "Stemming and Lemmatization"</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 4: Indexing -->
+        <section id="indexing" class="section">
+            <h2>4. Indexing: The Inverted Index</h2>
+
+            <p>The <strong>inverted index</strong> is the core data structure in IR systems, enabling fast retrieval.</p>
+
+            <h3>What is an Inverted Index?</h3>
+
+            <div class="key-concept">
+                <strong>Core Idea:</strong> Instead of storing documents and searching through them sequentially, we create a dictionary mapping each term to the list of documents containing it.
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Inverted Index Structure</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+Document Collection:
+─────────────────────────────────────────────────────
+Doc1: "Machine learning is transforming technology"
+Doc2: "Deep learning and machine learning are related"
+Doc3: "Technology advances with artificial intelligence"
+Doc4: "Machine learning algorithms improve over time"
+
+After Text Processing:
+─────────────────────────────────────────────────────
+Doc1: [machine, learn, transform, technolog]
+Doc2: [deep, learn, machine, learn, relat]
+Doc3: [technolog, advanc, artifici, intellig]
+Doc4: [machine, learn, algorithm, improv, time]
+
+Inverted Index:
+─────────────────────────────────────────────────────
+Term          │ Postings List (DocID, Frequency, Positions)
+──────────────┼─────────────────────────────────────────────
+advanc        │ → (Doc3, f:1, pos:[2])
+algorithm     │ → (Doc4, f:1, pos:[3])
+artifici      │ → (Doc3, f:1, pos:[3])
+deep          │ → (Doc2, f:1, pos:[1])
+improv        │ → (Doc4, f:1, pos:[4])
+intellig      │ → (Doc3, f:1, pos:[4])
+learn         │ → (Doc1, f:1, pos:[2])
+              │   (Doc2, f:2, pos:[2,4])
+              │   (Doc4, f:1, pos:[2])
+machine       │ → (Doc1, f:1, pos:[1])
+              │   (Doc2, f:1, pos:[3])
+              │   (Doc4, f:1, pos:[1])
+relat         │ → (Doc2, f:1, pos:[5])
+technolog     │ → (Doc1, f:1, pos:[4])
+              │   (Doc3, f:1, pos:[1])
+time          │ → (Doc4, f:1, pos:[5])
+transform     │ → (Doc1, f:1, pos:[3])
+                </pre>
+            </div>
+
+            <h3>Why Inverted Index?</h3>
+
+            <div class="example-box">
+                <h4>Performance Comparison</h4>
+                <p><strong>Without Index (Sequential Search):</strong></p>
+                <ul>
+                    <li>Search for "machine learning" in 1 million documents</li>
+                    <li>Must scan ALL documents: ~1,000,000 comparisons</li>
+                    <li>Time: Several seconds ⏱️</li>
+                </ul>
+                <p><strong>With Inverted Index:</strong></p>
+                <ul>
+                    <li>Look up "machine" in dictionary: 1 comparison</li>
+                    <li>Look up "learning" in dictionary: 1 comparison</li>
+                    <li>Intersect posting lists: ~100 comparisons</li>
+                    <li>Time: Milliseconds ⚡</li>
+                </ul>
+            </div>
+
+            <h3>Index Construction</h3>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Index Building Process</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+Step 1: Parse documents and create (Term, DocID, Position) tuples
+────────────────────────────────────────────────────────────────
+Doc1: "search engine"     → (search, 1, 1), (engine, 1, 2)
+Doc2: "engine optimization" → (engine, 2, 1), (optim, 2, 2)
+Doc3: "search results"    → (search, 3, 1), (result, 3, 2)
+
+Step 2: Sort by term (then by DocID)
+────────────────────────────────────────────────────────────────
+(engine, 1, 2)
+(engine, 2, 1)
+(optim, 2, 2)
+(result, 3, 2)
+(search, 1, 1)
+(search, 3, 1)
+
+Step 3: Group by term and create postings
+────────────────────────────────────────────────────────────────
+engine  → [(Doc1, pos:2), (Doc2, pos:1)]
+optim   → [(Doc2, pos:2)]
+result  → [(Doc3, pos:2)]
+search  → [(Doc1, pos:1), (Doc3, pos:1)]
+
+Step 4: Write to disk with compression
+────────────────────────────────────────────────────────────────
+[Dictionary] ← [Postings Lists stored efficiently]
+                </pre>
+            </div>
+
+            <div class="interactive-demo">
+                <h4>🔧 Try It: Search the Index</h4>
+                <p>Enter a search query to see how the inverted index retrieves documents:</p>
+                <input type="text" class="demo-input" id="search-query" placeholder="Try: machine learning, technology, or deep learning">
+                <button class="demo-button" onclick="searchIndex()">Search</button>
+                <div class="demo-output" id="search-output"></div>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 5 - "Indexing" (Complete chapter)</li>
+                            <li>Section 5.1 - "Document Indexing"</li>
+                            <li>Section 5.2 - "Inverted Index Structure"</li>
+                            <li>Section 5.3 - "Compression"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 1 - "Boolean Retrieval" (Section 1.2: Inverted Index)</li>
+                            <li>Chapter 4 - "Index Construction" (Complete chapter)</li>
+                            <li>Section 4.2 - "BSBI: Blocked Sort-Based Indexing"</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: Retrieval Models -->
+        <section id="retrieval" class="section">
+            <h2>5. Retrieval Models</h2>
+
+            <p>Retrieval models determine HOW we match queries to documents and calculate relevance scores.</p>
+
+            <h3>1. Boolean Retrieval Model</h3>
+
+            <div class="key-concept">
+                <strong>Concept:</strong> Documents either match or don't match - binary decision. Uses AND, OR, NOT operators.
+            </div>
+
+            <div class="example-box">
+                <h4>Boolean Query Example</h4>
+                <p><strong>Query:</strong> "machine AND learning NOT deep"</p>
+                <p><strong>Process:</strong></p>
+                <ul>
+                    <li>Get postings for "machine": {Doc1, Doc2, Doc4}</li>
+                    <li>Get postings for "learning": {Doc1, Doc2, Doc4}</li>
+                    <li>Get postings for "deep": {Doc2}</li>
+                    <li>Intersect machine AND learning: {Doc1, Doc2, Doc4}</li>
+                    <li>Subtract deep: {Doc1, Doc4}</li>
+                </ul>
+                <p><strong>Result:</strong> Doc1 and Doc4 (no ranking, just matching)</p>
+            </div>
+
+            <h3>2. Vector Space Model (VSM)</h3>
+
+            <div class="key-concept">
+                <strong>Concept:</strong> Represent documents and queries as vectors in a multi-dimensional space. Similarity = angle between vectors.
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Vector Space Model Visualization</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+Terms: [machine, learning, deep, algorithm]
+
+Document Vectors (based on term weights):
+─────────────────────────────────────────────────────
+Doc1: [0.8, 0.6, 0.0, 0.3]  (machine-heavy, no "deep")
+Doc2: [0.5, 0.7, 0.9, 0.1]  (deep learning focus)
+Doc3: [0.2, 0.1, 0.0, 0.8]  (algorithm focus)
+
+Query: "machine learning"
+Query Vector: [0.7, 0.7, 0.0, 0.0]
+
+Similarity Calculation (Cosine Similarity):
+─────────────────────────────────────────────────────
+cos(Query, Doc1) = 0.92  ← Highest similarity
+cos(Query, Doc2) = 0.78
+cos(Query, Doc3) = 0.21  ← Lowest similarity
+
+Ranking: Doc1 > Doc2 > Doc3
+                </pre>
+            </div>
+
+            <h3>3. Probabilistic Models (BM25)</h3>
+
+            <p>BM25 (Best Match 25) is the most widely used ranking function in modern search engines.</p>
+
+            <div class="key-concept">
+                <strong>BM25 considers:</strong>
+                <ul>
+                    <li><strong>Term Frequency (TF):</strong> How often does the query term appear in the document?</li>
+                    <li><strong>Inverse Document Frequency (IDF):</strong> How rare is the term across all documents?</li>
+                    <li><strong>Document Length:</strong> Longer documents are normalized to avoid bias</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Real-World: Elasticsearch Search</h4>
+                <p>When searching GitHub code for "sort algorithm":</p>
+                <ul>
+                    <li><strong>TF:</strong> Files with multiple occurrences of "sort" rank higher</li>
+                    <li><strong>IDF:</strong> "algorithm" is common (low IDF), "quicksort" is rarer (high IDF)</li>
+                    <li><strong>Length Normalization:</strong> A 50-line file with 3 mentions beats a 5000-line file with 5 mentions</li>
+                    <li><strong>Field Boosting:</strong> Matches in filename/title ranked higher than in comments</li>
+                </ul>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 7 - "Retrieval Models" (Complete chapter)</li>
+                            <li>Section 7.1 - "Boolean Retrieval"</li>
+                            <li>Section 7.2 - "Vector Space Model"</li>
+                            <li>Section 7.3 - "Probabilistic Models"</li>
+                            <li>Section 7.4 - "BM25 Ranking"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 6 - "Scoring, Term Weighting & Vector Space Model"</li>
+                            <li>Chapter 11 - "Probabilistic Information Retrieval"</li>
+                            <li>Section 11.4 - "Okapi BM25"</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: Ranking and Relevance -->
+        <section id="ranking" class="section">
+            <h2>6. Ranking and Relevance</h2>
+
+            <p>Ranking determines the order in which search results are presented to users.</p>
+
+            <h3>Factors Affecting Ranking</h3>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Multi-Signal Ranking System</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+QUERY: "best laptop 2024"
+
+┌─────────────────────────────────────────────────────────┐
+│          CONTENT-BASED SIGNALS (50% weight)             │
+├─────────────────────────────────────────────────────────┤
+│  • Term Frequency: "laptop" appears 15 times            │
+│  • TF-IDF Score: 0.89                                   │
+│  • BM25 Score: 4.2                                      │
+│  • Proximity: "best" and "laptop" appear together       │
+│  • Title Match: "laptop" in title (+boost)              │
+└─────────────────────────────────────────────────────────┘
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│          AUTHORITY SIGNALS (25% weight)                 │
+├─────────────────────────────────────────────────────────┤
+│  • PageRank: 0.78 (high authority)                      │
+│  • Inbound Links: 245 from tech sites                   │
+│  • Domain Authority: 85/100                             │
+│  • Author Expertise: Verified tech reviewer             │
+└─────────────────────────────────────────────────────────┘
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│          FRESHNESS SIGNALS (15% weight)                 │
+├─────────────────────────────────────────────────────────┤
+│  • Published: January 2024 ✓ (query mentions "2024")   │
+│  • Last Updated: 3 days ago                             │
+│  • Time Decay Factor: 1.0 (fresh content)               │
+└─────────────────────────────────────────────────────────┘
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│          USER SIGNALS (10% weight)                      │
+├─────────────────────────────────────────────────────────┤
+│  • Click-Through Rate: 12.5%                            │
+│  • Dwell Time: 3m 45s (good engagement)                 │
+│  • Bounce Rate: 22% (low = good)                        │
+│  • User Location: Matches "near me" intent              │
+└─────────────────────────────────────────────────────────┘
+                        ▼
+            ┌──────────────────────┐
+            │  FINAL SCORE: 8.7/10 │
+            │  RANK: #2            │
+            └──────────────────────┘
+                </pre>
+            </div>
+
+            <h3>Query-Independent vs Query-Dependent Signals</h3>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: #667eea; color: white;">
+                    <th style="padding: 12px; border: 1px solid #ddd;">Query-Independent</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Query-Dependent</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <ul>
+                            <li>PageRank / Authority</li>
+                            <li>Domain age & trust</li>
+                            <li>Content quality</li>
+                            <li>Update frequency</li>
+                        </ul>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <ul>
+                            <li>TF-IDF / BM25 score</li>
+                            <li>Term proximity</li>
+                            <li>Query term coverage</li>
+                            <li>Phrase matching</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Real-World: Google Search Ranking Evolution</h4>
+                <p><strong>1998 (Early Google):</strong></p>
+                <ul>
+                    <li>Primary: PageRank (link-based authority)</li>
+                    <li>Secondary: Term matching</li>
+                </ul>
+                <p><strong>2024 (Modern Google):</strong></p>
+                <ul>
+                    <li>200+ ranking factors including:</li>
+                    <li>• BERT/Neural matching (understanding context)</li>
+                    <li>• Mobile-friendliness</li>
+                    <li>• Page speed (Core Web Vitals)</li>
+                    <li>• E-E-A-T (Experience, Expertise, Authority, Trust)</li>
+                    <li>• User behavior signals</li>
+                    <li>• Personalization based on history</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Real-World: Amazon Product Ranking</h4>
+                <p>Search for "wireless mouse":</p>
+                <ul>
+                    <li><strong>Text Match:</strong> Title/description contains "wireless" and "mouse"</li>
+                    <li><strong>Sales Velocity:</strong> Products selling fast rank higher</li>
+                    <li><strong>Rating:</strong> 4.7★ with 10,000 reviews > 4.9★ with 10 reviews</li>
+                    <li><strong>Price:</strong> Considers user's typical price range</li>
+                    <li><strong>Availability:</strong> "In Stock" boosted over "Ships in 2 weeks"</li>
+                    <li><strong>Prime:</strong> Prime-eligible products get boost for Prime members</li>
+                    <li><strong>Personalization:</strong> If you bought Logitech before, Logitech products rank higher</li>
+                </ul>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 8 - "Ranking" (Complete chapter)</li>
+                            <li>Section 8.3 - "Link Analysis and PageRank"</li>
+                            <li>Chapter 10 - "Machine Learning for Ranking"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 6 - "Scoring, Term Weighting, and Vector Space Model"</li>
+                            <li>Chapter 21 - "Link Analysis" (PageRank, HITS)</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 7: Evaluation -->
+        <section id="evaluation" class="section">
+            <h2>7. Evaluation of IR Systems</h2>
+
+            <p>How do we measure if a search engine is working well?</p>
+
+            <h3>Key Metrics</h3>
+
+            <div class="key-concept">
+                <strong>Precision:</strong> Of the results returned, how many are relevant?<br>
+                <code>Precision = (Relevant Results Retrieved) / (Total Results Retrieved)</code>
+            </div>
+
+            <div class="key-concept">
+                <strong>Recall:</strong> Of all relevant documents in the collection, how many did we find?<br>
+                <code>Recall = (Relevant Results Retrieved) / (Total Relevant Documents)</code>
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="diagram-title">Precision & Recall Visualization</div>
+                <pre style="background: white; color: #333; padding: 0; margin: 0;">
+Document Collection (100 documents total)
+20 are actually relevant to the query
+
+Search Engine Returns 15 Results:
+┌─────────────────────────────────────────┐
+│  Retrieved Results (15)                 │
+│  ┌───────────────────────────────┐      │
+│  │ Relevant & Retrieved (12) ✓✓✓│      │  ← True Positives
+│  │                               │      │
+│  └───────────────────────────────┘      │
+│  Not Relevant but Retrieved (3) ✗✗✗    │  ← False Positives
+└─────────────────────────────────────────┘
+
+Not Retrieved (85):
+┌─────────────────────────────────────────┐
+│  Relevant but NOT Retrieved (8) ✓✓✓    │  ← False Negatives
+│  Not Relevant & Not Retrieved (77)      │  ← True Negatives
+└─────────────────────────────────────────┘
+
+Calculations:
+─────────────────────────────────────────
+Precision = 12 / 15 = 0.80 (80%)
+  → "80% of returned results are relevant"
+
+Recall = 12 / 20 = 0.60 (60%)
+  → "Found 60% of all relevant documents"
+
+F1-Score = 2 × (0.80 × 0.60) / (0.80 + 0.60) = 0.686
+  → Harmonic mean balancing precision & recall
+                </pre>
+            </div>
+
+            <h3>Additional Metrics</h3>
+
+            <div class="example-box">
+                <h4>Mean Average Precision (MAP)</h4>
+                <p>Evaluates ranking quality across multiple queries:</p>
+                <ul>
+                    <li>Calculate Average Precision for each query</li>
+                    <li>Take the mean across all queries</li>
+                    <li>Higher MAP = better ranking overall</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Normalized Discounted Cumulative Gain (NDCG)</h4>
+                <p>Accounts for position and graded relevance:</p>
+                <ul>
+                    <li>Highly relevant results at top = high score</li>
+                    <li>Relevant results buried deep = lower score</li>
+                    <li>Allows graded relevance (not just binary relevant/not relevant)</li>
+                    <li>Example: Perfect (5), Excellent (4), Good (3), Fair (2), Bad (0)</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Real-World: A/B Testing at Google</h4>
+                <p>Google runs thousands of experiments yearly:</p>
+                <ul>
+                    <li><strong>Treatment:</strong> New ranking algorithm</li>
+                    <li><strong>Control:</strong> Current algorithm</li>
+                    <li><strong>Metrics:</strong>
+                        <ul>
+                            <li>Click-Through Rate (CTR) on top results</li>
+                            <li>Time to successful click (faster = better)</li>
+                            <li>Reformulation rate (do users re-search?)</li>
+                            <li>Long-click rate (did user find what they need?)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Decision:</strong> Deploy if treatment shows 1-2% improvement</li>
+                </ul>
+            </div>
+
+            <div class="book-reference">
+                <h4>📚 Dig Deeper</h4>
+                <ul>
+                    <li><strong>Book 1 (Croft et al.):</strong>
+                        <ul>
+                            <li>Chapter 8 - "Evaluating Search Engines" (Complete chapter)</li>
+                            <li>Section 8.1 - "Precision and Recall"</li>
+                            <li>Section 8.3 - "Mean Average Precision"</li>
+                            <li>Section 8.5 - "NDCG"</li>
+                        </ul>
+                        <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">[Online Book]</a>
+                    </li>
+                    <li><strong>Book 2 (Manning et al.):</strong>
+                        <ul>
+                            <li>Chapter 8 - "Evaluation in Information Retrieval" (Complete chapter)</li>
+                            <li>Section 8.3 - "Evaluation of Unranked Retrieval Sets"</li>
+                            <li>Section 8.4 - "Evaluation of Ranked Retrieval Results"</li>
+                        </ul>
+                        <a href="https://nlp.stanford.edu/IR-book/" target="_blank">[Online Book]</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 8: Interactive Quiz -->
+        <section id="quiz" class="section">
+            <h2>8. Test Your Knowledge!</h2>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h4>Question 1: What is the main advantage of an inverted index?</h4>
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="q1" value="a">
+                            It stores documents in reverse order
+                        </label>
+                        <label>
+                            <input type="radio" name="q1" value="b">
+                            It allows fast lookup of documents containing a specific term
+                        </label>
+                        <label>
+                            <input type="radio" name="q1" value="c">
+                            It inverts the query before searching
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 2: What does stemming do?</h4>
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="q2" value="a">
+                            Removes punctuation from text
+                        </label>
+                        <label>
+                            <input type="radio" name="q2" value="b">
+                            Reduces words to their root form
+                        </label>
+                        <label>
+                            <input type="radio" name="q2" value="c">
+                            Identifies proper nouns
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 3: In the Vector Space Model, similarity is measured by:</h4>
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="q3" value="a">
+                            The distance between vectors
+                        </label>
+                        <label>
+                            <input type="radio" name="q3" value="b">
+                            The angle between vectors (cosine similarity)
+                        </label>
+                        <label>
+                            <input type="radio" name="q3" value="c">
+                            The sum of vector components
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 4: High precision means:</h4>
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="q4" value="a">
+                            Most returned results are relevant
+                        </label>
+                        <label>
+                            <input type="radio" name="q4" value="b">
+                            Most relevant documents are returned
+                        </label>
+                        <label>
+                            <input type="radio" name="q4" value="c">
+                            The search is very fast
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 5: What does TF-IDF emphasize?</h4>
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="q5" value="a">
+                            Terms that appear frequently in the document but rarely in the collection
+                        </label>
+                        <label>
+                            <input type="radio" name="q5" value="b">
+                            Terms that appear in all documents
+                        </label>
+                        <label>
+                            <input type="radio" name="q5" value="c">
+                            Terms at the beginning of documents
+                        </label>
+                    </div>
+                </div>
+
+                <button class="demo-button" onclick="checkQuiz()" style="margin-top: 20px;">Submit Quiz</button>
+                <div id="quiz-result"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Progress tracking
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const scrolled = window.scrollY;
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.min((scrolled / totalHeight) * 100, 100);
+
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress').textContent = Math.round(progress) + '%';
+        });
+
+        // Text Processing Demo
+        function processText() {
+            const input = document.getElementById('input-text').value;
+            let output = '<h4>Processing Steps:</h4>';
+
+            // Step 1: Tokenization
+            let tokens = input.toLowerCase().replace(/[.,!?;:]/g, '').split(/\s+/);
+            output += `<p><strong>1. Tokenization:</strong><br>${JSON.stringify(tokens)}</p>`;
+
+            // Step 2: Stopword Removal
+            const stopwords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'over'];
+            let afterStopwords = tokens.filter(word => !stopwords.includes(word));
+            output += `<p><strong>2. After Stopword Removal:</strong><br>${JSON.stringify(afterStopwords)}</p>`;
+
+            // Step 3: Simple Stemming
+            let stemmed = afterStopwords.map(word => {
+                if (word.endsWith('ing')) return word.slice(0, -3);
+                if (word.endsWith('ed')) return word.slice(0, -2);
+                if (word.endsWith('s') && !word.endsWith('ss')) return word.slice(0, -1);
+                return word;
+            });
+            output += `<p><strong>3. After Stemming:</strong><br>${JSON.stringify(stemmed)}</p>`;
+
+            output += `<p><strong>Final Terms for Indexing:</strong> ${stemmed.length} unique terms</p>`;
+
+            document.getElementById('text-output').innerHTML = output;
+        }
+
+        // Search Index Demo
+        const sampleIndex = {
+            'machine': [
+                {doc: 'Doc1', freq: 1, snippet: 'Machine learning is transforming technology'},
+                {doc: 'Doc2', freq: 1, snippet: 'Deep learning and machine learning are related'},
+                {doc: 'Doc4', freq: 1, snippet: 'Machine learning algorithms improve over time'}
+            ],
+            'learn': [
+                {doc: 'Doc1', freq: 1, snippet: 'Machine learning is transforming technology'},
+                {doc: 'Doc2', freq: 2, snippet: 'Deep learning and machine learning are related'},
+                {doc: 'Doc4', freq: 1, snippet: 'Machine learning algorithms improve over time'}
+            ],
+            'deep': [
+                {doc: 'Doc2', freq: 1, snippet: 'Deep learning and machine learning are related'}
+            ],
+            'technolog': [
+                {doc: 'Doc1', freq: 1, snippet: 'Machine learning is transforming technology'},
+                {doc: 'Doc3', freq: 1, snippet: 'Technology advances with artificial intelligence'}
+            ],
+            'algorithm': [
+                {doc: 'Doc4', freq: 1, snippet: 'Machine learning algorithms improve over time'}
+            ]
+        };
+
+        function searchIndex() {
+            const query = document.getElementById('search-query').value.toLowerCase();
+            const queryTerms = query.split(/\s+/);
+
+            let output = '<h4>Search Results:</h4>';
+            output += `<p><strong>Query:</strong> "${query}"</p>`;
+            output += `<p><strong>Query Terms:</strong> ${JSON.stringify(queryTerms)}</p>`;
+
+            // Collect matching documents
+            const docScores = {};
+
+            queryTerms.forEach(term => {
+                // Simple stemming for demo
+                let stemmedTerm = term;
+                if (term.endsWith('ing')) stemmedTerm = term.slice(0, -3);
+
+                if (sampleIndex[stemmedTerm]) {
+                    output += `<p><strong>Found in index:</strong> "${term}" → ${sampleIndex[stemmedTerm].length} documents</p>`;
+
+                    sampleIndex[stemmedTerm].forEach(posting => {
+                        if (!docScores[posting.doc]) {
+                            docScores[posting.doc] = {score: 0, snippet: posting.snippet};
+                        }
+                        docScores[posting.doc].score += posting.freq;
+                    });
+                } else {
+                    output += `<p><strong>Not found:</strong> "${term}"</p>`;
+                }
+            });
+
+            // Rank results
+            const ranked = Object.entries(docScores)
+                .sort((a, b) => b[1].score - a[1].score)
+                .map(([doc, data]) => ({doc, ...data}));
+
+            if (ranked.length > 0) {
+                output += '<h4>Ranked Results:</h4>';
+                ranked.forEach((result, index) => {
+                    output += `<div style="margin: 10px 0; padding: 10px; background: #f0f8ff; border-left: 3px solid #667eea;">
+                        <strong>#${index + 1} ${result.doc}</strong> (Score: ${result.score})<br>
+                        <em>${result.snippet}</em>
+                    </div>`;
+                });
+            } else {
+                output += '<p><strong>No matching documents found.</strong></p>';
+            }
+
+            document.getElementById('search-output').innerHTML = output;
+        }
+
+        // Quiz functionality
+        function checkQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'b',
+                q4: 'a',
+                q5: 'a'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            for (let q in answers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q]) {
+                    score++;
+                }
+            }
+
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quiz-result');
+
+            let resultClass = percentage >= 80 ? 'correct' : 'incorrect';
+            let message = percentage >= 80
+                ? `Excellent! You got ${score}/${total} correct! 🎉`
+                : `You got ${score}/${total} correct. Review the material and try again!`;
+
+            resultDiv.className = 'quiz-result ' + resultClass;
+            resultDiv.innerHTML = message;
+        }
+    </script>
+</body>
+</html>

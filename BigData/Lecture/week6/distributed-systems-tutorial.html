@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distributed Systems Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #252a35;
+    --accent1: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --text: #e8eaf0;
+    --text-muted: #7a8299;
+    --text-dim: #4a5168;
+    --glow1: rgba(0,229,255,0.15);
+    --glow2: rgba(255,107,53,0.15);
+    --glow3: rgba(167,139,250,0.15);
+    --glow4: rgba(52,211,153,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 20%, rgba(0,229,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 90% 80%, rgba(167,139,250,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,107,53,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    background: rgba(10,12,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent1);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover {
+    color: var(--accent1);
+    border-color: rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.05);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 9rem 2rem 6rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent1);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 20px;
+    background: rgba(0,229,255,0.05);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent1) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-weight: 400;
+  }
+  .badge-1 { background: rgba(0,229,255,0.1); color: var(--accent1); border: 1px solid rgba(0,229,255,0.2); }
+  .badge-2 { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.2); }
+  .badge-3 { background: rgba(167,139,250,0.1); color: var(--accent3); border: 1px solid rgba(167,139,250,0.2); }
+  .badge-4 { background: rgba(52,211,153,0.1); color: var(--accent4); border: 1px solid rgba(52,211,153,0.2); }
+
+  /* MAIN CONTENT */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 5rem;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .section-header {
+    padding: 2.5rem 2.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .sec-hdfs .section-header::before { background: linear-gradient(90deg, var(--accent1), transparent); }
+  .sec-cap .section-header::before { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .sec-lsm .section-header::before { background: linear-gradient(90deg, var(--accent3), transparent); }
+  .sec-bloom .section-header::before { background: linear-gradient(90deg, var(--accent4), transparent); }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .sec-hdfs .section-num { color: var(--accent1); }
+  .sec-cap .section-num { color: var(--accent2); }
+  .sec-lsm .section-num { color: var(--accent3); }
+  .sec-bloom .section-num { color: var(--accent4); }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+
+  .section-body {
+    padding: 2.5rem;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 2rem 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3::before {
+    content: '';
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .sec-hdfs h3::before { background: var(--accent1); }
+  .sec-cap h3::before { background: var(--accent2); }
+  .sec-lsm h3::before { background: var(--accent3); }
+  .sec-bloom h3::before { background: var(--accent4); }
+
+  p { margin-bottom: 1rem; color: var(--text); font-size: 0.97rem; }
+
+  /* DIAGRAMS */
+  .diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .diagram-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .diagram-title::before { content: '◈'; }
+
+  /* FLOW DIAGRAMS */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flow-node {
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    text-align: center;
+    min-width: 100px;
+    position: relative;
+    border: 1.5px solid;
+    transition: transform 0.2s;
+  }
+  .flow-node:hover { transform: translateY(-2px); }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    padding: 0 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .node-cyan { background: rgba(0,229,255,0.1); border-color: rgba(0,229,255,0.4); color: var(--accent1); }
+  .node-orange { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.4); color: var(--accent2); }
+  .node-purple { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.4); color: var(--accent3); }
+  .node-green { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.4); color: var(--accent4); }
+  .node-yellow { background: rgba(250,204,21,0.1); border-color: rgba(250,204,21,0.4); color: #fbbf24; }
+  .node-red { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); color: #f87171; }
+
+  /* CALLOUT */
+  .callout {
+    padding: 1.25rem 1.5rem;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .callout-info { background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.2); }
+  .callout-warn { background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.2); }
+  .callout-tip { background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.2); }
+  .callout-example { background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); }
+
+  /* CODE */
+  pre, code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+  }
+  .code-block {
+    background: #080a0e;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    color: #c8d3e8;
+  }
+  .code-block .kw { color: #c792ea; }
+  .code-block .str { color: #c3e88d; }
+  .code-block .num { color: #f78c6c; }
+  .code-block .cm { color: #546e7a; font-style: italic; }
+  .code-block .fn { color: #82aaff; }
+  .code-block .cls { color: var(--accent1); }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+  }
+  th {
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* INTERACTIVE BLOOM FILTER */
+  .interactive {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .interactive-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--accent4);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .interactive-title::before { content: '⚡'; }
+
+  .bloom-input {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .bloom-input input {
+    flex: 1;
+    min-width: 150px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .bloom-input input:focus { border-color: var(--accent4); }
+  .bloom-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .btn-add { background: var(--accent4); color: #000; }
+  .btn-check { background: transparent; color: var(--accent1); border: 1px solid var(--accent1); }
+  .btn-reset { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .bloom-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .bloom-array {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .bloom-bit {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .bloom-bit.active {
+    background: rgba(52,211,153,0.2);
+    border-color: var(--accent4);
+    color: var(--accent4);
+  }
+  .bloom-bit.highlight {
+    background: rgba(0,229,255,0.2);
+    border-color: var(--accent1);
+    color: var(--accent1);
+    transform: scale(1.2);
+  }
+  .bloom-result {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-top: 0.75rem;
+  }
+  .result-maybe { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--accent4); }
+  .result-no { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.3); color: var(--accent2); }
+  .bloom-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .bloom-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.2);
+    color: var(--accent4);
+    border-radius: 4px;
+  }
+  .bit-indices {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .bit-idx { width: 28px; text-align: center; }
+
+  /* CAP TRIANGLE */
+  .cap-container { display: flex; justify-content: center; padding: 1rem 0; }
+  .cap-triangle {
+    position: relative;
+    width: 360px;
+    height: 310px;
+  }
+  .cap-triangle svg { width: 100%; height: 100%; }
+  .cap-node-label {
+    position: absolute;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .cap-node-label small {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 0.2rem;
+  }
+  .cap-consistency { top: -10px; left: 50%; transform: translateX(-50%); color: var(--accent1); }
+  .cap-availability { bottom: 0; left: -20px; color: var(--accent2); }
+  .cap-partition { bottom: 0; right: -20px; color: var(--accent3); }
+
+  .cap-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .cap-legend-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .cap-legend-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+  .cap-legend-dbs {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* HDFS BLOCK STATES */
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .state-card {
+    padding: 1.25rem;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .state-card:hover { transform: translateY(-3px); }
+  .state-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .state-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  .state-abbr {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+  }
+  .state-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* LSM ARCHITECTURE */
+  .lsm-arch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media(max-width: 600px) { .lsm-arch { grid-template-columns: 1fr; } }
+  .lsm-layer {
+    padding: 1.25rem;
+    border-radius: 10px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .lsm-layer::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    border-radius: 0 0 0 60px;
+    opacity: 0.15;
+  }
+  .lsm-wal { background: rgba(0,229,255,0.05); border-color: rgba(0,229,255,0.25); }
+  .lsm-wal::before { background: var(--accent1); }
+  .lsm-mem { background: rgba(250,204,21,0.05); border-color: rgba(250,204,21,0.25); }
+  .lsm-mem::before { background: #fbbf24; }
+  .lsm-ss { background: rgba(167,139,250,0.05); border-color: rgba(167,139,250,0.25); }
+  .lsm-ss::before { background: var(--accent3); }
+  .lsm-comp { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.25); }
+  .lsm-comp::before { background: var(--accent4); }
+
+  .lsm-layer-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  .lsm-wal .lsm-layer-name { color: var(--accent1); }
+  .lsm-mem .lsm-layer-name { color: #fbbf24; }
+  .lsm-ss .lsm-layer-name { color: var(--accent3); }
+  .lsm-comp .lsm-layer-name { color: var(--accent4); }
+
+  .lsm-layer p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+  /* STEP TIMELINE */
+  .timeline { margin: 2rem 0; }
+  .timeline-item {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    align-items: flex-start;
+  }
+  .timeline-num {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.1rem;
+  }
+  .sec-lsm .timeline-num { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--accent3); }
+  .sec-hdfs .timeline-num { background: rgba(0,229,255,0.15); border: 1px solid rgba(0,229,255,0.3); color: var(--accent1); }
+  .timeline-content { flex: 1; }
+  .timeline-content strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #fff;
+  }
+  .timeline-content p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 2rem 0;
+  }
+
+  /* REAL WORLD */
+  .realworld {
+    background: linear-gradient(135deg, rgba(167,139,250,0.05), rgba(0,229,255,0.05));
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .realworld-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent3);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeUp 0.5s ease both; }
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media(max-width: 768px) {
+    .section-body { padding: 1.5rem; }
+    .section-header { padding: 1.5rem; }
+    .flow { gap: 0.3rem; }
+    .flow-node { font-size: 0.72rem; padding: 0.5rem 0.75rem; min-width: 80px; }
+  }
+
+  /* HIGHLIGHT */
+  mark {
+    background: rgba(0,229,255,0.15);
+    color: var(--accent1);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  /* INDEX TABLE */
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin: 2rem auto;
+    max-width: 1100px;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .toc-card {
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.2s;
+  }
+  .toc-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); }
+  .toc-card-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+  .toc-card-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; color: #fff; }
+  .toc-card-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; }
+  .toc-1 { border-top: 2px solid var(--accent1); }
+  .toc-2 { border-top: 2px solid var(--accent2); }
+  .toc-3 { border-top: 2px solid var(--accent3); }
+  .toc-4 { border-top: 2px solid var(--accent4); }
+
+  .inline-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82em;
+    background: rgba(255,255,255,0.07);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    color: #c8d3e8;
+  }
+
+  /* LEASE vs LOCK */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media(max-width: 500px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card {
+    padding: 1.25rem;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .compare-card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  .compare-card ul { list-style: none; }
+  .compare-card li {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    gap: 0.5rem;
+  }
+  .compare-card li::before { content: '→'; flex-shrink: 0; }
+  .card-lock .compare-card-title { color: var(--accent2); }
+  .card-lease .compare-card-title { color: var(--accent4); }
+
+  .formula-box {
+    background: #080a0e;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent3);
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">⬡ Distributed Systems</div>
+  <ul class="nav-links">
+    <li><a href="#hdfs">HDFS</a></li>
+    <li><a href="#cap">CAP Theorem</a></li>
+    <li><a href="#lsm">LSM Trees</a></li>
+    <li><a href="#bloom">Bloom Filters</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Beginner-Friendly Deep Dive</div>
+  <h1>Distributed Systems<br>Internals</h1>
+  <p>Master the core concepts powering modern big data infrastructure — from HDFS block recovery to probabilistic data structures.</p>
+  <div class="hero-badges">
+    <span class="badge badge-1">HDFS & Block States</span>
+    <span class="badge badge-2">CAP Theorem</span>
+    <span class="badge badge-3">LSM Trees</span>
+    <span class="badge badge-4">Bloom Filters</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <a href="#hdfs" class="toc-card toc-1">
+    <div class="toc-card-num">01</div>
+    <div class="toc-card-title">HDFS States & Recovery</div>
+    <div class="toc-card-sub">Block lifecycle, leases vs locks, recovery process</div>
+  </a>
+  <a href="#cap" class="toc-card toc-2">
+    <div class="toc-card-num">02</div>
+    <div class="toc-card-title">CAP Theorem</div>
+    <div class="toc-card-sub">Consistency, Availability, Partition Tolerance</div>
+  </a>
+  <a href="#lsm" class="toc-card toc-3">
+    <div class="toc-card-num">03</div>
+    <div class="toc-card-title">LSM Trees</div>
+    <div class="toc-card-sub">Write-ahead logs, MemTables, SSTables, compaction</div>
+  </a>
+  <a href="#bloom" class="toc-card toc-4">
+    <div class="toc-card-num">04</div>
+    <div class="toc-card-title">Bloom Filters</div>
+    <div class="toc-card-sub">Probabilistic membership, false positives, live demo</div>
+  </a>
+</div>
+
+<main>
+
+<!-- =========================================================
+     SECTION 1: HDFS
+     ========================================================= -->
+<section class="section sec-hdfs" id="hdfs">
+  <div class="section-header">
+    <div class="section-num">Section 01 — Hadoop Distributed File System</div>
+    <h2>HDFS States & Recovery</h2>
+    <p class="section-subtitle">How big data files are written, stored, and recovered when things go wrong</p>
+  </div>
+  <div class="section-body">
+
+    <p>Imagine you're writing a huge 5 GB file across 10 different computers. What happens if one of those computers crashes in the middle of writing? HDFS — the Hadoop Distributed File System — has a very careful system of <strong>block states</strong> to handle exactly this problem.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Real-World Analogy:</strong> Think of HDFS like writing a book across multiple notebooks. Each notebook page is a "block". If you spill coffee on one notebook while writing, you need a system to know exactly which pages were ruined and how to rewrite them from scratch.</div>
+    </div>
+
+    <h3>Block Replica States (DataNode View)</h3>
+    <p>From the perspective of each individual DataNode (the worker computers storing the data), a block can be in one of four states:</p>
+
+    <div class="states-grid">
+      <div class="state-card" style="border-color: rgba(0,229,255,0.3);">
+        <div class="state-icon">✍️</div>
+        <div class="state-name" style="color:var(--accent1)">RBW</div>
+        <div class="state-abbr">Replica Being Written</div>
+        <div class="state-desc">Data is actively being streamed to this block right now. Like a Word document that's currently open and being typed into.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(250,204,21,0.3);">
+        <div class="state-icon">⏳</div>
+        <div class="state-name" style="color:#fbbf24">RWR</div>
+        <div class="state-abbr">Replica Waiting to be Recovered</div>
+        <div class="state-desc">A node crashed mid-write! This block was partially written and is now in limbo, waiting for someone to come fix it.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(255,107,53,0.3);">
+        <div class="state-icon">🔧</div>
+        <div class="state-name" style="color:var(--accent2)">RUR</div>
+        <div class="state-abbr">Replica Under Recovery</div>
+        <div class="state-desc">Recovery has started! The system is actively working to either complete or roll back the partial write on this block.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(52,211,153,0.3);">
+        <div class="state-icon">✅</div>
+        <div class="state-name" style="color:var(--accent4)">Finalized</div>
+        <div class="state-abbr">Complete & Stamped</div>
+        <div class="state-desc">The block is fully written, verified, and has received a generation stamp. Immutable and safe.</div>
+      </div>
+    </div>
+
+    <h3>Block State Flow During a Write</h3>
+    <div class="diagram">
+      <div class="diagram-title">Happy Path — Successful Write</div>
+      <div class="flow">
+        <div class="flow-node node-cyan">Client<br>Writes</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-cyan">RBW<br><small>Being Written</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-green">Finalized<br><small>+ Gen Stamp</small></div>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-title">Failure Path — Node Crashes During Write</div>
+      <div class="flow">
+        <div class="flow-node node-cyan">RBW<br><small>Being Written</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-yellow">💥 Crash<br><small>Node Fails</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-yellow">RWR<br><small>Waiting Recovery</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-orange">RUR<br><small>Under Recovery</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-green">Finalized<br><small>Recovered ✓</small></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>NameNode's View of Block States</h3>
+    <p>The NameNode is the "master controller" that keeps track of where all blocks are. It has a different, higher-level view of block states:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>NameNode State</th>
+          <th>What It Means</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="color:var(--accent1)">Under Construction</span></td>
+          <td>Blocks are currently being written (RBW state at DataNodes)</td>
+          <td>File upload in progress</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--accent2)">Under Recovery</span></td>
+          <td>Block recovery is happening after a failure</td>
+          <td>Recovering after DataNode crash</td>
+        </tr>
+        <tr>
+          <td><span style="color:#fbbf24">Committed</span></td>
+          <td>At least 1 replica is Finalized, but not the required number yet</td>
+          <td>Partially replicated block</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--accent4)">Complete</span></td>
+          <td>All required replicas are Finalized — safe!</td>
+          <td>Default: 3 replicas all Finalized</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-example">
+      <span class="callout-icon">🎯</span>
+      <div><strong>Example:</strong> HDFS defaults to storing <mark>3 copies</mark> of every block across 3 different DataNodes. A block is "Complete" only when all 3 copies reach "Finalized" state. If only 1 copy is finalized, it's "Committed" — available but not fully safe yet.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Generation Stamps — The Version Number</h3>
+    <p>Every finalized block gets a <strong>Generation Stamp (GS)</strong> — a unique timestamp-like version number. Think of it like a version number on a document. When recovery happens, the GS is incremented, so the system always knows which copy is the "latest" valid version.</p>
+
+    <div class="code-block"><span class="cm">// Simplified mental model of a block with generation stamp</span>
+Block {
+  blockId: <span class="num">12345</span>,
+  size: <span class="num">134217728</span>, <span class="cm">// 128 MB</span>
+  generationStamp: <span class="num">1007</span>, <span class="cm">// incremented each recovery</span>
+  state: <span class="str">"FINALIZED"</span>,
+  locations: [<span class="str">"datanode-1"</span>, <span class="str">"datanode-4"</span>, <span class="str">"datanode-9"</span>]
+}</div>
+
+    <div class="divider"></div>
+
+    <h3>Locks vs. Leases — A Critical Difference</h3>
+    <p>Traditional file systems (like NFS — the Network File System) use <strong>file locks</strong>. HDFS takes a completely different approach with <strong>leases</strong>. Here's why it matters:</p>
+
+    <div class="compare-grid">
+      <div class="compare-card card-lock">
+        <div class="compare-card-title">🔒 File Locks (NFS)</div>
+        <ul>
+          <li>Lock held until client explicitly releases</li>
+          <li>If client crashes, lock stays FOREVER</li>
+          <li>Other clients are blocked indefinitely</li>
+          <li>Manual administrator intervention needed</li>
+          <li>Catastrophic in distributed systems</li>
+        </ul>
+      </div>
+      <div class="compare-card card-lease">
+        <div class="compare-card-title">⏰ Leases (HDFS)</div>
+        <ul>
+          <li>Lease has a built-in expiry time</li>
+          <li>If client crashes, lease expires automatically</li>
+          <li>System triggers Lease Recovery</li>
+          <li>Other clients can write after recovery</li>
+          <li>Safe, self-healing behavior</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">🍕</span>
+      <div><strong>Pizza Analogy for Leases:</strong> Imagine ordering a pizza delivery slot (lease). If you don't pick it up within 30 minutes (expiry), the shop cancels and gives the slot to someone else. With a lock, you'd hold the slot forever — even if you fell asleep — blocking everyone else!</div>
+    </div>
+
+    <h3>Lease Recovery Process</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-num">1</div>
+        <div class="timeline-content">
+          <strong>Client Crashes or Disconnects</strong>
+          <p>A client was writing a file and suddenly goes offline. The Lease Manager detects no heartbeat.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">2</div>
+        <div class="timeline-content">
+          <strong>Lease Expires</strong>
+          <p>The soft limit (~60 seconds) and hard limit (~1 hour) timers tick. When exceeded, the Lease Manager flags the file for recovery.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">3</div>
+        <div class="timeline-content">
+          <strong>Lease Recovery Triggers</strong>
+          <p>The Lease Manager initiates Lease Recovery, which internally triggers <strong>Block Recovery</strong> for all affected blocks.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">4</div>
+        <div class="timeline-content">
+          <strong>DataNodes Synchronize</strong>
+          <p>A primary DataNode is elected. All replicas agree on a common valid length, truncating partial writes. Generation stamp is updated.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">5</div>
+        <div class="timeline-content">
+          <strong>File Closed & Lease Released</strong>
+          <p>The file is marked as closed in the NameNode's namespace. The lease is released and the file is now available to other clients.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="realworld">
+      <div class="realworld-title">🌍 Real-World Example</div>
+      <p style="font-size:0.88rem; margin:0">When <strong>Apache Spark</strong> writes results to HDFS and the executor process crashes mid-write, HDFS's lease recovery automatically cleans up the partial file within ~60 seconds. Your next Spark job can safely read the directory without manually deleting corrupt partial files. This is why HDFS-backed data lakes are self-healing.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 2: CAP THEOREM
+     ========================================================= -->
+<section class="section sec-cap" id="cap">
+  <div class="section-header">
+    <div class="section-num">Section 02 — Brewer's Theorem</div>
+    <h2>The CAP Theorem</h2>
+    <p class="section-subtitle">Why you can never have it all in a distributed system</p>
+  </div>
+  <div class="section-body">
+
+    <p>Proposed by Eric Brewer in 2000, the CAP theorem states that any distributed data store can only <strong>guarantee two out of three</strong> fundamental properties. Understanding this helps explain every architectural decision in systems like Cassandra, MongoDB, and MySQL.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">🏦</span>
+      <div><strong>Real-World Analogy:</strong> Think of a bank with branches across cities. You can have: all branches showing the same balance (Consistency) + always being open (Availability) + working even when the internet is cut (Partition Tolerance) — but not all three at once. If branches can't communicate (network partition), they must either refuse transactions (sacrifice Availability) or risk showing different balances (sacrifice Consistency).</div>
+    </div>
+
+    <h3>The Three Properties</h3>
+
+    <div class="states-grid">
+      <div class="state-card" style="border-color: rgba(0,229,255,0.3);">
+        <div class="state-icon">🔄</div>
+        <div class="state-name" style="color:var(--accent1)">Consistency (C)</div>
+        <div class="state-desc">Every node in the system returns the exact same, most up-to-date data at the same time. No stale reads. No diverged state. Like a single synchronized database.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(255,107,53,0.3);">
+        <div class="state-icon">📡</div>
+        <div class="state-name" style="color:var(--accent2)">Availability (A)</div>
+        <div class="state-desc">Every request receives a response — success or failure. The system never says "I'm too busy" or goes completely offline. Every node that works will respond.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(167,139,250,0.3);">
+        <div class="state-icon">🌐</div>
+        <div class="state-name" style="color:var(--accent3)">Partition Tolerance (P)</div>
+        <div class="state-desc">The system keeps functioning even when network partitions occur — i.e., some nodes can't talk to others. Messages can be dropped or delayed without crashing the system.</div>
+      </div>
+    </div>
+
+    <h3>The CAP Triangle</h3>
+    <div class="diagram">
+      <div class="diagram-title">Pick Any Two</div>
+      <div class="cap-container">
+        <div class="cap-triangle">
+          <svg viewBox="0 0 360 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Triangle -->
+            <polygon points="180,20 20,280 340,280" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+            <!-- Edges colored -->
+            <line x1="180" y1="20" x2="20" y2="280" stroke="rgba(0,229,255,0.3)" stroke-width="2" stroke-dasharray="6,4"/>
+            <line x1="180" y1="20" x2="340" y2="280" stroke="rgba(167,139,250,0.3)" stroke-width="2" stroke-dasharray="6,4"/>
+            <line x1="20" y1="280" x2="340" y2="280" stroke="rgba(255,107,53,0.3)" stroke-width="2" stroke-dasharray="6,4"/>
+            <!-- Vertices -->
+            <circle cx="180" cy="20" r="16" fill="rgba(0,229,255,0.15)" stroke="rgba(0,229,255,0.5)" stroke-width="1.5"/>
+            <circle cx="20" cy="280" r="16" fill="rgba(255,107,53,0.15)" stroke="rgba(255,107,53,0.5)" stroke-width="1.5"/>
+            <circle cx="340" cy="280" r="16" fill="rgba(167,139,250,0.15)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+            <!-- C label -->
+            <text x="180" y="25" fill="#00e5ff" text-anchor="middle" font-family="Syne" font-size="12" font-weight="700">C</text>
+            <!-- A label -->
+            <text x="20" y="285" fill="#ff6b35" text-anchor="middle" font-family="Syne" font-size="12" font-weight="700">A</text>
+            <!-- P label -->
+            <text x="340" y="285" fill="#a78bfa" text-anchor="middle" font-family="Syne" font-size="12" font-weight="700">P</text>
+            <!-- CA zone -->
+            <ellipse cx="100" cy="160" rx="28" ry="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="100" y="155" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-family="DM Mono" font-size="9">CA</text>
+            <text x="100" y="167" fill="rgba(255,255,255,0.3)" text-anchor="middle" font-family="DM Mono" font-size="7.5">MySQL/Oracle</text>
+            <!-- CP zone -->
+            <ellipse cx="260" cy="160" rx="28" ry="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="260" y="155" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-family="DM Mono" font-size="9">CP</text>
+            <text x="260" y="167" fill="rgba(255,255,255,0.3)" text-anchor="middle" font-family="DM Mono" font-size="7.5">MongoDB/HBase</text>
+            <!-- AP zone -->
+            <ellipse cx="180" cy="255" rx="28" ry="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="180" y="250" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-family="DM Mono" font-size="9">AP</text>
+            <text x="180" y="262" fill="rgba(255,255,255,0.3)" text-anchor="middle" font-family="DM Mono" font-size="7.5">Cassandra/CouchDB</text>
+            <!-- Center label -->
+            <text x="180" y="143" fill="rgba(255,255,255,0.2)" text-anchor="middle" font-family="Syne" font-size="10" font-style="italic">Pick 2</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <h3>Database Examples by CAP Trade-off</h3>
+
+    <div class="cap-legend">
+      <div class="cap-legend-item" style="border-top: 2px solid rgba(0,229,255,0.5);">
+        <div class="cap-legend-title" style="color:var(--accent1)">CA — Consistency + Availability</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">No Partition Tolerance: single-node or tightly coupled systems</div>
+        <div class="cap-legend-dbs">Oracle • MySQL • PostgreSQL • NFS</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem">✓ Strong consistency ✓ Always available ✗ Can't survive network splits</div>
+      </div>
+      <div class="cap-legend-item" style="border-top: 2px solid rgba(167,139,250,0.5);">
+        <div class="cap-legend-title" style="color:var(--accent3)">CP — Consistency + Partition Tolerance</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">BASE systems that refuse requests when uncertain</div>
+        <div class="cap-legend-dbs">MongoDB • HBase • Redis • Zookeeper</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem">✓ Data always correct ✓ Survives partitions ✗ May refuse some requests</div>
+      </div>
+      <div class="cap-legend-item" style="border-top: 2px solid rgba(255,107,53,0.5);">
+        <div class="cap-legend-title" style="color:var(--accent2)">AP — Availability + Partition Tolerance</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">Eventually consistent — accepts stale reads</div>
+        <div class="cap-legend-dbs">Cassandra • CouchDB • DynamoDB • Riak</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem">✓ Always responds ✓ Survives partitions ✗ May return stale data</div>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>NFS and the CAP Theorem:</strong> The Network File System (NFS) is a classic <strong>CA system</strong>. It has only <em>one copy</em> of data on one server. This gives you consistency (one source of truth) and availability (always responds), but if the network splits or the server goes down — game over. Zero partition tolerance.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>The Real-World Impact</h3>
+
+    <div class="realworld">
+      <div class="realworld-title">🌍 Shopping Cart Example (Amazon's Dynamo)</div>
+      <p style="font-size:0.88rem; margin:0 0 0.5rem">Amazon's shopping cart uses an <strong>AP system</strong>. If a network partition occurs, you might add an item on your phone AND on your laptop simultaneously while offline. When connectivity restores, both additions are kept (eventual consistency). Amazon decided it's better to show a slightly stale cart than to block you from adding items at all. This is a conscious business decision: "always available" beats "always consistent" for shopping carts.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>System Type</th><th>Prioritizes</th><th>Sacrifices</th><th>Best For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Traditional SQL DB</td>
+          <td style="color:var(--accent1)">CA</td>
+          <td style="color:var(--text-muted)">Partition Tolerance</td>
+          <td>Banking, transactions, ERPs</td>
+        </tr>
+        <tr>
+          <td>Cassandra / DynamoDB</td>
+          <td style="color:var(--accent2)">AP</td>
+          <td style="color:var(--text-muted)">Strict Consistency</td>
+          <td>Social feeds, shopping carts, IoT</td>
+        </tr>
+        <tr>
+          <td>MongoDB / HBase</td>
+          <td style="color:var(--accent3)">CP</td>
+          <td style="color:var(--text-muted)">Some Availability</td>
+          <td>Analytics, user profiles, configs</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 3: LSM TREES
+     ========================================================= -->
+<section class="section sec-lsm" id="lsm">
+  <div class="section-header">
+    <div class="section-num">Section 03 — Data Structure Design</div>
+    <h2>Log-Structured Merge Trees</h2>
+    <p class="section-subtitle">How Cassandra, HBase, and LevelDB handle millions of writes per second</p>
+  </div>
+  <div class="section-body">
+
+    <p>Imagine you need to store 1 million sensor readings per second from IoT devices. A traditional B-Tree database would require random disk writes — extremely slow. LSM Trees solve the "index problem" by turning all writes into <strong>sequential appends</strong>, which are orders of magnitude faster.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">📓</span>
+      <div><strong>Analogy:</strong> A traditional database is like updating a sorted address book in-place (random writes). LSM Trees are like keeping a notepad where you just write new entries at the bottom (sequential writes), then periodically sorting and merging into a clean address book in the background.</div>
+    </div>
+
+    <h3>The Five Core Components</h3>
+
+    <div class="lsm-arch">
+      <div class="lsm-layer lsm-wal">
+        <div class="lsm-layer-name">📝 Write Ahead Log (WAL)</div>
+        <p><strong>Purpose:</strong> Crash recovery. Every write is appended here first, before anything else. Sequential disk writes = blazing fast. Even if power cuts out, data is safe here.</p>
+      </div>
+      <div class="lsm-layer lsm-mem">
+        <div class="lsm-layer-name">🧠 MemTable</div>
+        <p><strong>Purpose:</strong> In-memory sorted buffer. New writes go here for instant reads. Typically implemented as a Red-Black Tree or Skip List. Lives in RAM — super fast but not persistent.</p>
+      </div>
+      <div class="lsm-layer lsm-ss">
+        <div class="lsm-layer-name">💾 SSTables (Spill Files)</div>
+        <p><strong>Purpose:</strong> Persistent, immutable, sorted files on disk. When MemTable fills up, it's "flushed" here. Each SSTable is sorted and never modified once written.</p>
+      </div>
+      <div class="lsm-layer lsm-comp">
+        <div class="lsm-layer-name">🔀 Compactor</div>
+        <p><strong>Purpose:</strong> Background janitor. Merges multiple SSTables into fewer, larger ones. Removes deleted or overwritten records. Like defragmenting a hard drive.</p>
+      </div>
+    </div>
+
+    <div class="lsm-arch" style="grid-template-columns:1fr 1fr;">
+      <div class="lsm-layer" style="background:rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.25);">
+        <div class="lsm-layer-name" style="color:var(--accent1)">🗂️ Index</div>
+        <p>Tracks which SSTable files contain which keys. Uses Bloom Filters (see Section 4) to skip files that definitely don't contain a key.</p>
+      </div>
+      <div class="lsm-layer" style="background:rgba(250,204,21,0.05);border-color:rgba(250,204,21,0.25);">
+        <div class="lsm-layer-name" style="color:#fbbf24">🔍 Bloom Filter</div>
+        <p>Probabilistic gate per SSTable. Answers "is key X possibly in this file?" with no false negatives. Eliminates most unnecessary disk reads.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Write Process — Step by Step</h3>
+
+    <div class="diagram">
+      <div class="diagram-title">LSM Write Flow</div>
+      <div class="flow">
+        <div class="flow-node node-cyan">Client<br>WRITE</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-orange">WAL<br><small>Append</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-yellow">MemTable<br><small>Insert</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-cyan">ACK to<br>Client</div>
+      </div>
+      <div style="margin-top:1rem; font-family: 'DM Mono', monospace; font-size:0.72rem; color:var(--text-dim); text-align:center;">
+        [When MemTable is full ↓]
+      </div>
+      <div class="flow" style="margin-top:0.75rem;">
+        <div class="flow-node node-yellow">MemTable<br><small>Full</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-purple">Sort &<br>Flush</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-purple">SSTable<br><small>Written</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-green">Index<br>Updated</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-orange">WAL<br>Cleared</div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-num">1</div>
+        <div class="timeline-content">
+          <strong>Write to WAL first</strong>
+          <p>The write is appended to the Write Ahead Log on disk immediately. This is a sequential write — extremely fast. Even if the machine crashes after this step, data is not lost.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">2</div>
+        <div class="timeline-content">
+          <strong>Insert into MemTable</strong>
+          <p>Data is added to the in-memory MemTable (a sorted data structure like a Red-Black Tree). The client immediately gets an acknowledgment — the write is "done" from the client's perspective.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">3</div>
+        <div class="timeline-content">
+          <strong>MemTable Full? Flush to SSTable</strong>
+          <p>When the MemTable reaches its size limit (e.g., 128 MB), it's sorted and written to a new immutable SSTable file on disk. This is also a sequential write — fast!</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-num">4</div>
+        <div class="timeline-content">
+          <strong>Update Index + Clear WAL</strong>
+          <p>The index is updated to record which keys are in the new SSTable. The WAL is cleared since the data is now safely on disk in the SSTable.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Read Process — Finding Your Data</h3>
+
+    <div class="diagram">
+      <div class="diagram-title">LSM Read Flow</div>
+      <div class="flow">
+        <div class="flow-node node-cyan">Client<br>READ</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-yellow">Check<br>MemTable</div>
+        <div class="flow-arrow" style="color:var(--accent4)">→ found?</div>
+        <div class="flow-node node-green">Return<br>Data ✓</div>
+      </div>
+      <div style="margin:0.75rem 0; font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);text-align:center;">
+        [If not in MemTable ↓]
+      </div>
+      <div class="flow">
+        <div class="flow-node node-yellow">MemTable<br>Miss</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-cyan">Ask<br>Index</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-orange">Bloom<br>Filter</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-purple">Scan<br>SSTable(s)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-green">Return<br>Data ✓</div>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">🏎️</span>
+      <div><strong>Performance Key:</strong> Reads check the MemTable first (nanoseconds — it's in RAM). If not found, the Bloom Filter eliminates most SSTables without touching disk. Only a small number of SSTables need actual disk reads. Most reads touch 1-3 SSTables maximum.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Deletes and Updates — The Tombstone Mechanism</h3>
+    <p>LSM Trees can't modify existing SSTables (they're immutable!). So how do deletes and updates work?</p>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">🪦</span>
+      <div><strong>Tombstones:</strong> Deletes in LSM Trees write a special <span class="inline-code">tombstone</span> marker — essentially a "this key is deleted" record. Updates write a new version of the key. The old value becomes orphaned. The Compactor later cleans up both the old value and the tombstone during compaction.</div>
+    </div>
+
+    <div class="code-block"><span class="cm">// Timeline of key "user:42" through LSM operations:</span>
+
+<span class="fn">t=1</span>: Write  user:42 → {name: <span class="str">"Alice"</span>, age: <span class="num">30</span>}   <span class="cm">// Written to MemTable → SSTable-1</span>
+<span class="fn">t=2</span>: Update user:42 → {name: <span class="str">"Alice"</span>, age: <span class="num">31</span>}   <span class="cm">// New entry in SSTable-2 (SSTable-1 untouched)</span>
+<span class="fn">t=3</span>: Delete user:42                             <span class="cm">// Tombstone written to SSTable-3</span>
+
+<span class="cm">// Read at t=3: checks SSTable-3, finds tombstone → "not found"</span>
+<span class="cm">// Compaction merges SSTable-1,2,3 → removes all "user:42" entries</span></div>
+
+    <h3>Compaction — The Background Cleanup</h3>
+    <p>Without compaction, you'd have hundreds of tiny SSTables and reads would get increasingly slow. The Compactor runs in the background, merging SSTables:</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Compaction Process</div>
+      <div class="flow" style="flex-direction:column;align-items:flex-start;gap:0.75rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+          <div class="flow-node node-purple" style="min-width:80px">SSTable-1</div>
+          <div class="flow-node node-purple" style="min-width:80px">SSTable-2</div>
+          <div class="flow-node node-purple" style="min-width:80px">SSTable-3</div>
+          <div class="flow-node node-red" style="min-width:80px">SSTable-4<br><small>tombstones</small></div>
+          <div class="flow-arrow">→</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent4)">Compactor</span>
+            <span style="font-size:1.2rem;">🔀</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node node-green" style="min-width:100px">SSTable-merged<br><small>clean & sorted</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="realworld">
+      <div class="realworld-title">🌍 Cassandra in Production</div>
+      <p style="font-size:0.88rem; margin:0">Netflix uses Cassandra (LSM Tree-based) to serve its recommendation engine. During peak hours they handle tens of millions of writes per second. The LSM architecture makes this possible — every write is just a sequential append to a WAL and an in-memory insert. The SSTable compaction happens quietly in the background during off-peak hours without affecting write performance.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 4: BLOOM FILTERS
+     ========================================================= -->
+<section class="section sec-bloom" id="bloom">
+  <div class="section-header">
+    <div class="section-num">Section 04 — Probabilistic Data Structures</div>
+    <h2>Bloom Filters</h2>
+    <p class="section-subtitle">Space-efficient membership testing with controlled uncertainty</p>
+  </div>
+  <div class="section-body">
+
+    <p>A Bloom Filter answers the question: <em>"Have I seen this item before?"</em> — but it does so using a fraction of the memory a normal set would require. The trade-off? Occasional false positives. It might sometimes say "yes, I've seen this" when it hasn't. But it <strong>never has false negatives</strong> — if it says "never seen this", it's definitely right.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">🎪</span>
+      <div><strong>Real-World Analogy:</strong> Imagine a bouncer at a club using a rough list of banned people. They might mistakenly stop an innocent person who looks like someone on the list (false positive), but they will NEVER let in a definitely-banned person. That's a Bloom Filter — fast, space-efficient, with controlled false positive risk.</div>
+    </div>
+
+    <h3>How It Works — The Mechanics</h3>
+
+    <div class="states-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+      <div class="state-card" style="border-color: rgba(52,211,153,0.3);">
+        <div class="state-icon">📊</div>
+        <div class="state-name" style="color:var(--accent4)">Step 1: Bit Array</div>
+        <div class="state-desc">Start with an array of <strong>m bits</strong>, all set to 0. This is the Bloom Filter. Typical size: thousands to millions of bits (still tiny compared to actual data).</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(52,211,153,0.3);">
+        <div class="state-icon">#️⃣</div>
+        <div class="state-name" style="color:var(--accent4)">Step 2: Hash Functions</div>
+        <div class="state-desc">Choose <strong>k hash functions</strong>. Each function maps any key to a position in the bit array. Different functions → different positions for the same key.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(52,211,153,0.3);">
+        <div class="state-icon">✍️</div>
+        <div class="state-name" style="color:var(--accent4)">Step 3: Insert</div>
+        <div class="state-desc">To insert key "Alice": run it through all k hash functions. Each function outputs a bit index. Set those bits to 1. Repeat for every key.</div>
+      </div>
+      <div class="state-card" style="border-color: rgba(52,211,153,0.3);">
+        <div class="state-icon">🔍</div>
+        <div class="state-name" style="color:var(--accent4)">Step 4: Query</div>
+        <div class="state-desc">To check "is Bob in the set?": hash Bob with all k functions. If ANY resulting bit is 0 → definitely not in set. If ALL bits are 1 → probably in set.</div>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-title">Bloom Filter Bit Array — Visual Example (m=16 bits, k=3 hash functions)</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">
+        Inserting "Alice" → hash1("Alice")=2, hash2("Alice")=7, hash3("Alice")=13
+      </div>
+      <div style="display:flex;gap:3px;margin-bottom:0.25rem;flex-wrap:wrap;">
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid rgba(52,211,153,0.5);background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent4);font-weight:600;">1</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid rgba(52,211,153,0.5);background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent4);font-weight:600;">1</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid rgba(52,211,153,0.5);background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent4);font-weight:600;">1</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;height:36px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-dim);">0</div>
+      </div>
+      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">0</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">1</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent4);">2★</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">3</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">4</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">5</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">6</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent4);">7★</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">8</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">9</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">10</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">11</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">12</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent4);">13★</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">14</div>
+        <div style="width:36px;text-align:center;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-dim);">15</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent4);">★ Bits 2, 7, 13 set to 1 by "Alice"</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Understanding False Positives</h3>
+    <p>False positives happen because multiple keys can share bit positions (hash collisions). Here's a clear example:</p>
+
+    <div class="code-block"><span class="cm">// Insert both "Alice" and "Bob":</span>
+hash1(<span class="str">"Alice"</span>) = <span class="num">2</span>,  hash2(<span class="str">"Alice"</span>) = <span class="num">7</span>,  hash3(<span class="str">"Alice"</span>) = <span class="num">13</span>
+hash1(<span class="str">"Bob"</span>)   = <span class="num">5</span>,  hash2(<span class="str">"Bob"</span>)   = <span class="num">9</span>,  hash3(<span class="str">"Bob"</span>)   = <span class="num">2</span>
+
+<span class="cm">// Bits set: 2, 5, 7, 9, 13</span>
+
+<span class="cm">// Now check "Charlie" (never inserted):</span>
+hash1(<span class="str">"Charlie"</span>) = <span class="num">5</span>,  hash2(<span class="str">"Charlie"</span>) = <span class="num">9</span>,  hash3(<span class="str">"Charlie"</span>) = <span class="num">2</span>
+
+<span class="cm">// All three bits (5, 9, 2) happen to be 1 → FALSE POSITIVE!</span>
+<span class="cm">// Filter says "Charlie might be here" — but Charlie was never inserted!</span></div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Key Insight:</strong> False positives cause unnecessary disk reads in LSM Trees (you read an SSTable file that doesn't actually have the key). But they never cause wrong data — you just do some extra work. False negatives are impossible because bits can only be set, never unset.</div>
+    </div>
+
+    <h3>Mathematical Optimization</h3>
+    <p>You can tune your Bloom Filter using these parameters to hit a target false positive rate:</p>
+
+    <div class="formula-box">
+      optimal_k = (m/n) × ln(2) &nbsp;&nbsp;|&nbsp;&nbsp; pfp ≈ (1 - e^(-kn/m))^k
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted);text-align:center;margin-top:-0.5rem;margin-bottom:1rem;">
+      m = bits &nbsp;|&nbsp; n = elements &nbsp;|&nbsp; k = hash functions &nbsp;|&nbsp; pfp = false positive probability
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>n (elements)</th><th>Desired pfp</th><th>m (bits needed)</th><th>k (hash functions)</th><th>Memory</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1,000,000</td>
+          <td>1%</td>
+          <td>9,585,058</td>
+          <td>7</td>
+          <td style="color:var(--accent4)">~1.1 MB</td>
+        </tr>
+        <tr>
+          <td>1,000,000</td>
+          <td>0.1%</td>
+          <td>14,377,588</td>
+          <td>10</td>
+          <td style="color:var(--accent4)">~1.7 MB</td>
+        </tr>
+        <tr>
+          <td>10,000,000</td>
+          <td>1%</td>
+          <td>95,850,584</td>
+          <td>7</td>
+          <td style="color:var(--accent4)">~11.4 MB</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>Tracking 10 million keys with 1% false positive rate takes only <strong>11.4 MB</strong>. A HashSet storing the same 10M strings might take <strong>500 MB+</strong>. That's a 40x+ memory saving — and why Bloom Filters are used everywhere in large-scale systems!</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Interactive Bloom Filter Demo</h3>
+    <p>Try it yourself! Add some words, then check if other words are "in" the filter. Notice how sometimes the filter says "maybe" even for words you never added — those are false positives!</p>
+
+    <div class="interactive">
+      <div class="interactive-title">Live Bloom Filter Simulator</div>
+
+      <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted);margin-bottom:1rem;">
+        m = 32 bits &nbsp;|&nbsp; k = 3 hash functions
+      </div>
+
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.4rem;">Inserted keys:</div>
+        <div class="bloom-tags" id="bloomTags">
+          <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);font-style:italic;">none yet</span>
+        </div>
+      </div>
+
+      <div style="margin:1rem 0;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.4rem;">Bit positions (0–31):</div>
+        <div class="bit-indices" id="bitIndices"></div>
+        <div class="bloom-array" id="bloomArray"></div>
+      </div>
+
+      <div class="bloom-input">
+        <input type="text" id="bloomKeyInput" placeholder="Enter a key (e.g. 'Alice', 'user:42')" maxlength="30"/>
+        <button class="bloom-btn btn-add" onclick="bloomAdd()">+ Add Key</button>
+        <button class="bloom-btn btn-check" onclick="bloomCheck()">? Check</button>
+        <button class="bloom-btn btn-reset" onclick="bloomReset()">↺ Reset</button>
+      </div>
+
+      <div id="bloomResult"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Bloom Filters in LSM Trees</h3>
+    <p>Each SSTable in an LSM Tree gets its own Bloom Filter. When reading a key, the system checks each SSTable's Bloom Filter first:</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Bloom Filter Gating SSTable Reads</div>
+      <div class="flow">
+        <div class="flow-node node-cyan">Read<br>"user:42"</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-yellow">Bloom<br>Filter<br>SSTable-1</div>
+        <div class="flow-arrow" style="color:var(--accent2)">✗ NO</div>
+        <div class="flow-node node-red">Skip<br>SSTable-1</div>
+      </div>
+      <div class="flow" style="margin-top:0.75rem;">
+        <div class="flow-node node-cyan" style="opacity:0.3"></div>
+        <div class="flow-arrow" style="opacity:0">→</div>
+        <div class="flow-node node-yellow">Bloom<br>Filter<br>SSTable-2</div>
+        <div class="flow-arrow" style="color:var(--accent4)">✓ MAYBE</div>
+        <div class="flow-node node-purple">Read<br>SSTable-2</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node node-green">Found!<br>Return ✓</div>
+      </div>
+    </div>
+
+    <div class="realworld">
+      <div class="realworld-title">🌍 Real Deployments of Bloom Filters</div>
+      <p style="font-size:0.88rem; margin:0 0 0.5rem"><strong>Google Chrome</strong> uses Bloom Filters to check if URLs are malicious (Safe Browsing API) — the local filter eliminates 99%+ of unnecessary network lookups. <strong>Cassandra</strong> uses them per SSTable to dramatically reduce read amplification. <strong>Bitcoin's SPV nodes</strong> use Bloom Filters to request only relevant transactions without revealing which addresses they're tracking. <strong>Medium</strong> uses them to avoid showing users articles they've already read.</p>
+    </div>
+
+    <h3>False Positives vs. False Negatives — Quick Reference</h3>
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>Bloom Filter Says</th><th>Reality</th><th>Type</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Check "Alice" (was inserted)</td>
+          <td style="color:var(--accent4)">MAYBE in set</td>
+          <td>In set</td>
+          <td style="color:var(--accent4)">✓ True Positive</td>
+          <td>Read SSTable → Found</td>
+        </tr>
+        <tr>
+          <td>Check "Bob" (not inserted)</td>
+          <td style="color:var(--accent2)">NOT in set</td>
+          <td>Not in set</td>
+          <td style="color:var(--accent4)">✓ True Negative</td>
+          <td>Skip SSTable → Fast!</td>
+        </tr>
+        <tr>
+          <td>Check "Charlie" (hash collision)</td>
+          <td style="color:var(--accent3)">MAYBE in set</td>
+          <td>Not in set</td>
+          <td style="color:var(--accent2)">⚠️ False Positive</td>
+          <td>Read SSTable → Not found (wasted work)</td>
+        </tr>
+        <tr>
+          <td>Check "Dave" (was inserted)</td>
+          <td style="color:var(--accent2)">NOT in set</td>
+          <td>In set</td>
+          <td style="color:var(--text-muted)">✗ IMPOSSIBLE</td>
+          <td>Never happens — bits only set to 1</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="section" style="border-color:rgba(255,255,255,0.1)">
+  <div class="section-header" style="border-bottom-color:rgba(255,255,255,0.06);">
+    <div class="section-num" style="color:var(--text-muted)">Summary</div>
+    <h2 style="font-size:1.6rem">How It All Fits Together</h2>
+    <p class="section-subtitle">These four concepts form the backbone of modern distributed databases</p>
+  </div>
+  <div class="section-body">
+    <div class="cap-legend">
+      <div class="cap-legend-item" style="border-top:2px solid var(--accent1);">
+        <div class="cap-legend-title" style="color:var(--accent1)">HDFS</div>
+        <div class="cap-legend-dbs">Ensures data survives node failures through block state transitions, generation stamps, and automatic lease recovery.</div>
+      </div>
+      <div class="cap-legend-item" style="border-top:2px solid var(--accent2);">
+        <div class="cap-legend-title" style="color:var(--accent2)">CAP Theorem</div>
+        <div class="cap-legend-dbs">Explains WHY every distributed database makes different trade-offs. There's no perfect database — only the right one for your use case.</div>
+      </div>
+      <div class="cap-legend-item" style="border-top:2px solid var(--accent3);">
+        <div class="cap-legend-title" style="color:var(--accent3)">LSM Trees</div>
+        <div class="cap-legend-dbs">Enables write-heavy systems like Cassandra to achieve massive throughput by turning random writes into sequential appends with background compaction.</div>
+      </div>
+      <div class="cap-legend-item" style="border-top:2px solid var(--accent4);">
+        <div class="cap-legend-title" style="color:var(--accent4)">Bloom Filters</div>
+        <div class="cap-legend-dbs">Dramatically speeds up reads in LSM Trees by probabilistically eliminating unnecessary SSTable disk scans with minimal memory overhead.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>Distributed Systems Internals — HDFS · CAP Theorem · LSM Trees · Bloom Filters</div>
+  <div style="margin-top:0.5rem;color:rgba(255,255,255,0.1)">Built for learning. All concepts are accurate to production systems.</div>
+</footer>
+
+<script>
+// ===== BLOOM FILTER SIMULATOR =====
+const M = 32; // bit array size
+let bitArray = new Array(M).fill(0);
+let insertedKeys = [];
+
+function hash1(str) {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h) + str.charCodeAt(i);
+  return Math.abs(h) % M;
+}
+function hash2(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h << 4) ^ (h >> 28) ^ str.charCodeAt(i);
+  return Math.abs(h * 2654435761) % M;
+}
+function hash3(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) h = (h ^ str.charCodeAt(i)) * 16777619;
+  return Math.abs(h) % M;
+}
+
+function getHashes(key) {
+  return [hash1(key), hash2(key), hash3(key)];
+}
+
+function renderBitArray(highlight = []) {
+  const indices = document.getElementById('bitIndices');
+  const arr = document.getElementById('bloomArray');
+  
+  indices.innerHTML = bitArray.map((_, i) => `<div class="bit-idx">${i}</div>`).join('');
+  arr.innerHTML = bitArray.map((b, i) => {
+    let cls = 'bloom-bit';
+    if (highlight.includes(i)) cls += ' highlight';
+    else if (b === 1) cls += ' active';
+    return `<div class="${cls}">${b}</div>`;
+  }).join('');
+}
+
+function renderTags() {
+  const el = document.getElementById('bloomTags');
+  if (insertedKeys.length === 0) {
+    el.innerHTML = '<span style="font-family:\'DM Mono\',monospace;font-size:0.72rem;color:var(--text-dim);font-style:italic;">none yet</span>';
+  } else {
+    el.innerHTML = insertedKeys.map(k => `<span class="bloom-tag">${k}</span>`).join('');
+  }
+}
+
+function bloomAdd() {
+  const input = document.getElementById('bloomKeyInput');
+  const key = input.value.trim();
+  if (!key) return;
+  
+  const positions = getHashes(key);
+  positions.forEach(p => bitArray[p] = 1);
+  insertedKeys.push(key);
+  input.value = '';
+  
+  renderTags();
+  renderBitArray(positions);
+  
+  const result = document.getElementById('bloomResult');
+  result.innerHTML = `<div class="bloom-result result-maybe">✓ Added "<strong>${key}</strong>" → bits set at positions: [${positions.join(', ')}]</div>`;
+  
+  setTimeout(() => renderBitArray(), 1200);
+}
+
+function bloomCheck() {
+  const input = document.getElementById('bloomKeyInput');
+  const key = input.value.trim();
+  if (!key) return;
+  
+  const positions = getHashes(key);
+  const allSet = positions.every(p => bitArray[p] === 1);
+  
+  renderBitArray(positions);
+  
+  const result = document.getElementById('bloomResult');
+  const isActuallyIn = insertedKeys.includes(key);
+  
+  if (!allSet) {
+    result.innerHTML = `<div class="bloom-result result-no">✗ "<strong>${key}</strong>" is DEFINITELY NOT in the set — at least one bit (positions [${positions.join(', ')}]) is 0.</div>`;
+  } else if (allSet && isActuallyIn) {
+    result.innerHTML = `<div class="bloom-result result-maybe">✓ "<strong>${key}</strong>" is PROBABLY in the set (True Positive — it was actually inserted!). Bits [${positions.join(', ')}] all = 1.</div>`;
+  } else {
+    result.innerHTML = `<div class="bloom-result" style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--accent3);">⚠️ FALSE POSITIVE! "<strong>${key}</strong>" was NEVER inserted, but all bits [${positions.join(', ')}] are 1 due to hash collisions from other keys!</div>`;
+  }
+  
+  setTimeout(() => renderBitArray(), 1500);
+}
+
+function bloomReset() {
+  bitArray = new Array(M).fill(0);
+  insertedKeys = [];
+  document.getElementById('bloomKeyInput').value = '';
+  document.getElementById('bloomResult').innerHTML = '';
+  renderTags();
+  renderBitArray();
+}
+
+// Handle Enter key
+document.getElementById('bloomKeyInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') bloomAdd();
+});
+
+// Init
+renderBitArray();
+renderTags();
+
+// ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.section, .state-card, .lsm-layer').forEach(el => {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS Mock Exam Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #9b59b6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #9b59b6;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #f4ecf7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #9b59b6;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .mock-badge {
+            background-color: #9b59b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mock-badge">MOCK EXAM</div>
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Mock Examination - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions. Show all working clearly.<br>
+            <strong>Purpose:</strong> This is practice for the real exam format - focus on time management and clarity of explanation.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Linear Regression (20 marks)</h2>
+
+        <div class="question">
+            <p>Linear regression with models of the form \(t_n = \mathbf{w}^T\mathbf{x}_n\) is a common technique for learning real-valued functions from data.</p>
+
+            <h3>(a) Squared vs Absolute Loss <span class="marks">[6 marks]</span></h3>
+            <p>Squared and absolute loss are defined as follows:</p>
+            <div class="formula-box">
+                <p>\[L_{squared} = (t_n - \mathbf{w}^T\mathbf{x}_n)^2, \quad L_{absolute} = |t_n - \mathbf{w}^T\mathbf{x}_n|\]</p>
+            </div>
+            <p>Describe, with a diagram if you like, why, when optimizing the parameters with the squared loss outliers have a larger effect than with the absolute loss.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Analysis of Loss Function Behavior:</strong></p>
+
+            <p>Defining \(e_n = t_n - \mathbf{w}^T\mathbf{x}_n\) as the error for data point n:</p>
+
+            <p><strong>[2 marks]</strong> For small errors where \(|e_n| < 1\), the absolute loss is actually larger than the squared loss:</p>
+            <div class="formula-box">
+                <p>Example: If \(|e_n| = 0.5\):</p>
+                <p>\[L_{squared} = (0.5)^2 = 0.25 < 0.5 = L_{absolute}\]</p>
+            </div>
+
+            <p><strong>[2 marks]</strong> However, as \(e_n\) increases, the squared loss increases much faster than the absolute loss due to the quadratic growth:</p>
+            <div class="formula-box">
+                <p>Example: If \(|e_n| = 5\) (outlier):</p>
+                <p>\[L_{squared} = 5^2 = 25 \quad \text{vs} \quad L_{absolute} = 5\]</p>
+                <p>The squared loss is 5× larger!</p>
+            </div>
+
+            <p><strong>[2 marks]</strong> Outliers have a high \(e_n\) value and therefore contribute a much larger influence to the total squared loss than to the absolute loss. When minimizing the total loss, the model will adjust parameters more aggressively to reduce squared loss for outliers, potentially at the expense of fitting the bulk of the data well.</p>
+
+            <div class="note">
+                <strong>Graphical Intuition:</strong> If you plot both loss functions:
+                <ul>
+                    <li>\(L_{squared} = e^2\) is a parabola that grows rapidly for large |e|</li>
+                    <li>\(L_{absolute} = |e|\) is V-shaped with constant slope for large |e|</li>
+                    <li>For outliers (large |e|), squared loss dominates the optimization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Properties of Loss Functions <span class="marks">[2 marks]</span></h3>
+            <p>Which of the following statements is true:</p>
+            <ul style="list-style-type: none;">
+                <li>A) Parameter estimation with the squared loss is not analytically tractable.</li>
+                <li>B) The squared loss is equivalent to assuming normally distributed noise.</li>
+                <li>C) The absolute loss is a popular choice for regularization.</li>
+                <li>D) The squared loss is a popular choice for regularization.</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Correct Answer: B</strong> <strong>[2 marks]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+            <p>The squared loss corresponds to the assumption that the noise (error) in the data follows a Gaussian (normal) distribution. This comes from maximum likelihood estimation:</p>
+
+            <div class="formula-box">
+                <p>If \(t_n = \mathbf{w}^T\mathbf{x}_n + \epsilon_n\) where \(\epsilon_n \sim \mathcal{N}(0, \sigma^2)\), then:</p>
+                <p>\[p(t_n|\mathbf{x}_n, \mathbf{w}) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(t_n - \mathbf{w}^T\mathbf{x}_n)^2}{2\sigma^2}\right)\]</p>
+                <p>Maximizing log-likelihood is equivalent to minimizing squared loss.</p>
+            </div>
+
+            <p><strong>Why other answers are wrong:</strong></p>
+            <ul>
+                <li><strong>A is false:</strong> Squared loss has a closed-form solution: \(\mathbf{w} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{t}\)</li>
+                <li><strong>C and D are false:</strong> Neither loss function is used for regularization. L1 (absolute value of weights) and L2 (squared weights) are used for regularization, not loss functions on predictions.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(c) Model Complexity Selection <span class="marks">[3 marks]</span></h3>
+            <p>Discuss why the value of the squared loss on the training data cannot be used to choose the model complexity.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> When training the model, we are minimizing the loss on the training data.</p>
+
+            <p><strong>[2 marks]</strong> As we make models more complex (e.g., adding more polynomial terms, more basis functions), the squared loss value at the minima will always decrease or stay the same - it never increases. This is because a more complex model can always achieve at least the performance of a simpler model (by setting extra parameters to zero) and usually does better.</p>
+
+            <p><strong>Consequence:</strong> Hence, training loss will always favor more complex models, leading to overfitting. The model will memorize the training data rather than learning generalizable patterns.</p>
+
+            <div class="note">
+                <strong>What to use instead:</strong>
+                <ul>
+                    <li>Validation set or cross-validation error</li>
+                    <li>Information criteria (AIC, BIC) that penalize complexity</li>
+                    <li>Regularization techniques (Ridge, Lasso)</li>
+                </ul>
+                These methods balance fit quality with model complexity to achieve good generalization.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Model Prediction <span class="marks">[2 marks]</span></h3>
+            <p>For the particular model \(t_n = w_1x_n + w_2x_n^3\), I optimize the parameters and end up with \(\mathbf{w} = [2,1]^T\). What does the model predict for a test point at \(x_{new} = 3\)?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Prediction Calculation:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[t_{new} = w_1 \cdot x_{new} + w_2 \cdot x_{new}^3\]</p>
+                <p>\[= 2 \times 3 + 1 \times 3^3\]</p>
+                <p>\[= 6 + 27\]</p>
+                <p>\[= 33\]</p>
+            </div>
+
+            <p><strong>Answer: The model predicts 33</strong></p>
+        </div>
+
+        <div class="question">
+            <h3>(e) Radial Basis Functions (RBF) <span class="marks">[4 marks]</span></h3>
+            <p>The radial basis function (RBF):</p>
+            <div class="formula-box">
+                <p>\[h_{n,k} = \exp\left(-\frac{\sum_{d=1}^{D}(x_{n,d} - \mu_{d,k})^2}{2s^2}\right), \quad n = 1, \ldots, N; \quad k = 1, \ldots, K\]</p>
+            </div>
+            <p>is a popular choice for converting the original features, \(x_{n,d}\), into a new set of K features prior to training. Assume the value of s is given. Describe a procedure for determining the center parameter \(\mu_{d,k}\) and K.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Procedure for Determining \(\mu_{d,k}\) and K:</strong></p>
+
+            <p><strong>[2 marks]</strong> Any reasonable approach for choosing K centers. The answer should clearly state how to choose K.</p>
+
+            <p><strong>Common Approach 1: Use Data Points as Centers</strong></p>
+            <ul>
+                <li>Let \(\mu_{d,k}\) be a data point \(x_{i,d}\) where \(i \neq n\) (different from the nth data point)</li>
+                <li>In this case, K = N-1 (or K = N if we allow self-centers)</li>
+                <li>This ensures each basis function is centered at an actual data location</li>
+            </ul>
+
+            <p><strong>[2 marks]</strong> What is \(\mu_{d,k}\): The centers are the D-dimensional coordinates in feature space where each RBF is centered.</p>
+
+            <p><strong>Common Approach 2: K-means Clustering</strong></p>
+            <ul>
+                <li>Choose K (e.g., via cross-validation, domain knowledge, or as a fraction of N)</li>
+                <li>Run K-means clustering on the training data points</li>
+                <li>Set \(\mu_{d,k}\) to be the K cluster centroids</li>
+                <li>This gives a more compact representation than using all data points</li>
+            </ul>
+
+            <p><strong>Common Approach 3: Uniform Grid</strong></p>
+            <ul>
+                <li>Place centers uniformly across the feature space range</li>
+                <li>K is chosen based on desired coverage/resolution</li>
+                <li>Works well for low-dimensional data</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Point:</strong> The centers \(\mu_{d,k}\) define where each RBF "bump" is located in the D-dimensional feature space. Each basis function creates a localized response around its center, with width controlled by s.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) RBF vs Linear Model <span class="marks">[3 marks]</span></h3>
+            <p>With respect to the functions they can fit, describe the difference between RBF and the basic linear model \(\mathbf{w}^T\mathbf{x}_n\) with a graph.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> The RBF can produce a nonlinear model, i.e., a wiggly curve that can capture complex patterns and local variations in the data.</p>
+
+            <p><strong>[1 mark]</strong> \(\mathbf{w}^T\mathbf{x}_n\) produces only a linear model, i.e., straight lines (in 2D) or hyperplanes (in higher dimensions).</p>
+
+            <p><strong>[1 mark]</strong> Readable graph showing the difference.</p>
+
+            <div class="note">
+                <strong>Graphical Description:</strong>
+                <ul>
+                    <li><strong>Linear Model:</strong> A straight line that best fits the data in a least-squares sense. Cannot capture curvature or local patterns.</li>
+                    <li><strong>RBF Model:</strong> A smooth, curved function formed by weighted sum of Gaussian "bumps". Can capture:
+                        <ul>
+                            <li>Non-linear relationships</li>
+                            <li>Local features (e.g., peaks and valleys)</li>
+                            <li>Complex patterns by combining multiple RBF basis functions</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Mathematical Comparison:</strong></p>
+                <p>Linear: \(f(x) = w_0 + w_1x\) (straight line)</p>
+                <p>RBF: \(f(x) = \sum_{k=1}^{K} w_k \exp\left(-\frac{(x-\mu_k)^2}{2s^2}\right)\) (nonlinear combination of bumps)</p>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Fundamental Concepts <span class="marks">[4 marks total]</span></h3>
+            <p>Use a classification algorithm, describe what is meant by:</p>
+            <p>(i) Generalisation <strong>[2 marks]</strong></p>
+            <p>(ii) Over-fitting <strong>[2 marks]</strong></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Generalisation:</strong> <strong>[2 marks]</strong></p>
+            <p>Generalisation refers to a model's ability to make accurate predictions on previously unseen data (test data or new examples not in the training set). A model that generalises well has learned the underlying patterns in the data rather than memorizing specific training examples, allowing it to perform well on new, similar data.</p>
+
+            <p><strong>(ii) Over-fitting:</strong> <strong>[2 marks]</strong></p>
+            <p>Over-fitting is the problem of memorizing the training data, including its noise and outliers, rather than learning the general patterns. An overfitted model performs very well on training data but poorly on test data because it has captured random fluctuations specific to the training set rather than the true underlying relationship.</p>
+
+            <div class="note">
+                <strong>Relationship:</strong> Over-fitting leads to poor generalisation. The model becomes too complex and fits the training data too closely, losing the ability to generalize to new examples.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Confusion Matrix Analysis <span class="marks">[6 marks total]</span></h3>
+            <p>A classification algorithm has been used to make predictions on a test set, resulting in the following confusion matrix:</p>
+
+            <table style="width: 70%; margin: 20px auto;">
+                <tr>
+                    <th rowspan="2" colspan="2" style="background-color: #f0f0f0;"></th>
+                    <th colspan="2">Truth</th>
+                    <th rowspan="2"></th>
+                </tr>
+                <tr>
+                    <th>Positive</th>
+                    <th>Negative</th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <th rowspan="3" style="background-color: #f0f0f0;">Prediction</th>
+                    <th style="background-color: #f0f0f0;">Positive</th>
+                    <td>23</td>
+                    <td>5</td>
+                    <td>28</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f0f0f0;">Negative</th>
+                    <td>10</td>
+                    <td>12</td>
+                    <td>22</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f0f0f0;">Total</th>
+                    <td>33</td>
+                    <td>17</td>
+                    <td>50</td>
+                </tr>
+            </table>
+
+            <p>Compute the following quantities (expressing them as fractions is fine):</p>
+            <p>(i) Accuracy <strong>[2 marks]</strong></p>
+            <p>(ii) Sensitivity <strong>[2 marks]</strong></p>
+            <p>(iii) Specificity <strong>[2 marks]</strong></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Given values from confusion matrix:</strong></p>
+            <ul>
+                <li>True Positives (TP) = 23</li>
+                <li>False Positives (FP) = 5</li>
+                <li>False Negatives (FN) = 10</li>
+                <li>True Negatives (TN) = 12</li>
+                <li>Total = 50</li>
+            </ul>
+
+            <p><strong>(i) Accuracy:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Accuracy} = \frac{TP + TN}{\text{Total}} = \frac{23 + 12}{50} = \frac{35}{50} = 0.70 = 70\%\]</p>
+            </div>
+
+            <p><strong>(ii) Sensitivity (Recall/True Positive Rate):</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Sensitivity} = \frac{TP}{TP + FN} = \frac{23}{23 + 10} = \frac{23}{33} \approx 0.697 = 69.7\%\]</p>
+            </div>
+            <p>This measures the proportion of actual positives correctly identified.</p>
+
+            <p><strong>(iii) Specificity (True Negative Rate):</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Specificity} = \frac{TN}{TN + FP} = \frac{12}{12 + 5} = \frac{12}{17} \approx 0.706 = 70.6\%\]</p>
+            </div>
+            <p>This measures the proportion of actual negatives correctly identified.</p>
+        </div>
+
+        <div class="question">
+            <h3>(c) AUC and Confusion Matrix <span class="marks">[4 marks]</span></h3>
+            <p>Explain why it is not possible to compute the AUC from a confusion matrix.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> AUC (Area Under the Curve) is the area under the ROC (Receiver Operating Characteristic) curve.</p>
+
+            <p><strong>[1 mark]</strong> The ROC curve is created by varying the threshold at which the algorithm calls something as belonging to the positive class. For each threshold, we plot the True Positive Rate (TPR) against the False Positive Rate (FPR).</p>
+
+            <p><strong>[1 mark]</strong> A confusion matrix only gives us the performance at one single threshold - the specific threshold that was used to make the binary predictions shown in the matrix.</p>
+
+            <p><strong>[1 mark]</strong> To compute AUC, we need to evaluate the classifier's performance across all possible thresholds (or a range of thresholds), which requires access to the continuous prediction scores, not just the final binary predictions.</p>
+
+            <div class="note">
+                <strong>What's needed for AUC:</strong>
+                <ul>
+                    <li>The predicted probabilities or scores for each test example</li>
+                    <li>The true labels</li>
+                    <li>Compute TPR and FPR at multiple thresholds by varying the decision boundary</li>
+                    <li>Plot ROC curve and calculate area under it</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Computing AUC from Predictions <span class="marks">[4 marks]</span></h3>
+            <p>Two binary classifiers are used to make predictions for the same set of six test points. These predictions are given below, along with the true labels. Compute the area under the curve (AUC) in each case.</p>
+
+            <table style="width: 80%; margin: 20px auto;">
+                <tr>
+                    <th colspan="2">Classifier 1</th>
+                    <th colspan="2">Classifier 2</th>
+                </tr>
+                <tr>
+                    <th>Predicted probability of class 1</th>
+                    <th>True class</th>
+                    <th>Predicted probability of class 1</th>
+                    <th>True class</th>
+                </tr>
+                <tr>
+                    <td>1.0</td>
+                    <td>1</td>
+                    <td>0.8</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>0.8</td>
+                    <td>1</td>
+                    <td>0.8</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0.6</td>
+                    <td>1</td>
+                    <td>0.6</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>0.4</td>
+                    <td>0</td>
+                    <td>0.6</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0.2</td>
+                    <td>0</td>
+                    <td>0.2</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>0.0</td>
+                    <td>0</td>
+                    <td>0.2</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Classifier 1 Analysis:</strong> <strong>[2 marks]</strong></p>
+            <p>Actual positives (class 1): 3 examples (scores: 1.0, 0.8, 0.6)<br>
+            Actual negatives (class 0): 3 examples (scores: 0.4, 0.2, 0.0)</p>
+
+            <p>The predictions are perfectly separated - all positive examples have higher scores than all negative examples. This means:</p>
+            <ul>
+                <li>At any threshold between 0.4 and 0.6, we classify perfectly</li>
+                <li>TPR = 1.0 (all positives correctly classified)</li>
+                <li>FPR = 0.0 (no negatives incorrectly classified)</li>
+            </ul>
+            <p><strong>AUC for Classifier 1 = 1.0</strong> (perfect classifier)</p>
+
+            <p><strong>Classifier 2 Analysis:</strong> <strong>[2 marks]</strong></p>
+            <p>Actual positives: scores 0.8, 0.6, 0.2<br>
+            Actual negatives: scores 0.8, 0.6, 0.2</p>
+
+            <p>The predictions are completely mixed - there's no threshold that separates the classes better than random guessing. For every positive at a given score, there's a negative at the same or similar score:</p>
+            <ul>
+                <li>The ranking of examples is no better than random</li>
+                <li>No matter what threshold we choose, we cannot separate the classes</li>
+            </ul>
+            <p><strong>AUC for Classifier 2 = 0.5</strong> (random classifier, no better than coin flip)</p>
+
+            <div class="note">
+                <strong>AUC Interpretation:</strong>
+                <ul>
+                    <li>AUC = 1.0: Perfect classifier</li>
+                    <li>AUC = 0.5: Random classifier (no discriminative power)</li>
+                    <li>AUC < 0.5: Worse than random (predictions inverted)</li>
+                    <li>AUC > 0.5: Better than random</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) SVM and Kernel Trick <span class="marks">[2 marks]</span></h3>
+            <p>Explain how the SVM can be extended via the kernel trick to perform non-linear classification.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> In the SVM objective function and decision rule, the data only appear in the form of inner products (dot products) between data points: \(\mathbf{x}_i \cdot \mathbf{x}_j\).</p>
+
+            <p><strong>[1 mark]</strong> Inner products in the original space can be replaced by inner products in another (higher-dimensional) feature space via kernel functions: \(k(\mathbf{x}_i, \mathbf{x}_j) = \phi(\mathbf{x}_i) \cdot \phi(\mathbf{x}_j)\), where \(\phi\) maps data to a higher-dimensional space. Critically, we can compute \(k(\mathbf{x}_i, \mathbf{x}_j)\) directly without explicitly computing \(\phi\).</p>
+
+            <div class="formula-box">
+                <p><strong>Common Kernels:</strong></p>
+                <p>Linear: \(k(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i \cdot \mathbf{x}_j\)</p>
+                <p>Polynomial: \(k(\mathbf{x}_i, \mathbf{x}_j) = (\mathbf{x}_i \cdot \mathbf{x}_j + c)^d\)</p>
+                <p>RBF/Gaussian: \(k(\mathbf{x}_i, \mathbf{x}_j) = \exp\left(-\frac{\|\mathbf{x}_i - \mathbf{x}_j\|^2}{2\sigma^2}\right)\)</p>
+            </div>
+
+            <div class="note">
+                <strong>Why this works:</strong> By using a kernel, we implicitly map data to a space where it becomes linearly separable, without the computational cost of explicitly computing the high-dimensional feature representation. The SVM finds a linear decision boundary in this high-dimensional space, which corresponds to a non-linear boundary in the original space.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Algorithm <span class="marks">[5 marks]</span></h3>
+            <p>Provide pseudo code for K-means (assume that the number of clusters K is provided).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>K-means Pseudo Code:</strong></p>
+
+            <div class="formula-box">
+                <pre>
+<strong>K-MEANS ALGORITHM:</strong>
+
+<strong>Given:</strong> Number of clusters, K; Data points x_1, ..., x_N
+
+<strong>Initialization:</strong>
+    Randomly initialize K cluster centers μ_1, ..., μ_K
+
+<strong>Repeat until convergence:</strong>
+
+    <strong>Assignment Step:</strong>
+    For each object n = 1...N:                              [1 mark]
+        Compute the distance between object n and
+        each cluster k = 1...K                              [1 mark]
+
+        Assign object n to the cluster corresponding
+        to the smallest distance:                           [1 mark]
+            c_n = argmin_k ||x_n - μ_k||²
+
+    <strong>Update Step:</strong>
+    For each cluster k = 1...K:
+        Update the mean of cluster k:                       [1 mark]
+            μ_k = (1/N_k) Σ x_n  (sum over n where c_n = k)
+
+    <strong>Check Convergence:</strong>
+    If assignments have changed, return to Assignment Step
+    Else stop                                               [1 mark]
+
+<strong>Output:</strong> Cluster assignments c_1, ..., c_N and centers μ_1, ..., μ_K
+                </pre>
+            </div>
+
+            <div class="note">
+                <strong>Key Points:</strong>
+                <ul>
+                    <li>The algorithm alternates between assigning points to nearest clusters and updating cluster centers</li>
+                    <li>Guaranteed to converge (assignments stop changing)</li>
+                    <li>May converge to local optima depending on initialization</li>
+                    <li>Computational complexity: O(N·K·D·iterations) where D is dimensionality</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Selecting Number of Clusters <span class="marks">[2 marks]</span></h3>
+            <p>Is the total Euclidean distance between data points and their cluster centers a good criterion to select number of clusters in K-means? Why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>[1 mark]</strong> No, the total Euclidean distance is not a good criterion for selecting K.</p>
+
+            <p><strong>[1 mark]</strong> As we increase the number of clusters K, the total Euclidean distance will always decrease (or stay the same). With more clusters, each point can be closer to its assigned cluster center, leading to smaller distances.</p>
+
+            <p><strong>Extreme case:</strong> If K = N (number of clusters equals number of data points), every point is its own cluster center and the total distance becomes zero. This is clearly overfitting and not useful.</p>
+
+            <div class="note">
+                <strong>Better methods for choosing K:</strong>
+                <ul>
+                    <li><strong>Elbow method:</strong> Plot total distance vs K and look for an "elbow" where the decrease slows</li>
+                    <li><strong>Silhouette score:</strong> Measures how well points fit their clusters vs neighboring clusters</li>
+                    <li><strong>Gap statistic:</strong> Compares within-cluster variation to null reference distribution</li>
+                    <li><strong>Cross-validation:</strong> If clusters will be used for downstream tasks</li>
+                    <li><strong>Domain knowledge:</strong> Sometimes the number of clusters is known from the problem context</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Expectation Maximization (EM) for GMM <span class="marks">[4 marks]</span></h3>
+            <p>Gaussian mixture models can be fitted to data using the expectation maximization (EM) algorithm. The EM algorithm has two steps: E-step and M-step. Describe what parameters are being estimated in each step in Gaussian mixture models.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>E-step (Expectation Step):</strong> <strong>[2 marks]</strong></p>
+            <p>In the E-step, the estimated parameters are the <strong>responsibilities</strong> (also called posterior probabilities) \(r_{nk}\), which represent the expected assignment probabilities for each data point n to each Gaussian component k.</p>
+
+            <div class="formula-box">
+                <p>\[r_{nk} = \frac{\pi_k \mathcal{N}(x_n|\mu_k, \Sigma_k)}{\sum_{j=1}^{K} \pi_j \mathcal{N}(x_n|\mu_j, \Sigma_j)}\]</p>
+                <p>This is the probability that point n belongs to cluster k, given current parameters.</p>
+            </div>
+
+            <p><strong>M-step (Maximization Step):</strong> <strong>[2 marks]</strong></p>
+            <p>In the M-step, we update the model parameters using the responsibilities computed in E-step:</p>
+            <ul>
+                <li><strong>Mean</strong> \(\mu_k\) of each Gaussian component</li>
+                <li><strong>Covariance matrix</strong> \(\Sigma_k\) of each Gaussian component</li>
+                <li><strong>Mixing coefficients</strong> \(\pi_k\) (the prior probability of each cluster)</li>
+            </ul>
+
+            <div class="formula-box">
+                <p>\[\mu_k = \frac{\sum_{n=1}^{N} r_{nk} x_n}{\sum_{n=1}^{N} r_{nk}}, \quad \pi_k = \frac{1}{N}\sum_{n=1}^{N} r_{nk}\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Iteration:</strong> These steps alternate until convergence. Each complete E-M iteration is guaranteed to increase (or maintain) the log-likelihood of the data under the model.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) K-means vs Gaussian Mixture Models <span class="marks">[4 marks]</span></h3>
+            <p>Describe three key differences between K-means and Gaussian mixture models.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Difference 1: Assignment Type</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> K-means uses hard assignment: Each point is assigned to exactly one cluster (binary membership)</li>
+                <li><strong>[1 mark]</strong> Gaussian mixture models use soft assignment: Each point has a probability of belonging to each cluster (GMM estimates the probability of assignment)</li>
+            </ul>
+
+            <p><strong>Difference 2: Cluster Parameters</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> K-means only estimates cluster centers (means)</li>
+                <li><strong>[1 mark]</strong> GMM estimates both cluster centers (means) and covariance matrices, which define the shape and orientation of clusters</li>
+            </ul>
+
+            <p><strong>Difference 3: Cluster Shape</strong></p>
+            <ul>
+                <li>K-means assumes spherical clusters of similar size (uses Euclidean distance)</li>
+                <li>GMM can model elliptical clusters of different sizes and orientations (via covariance matrices)</li>
+            </ul>
+
+            <div class="note">
+                <strong>Additional Differences:</strong>
+                <ul>
+                    <li><strong>Probabilistic foundation:</strong> GMM has a proper probabilistic model (can compute likelihoods), K-means is a heuristic algorithm</li>
+                    <li><strong>Mixing coefficients:</strong> GMM estimates \(\pi_k\) (prior probability of each cluster), K-means implicitly assumes equal cluster sizes</li>
+                    <li><strong>Computational cost:</strong> K-means is generally faster; GMM is more expensive due to covariance computations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) Overcoming Local Optima in K-means <span class="marks">[3 marks]</span></h3>
+            <p>K-means often converges to a local optimal solution. Describe a simple process for overcoming the local optimality of K-means.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Multiple Random Restarts:</strong> <strong>[3 marks]</strong></p>
+
+            <p>For a fixed number of clusters K, perform multiple re-starts of the K-means algorithm with different random initializations, and evaluate the total distance of points from their cluster mean (the objective function value) for each run. Keep the solution with the smallest distance.</p>
+
+            <div class="formula-box">
+                <pre>
+<strong>Algorithm:</strong>
+
+best_objective = ∞
+best_solution = None
+
+For restart = 1 to R (e.g., R = 10 or 20):
+    Randomly initialize cluster centers
+    Run K-means to convergence
+    Compute objective: total_distance = Σ ||x_n - μ_{c_n}||²
+
+    If total_distance < best_objective:
+        best_objective = total_distance
+        best_solution = current clusters and centers
+
+Return best_solution
+                </pre>
+            </div>
+
+            <div class="note">
+                <strong>Why this works:</strong>
+                <ul>
+                    <li>Different random initializations explore different parts of the solution space</li>
+                    <li>Each run converges to a local optimum</li>
+                    <li>By trying multiple initializations, we increase chances of finding the global optimum (or a good local optimum)</li>
+                    <li>Common practice: Use 10-50 random restarts</li>
+                </ul>
+
+                <strong>Smarter initialization:</strong> K-means++ is an improved initialization method that spreads initial centers far apart, often reducing the need for many restarts.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) When to Choose Mixture Models over K-means <span class="marks">[2 marks]</span></h3>
+            <p>Describe two situations (with justification) where you might choose a mixture model over K-means.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Situation 1: Non-isotropic Clusters</strong> <strong>[1 mark]</strong></p>
+            <p>When we have data for which we don't want to be limited to isotropic (spherical) clusters. Mixture models (particularly GMM) can model elliptical clusters with different shapes and orientations using covariance matrices, while K-means assumes spherical clusters of similar size.</p>
+
+            <p><strong>Example:</strong> Image segmentation where objects have elongated or irregular shapes, or gene expression data where clusters have different variances in different dimensions.</p>
+
+            <p><strong>Situation 2: Non-Euclidean Data Types</strong> <strong>[1 mark]</strong></p>
+            <p>When using a data type for which it is not obvious how to compute a distance metric (but for which we can compute a likelihood). Mixture models are based on likelihood functions and can be adapted to various data types by choosing appropriate component distributions.</p>
+
+            <p><strong>Examples:</strong></p>
+            <ul>
+                <li>Text data: Use mixture of multinomials</li>
+                <li>Binary data: Use mixture of Bernoullis</li>
+                <li>Count data: Use mixture of Poissons</li>
+            </ul>
+
+            <p><strong>Additional Situations:</strong></p>
+            <ul>
+                <li><strong>Soft assignments needed:</strong> When you need probability estimates for cluster membership (e.g., for downstream uncertainty quantification)</li>
+                <li><strong>Probabilistic framework:</strong> When you need to compute likelihoods, perform model selection via BIC/AIC, or integrate clustering into a larger probabilistic model</li>
+                <li><strong>Overlapping clusters:</strong> When clusters naturally overlap and points can partially belong to multiple clusters</li>
+            </ul>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Mock Exam Solutions</strong></p>
+            <p>Total Marks: 60 | Exam Duration: 60 minutes</p>
+            <p><em>Use this mock exam to practice time management (1 minute per mark) and identify areas needing more study!</em></p>
+            <p><em>Remember: Show all working clearly and explain your reasoning in the actual exam.</em></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12: Transformers | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 12</span></div>
+            <h1><span class="gradient-text">Transformers</span></h1>
+            <p class="chapter-description">The architecture powering GPT, BERT, and modern AI—understand self-attention and why "Attention Is All You Need."</p>
+            <div class="chapter-nav">
+                <a href="chapter11.html" class="nav-btn">← Previous</a>
+                <a href="chapter13.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="attention" class="content-section">
+                <h2>The Attention Mechanism</h2>
+                <p>Attention allows each position to look at and gather information from all other positions.</p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Self-Attention</div>
+                    <p>For each token, compute a weighted sum of all token representations, where weights depend on relevance (similarity).</p>
+                </div>
+                
+                <h3>Query, Key, Value</h3>
+                <p>Each input is projected into three vectors:</p>
+                <ul>
+                    <li><strong>Query (Q):</strong> "What am I looking for?"</li>
+                    <li><strong>Key (K):</strong> "What do I contain?"</li>
+                    <li><strong>Value (V):</strong> "What information do I provide?"</li>
+                </ul>
+                
+                <div class="math-block"><div class="equation">Attention(Q, K, V) = softmax(QKᵀ / √d) V</div></div>
+            </section>
+            
+            <section id="multi-head" class="content-section">
+                <h2>Multi-Head Attention</h2>
+                <p>Run attention multiple times in parallel with different projections:</p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Why Multiple Heads?</div>
+                    <p>
+                        Different heads can attend to different types of relationships:<br>
+                        • Head 1: Syntactic relationships<br>
+                        • Head 2: Semantic similarity<br>
+                        • Head 3: Positional patterns<br>
+                        Typical: 8-16 heads
+                    </p>
+                </div>
+            </section>
+            
+            <section id="architecture" class="content-section">
+                <h2>Transformer Architecture</h2>
+                
+                <h3>Encoder Block</h3>
+                <p>Multi-Head Attention → Add & Norm → FFN → Add & Norm</p>
+                
+                <h3>Decoder Block</h3>
+                <p>Masked Self-Attention → Cross-Attention → FFN (each with residuals)</p>
+                
+                <h3>Positional Encoding</h3>
+                <p>Since attention is permutation-invariant, we add position information:</p>
+                <div class="math-block"><div class="equation">PE(pos, 2i) = sin(pos / 10000^(2i/d))<br>PE(pos, 2i+1) = cos(pos / 10000^(2i/d))</div></div>
+            </section>
+            
+            <section id="variants" class="content-section">
+                <h2>Transformer Variants</h2>
+                <ul>
+                    <li><strong>BERT:</strong> Encoder-only, bidirectional, for understanding</li>
+                    <li><strong>GPT:</strong> Decoder-only, autoregressive, for generation</li>
+                    <li><strong>T5:</strong> Encoder-decoder, text-to-text framework</li>
+                    <li><strong>Vision Transformer (ViT):</strong> Transformers for images</li>
+                </ul>
+            </section>
+            
+            <section id="scaling" class="content-section">
+                <h2>Scaling Laws</h2>
+                <p>Transformer performance scales predictably with:</p>
+                <ul>
+                    <li><strong>Parameters:</strong> More layers, wider FFN</li>
+                    <li><strong>Data:</strong> More training tokens</li>
+                    <li><strong>Compute:</strong> More training FLOPs</li>
+                </ul>
+                <p>This predictability enabled GPT-3, GPT-4, and modern LLMs.</p>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Attention: weighted sum based on query-key similarity</li>
+                        <li>Self-attention lets each position see all others</li>
+                        <li>Multi-head attention captures different relationship types</li>
+                        <li>Positional encoding adds sequence order information</li>
+                        <li>Transformers scale predictably with size</li>
+                        <li>Foundation for GPT, BERT, and modern AI</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter11.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Residual Networks</span></a>
+                <a href="chapter13.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Graph Neural Networks →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#attention">Attention Mechanism</a></li>
+                    <li><a href="#multi-head">Multi-Head Attention</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#variants">Variants</a></li>
+                    <li><a href="#scaling">Scaling Laws</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

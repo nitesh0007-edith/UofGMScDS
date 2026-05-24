@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: Convolutional Networks | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 10</span><span class="part-label">Part III: Architectures</span></div>
+            <h1>Convolutional <span class="gradient-text">Networks</span></h1>
+            <p class="chapter-description">The architecture that revolutionized computer vision—learn how CNNs exploit spatial structure with local connectivity and weight sharing.</p>
+            <div class="chapter-nav">
+                <a href="chapter9.html" class="nav-btn">← Previous</a>
+                <a href="chapter11.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="motivation" class="content-section">
+                <h2>Why CNNs for Images?</h2>
+                <p>Fully connected layers for images are problematic:</p>
+                <ul>
+                    <li>A 224×224 RGB image has 150,528 pixels</li>
+                    <li>FC layer with 1000 neurons = 150 million parameters!</li>
+                    <li>Ignores spatial structure of images</li>
+                </ul>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Insights</div>
+                    <p>
+                        <strong>Local connectivity:</strong> Pixels nearby are more related<br>
+                        <strong>Translation invariance:</strong> A cat is a cat regardless of position<br>
+                        <strong>Hierarchical features:</strong> Edges → shapes → parts → objects
+                    </p>
+                </div>
+            </section>
+            
+            <section id="convolution" class="content-section">
+                <h2>The Convolution Operation</h2>
+                <p>A <strong>filter/kernel</strong> slides across the input, computing dot products:</p>
+                
+                <div class="math-block"><div class="equation">output[i,j] = Σₘ Σₙ input[i+m, j+n] × kernel[m, n]</div></div>
+                
+                <h3>Key Properties</h3>
+                <ul>
+                    <li><strong>Local connectivity:</strong> Each output depends only on a small region</li>
+                    <li><strong>Weight sharing:</strong> Same filter applied everywhere</li>
+                    <li><strong>Translation equivariance:</strong> Shift input → shift output</li>
+                </ul>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Convolution Example</div>
+                    <p>
+                        A 3×3 edge detection filter:<br>
+                        [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]<br><br>
+                        Sliding this across an image highlights vertical edges!
+                    </p>
+                </div>
+            </section>
+            
+            <section id="cnn-components" class="content-section">
+                <h2>CNN Building Blocks</h2>
+                
+                <h3>Convolutional Layer</h3>
+                <p>Multiple filters produce multiple output channels (feature maps). Each filter detects a different pattern.</p>
+                
+                <h3>Pooling Layer</h3>
+                <p>Downsamples spatial dimensions while keeping channels:</p>
+                <ul>
+                    <li><strong>Max pooling:</strong> Take maximum in each window</li>
+                    <li><strong>Average pooling:</strong> Take average in each window</li>
+                </ul>
+                <p>Provides translation invariance and reduces computation.</p>
+                
+                <h3>Stride and Padding</h3>
+                <ul>
+                    <li><strong>Stride:</strong> How far filter moves each step (stride=2 halves spatial size)</li>
+                    <li><strong>Padding:</strong> Add zeros around border to control output size</li>
+                </ul>
+            </section>
+            
+            <section id="architecture-patterns" class="content-section">
+                <h2>Classic Architectures</h2>
+                
+                <h3>LeNet (1989)</h3>
+                <p>First successful CNN. Conv → Pool → Conv → Pool → FC</p>
+                
+                <h3>AlexNet (2012)</h3>
+                <p>Deeper, ReLU activation, dropout. Won ImageNet dramatically.</p>
+                
+                <h3>VGGNet (2014)</h3>
+                <p>Very deep (16-19 layers), only 3×3 convolutions. Simple and elegant.</p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Typical CNN Pattern</div>
+                    <p>
+                        [Conv → ReLU → Pool] × N → Flatten → [FC → ReLU] × M → Output<br><br>
+                        Spatial size decreases, channel count increases as we go deeper.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="parameters" class="content-section">
+                <h2>Parameter Efficiency</h2>
+                <p>CNNs are much more parameter-efficient than FC networks:</p>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Comparison</div>
+                    <p>
+                        Input: 224×224×3 image<br><br>
+                        <strong>FC layer (1000 outputs):</strong> 150M parameters<br>
+                        <strong>Conv layer (64 filters, 3×3):</strong> 1,728 parameters<br><br>
+                        Over 80,000× fewer parameters!
+                    </p>
+                </div>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>CNNs exploit spatial structure with local connectivity</li>
+                        <li>Weight sharing makes them parameter-efficient</li>
+                        <li>Convolution: slide filter across input, compute dot products</li>
+                        <li>Pooling: downsample spatially, provide invariance</li>
+                        <li>Deep CNNs learn hierarchical features automatically</li>
+                        <li>Classic pattern: Conv-ReLU-Pool repeated, then FC layers</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter9.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Regularization</span></a>
+                <a href="chapter11.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Residual Networks →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#motivation">Why CNNs?</a></li>
+                    <li><a href="#convolution">Convolution Operation</a></li>
+                    <li><a href="#cnn-components">Building Blocks</a></li>
+                    <li><a href="#architecture-patterns">Classic Architectures</a></li>
+                    <li><a href="#parameters">Parameter Efficiency</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

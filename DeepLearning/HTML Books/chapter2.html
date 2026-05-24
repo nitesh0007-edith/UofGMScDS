@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Supervised Learning | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    
+    <nav class="main-nav">
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">DL Tutorial</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#chapters" class="nav-link">All Chapters</a>
+            <a href="https://udlbook.github.io/udlbook/" target="_blank" class="nav-link external">Original Book ↗</a>
+        </div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta">
+                <span class="chapter-badge">Chapter 2</span>
+                <span class="part-label">Part II: Supervised Learning</span>
+            </div>
+            <h1>Supervised <span class="gradient-text">Learning</span></h1>
+            <p class="chapter-description">
+                Learn the fundamental paradigm of supervised learning: using labeled examples to train models that can make predictions on new, unseen data.
+            </p>
+            <div class="chapter-nav">
+                <a href="chapter1.html" class="nav-btn">← Previous: Introduction</a>
+                <a href="chapter3.html" class="nav-btn">Next: Shallow Neural Networks →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            
+            <section id="overview" class="content-section">
+                <h2>What is Supervised Learning?</h2>
+                
+                <p>
+                    <strong>Supervised learning</strong> is a type of machine learning where we have input-output pairs and want to learn a function that maps inputs to outputs. The "supervision" comes from the labeled examples we use for training.
+                </p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Definition</div>
+                    <p>
+                        <strong>Supervised Learning:</strong> Given a dataset of input-output pairs {(x₁, y₁), (x₂, y₂), ..., (xₙ, yₙ)}, find a function f such that f(x) ≈ y for all training examples, and more importantly, generalizes well to new, unseen inputs.
+                    </p>
+                </div>
+                
+                <h3>The Two Main Tasks</h3>
+                
+                <p>Supervised learning problems fall into two categories based on the type of output:</p>
+                
+                <ul>
+                    <li><strong>Regression:</strong> The output y is continuous (a real number). Example: predicting house prices.</li>
+                    <li><strong>Classification:</strong> The output y is discrete (a category). Example: classifying emails as spam or not spam.</li>
+                </ul>
+            </section>
+            
+            <section id="regression" class="content-section">
+                <h2>Regression</h2>
+                
+                <p>
+                    In regression, we predict a continuous value. The simplest form is <strong>linear regression</strong>, where we assume the relationship between input x and output y is linear.
+                </p>
+                
+                <h3>Linear Regression Model</h3>
+                
+                <p>For a single input variable, the linear model is:</p>
+                
+                <div class="math-block">
+                    <div class="equation">f(x) = wx + b</div>
+                </div>
+                
+                <p>where:</p>
+                <ul>
+                    <li><strong>w</strong> is the weight (slope) - how much y changes when x changes</li>
+                    <li><strong>b</strong> is the bias (intercept) - the value of y when x = 0</li>
+                </ul>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Example: House Price Prediction</div>
+                    <p>
+                        Suppose we want to predict house prices based on square footage:<br><br>
+                        <strong>Model:</strong> price = w × (square_feet) + b<br>
+                        <strong>If:</strong> w = 200 (dollars per sq ft), b = 50,000 (base price)<br>
+                        <strong>Then:</strong> A 1,500 sq ft house costs 200 × 1,500 + 50,000 = $350,000
+                    </p>
+                </div>
+                
+                <h3>Multiple Input Variables</h3>
+                
+                <p>With multiple inputs (features), the model becomes:</p>
+                
+                <div class="math-block">
+                    <div class="equation">f(x) = w₁x₁ + w₂x₂ + ... + wₙxₙ + b = wᵀx + b</div>
+                </div>
+                
+                <p>
+                    In vector notation, <strong>w</strong> is a vector of weights and <strong>x</strong> is a vector of input features. This is still called "linear" regression because the output is a linear combination of inputs.
+                </p>
+                
+                <h3>Nonlinear Relationships</h3>
+                
+                <p>
+                    Real-world relationships are rarely perfectly linear. We can model nonlinear relationships in two ways:
+                </p>
+                
+                <ol>
+                    <li><strong>Feature Engineering:</strong> Add polynomial features (x², x³, etc.) or other transformations</li>
+                    <li><strong>Neural Networks:</strong> Use multiple layers with nonlinear activations (covered in later chapters)</li>
+                </ol>
+            </section>
+            
+            <section id="classification" class="content-section">
+                <h2>Classification</h2>
+                
+                <p>
+                    In classification, we assign inputs to discrete categories. The simplest case is <strong>binary classification</strong> with two classes.
+                </p>
+                
+                <h3>Binary Classification</h3>
+                
+                <p>
+                    We can't directly use linear regression for classification because it outputs any real number, while we need probabilities between 0 and 1.
+                </p>
+                
+                <p>
+                    The solution is <strong>logistic regression</strong>, which applies the sigmoid function to squash outputs into [0, 1]:
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">P(y=1|x) = σ(wᵀx + b) = 1 / (1 + e^(-(wᵀx + b)))</div>
+                </div>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 The Sigmoid Function</div>
+                    <p>
+                        The sigmoid function σ(z) = 1/(1+e^(-z)) maps any real number to (0, 1):<br>
+                        • Large positive z → output near 1<br>
+                        • Large negative z → output near 0<br>
+                        • z = 0 → output = 0.5
+                    </p>
+                </div>
+                
+                <div class="diagram-container">
+                    <div class="diagram-title">Sigmoid Function Visualization</div>
+                    <div id="activation-plot" style="width: 100%; height: 250px;"></div>
+                </div>
+                
+                <h3>Multi-Class Classification</h3>
+                
+                <p>
+                    When we have more than two classes, we use the <strong>softmax function</strong>, which converts a vector of scores into probabilities that sum to 1:
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">P(y=k|x) = e^(zₖ) / Σⱼe^(zⱼ)</div>
+                </div>
+                
+                <p>
+                    where zₖ is the score (logit) for class k. Softmax ensures all probabilities are positive and sum to 1.
+                </p>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Example: Digit Recognition</div>
+                    <p>
+                        For recognizing handwritten digits (0-9), the model outputs 10 scores. Softmax converts these to probabilities:<br><br>
+                        <strong>Scores:</strong> [2.0, 0.5, 0.1, 0.3, 0.2, 0.1, 0.4, 8.0, 0.3, 0.1]<br>
+                        <strong>Softmax:</strong> [0.002, 0.001, ..., 0.99, ...]<br>
+                        <strong>Prediction:</strong> Class 7 (highest probability)
+                    </p>
+                </div>
+            </section>
+            
+            <section id="model-function" class="content-section">
+                <h2>The Model as a Function</h2>
+                
+                <p>
+                    In both regression and classification, we're learning a function f(x, φ) where:
+                </p>
+                
+                <ul>
+                    <li><strong>x</strong> is the input data</li>
+                    <li><strong>φ</strong> (phi) represents all the learnable parameters (weights and biases)</li>
+                </ul>
+                
+                <p>
+                    The goal of training is to find the optimal parameters φ* that make our model's predictions as close as possible to the true outputs.
+                </p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Insight</div>
+                    <p>
+                        A model is just a parameterized function. Training is the process of finding good values for those parameters. The architecture (linear, neural network, etc.) determines what kinds of functions the model can represent.
+                    </p>
+                </div>
+                
+                <h3>Model Capacity</h3>
+                
+                <p>
+                    Different models can represent different sets of functions. A model's <strong>capacity</strong> refers to how complex the functions it can learn are:
+                </p>
+                
+                <ul>
+                    <li><strong>Linear models:</strong> Can only represent linear functions (low capacity)</li>
+                    <li><strong>Polynomial models:</strong> Can represent polynomial functions</li>
+                    <li><strong>Neural networks:</strong> Can approximate any continuous function (high capacity)</li>
+                </ul>
+                
+                <p>
+                    We'll explore model capacity and its implications in Chapter 8 (Measuring Performance) and Chapter 9 (Regularization).
+                </p>
+            </section>
+            
+            <section id="training-overview" class="content-section">
+                <h2>Training Overview</h2>
+                
+                <p>
+                    Training a supervised learning model involves three key components:
+                </p>
+                
+                <h3>1. Loss Function</h3>
+                <p>
+                    A loss function measures how wrong our predictions are. We want to minimize this. Common choices:
+                </p>
+                <ul>
+                    <li><strong>Mean Squared Error (MSE)</strong> for regression</li>
+                    <li><strong>Cross-Entropy Loss</strong> for classification</li>
+                </ul>
+                <p>Chapter 5 covers loss functions in detail.</p>
+                
+                <h3>2. Optimization Algorithm</h3>
+                <p>
+                    We need an algorithm to find parameters that minimize the loss. The most common approach is <strong>gradient descent</strong>:
+                </p>
+                <ol>
+                    <li>Start with random parameters</li>
+                    <li>Compute the gradient (direction of steepest increase)</li>
+                    <li>Move parameters in the opposite direction</li>
+                    <li>Repeat until convergence</li>
+                </ol>
+                <p>Chapter 6 covers training algorithms in detail.</p>
+                
+                <h3>3. Evaluation</h3>
+                <p>
+                    We need to measure how well our model performs on data it hasn't seen during training. This tells us if the model has truly learned useful patterns or just memorized the training data.
+                </p>
+                <p>Chapter 8 covers performance measurement.</p>
+            </section>
+            
+            <section id="generalization" class="content-section">
+                <h2>Generalization</h2>
+                
+                <p>
+                    The ultimate goal of supervised learning is <strong>generalization</strong>: performing well on new, unseen data, not just the training data.
+                </p>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Overfitting vs. Underfitting</div>
+                    <p>
+                        <strong>Overfitting:</strong> The model learns the training data too well, including noise and irrelevant patterns. It performs great on training data but poorly on new data.<br><br>
+                        <strong>Underfitting:</strong> The model is too simple to capture the underlying patterns. It performs poorly on both training and test data.
+                    </p>
+                </div>
+                
+                <p>
+                    Finding the right balance between overfitting and underfitting is a central challenge in machine learning. We'll explore this in detail in later chapters.
+                </p>
+                
+                <h3>Train-Test Split</h3>
+                
+                <p>
+                    To evaluate generalization, we split our data into:
+                </p>
+                
+                <ul>
+                    <li><strong>Training set:</strong> Used to learn the model parameters</li>
+                    <li><strong>Validation set:</strong> Used to tune hyperparameters and prevent overfitting</li>
+                    <li><strong>Test set:</strong> Used only once, at the end, to report final performance</li>
+                </ul>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="key-points">
+                    <div class="key-points-title">Summary</div>
+                    <ul>
+                        <li>Supervised learning uses labeled input-output pairs to learn a mapping function</li>
+                        <li>Regression predicts continuous values; classification predicts discrete categories</li>
+                        <li>Linear regression models: f(x) = wᵀx + b</li>
+                        <li>Logistic regression adds sigmoid for binary classification</li>
+                        <li>Softmax extends to multi-class classification</li>
+                        <li>Training minimizes a loss function using optimization algorithms</li>
+                        <li>Generalization to unseen data is the ultimate goal</li>
+                        <li>Overfitting and underfitting are key challenges to balance</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter1.html" class="chapter-footer-link">
+                    <span class="footer-link-label">Previous Chapter</span>
+                    <span class="footer-link-title">← Introduction</span>
+                </a>
+                <a href="chapter3.html" class="chapter-footer-link next">
+                    <span class="footer-link-label">Next Chapter</span>
+                    <span class="footer-link-title">Shallow Neural Networks →</span>
+                </a>
+            </footer>
+        </main>
+        
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#overview">What is Supervised Learning?</a></li>
+                    <li><a href="#regression">Regression</a></li>
+                    <li><a href="#classification">Classification</a></li>
+                    <li><a href="#model-function">Model as a Function</a></li>
+                    <li><a href="#training-overview">Training Overview</a></li>
+                    <li><a href="#generalization">Generalization</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">◈</span>
+                    <span>Understanding Deep Learning Tutorial</span>
+                </div>
+                <p class="footer-note">
+                    Based on the textbook by Simon J.D. Prince.
+                    <a href="https://udlbook.github.io/udlbook/" target="_blank">View original book →</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

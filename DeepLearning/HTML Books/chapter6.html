@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6: Training Models | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 6</span></div>
+            <h1>Training <span class="gradient-text">Models</span></h1>
+            <p class="chapter-description">Master gradient descent, SGD, momentum, and Adam—the optimization algorithms that make deep learning possible.</p>
+            <div class="chapter-nav">
+                <a href="chapter5.html" class="nav-btn">← Previous</a>
+                <a href="chapter7.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="gradient-descent" class="content-section">
+                <h2>Gradient Descent</h2>
+                <p>The core optimization algorithm: move parameters in the direction that decreases loss.</p>
+                <div class="math-block"><div class="equation">φ ← φ - α · ∇L(φ)</div></div>
+                <p>Where α is the <strong>learning rate</strong> and ∇L is the gradient (direction of steepest ascent).</p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Learning Rate</div>
+                    <p>Too large → overshoots, unstable. Too small → slow convergence. Start with 0.001 for Adam, 0.01 for SGD.</p>
+                </div>
+            </section>
+            
+            <section id="sgd" class="content-section">
+                <h2>Stochastic Gradient Descent</h2>
+                <p>Instead of computing gradients on all data, use random mini-batches:</p>
+                <ul>
+                    <li><strong>Batch GD:</strong> All data per update (slow)</li>
+                    <li><strong>SGD:</strong> One sample per update (noisy)</li>
+                    <li><strong>Mini-batch:</strong> 32-256 samples (best tradeoff)</li>
+                </ul>
+            </section>
+            
+            <section id="momentum" class="content-section">
+                <h2>Momentum</h2>
+                <p>Accumulate past gradients to smooth updates and accelerate through valleys:</p>
+                <div class="math-block"><div class="equation">v ← βv + ∇L(φ)<br>φ ← φ - αv</div></div>
+                <p>β ≈ 0.9 is typical. Like a ball rolling downhill, building speed.</p>
+            </section>
+            
+            <section id="adam" class="content-section">
+                <h2>Adam Optimizer</h2>
+                <p>The most popular optimizer—combines momentum with adaptive per-parameter learning rates:</p>
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Adam Defaults</div>
+                    <p>α = 0.001, β₁ = 0.9, β₂ = 0.999, ε = 1e-8. Works well out-of-the-box for most problems.</p>
+                </div>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Gradient descent moves parameters to minimize loss</li>
+                        <li>Mini-batch SGD balances speed and accuracy</li>
+                        <li>Momentum smooths and accelerates training</li>
+                        <li>Adam adapts learning rates automatically—great default</li>
+                        <li>Learning rate schedules can improve final performance</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter5.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Loss Functions</span></a>
+                <a href="chapter7.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Backpropagation →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#gradient-descent">Gradient Descent</a></li>
+                    <li><a href="#sgd">Stochastic GD</a></li>
+                    <li><a href="#momentum">Momentum</a></li>
+                    <li><a href="#adam">Adam</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

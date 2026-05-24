@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data Exam 2015 - Solutions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 40%, #3b82c4 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #2d5986; color: white; transform: translateY(-1px); }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #1e3a5f; }
+  .q-marks {
+    background: linear-gradient(135deg, #1e3a5f, #3b82c4);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #2d5986;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #1e3a5f;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #2d5986, #3b82c4);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #2d5986, #3b82c4);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #1e3a5f; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #93c5fd;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #1e40af; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #1e3a8a; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #92400e; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #1e3a5f; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #3b82c4; background: #eff6ff; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #1e3a5f; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #be185d;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #1e3a5f, #2d5986);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #1e3a5f; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Big Data Exam 2015 — Solutions</h1>
+  <div class="subtitle">University of Glasgow — H Level Summer Diet</div>
+  <div class="badge-row">
+    <span class="badge">60 Marks</span>
+    <span class="badge">5 Questions</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — HDFS Protocols</a>
+    <a href="#q2" class="nav-link">Q2 — NN Recovery</a>
+    <a href="#q3" class="nav-link">Q3 — HBase Data Model</a>
+    <a href="#q4" class="nav-link">Q4 — HBase Entities</a>
+    <a href="#q5" class="nav-link">Q5 — Replication</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — HDFS Read & Write Protocols</span>
+      <span class="q-marks">15 marks</span>
+    </div>
+    <div class="q-text">
+      Describe the read and write protocols, when accessing files in the Hadoop Distributed File System (HDFS).
+    </div>
+
+    <div class="answer-section">
+      <h4>The Write Protocol <span class="marks-badge">8 marks</span></h4>
+
+      <p>When a client wants to write a file to HDFS, it follows a <strong>pipeline-based protocol</strong> that ensures data is replicated across multiple DataNodes for fault tolerance. Think of it like sending a parcel through a chain of delivery points — each one passes it forward.</p>
+
+      <ol class="step-list">
+        <li><strong>Client notifies NameNode (NN):</strong> The client calls <code>create()</code> or opens a file for append. The NN checks permissions, ensures the file doesn't already exist, and records the new file in the namespace.</li>
+        <li><strong>NN allocates block & replicas:</strong> The NN creates a new <code>blockID</code> for the first block and decides which DataNodes (DNs) will host the replicas (typically 3 copies, placed on different racks).</li>
+        <li><strong>Client receives writing credentials:</strong> The NN returns a <em>lease</em> (a write lock — guaranteeing only 1 writer but many readers), the blockID, and the list of DN locations.</li>
+        <li><strong>Client builds a pipeline:</strong> The client arranges the DNs into a pipeline ordered by network proximity, minimising the total distance to the last DN. For example: Client → DN1 (same rack) → DN2 (different rack) → DN3.</li>
+        <li><strong>Data is packetised:</strong> The client breaks data into 64KB packets and pushes them into a local buffer.</li>
+        <li><strong>Buffer flushed to pipeline:</strong> When the buffer is full, packets flow through the pipeline. Each DN writes the data locally and forwards to the next DN.</li>
+        <li><strong>Repeat for every block:</strong> All steps above are repeated for each new 128MB block of the file.</li>
+        <li><strong>Asynchronous acknowledgment:</strong> Packets are sent asynchronously — the next packet is pushed before the previous one is fully acknowledged. The <code>hflush()</code> call can be used to guarantee all packets written before it are visible to readers.</li>
+      </ol>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>Imagine uploading a large video to YouTube. The system splits it into chunks, sends each chunk through a chain of storage servers, and each server confirms receipt. You don't wait for the first chunk to be fully confirmed before sending the second — that's the asynchronous pipeline in action.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Read Protocol <span class="marks-badge">7 marks</span></h4>
+
+      <p>Reading is simpler than writing — the client communicates with the NN only for metadata, then reads data <strong>directly from DataNodes</strong>. This keeps the NN out of the data path, which is critical for scalability.</p>
+
+      <ol class="step-list">
+        <li><strong>Client contacts NN for metadata:</strong> Fetches two things — the list of blocks composing the file, and for each block, the list of DNs holding replicas (sorted by distance from the client).</li>
+        <li><strong>Direct DN contact:</strong> For each block, the client picks the closest DN and reads directly from it. If that DN fails, it transparently tries the next closest replica.</li>
+        <li><strong>DN sends data + checksum:</strong> The DN responds with the block's data file and its metadata (including a checksum). The client verifies the checksum to detect corruption.</li>
+      </ol>
+
+      <div class="warning-box">
+        <p><strong>Failure scenarios:</strong> A read can fail if the DN is down/unreachable, the block is corrupted (checksum mismatch), or the DN no longer holds that replica (it may have been moved during rebalancing).</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Moodle Answer Strategy</h5>
+        <p>For 15 marks, write ~8 lines on the write protocol (cover all 8 steps briefly) and ~4 lines on reading. Mention: pipeline, lease, asynchronous, proximity-based DN selection, checksum verification. Draw a simple flow if allowed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — NameNode Crash Recovery</span>
+      <span class="q-marks">6 marks</span>
+    </div>
+    <div class="q-text">
+      Assume the NameNode in HDFS crashes. What are the resources the NN uses for recovery and how?
+    </div>
+
+    <div class="answer-section">
+      <h4>Three Recovery Resources <span class="marks-badge">2 marks each</span></h4>
+
+      <p>The NameNode is the brain of HDFS — it holds all file-to-block mappings and the directory tree. If it crashes, we'd lose the entire filesystem's structure. HDFS uses <strong>three complementary resources</strong> to recover from such failures:</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>1. Image (FsImage)</h5>
+          <p>An <strong>in-memory</strong> data structure holding the complete state of the NN — the entire filename space (directory tree, file-to-block mappings, permissions). Kept in RAM for fast access, but RAM is <em>volatile</em> — it's lost on crash.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>2. Checkpoint</h5>
+          <p>A <strong>periodic snapshot</strong> of the in-memory image dumped to stable storage (disk). Think of it as a "save game" — a known-good state we can return to. Created by the Secondary NameNode periodically.</p>
+        </div>
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-card highlight" style="grid-column: 1 / -1;">
+          <h5>3. Journal (EditLog / WAL)</h5>
+          <p>Between checkpoints, every operation that changes the namespace (create file, delete file, rename, etc.) is recorded in a <strong>write-ahead log</strong> on disk. "Write-ahead" means the operation is logged <em>before</em> it's applied to the in-memory image. This ensures no mutation is lost even if the system crashes mid-operation.</p>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <h5>Recovery Process</h5>
+        <p>On restart, the NN: <strong>(1)</strong> loads the last checkpoint from disk → <strong>(2)</strong> replays all operations from the journal on top of it → <strong>(3)</strong> reconstructs the full, up-to-date image in memory. It's like loading your last save game and then replaying all your moves since that save.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>Think of a bank. The <em>image</em> is everyone's current balance in the computer. The <em>checkpoint</em> is a nightly printout of all balances. The <em>journal</em> is the list of all transactions since the last printout. If the computer crashes, the bank loads last night's printout and replays today's transactions to recover all balances.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — HBase Logical Data Model</span>
+      <span class="q-marks">15 marks</span>
+    </div>
+    <div class="q-text">
+      Describe the HBase logical data model.
+    </div>
+
+    <div class="answer-section">
+      <h4>What is HBase?</h4>
+      <p>HBase is a <strong>sparse, distributed, persistent, multidimensional, sorted map</strong>. It provides a table-like abstraction, but it is <strong>NOT</strong> a relational database. There are no transactions, no normalisation, and no SQL-style relational API. Instead, users define their own flexible, extensible schema.</p>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>Imagine a massive filing cabinet where each drawer (row) is labelled and sorted alphabetically. Inside each drawer, folders (column families) contain individual documents (columns). Each document can have multiple dated versions. You can quickly find any drawer by its label, but you can't do complex queries across drawers like a relational database would.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Data Addressing — The 3D Map</h4>
+      <p>Every piece of data in HBase is located using three coordinates:</p>
+      <table>
+        <tr><th>Dimension</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Row Key</strong> (required)</td><td>A string that uniquely identifies the row. Rows are sorted lexicographically.</td><td><code>"user_00123"</code></td></tr>
+        <tr><td><strong>Column Name</strong></td><td>Format: <code>family:qualifier</code>. Column families are defined at table creation.</td><td><code>"profile:email"</code></td></tr>
+        <tr><td><strong>Timestamp</strong></td><td>Each cell can have multiple versions, indexed by timestamp.</td><td><code>1609459200</code></td></tr>
+      </table>
+      <p>Each cell value is just an <strong>uninterpreted byte array</strong> — HBase doesn't know or care about the data type.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Key Properties</h4>
+      <ul class="bullet-list">
+        <li><strong>Row atomicity:</strong> Operations on a single row are atomic, but there's no atomicity across rows</li>
+        <li><strong>Column Families (CFs):</strong> Columns are grouped into families. Each table has a small number of CFs (typically &lt;10), but each CF can have millions of columns. Access control is set at the CF level.</li>
+        <li><strong>Tablets (Regions):</strong> A table is horizontally partitioned into tablets. Each tablet holds all rows between a start and end row key. Each tablet is assigned to a tablet server.</li>
+        <li><strong>Versioning:</strong> Cells can have multiple versions (each with a timestamp). Latest version returned by default. Users can request specific number of versions or all versions within a time period.</li>
+      </ul>
+    </div>
+
+    <div class="answer-section">
+      <h4>Basic Operations</h4>
+      <div class="code-block">Put(row_key, column_key, timestamp, value)   → Insert/update a cell
+Get(row_key)                                  → Returns all cells in a row
+Get(row_key, column_key, timestamp)           → Returns a specific cell version
+Scan(start_row_key, end_row_key)              → Returns all rows in a key range</div>
+      <p>In relational terms, these are basically <strong>selections and projections</strong> — no joins, no aggregations at the database level.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Moodle Answer Strategy</h5>
+      <p>For 15 marks with "% coverage" grading, mention as many bullet points as possible: the definition (sparse, distributed, sorted map), NOT an RDBMS, 3D addressing, byte arrays, row key sorting, column families, tablets, versioning, and the 4 basic operations.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 4 ===================== -->
+  <div class="question-card" id="q4">
+    <div class="q-header">
+      <span class="q-title">Question 4 — HBase System Entities & Roles</span>
+      <span class="q-marks">15 marks</span>
+    </div>
+    <div class="q-text">
+      What are the main entities and their roles in the HBase system?
+    </div>
+
+    <div class="answer-section">
+      <h4>Architecture Overview</h4>
+      <p>HBase follows a <strong>master-slave architecture</strong> with three main components, all built on top of HDFS and SSTables. It also depends on a distributed coordination service (ZooKeeper) for scheduling, monitoring, locking, and failure detection.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>1. The Master <span class="marks-badge">6 marks</span></h4>
+      <p>The Master is the <strong>coordinator</strong> of the entire HBase cluster — but crucially, it is <strong>NOT involved in actual data reads/writes</strong>. This is the only way to avoid scalability bottlenecks in master-based architectures.</p>
+      <ul class="bullet-list">
+        <li><strong>Tablet management:</strong> Creates new tablets, deletes tablets, and merges two tablets together</li>
+        <li><strong>Assignment:</strong> Assigns tablets to tablet servers (decides which server manages which data)</li>
+        <li><strong>Health monitoring:</strong> Detects new or "expired" (crashed) tablet servers</li>
+        <li><strong>Load balancing:</strong> Redistributes tablets across servers to keep workload even</li>
+        <li><strong>Schema management:</strong> Handles table, column family, and column additions/deletions</li>
+      </ul>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>The Master is like a library director — they decide which librarian manages which shelves, hire/fire staff, and reorganise sections. But when a visitor wants a book, they go directly to the librarian at that shelf, never to the director.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>2. Tablet Servers (Region Servers) <span class="marks-badge">6 marks</span></h4>
+      <p>These are the workhorses that actually <strong>store and serve data</strong>.</p>
+      <ul class="bullet-list">
+        <li><strong>Storage:</strong> Each tablet server manages 10s to 1000s of tablets</li>
+        <li><strong>Data serving:</strong> Handles all read and write requests for its own tablets directly from clients</li>
+        <li><strong>Splitting:</strong> When a tablet grows too large (e.g., >100-200MB), the tablet server splits it into two smaller tablets</li>
+        <li><strong>Dynamic scaling:</strong> Tablet servers can be added or removed from the cluster dynamically</li>
+      </ul>
+      <p><strong>Key distinction:</strong> Tablet servers <em>split</em> tablets, while the Master <em>merges, creates, and deletes</em> them.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>3. HDFS & SSTables <span class="marks-badge">3 marks</span></h4>
+      <p>HBase doesn't have its own storage engine — it sits on top of <strong>HDFS</strong> (an open-source implementation of Google's GFS) for durable, distributed storage. Data within tablets is stored as <strong>SSTables</strong> — persistent, ordered, immutable maps of keys to values, indexed and stored in the local file system.</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>Quick Summary</h5>
+      <p>Master = brain (coordinates, doesn't touch data) | Tablet Servers = muscles (store & serve data) | HDFS = bones (underlying storage). The Master stays out of the data path → scalable architecture.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 5 ===================== -->
+  <div class="question-card" id="q5">
+    <div class="q-header">
+      <span class="q-title">Question 5 — Replication Read/Write Protocols</span>
+      <span class="q-marks">7 marks</span>
+    </div>
+    <div class="q-text">
+      Describe read/write protocols for a replicated big data system so that reads always see the latest version of a data item.
+    </div>
+
+    <div class="answer-section">
+      <h4>The Core Challenge</h4>
+      <p>When data is replicated across multiple servers, we need protocols to ensure that a reader always sees the <em>most recent</em> write. There are three major approaches, each with different trade-offs between performance, availability, and consistency.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Protocol 1 — Primary Replica <span class="marks-badge">2 marks</span></h4>
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Read</h5>
+          <p>All reads go to a <strong>known primary replica</strong> server.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Write</h5>
+          <p>All writes go to the <strong>same primary replica</strong> server.</p>
+        </div>
+      </div>
+      <div class="warning-box">
+        <p><strong>Drawback:</strong> The primary becomes a performance bottleneck and a single point of failure. If it goes down, neither reads nor writes work until failover.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Protocol 2 — Read Any, Write All <span class="marks-badge">2 marks</span></h4>
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Read</h5>
+          <p>Reads can go to <strong>any replica</strong> (nearest one).</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Write</h5>
+          <p>Writes must go to <strong>ALL replicas</strong>. Uses two-phase commit: (1) all replicas tentatively apply write, (2) if all OK → commit. Writer logs commit decision to stable storage for crash recovery.</p>
+        </div>
+      </div>
+      <p><strong>Trade-off:</strong> Reads are fast and highly available (any copy works). Writes are slow and less available (all replicas must be up).</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Protocol 3 — Quorum (R + W > N) <span class="marks-badge">3 marks (incl. advantages/disadvantages)</span></h4>
+      <p>The most flexible approach. Instead of reading from any/all, a reader contacts <strong>R replicas</strong> and a writer contacts <strong>W replicas</strong>, where:</p>
+
+      <div class="concept-box">
+        <h5>Quorum Rules</h5>
+        <p><strong>R + W > N</strong> (guarantees read-write overlap → readers always see latest write)</p>
+        <p><strong>W + W > N</strong> (guarantees write-write overlap → detects conflicts)</p>
+        <p>Where N = total number of replicas</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Example</h5>
+        <p>With N=3 replicas, setting R=2 and W=2: every read overlaps with every write (2+2=4 > 3). This means at least one server in any read set will have the latest write. It's like asking 2 out of 3 friends — if one of them witnessed the event, you'll hear the latest news.</p>
+      </div>
+
+      <p><strong>Key advantage:</strong> You can <em>tune R and W per data item</em> based on access patterns. Read-heavy data? Set R=1, W=3. Write-heavy? Set R=3, W=1.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Moodle Answer Strategy</h5>
+      <p>For 7 marks, briefly describe all 3 protocols (2-3 sentences each) and discuss trade-offs. The quorum protocol is the most important — make sure to state the R+W>N rule with an example.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

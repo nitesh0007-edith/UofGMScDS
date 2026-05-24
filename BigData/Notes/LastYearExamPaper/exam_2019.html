@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data Exam 2019 - Solutions (Official Answers)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #f59e0b08 0%, #b4530908 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #78350f 0%, #b45309 40%, #f59e0b 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #b45309; color: white; transform: translateY(-1px); }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #78350f; }
+  .q-marks {
+    background: linear-gradient(135deg, #78350f, #f59e0b);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #b45309;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #78350f;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #b45309, #f59e0b);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #b45309, #f59e0b);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #78350f; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fbbf24;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #92400e; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #78350f; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 1px solid #fca5a5;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #991b1b; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #78350f; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #f59e0b; background: #fffbeb; }
+  .comparison-card.bad { border-color: #fca5a5; background: #fef2f2; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #78350f; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  .official-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #be185d;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #78350f, #b45309);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #78350f; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #fffbeb; }
+
+  .sub-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Big Data Exam 2019 — Official Solutions</h1>
+  <div class="subtitle">University of Glasgow — H Level Summer Diet</div>
+  <div class="badge-row">
+    <span class="badge">60 Marks</span>
+    <span class="badge">3 Questions</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+    <span class="badge">Official Answers</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — HDFS (20 marks)</a>
+    <a href="#q2" class="nav-link">Q2 — MapReduce & Spark (20 marks)</a>
+    <a href="#q3" class="nav-link">Q3 — NoSQL & Distributed Systems (20 marks)</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — HDFS</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q1a -->
+    <div class="q-text">
+      <strong>Q1a.</strong> Explain the significance of block size in HDFS. What are the trade-offs of choosing larger vs. smaller block sizes?
+    </div>
+
+    <div class="answer-section">
+      <h4>Q1a. HDFS Block Size <span class="marks-badge">4 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+      <p>In HDFS, files are split into fixed-size <strong>blocks</strong> (default <strong>128MB</strong>) that are distributed across the cluster. The block size is not just a storage parameter — it fundamentally affects how the entire system behaves, from the NameNode's memory consumption to MapReduce job performance. Think of it like choosing the size of shipping containers: too small and you drown in logistics overhead; too big and you lose flexibility.</p>
+
+      <table>
+        <tr><th>Factor</th><th>Larger Blocks (e.g., 256MB+)</th><th>Smaller Blocks (e.g., 64MB)</th></tr>
+        <tr>
+          <td><strong>NameNode Memory</strong></td>
+          <td>Fewer blocks to track = less NN memory. A 1TB file at 256MB = 4,096 blocks. The NN stores metadata for every block in RAM, so fewer blocks means the NN can manage more total data.</td>
+          <td>Many more blocks to track = more NN memory pressure. Same 1TB file at 64MB = 16,384 blocks — 4x the metadata overhead.</td>
+        </tr>
+        <tr>
+          <td><strong>Map Task Behavior</strong></td>
+          <td>Each map task processes one block, so larger blocks mean more data per mapper. This can cause <strong>data skew</strong> — one mapper might take much longer if its block has disproportionately complex data.</td>
+          <td>More map tasks with less data each = finer-grained parallelism. Better load balancing across the cluster.</td>
+        </tr>
+        <tr>
+          <td><strong>Overhead</strong></td>
+          <td>Less seek overhead relative to data transfer. The ratio of seek time to transfer time favors large blocks on HDDs.</td>
+          <td>More block management overhead: more metadata RPCs, more block reports from DataNodes, more network connections.</td>
+        </tr>
+        <tr>
+          <td><strong>Parallelism</strong></td>
+          <td>Less parallelism — fewer blocks means fewer tasks that can run concurrently. Some cluster nodes may sit idle.</td>
+          <td>Higher parallelism — many small tasks can saturate all available slots in the cluster.</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>Imagine you are moving house and packing books into boxes. If you use enormous boxes (large block size), you need fewer boxes and it is simpler to label and track them, but each box is extremely heavy and one person might struggle to carry it while others stand idle. If you use tiny boxes (small block size), everyone can help carry at the same time, but you end up with hundreds of boxes to label, stack, and track — the logistics become a nightmare. The 128MB default is the "Goldilocks" box size for most workloads.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>Key Formula to Remember</h5>
+        <p><strong>Default block size = 128MB</strong> (was 64MB in Hadoop 1.x, doubled in Hadoop 2.x).</p>
+        <p>NN stores ~150 bytes of metadata per block in RAM. At 128MB blocks, 1PB of data = ~8 million blocks = ~1.2GB of NN memory. At 64MB blocks, same data = ~2.4GB. This is why block size directly constrains the maximum cluster capacity.</p>
+      </div>
+    </div>
+
+    <!-- Q1b -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q1b.</strong> Describe HDFS's replica placement strategy. What is the default replication factor and how are replicas distributed? What is the rationale behind this strategy?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q1b. HDFS Replica Placement Strategy <span class="marks-badge">8 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>HDFS replicates every block to protect against hardware failures. The <strong>default replication factor is 3</strong>, meaning three copies of each block exist in the cluster. However, where those copies are placed matters enormously — a naive strategy could leave all copies vulnerable to a single rack-level failure (power outage, network switch death, or even a fire).</p>
+
+        <ol class="step-list">
+          <li><strong>First replica — same node as the writer:</strong> If the client writing the data is running on a DataNode in the cluster, the first replica is placed on that same machine. This is the fastest option since no network transfer is needed. If the client is external (not on a cluster node), a random DataNode is chosen with consideration for available disk space and current load.</li>
+          <li><strong>Second replica — different rack:</strong> The second copy is placed on a DataNode in a <strong>completely different rack</strong>. This is the critical decision — it guarantees that even if an entire rack goes down (switch failure, power outage, cooling failure), at least one copy survives on another rack. This single cross-rack transfer is the "insurance premium" HDFS pays for fault tolerance.</li>
+          <li><strong>Third replica — same rack as the second, but a different node:</strong> The third copy is placed on another DataNode within the same rack as the second replica. This might seem counterintuitive — why not spread across three racks? The answer is <strong>write bandwidth optimization</strong>: only one cross-rack network transfer is needed in the write pipeline instead of two. Intra-rack bandwidth (typically 1-10 Gbps within a rack) is much higher than inter-rack bandwidth.</li>
+        </ol>
+
+        <div class="concept-box">
+          <h5>The Balancing Act</h5>
+          <p>This strategy is a carefully calculated compromise between two competing concerns:</p>
+          <p><strong>Reliability:</strong> Data survives a complete rack failure because replicas exist on 2 different racks.</p>
+          <p><strong>Write performance:</strong> Only 1 cross-rack transfer in the write pipeline (not 2), since the 2nd and 3rd replicas share a rack. Inter-rack bandwidth is the most precious and congested resource in a data center.</p>
+          <p><strong>Read performance:</strong> Having 2 replicas on one rack increases the chances of a reader finding a nearby copy.</p>
+        </div>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Imagine you have important documents that absolutely cannot be lost. You keep one copy in your desk drawer (same node — fast access). You send a second copy to a colleague on a completely different floor of the building (different rack — survives your entire floor flooding or losing power). You give a third copy to someone sitting near that colleague on the other floor (same rack as second, different node — quick to copy since they are close together, and now two copies survive even if your floor is destroyed). If you sent all three copies to three different floors, you would have maximum redundancy but would spend three times the effort on inter-floor mail. HDFS's strategy says: "One floor of separation is enough insurance; let's not waste bandwidth on more."</p>
+        </div>
+
+        <div class="warning-box">
+          <p><strong>What survives what?</strong> Node failure: 2 replicas still available. Rack failure: at least 1 replica on the other rack survives. The only scenario that loses data is if both racks fail simultaneously, which is extremely unlikely in a well-managed data center.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1c -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q1c.</strong> Describe the step-by-step process a client follows to read a file from HDFS.
+      </div>
+
+      <div class="answer-section">
+        <h4>Q1c. Client File Read Steps <span class="marks-badge">8 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>Reading a file from HDFS is designed to be <strong>scalable</strong> — the NameNode is only consulted for metadata (block locations), while actual data flows directly between the client and DataNodes. This keeps the NameNode out of the data path, preventing it from becoming a bottleneck even when thousands of clients read simultaneously.</p>
+
+        <ol class="step-list">
+          <li><strong>Client calls <code>open()</code> on DistributedFileSystem:</strong> The client application invokes the HDFS client library, which creates a <code>DistributedFileSystem</code> object. This is the entry point — the client says "I want to read file <code>/data/logs/2019.csv</code>".</li>
+          <li><strong>DistributedFileSystem contacts the NameNode:</strong> The DFS makes an RPC call to the NameNode requesting the block locations for the file. The NameNode responds with a list of blocks composing the file and, for each block, a list of DataNodes holding replicas — <strong>sorted by network proximity</strong> to the client (same node > same rack > different rack). This proximity-based sorting is crucial for read performance.</li>
+          <li><strong>Client reads via FSDataInputStream:</strong> The DFS returns an <code>FSDataInputStream</code> to the client. When the client calls <code>read()</code>, the stream connects to the <strong>closest DataNode</strong> holding the first block. Data flows directly from that DataNode to the client — the NameNode is completely out of the loop at this point.</li>
+          <li><strong>Data is streamed and checksums verified:</strong> As data arrives, the client verifies <strong>checksums</strong> for each chunk. HDFS stores checksums alongside data blocks, so the client can detect silent data corruption (bit rot, disk errors). If a checksum fails, the client knows the data is corrupted and will not use it.</li>
+          <li><strong>Block boundary handling:</strong> When the client finishes reading the current block, the <code>FSDataInputStream</code> closes the connection to that DataNode and finds the best (closest) DataNode for the <strong>next block</strong>. This process repeats block-by-block until the entire file has been read. The client may also pre-fetch the next block's location to reduce latency.</li>
+          <li><strong>Transparent failure handling:</strong> If a DataNode fails mid-read (connection drops, timeout) or returns corrupted data (checksum mismatch), the client <strong>transparently retries</strong> with the next closest DataNode holding a replica of that block. The client also <strong>reports the bad block</strong> to the NameNode so it can schedule re-replication — ensuring the corrupted or unavailable replica is replaced elsewhere in the cluster.</li>
+        </ol>
+
+        <div class="code-block">Client App                  NameNode                  DataNodes
+    |                          |                          |
+    |--- open(/file) --------->|                          |
+    |<-- block locations ------|                          |
+    |                          |                          |
+    |--- read block 0 ------->|          DN1 (closest)   |
+    |<========= data stream + checksums =================>|
+    |--- verify checksum       |                          |
+    |                          |                          |
+    |--- read block 1 ------->|          DN3 (closest)   |
+    |<========= data stream + checksums =================>|
+    |                          |                          |
+    |--- close() ------------>|                          |</div>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Think of reading a book that has been split into chapters stored in different libraries across a city. First, you call the central catalog office (NameNode) and ask: "Where are the chapters of 'War and Peace'?" The catalog tells you: "Chapter 1 is at Library A (5 min away), Library B (20 min away), and Library C (45 min away). Chapter 2 is at Library D (3 min away)..." You go to the closest library for each chapter, read it there, and move on. If Library A is closed when you arrive, you simply go to Library B instead. You also double-check each chapter's page count (checksum) to make sure no pages are missing. You never call the catalog office again while reading — only once at the start.</p>
+        </div>
+
+        <div class="moodle-tip">
+          <h5>Moodle Answer Strategy</h5>
+          <p>For 8 marks, mention all 6 steps with the specific class names (DistributedFileSystem, FSDataInputStream). Emphasize: NameNode only for metadata, proximity-sorted DN lists, direct client-to-DN data flow, checksum verification, transparent failover, and corrupted block reporting. A diagram showing the flow scores extra points.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q1 Summary — HDFS</h5>
+      <p>Block size (128MB) trades NN memory vs. parallelism. Replica placement (3 copies: node, different-rack, same-rack-as-2nd) balances reliability against write bandwidth. File reads go through NN only for metadata, then stream directly from closest DNs with checksum verification and transparent failover.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — MapReduce & Spark</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q2a -->
+    <div class="q-text">
+      <strong>Q2a.</strong> What factors should be considered when choosing the optimal number of reducers in a MapReduce job?
+    </div>
+
+    <div class="answer-section">
+      <h4>Q2a. Optimal Number of Reducers <span class="marks-badge">4 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+      <p>Choosing the right number of reducers is one of the most impactful tuning decisions in MapReduce. It is not a simple "more is better" situation — there is a sweet spot that depends on your cluster size, data distribution, and downstream requirements.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card bad">
+          <h5>Too Few Reducers</h5>
+          <p><strong>Overloaded reducers:</strong> Each reducer must process a massive amount of data, leading to memory pressure and potential out-of-memory errors. If you have 100TB of intermediate data and only 2 reducers, each must handle 50TB.</p>
+          <p><strong>Underutilized cluster:</strong> Most nodes sit idle while a handful do all the reduce work. You are paying for a 1000-node cluster but only using 2 nodes for the reduce phase.</p>
+          <p><strong>Long tail problem:</strong> One slow reducer becomes the bottleneck for the entire job.</p>
+        </div>
+        <div class="comparison-card bad">
+          <h5>Too Many Reducers</h5>
+          <p><strong>Excessive overhead:</strong> Each reducer incurs framework overhead — task startup, JVM initialization, shuffle connections, output file creation. With 100,000 reducers, this overhead dominates actual computation.</p>
+          <p><strong>Too many small output files:</strong> Each reducer creates one output file. Thousands of tiny files flood the NameNode with metadata and make downstream processing inefficient (the "small files problem").</p>
+          <p><strong>Shuffle bottleneck:</strong> Every mapper must connect to every reducer, creating O(M x R) network connections.</p>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <h5>The Rule of Thumb</h5>
+        <p><strong>Optimal reducers = 0.95 x (nodes x max_containers_per_node)</strong> or <strong>1.75 x (nodes x max_containers_per_node)</strong></p>
+        <p>The 0.95 multiplier means almost all reduce slots are used in a single wave. The 1.75 multiplier allows for two waves, giving better load balancing — faster reducers finish and pick up work from the second wave.</p>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>Data skew is the hidden danger:</strong> Even with the "right" number of reducers, if some keys have vastly more values than others (e.g., in a word count, "the" appears millions of times while "zymurgy" appears once), a few reducers get hammered while others finish instantly. Solutions: custom partitioner, salting keys, or using a combiner to pre-aggregate.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy</h5>
+        <p>Imagine you are sorting mail into pigeonholes at a post office. If you have only 2 pigeonholes for all of London, each one overflows. If you have 10 million pigeonholes (one per person), you waste space and it takes ages to check them all. The sweet spot is somewhere like one per postal district — manageable, well-distributed, and efficient. But if one district is a corporate headquarters receiving 50% of all mail, that pigeonhole still overflows — that is data skew.</p>
+      </div>
+    </div>
+
+    <!-- Q2b -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q2b.</strong> Explain how a reduce-side join works in MapReduce. Why is it considered expensive?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q2b. Reduce-Side Join <span class="marks-badge">6 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>A reduce-side join is the most general (and most expensive) way to join two datasets in MapReduce. Unlike a relational database that can use indexes, hash joins, or sort-merge joins transparently, MapReduce has no built-in join operator — you must implement it yourself using the shuffle mechanism.</p>
+
+        <ol class="step-list">
+          <li><strong>Tag records in the mapper:</strong> Both datasets are fed into mappers. Each mapper reads records and emits key-value pairs where the <strong>key is the join column</strong> and the <strong>value is tagged with a source identifier</strong>. For example, if joining <code>Orders</code> (by customer_id) with <code>Customers</code> (by id), the mapper emits <code>(customer_id, {"source": "orders", "data": ...})</code> and <code>(customer_id, {"source": "customers", "data": ...})</code>.</li>
+          <li><strong>Framework shuffles and groups by join key:</strong> The MapReduce framework sorts and partitions all emitted pairs by key, then groups them. All records with the same join key — from <em>both</em> datasets — end up at the <strong>same reducer</strong>.</li>
+          <li><strong>Reducer separates and cross-products:</strong> The reducer receives all values for a given key. It separates them by source tag into two lists (e.g., all orders for customer #42 and the customer #42 record). Then it performs a <strong>cross-product</strong> of the two lists to produce the joined output — every order paired with the customer details.</li>
+        </ol>
+
+        <div class="code-block">-- Dataset A: Orders --          -- Dataset B: Customers --
+(C42, order_001)                 (C42, "Alice Smith")
+(C42, order_002)                 (C99, "Bob Jones")
+(C99, order_003)
+
+Mapper Output (tagged):
+(C42, [A, order_001])    (C42, [B, "Alice Smith"])
+(C42, [A, order_002])    (C99, [B, "Bob Jones"])
+(C99, [A, order_003])
+
+After Shuffle (grouped by key):
+Reducer for C42: [A, order_001], [A, order_002], [B, "Alice Smith"]
+Reducer for C99: [A, order_003], [B, "Bob Jones"]
+
+Reducer Cross-Product:
+(C42, order_001, "Alice Smith")
+(C42, order_002, "Alice Smith")
+(C99, order_003, "Bob Jones")</div>
+
+        <div class="warning-box">
+          <p><strong>Why is it expensive?</strong> ALL data from BOTH datasets must be shuffled across the network. Every single record is serialized, partitioned, transferred over the network, deserialized, sorted, and merged. For two 1TB datasets, that is 2TB of network I/O through the shuffle — the most expensive operation in MapReduce. Unlike a map-side join (which requires sorted, co-partitioned data), a reduce-side join imposes no preconditions on the data, which is why it is the "fallback" join strategy.</p>
+        </div>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Think of a matchmaking service. Both men and women submit their profiles (mapper tags each record with its source). The service sorts everyone by their preferred criteria — say, city (the join key). Then, in each city, the matchmaker (reducer) takes all the men and all the women and pairs them up. The expensive part? Every single person had to travel to a central sorting facility first (the shuffle), even if 99% of them will not match. A map-side join is like pre-sorting everyone into city groups beforehand — much cheaper, but requires advance preparation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2c -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q2c.</strong> Why does Spark use lazy evaluation for transformations? What advantages does this provide?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q2c. Spark Lazy Evaluation <span class="marks-badge">4 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>In Spark, <strong>transformations</strong> (like <code>map</code>, <code>filter</code>, <code>join</code>) are <strong>lazy</strong> — they do not execute immediately. Instead, they build up a <strong>DAG (Directed Acyclic Graph)</strong> of operations, which is a logical execution plan. Actual computation is deferred until an <strong>action</strong> is called (<code>collect()</code>, <code>count()</code>, <code>saveAsTextFile()</code>). This design is not laziness for laziness's sake — it enables powerful optimizations.</p>
+
+        <ul class="bullet-list">
+          <li><strong>Query optimization:</strong> The Catalyst optimizer can inspect the entire DAG before execution. It can <strong>reorder operations</strong> (push filters before joins to reduce data early), <strong>combine adjacent maps</strong> into a single pass (pipelining), and <strong>eliminate unnecessary shuffles</strong>. Without seeing the full plan, none of these optimizations would be possible.</li>
+          <li><strong>Minimize shuffles:</strong> Shuffles (data redistribution across the network) are the most expensive operation. By analyzing the full DAG, Spark can identify which operations truly require a shuffle and which can be pipelined within the same partition — a technique called <strong>stage fusion</strong>.</li>
+          <li><strong>Pipelining within partitions:</strong> Multiple transformations can be fused into a single pass over the data. Instead of materializing intermediate results (map → write to disk → read → filter → write to disk → read → ...), Spark applies all transformations to each record in a single pipeline, drastically reducing I/O.</li>
+          <li><strong>Fault recovery via lineage:</strong> Because the DAG records how each RDD was derived, Spark can <strong>recompute lost partitions</strong> by replaying the lineage from the parent RDD. No need for expensive checkpointing or replication of intermediate results — the DAG <em>is</em> the recovery plan.</li>
+        </ul>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Lazy evaluation is like a GPS that plans your entire route before you start driving. If you told it "go to the supermarket, then the pharmacy, then home" one instruction at a time (eager evaluation), it might send you across town to the supermarket, then back across town to the pharmacy, then home — very inefficient. But if you give it all three destinations upfront (lazy evaluation), it can plan an optimal loop: supermarket first (it is on the way to the pharmacy), pharmacy next (it is near the supermarket), then straight home. It found shortcuts and avoided backtracking because it saw the whole plan before executing.</p>
+        </div>
+
+        <div class="concept-box">
+          <h5>Lazy vs. Eager Execution</h5>
+          <p><strong>Lazy (Spark):</strong> Build plan → Optimize → Execute once. Result: fewer passes over data, fewer shuffles, minimal intermediate materialization.</p>
+          <p><strong>Eager (classic MapReduce):</strong> Execute each step immediately, write to disk, read back. Each MR job is independent — no cross-job optimization. Result: many I/O round trips.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2d -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q2d.</strong> Compare <code>groupByKey</code> and <code>reduceByKey</code> in Spark. When should you use each?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q2d. groupByKey vs. reduceByKey <span class="marks-badge">6 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>Both operations group data by key, but they differ dramatically in <strong>how much data crosses the network</strong> during the shuffle. This distinction is one of the most important performance considerations in Spark programming.</p>
+
+        <div class="comparison-grid">
+          <div class="comparison-card bad">
+            <h5>groupByKey</h5>
+            <p><strong>Mechanism:</strong> Shuffles <em>every single value</em> for each key across the network to a single executor. Only after all values arrive does it group them into a list.</p>
+            <p><strong>Network cost:</strong> Extremely high — all raw data is transferred.</p>
+            <p><strong>Memory risk:</strong> The receiving executor must hold ALL values for a key in memory simultaneously. If one key has billions of values, it causes an <strong>OutOfMemoryError</strong>.</p>
+            <p><strong>When to use:</strong> Only when you genuinely need all raw values together (e.g., collecting all purchase items per customer for a recommendation engine).</p>
+          </div>
+          <div class="comparison-card highlight">
+            <h5>reduceByKey</h5>
+            <p><strong>Mechanism:</strong> Performs a <em>local pre-aggregation</em> (combining) on each partition <strong>before</strong> shuffling. Only the partially reduced results are sent across the network.</p>
+            <p><strong>Network cost:</strong> Dramatically lower — only aggregated values are transferred.</p>
+            <p><strong>Memory safety:</strong> Each partition only holds one accumulated value per key, so memory usage is bounded by the number of distinct keys, not the number of values.</p>
+            <p><strong>When to use:</strong> Whenever your operation is associative and commutative (sum, count, max, min, concatenation). This is the <strong>vast majority</strong> of real-world use cases.</p>
+          </div>
+        </div>
+
+        <div class="code-block">// Word count example — 3 partitions, counting occurrences of "hello"
+
+// === groupByKey approach ===
+// Partition 1 has: ("hello",1), ("hello",1), ("hello",1)  → shuffles 3 values
+// Partition 2 has: ("hello",1), ("hello",1)                → shuffles 2 values
+// Partition 3 has: ("hello",1), ("hello",1), ("hello",1)  → shuffles 3 values
+// Network: 8 values shuffled → reducer receives [1,1,1,1,1,1,1,1] → sums to 8
+
+// === reduceByKey approach ===
+// Partition 1 has: ("hello",1), ("hello",1), ("hello",1)  → locally reduces to ("hello",3)
+// Partition 2 has: ("hello",1), ("hello",1)                → locally reduces to ("hello",2)
+// Partition 3 has: ("hello",1), ("hello",1), ("hello",1)  → locally reduces to ("hello",3)
+// Network: 3 values shuffled → reducer receives [3,2,3] → sums to 8</div>
+
+        <p>In this simple example, <code>reduceByKey</code> shuffles <strong>3 values</strong> instead of <strong>8</strong>. In a real cluster with millions of records, the difference is enormous — potentially <strong>100x less network I/O</strong>.</p>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Imagine a national election with voting booths across the country. <code>groupByKey</code> is like shipping <strong>every single ballot paper</strong> to a central counting office in London — trucks full of paper, traffic jams, warehouse needed to store millions of slips. <code>reduceByKey</code> is like counting at each local polling station first and then phoning in only the totals: "Candidate A: 4,231. Candidate B: 3,897." Obviously, sending a few numbers is vastly more efficient than shipping truckloads of paper. You would never ship all the ballots unless you needed to inspect each individual one (which is the <code>groupByKey</code> use case — when you truly need every raw value).</p>
+        </div>
+
+        <div class="moodle-tip">
+          <h5>Moodle Answer Strategy</h5>
+          <p>For 6 marks, draw or describe the data flow for both operations, emphasize the combiner-like local aggregation in reduceByKey, mention OOM risk for groupByKey, and state that reduceByKey should always be preferred when the reduction function is associative and commutative. Use a concrete numeric example to show the difference in shuffle volume.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q2 Summary — MapReduce & Spark</h5>
+      <p>Reducer count: balance overload vs. overhead (~0.95-1.75 x cluster slots). Reduce-side join: tag + shuffle + cross-product (expensive: ALL data shuffled). Spark lazy eval: DAG optimization, pipeline fusion, lineage recovery. reduceByKey >> groupByKey: local pre-aggregation slashes network I/O.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — NoSQL & Distributed Systems</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q3a -->
+    <div class="q-text">
+      <strong>Q3a.</strong> Apply the CAP theorem to two scenarios: (i) a chat application and (ii) a banking application. Justify your choices.
+    </div>
+
+    <div class="answer-section">
+      <h4>Q3a. CAP Theorem Application <span class="marks-badge">6 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+      <p>The <strong>CAP theorem</strong> states that a distributed data store can simultaneously provide at most <strong>two out of three</strong> guarantees: <strong>Consistency</strong> (every read returns the most recent write), <strong>Availability</strong> (every request receives a response), and <strong>Partition tolerance</strong> (the system continues operating despite network splits between nodes).</p>
+
+      <div class="concept-box">
+        <h5>The Real-World Constraint</h5>
+        <p>Network partitions are <strong>inevitable</strong> in distributed systems — cables get cut, switches fail, data centers lose connectivity. Since you cannot avoid P, the real engineering choice is between <strong>C and A during a partition</strong>: Do you refuse to serve requests (sacrifice Availability to maintain Consistency)? Or do you serve potentially stale data (sacrifice Consistency to maintain Availability)?</p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card highlight">
+          <h5>(i) Chat Application — Choose AP (Availability + Partition Tolerance)</h5>
+          <p><strong>Justification:</strong> Users expect a chat app to <strong>always work</strong>. If WhatsApp showed "Service Unavailable" every time there was a minor network hiccup between data centers, users would switch to a competitor immediately. A slight delay or messages arriving slightly out of order is tolerable — humans are accustomed to this in real conversations (you sometimes receive a reply before the message it references). The key insight: <strong>eventual consistency is acceptable</strong> for chat. Messages will eventually be delivered and ordered correctly, but the app never goes down.</p>
+          <p><strong>Real-life example:</strong> WhatsApp, Slack, and iMessage all prioritize AP. Messages might show one checkmark (sent but not confirmed) during a partition, but the app keeps working. You can still send and read messages. Once the partition heals, everything syncs up.</p>
+        </div>
+        <div class="comparison-card highlight">
+          <h5>(ii) Banking Application — Choose CP (Consistency + Partition Tolerance)</h5>
+          <p><strong>Justification:</strong> A bank <strong>cannot show the wrong balance</strong>. If you have $100 and withdraw $80, the system must never show $100 to another terminal that then allows another $80 withdrawal — that would be a $60 loss for the bank. It is far better to say "Service temporarily unavailable, please try again" than to serve stale data that leads to double-spending. Users understand ATMs sometimes go offline — they do not understand losing money.</p>
+          <p><strong>Real-life example:</strong> ATMs that say "Cannot connect to bank — transaction declined" during outages. Traditional banking systems (SWIFT, core banking platforms) all prioritize consistency. An ATM that always works but sometimes shows wrong balances would be a catastrophe.</p>
+        </div>
+      </div>
+
+      <table>
+        <tr><th>Aspect</th><th>Chat App (AP)</th><th>Banking App (CP)</th></tr>
+        <tr><td><strong>During partition</strong></td><td>Keeps working, may show stale messages</td><td>Rejects transactions, shows "unavailable"</td></tr>
+        <tr><td><strong>User expectation</strong></td><td>"It should always work"</td><td>"It should always be correct"</td></tr>
+        <tr><td><strong>Cost of inconsistency</strong></td><td>Low — messages arrive late, minor annoyance</td><td>High — money lost, legal liability, fraud</td></tr>
+        <tr><td><strong>Cost of unavailability</strong></td><td>High — users switch to competitor</td><td>Low — users wait or try later</td></tr>
+        <tr><td><strong>Example systems</strong></td><td>Cassandra, DynamoDB</td><td>HBase, Spanner, traditional RDBMS</td></tr>
+      </table>
+    </div>
+
+    <!-- Q3b -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q3b.</strong> Explain how region splitting works in BigTable/HBase. Why is it necessary?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q3b. BigTable/HBase Region Splitting <span class="marks-badge">5 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>In HBase (and its predecessor Google BigTable), a table is horizontally partitioned into <strong>regions</strong>. Each region contains a <strong>contiguous range of row keys</strong> — for example, one region might hold all rows from "aardvark" to "elephant" and another from "elephant" to "zebra". Region splitting is the mechanism by which HBase automatically manages data growth.</p>
+
+        <ol class="step-list">
+          <li><strong>Region grows beyond threshold:</strong> As data is written, a region accumulates more and more rows. When it exceeds a configured size threshold (typically <strong>256MB</strong>, configurable), the region server hosting it decides it is time to split.</li>
+          <li><strong>Split point determined:</strong> The region server identifies the <strong>middle row key</strong> — the key that divides the region's data roughly in half. This ensures the two resulting regions are approximately equal in size, preventing imbalanced splits.</li>
+          <li><strong>Two new child regions created:</strong> The original region is replaced by two <strong>non-overlapping daughter regions</strong>. If the original held rows [A, M), the daughters might be [A, G) and [G, M). Every row key in the original belongs to exactly one daughter — no data is lost or duplicated.</li>
+          <li><strong>Master notified and regions reassigned:</strong> The region server notifies the HBase Master of the split. The Master updates its metadata (the <code>hbase:meta</code> table) and may reassign the new regions to different region servers for <strong>load balancing</strong>. This is how HBase distributes hot data across the cluster.</li>
+          <li><strong>Transparent to clients:</strong> Clients are unaware of the split. Their next request is automatically routed to the correct new region via the updated metadata. Ongoing scans may need to be retried, but the client library handles this transparently.</li>
+        </ol>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Imagine a single, massive phone book that covers an entire country. As the population grows, the book becomes too thick to handle — it falls apart, it is slow to search, and it takes up too much shelf space. So you split it: A-M goes into one volume, N-Z into another. Each volume goes to a different shelf (region server). If the A-M volume gets too thick again (maybe there are many people whose names start with "S" after a further split), you split again: A-F and G-M. This process continues recursively, automatically, and transparently. A person looking up "John Smith" does not need to know which volume he is in — the directory (Master/meta table) tells them.</p>
+        </div>
+
+        <div class="concept-box">
+          <h5>Why is Splitting Necessary?</h5>
+          <p><strong>Performance:</strong> Smaller regions mean faster reads and writes — less data to scan within each region.</p>
+          <p><strong>Parallelism:</strong> More regions can be distributed across more servers, enabling higher throughput.</p>
+          <p><strong>Load balancing:</strong> Hot regions (receiving many reads/writes) can be split and distributed to reduce hotspots.</p>
+          <p><strong>Scalability:</strong> Without splitting, a table would be limited to a single server's capacity. With splitting, it scales horizontally to thousands of servers.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3c -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q3c.</strong> What uniquely identifies a cell in HBase?
+      </div>
+
+      <div class="answer-section">
+        <h4>Q3c. HBase Cell Identifier <span class="marks-badge">3 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p>Every cell in HBase is uniquely identified by a <strong>3-tuple</strong> that acts as a coordinate in HBase's multidimensional sorted map:</p>
+
+        <table>
+          <tr><th>Component</th><th>Description</th><th>Example</th></tr>
+          <tr>
+            <td><strong>Row Key</strong></td>
+            <td>A unique byte array identifying the row. Rows are sorted lexicographically by this key, which determines physical storage order and region assignment.</td>
+            <td><code>"user_00042"</code></td>
+          </tr>
+          <tr>
+            <td><strong>Column (family:qualifier)</strong></td>
+            <td>A two-part identifier: the <em>column family</em> (defined at table creation, stored together on disk) and the <em>qualifier</em> (arbitrary, can be added dynamically). Together they name the column.</td>
+            <td><code>"profile:email"</code></td>
+          </tr>
+          <tr>
+            <td><strong>Timestamp</strong></td>
+            <td>A version number (typically milliseconds since epoch). Each cell can have <strong>multiple versions</strong>, each with a different timestamp. The <strong>latest timestamp is returned by default</strong> when reading.</td>
+            <td><code>1609459200000</code></td>
+          </tr>
+        </table>
+
+        <div class="code-block">// Complete cell address:
+(row_key, column_family:qualifier, timestamp) → value
+
+// Concrete example:
+("user_00042", "profile:email", 1609459200000) → "alice@example.com"
+("user_00042", "profile:email", 1577836800000) → "alice@oldmail.com"   // older version
+
+// Default read returns latest:
+GET "user_00042", "profile:email" → "alice@example.com" (timestamp 1609459200000)</div>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Think of HBase as a massive archive of employee records. To find a specific piece of information, you need three things: the employee ID (row key), the document type and field (column family:qualifier, like "personal:phone_number"), and which version you want (timestamp — the employee may have changed phone numbers three times). Without all three coordinates, you cannot pinpoint a single piece of data. By default, you get the most recent version, just like asking HR for an employee's "current" phone number.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3d -->
+    <div class="sub-section">
+      <div class="q-text">
+        <strong>Q3d.</strong> How can Cassandra guarantee read-your-own-writes consistency? Explain the quorum approach with a concrete example.
+      </div>
+
+      <div class="answer-section">
+        <h4>Q3d. Cassandra Read-Your-Own-Writes <span class="marks-badge">6 marks</span> <span class="official-badge">OFFICIAL</span></h4>
+
+        <p><strong>Read-your-own-writes</strong> means that after you write a value, any subsequent read you perform is guaranteed to see that write (or a later one). In Cassandra, which replicates data across multiple nodes, this is not guaranteed by default — you might write to nodes A and B, then read from node C, which has not received the update yet. The solution lies in <strong>quorum mathematics</strong>.</p>
+
+        <div class="concept-box">
+          <h5>The Quorum Rule</h5>
+          <p><strong>R + W > N</strong> guarantees that any read quorum overlaps with any write quorum.</p>
+          <p>Where: <strong>N</strong> = total replicas, <strong>W</strong> = number of nodes that must acknowledge a write, <strong>R</strong> = number of nodes that must respond to a read.</p>
+          <p>If these sets overlap, at least one node in the read set must have the latest write. That node returns the newest timestamp, which "wins" over stale values from other nodes.</p>
+        </div>
+
+        <div class="example-box">
+          <h5>Concrete Example: N=3, W=2, R=2</h5>
+          <p>Suppose a key is replicated to nodes <strong>{A, B, C}</strong> (N=3).</p>
+          <p><strong>Write phase (W=2):</strong> You update the key's value to "42". Cassandra writes to 2 of the 3 replicas — say nodes A and B acknowledge. Node C has not been updated yet (it will be eventually, but not right now).</p>
+          <p><strong>Read phase (R=2):</strong> You immediately read the key. Cassandra reads from 2 of the 3 replicas. No matter which 2 it picks, at least one must overlap with the write set {A, B}:</p>
+          <p>- Read from {A, B}: A has "42", B has "42" — returns "42".</p>
+          <p>- Read from {A, C}: A has "42", C has old value — "42" wins (newer timestamp).</p>
+          <p>- Read from {B, C}: B has "42", C has old value — "42" wins.</p>
+          <p><strong>R + W = 2 + 2 = 4 > 3 = N.</strong> The overlap is mathematically guaranteed. There is no combination of 2 read nodes that avoids both write nodes.</p>
+        </div>
+
+        <div class="code-block">N = 3 replicas: [A] [B] [C]
+
+Write W=2:  [A✓] [B✓] [C ]    ← 2 nodes have new value
+
+Read R=2, possible sets:
+  {A, B} → overlap with write ✓  (both have new value)
+  {A, C} → overlap with write ✓  (A has new value)
+  {B, C} → overlap with write ✓  (B has new value)
+
+No R=2 set can avoid BOTH A and B → guaranteed overlap!</div>
+
+        <table>
+          <tr><th>Configuration</th><th>R + W > N?</th><th>Read-Your-Own-Writes?</th><th>Trade-off</th></tr>
+          <tr><td>N=3, W=2, R=2</td><td>4 > 3 YES</td><td>Guaranteed</td><td>Balanced: moderate latency for both reads and writes</td></tr>
+          <tr><td>N=3, W=1, R=3</td><td>4 > 3 YES</td><td>Guaranteed</td><td>Fast writes, slow reads (must contact all 3 nodes)</td></tr>
+          <tr><td>N=3, W=3, R=1</td><td>4 > 3 YES</td><td>Guaranteed</td><td>Slow writes, fast reads (any single node suffices)</td></tr>
+          <tr><td>N=3, W=1, R=1</td><td>2 > 3 NO</td><td>NOT guaranteed</td><td>Fast everything, but may read stale data</td></tr>
+          <tr><td>N=3, W=QUORUM, R=QUORUM</td><td>4 > 3 YES</td><td>Guaranteed</td><td>QUORUM = N/2 + 1 = 2. Most common production setting.</td></tr>
+        </table>
+
+        <div class="warning-box">
+          <p><strong>Alternative approach — Sticky sessions:</strong> Instead of quorum, route all requests from the same client to the same <strong>coordinator node</strong>. This coordinator always writes locally first, so it always has the latest value for that client's reads. Simpler, but creates potential hotspots and does not survive coordinator failure. The quorum approach is more robust and is the standard recommendation.</p>
+        </div>
+
+        <div class="example-box">
+          <h5>Real-World Analogy</h5>
+          <p>Imagine passing a secret note in a classroom of 3 friends (N=3). You hand the note to 2 of them (W=2). Later, you ask 2 of the 3 to tell you the latest message (R=2). No matter which 2 you ask, at least 1 must be someone you gave the note to — because you can pick at most 1 person who did not receive it (there is only 1 such person, but you are asking 2). That overlapping friend will tell you the correct, latest message. If you only asked 1 friend (R=1), you might ask the one person who never got the note — and you would hear old, stale information.</p>
+        </div>
+
+        <div class="moodle-tip">
+          <h5>Moodle Answer Strategy</h5>
+          <p>For 6 marks, state the R + W > N rule clearly, work through a concrete numeric example (N=3, W=2, R=2), enumerate all possible read sets to prove overlap, and mention the alternative QUORUM or sticky session approach. A table showing different N/W/R configurations and their guarantees will impress the examiner.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q3 Summary — NoSQL & Distributed Systems</h5>
+      <p>CAP: partitions are inevitable, so choose AP (chat — always available, eventually consistent) or CP (banking — always correct, sometimes unavailable). HBase splits regions at middle row key when they exceed threshold — transparent, automatic, enables horizontal scaling. Cell = (row_key, family:qualifier, timestamp). Cassandra read-your-writes: ensure R + W > N so read and write quorums always overlap.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

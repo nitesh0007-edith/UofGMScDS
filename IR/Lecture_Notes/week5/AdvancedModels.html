@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Information Retrieval Models — An Interactive Tutorial</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0e12;
+  --bg-card: #13161c;
+  --bg-card-alt: #181c24;
+  --bg-code: #1a1e28;
+  --accent: #4ecdc4;
+  --accent2: #ff6b6b;
+  --accent3: #ffe66d;
+  --accent4: #a29bfe;
+  --accent5: #fd79a8;
+  --text: #e2e8f0;
+  --text-dim: #8892a4;
+  --text-bright: #f8fafc;
+  --border: #2a2f3a;
+  --gradient1: linear-gradient(135deg, #4ecdc4, #44a3aa);
+  --gradient2: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  --gradient3: linear-gradient(135deg, #a29bfe, #6c5ce7);
+  --gradient4: linear-gradient(135deg, #ffe66d, #fdcb6e);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 17px;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #2a2f3a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%, rgba(78,205,196,0.12), transparent),
+    radial-gradient(ellipse 500px 500px at 80% 60%, rgba(162,155,254,0.1), transparent),
+    radial-gradient(ellipse 400px 300px at 50% 80%, rgba(255,107,107,0.08), transparent);
+  z-index: 0;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(60px,60px); }
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(78,205,196,0.1);
+  border: 1px solid rgba(78,205,196,0.25);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: var(--text-bright);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--accent), var(--accent4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--text-dim);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== NAV / TOC ===== */
+.toc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,14,18,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  overflow-x: auto;
+}
+
+.toc-nav ul {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toc-nav ul::-webkit-scrollbar { display: none; }
+
+.toc-nav a {
+  display: block;
+  padding: 16px 20px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.toc-nav a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== MAIN LAYOUT ===== */
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+section {
+  padding: 5rem 0;
+  animation: sectionFade 0.6s ease both;
+}
+
+@keyframes sectionFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+
+.section-label.teal { color: var(--accent); background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.2); }
+.section-label.red { color: var(--accent2); background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2); }
+.section-label.purple { color: var(--accent4); background: rgba(162,155,254,0.1); border: 1px solid rgba(162,155,254,0.2); }
+.section-label.yellow { color: var(--accent3); background: rgba(255,230,109,0.1); border: 1px solid rgba(255,230,109,0.2); }
+.section-label.pink { color: var(--accent5); background: rgba(253,121,168,0.1); border: 1px solid rgba(253,121,168,0.2); }
+
+h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text-bright);
+  margin: 2.5rem 0 1rem;
+}
+
+h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 2rem 0 0.8rem;
+}
+
+p { margin-bottom: 1.2rem; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  transition: border-color 0.3s;
+}
+
+.card:hover { border-color: rgba(78,205,196,0.3); }
+
+.card-accent {
+  border-left: 3px solid var(--accent);
+}
+
+.card-accent.red { border-left-color: var(--accent2); }
+.card-accent.purple { border-left-color: var(--accent4); }
+.card-accent.yellow { border-left-color: var(--accent3); }
+
+/* ===== FORMULA BOXES ===== */
+.formula-box {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.formula-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient1);
+}
+
+.formula-box.red::before { background: var(--gradient2); }
+.formula-box.purple::before { background: var(--gradient3); }
+.formula-box.yellow::before { background: var(--gradient4); }
+
+.formula-box .formula-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.formula-box.red .formula-label { color: var(--accent2); }
+.formula-box.purple .formula-label { color: var(--accent4); }
+.formula-box.yellow .formula-label { color: var(--accent3); }
+
+/* ===== EXAMPLE BOXES ===== */
+.example {
+  background: linear-gradient(135deg, rgba(78,205,196,0.05), rgba(162,155,254,0.05));
+  border: 1px solid rgba(78,205,196,0.15);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.example::before {
+  content: '💡 Example';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: var(--bg);
+  padding: 2px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  border-radius: 6px;
+  border: 1px solid rgba(78,205,196,0.2);
+}
+
+.example.numerical::before { content: '🔢 Numerical Example'; }
+.example.walkthrough::before { content: '🚶 Walkthrough'; }
+
+/* ===== KEY INSIGHT ===== */
+.insight {
+  background: rgba(255,230,109,0.06);
+  border: 1px solid rgba(255,230,109,0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.5rem 1.5rem 3.5rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.insight::before {
+  content: '🔑';
+  position: absolute;
+  left: 1.2rem;
+  top: 1.5rem;
+  font-size: 1.2rem;
+}
+
+/* ===== WARNING/CAUTION ===== */
+.caution {
+  background: rgba(255,107,107,0.06);
+  border: 1px solid rgba(255,107,107,0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.5rem 1.5rem 3.5rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.caution::before {
+  content: '⚠️';
+  position: absolute;
+  left: 1.2rem;
+  top: 1.5rem;
+}
+
+/* ===== COMPARISON TABLE ===== */
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.comparison-table th {
+  background: var(--bg-card-alt);
+  padding: 14px 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(42,47,58,0.5);
+  font-size: 0.95rem;
+}
+
+.comparison-table tr:last-child td { border-bottom: none; }
+.comparison-table tr:nth-child(even) td { background: rgba(19,22,28,0.5); }
+
+/* ===== DIAGRAM BOXES ===== */
+.diagram {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.flow-box {
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+}
+
+.flow-box.highlight {
+  background: rgba(78,205,196,0.12);
+  border-color: rgba(78,205,196,0.4);
+  color: var(--accent);
+}
+
+.flow-box.highlight2 {
+  background: rgba(162,155,254,0.12);
+  border-color: rgba(162,155,254,0.4);
+  color: var(--accent4);
+}
+
+.flow-box.highlight3 {
+  background: rgba(255,107,107,0.12);
+  border-color: rgba(255,107,107,0.4);
+  color: var(--accent2);
+}
+
+.flow-arrow {
+  color: var(--text-dim);
+  font-size: 1.3rem;
+}
+
+/* ===== PROS & CONS ===== */
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.pros, .cons {
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.pros {
+  background: rgba(78,205,196,0.05);
+  border-color: rgba(78,205,196,0.2);
+}
+
+.cons {
+  background: rgba(255,107,107,0.05);
+  border-color: rgba(255,107,107,0.2);
+}
+
+.pros h4 { color: var(--accent); margin-top: 0; }
+.cons h4 { color: var(--accent2); margin-top: 0; }
+
+.pros li, .cons li {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  list-style: none;
+  font-size: 0.95rem;
+}
+
+.pros li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.cons li::before { content: '✗'; position: absolute; left: 0; color: var(--accent2); font-weight: 700; }
+
+/* ===== INTERACTIVE TABS ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0;
+  background: var(--bg-card);
+  border-radius: var(--radius) var(--radius) 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  padding: 6px 6px 0;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 10px 22px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: var(--text); background: rgba(78,205,196,0.05); }
+.tab-btn.active { color: var(--accent); background: var(--bg-card-alt); }
+
+.tab-content {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 2rem;
+  display: none;
+}
+
+.tab-content.active { display: block; }
+
+/* ===== STEP INDICATORS ===== */
+.steps {
+  position: relative;
+  padding-left: 2rem;
+  margin: 1.5rem 0;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent4));
+  opacity: 0.3;
+}
+
+.step {
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.step::before {
+  content: attr(data-step);
+  position: absolute;
+  left: -2rem;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== INLINE CODE ===== */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: var(--bg-code);
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .pros-cons { grid-template-columns: 1fr; }
+  .container { padding: 0 1.2rem; }
+  section { padding: 3rem 0; }
+  .card, .formula-box, .example { padding: 1.5rem; }
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 3rem 0;
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== TIMELINE ===== */
+.model-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.timeline-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.timeline-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.timeline-item .year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-item .model-name {
+  font-weight: 600;
+  color: var(--text-bright);
+  font-size: 0.95rem;
+}
+
+/* ===== MATHJAX STYLE OVERRIDES ===== */
+mjx-container { overflow-x: auto; max-width: 100%; padding: 4px 0; }
+
+/* ===== SMOOTH SECTION LINKS ===== */
+section[id] { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">University of Glasgow — IR Course</div>
+    <h1>Advanced Information<br><em>Retrieval Models</em></h1>
+    <p>From Boolean basics to BM25, Language Models, and beyond — a beginner-friendly deep dive into how search engines rank documents.</p>
+  </div>
+</div>
+
+<!-- ==================== NAV ==================== -->
+<nav class="toc-nav">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#boolean">Boolean</a></li>
+    <li><a href="#vsm">Vector Space</a></li>
+    <li><a href="#probabilistic">Probabilistic</a></li>
+    <li><a href="#bm25">BM25</a></li>
+    <li><a href="#lm">Language Models</a></li>
+    <li><a href="#dfr">DFR</a></li>
+    <li><a href="#fields">Fields</a></li>
+    <li><a href="#proximity">Proximity</a></li>
+    <li><a href="#comparison">Comparison</a></li>
+  </ul>
+</nav>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<main class="container">
+
+<!-- ===== SECTION: Overview ===== -->
+<section id="overview">
+  <div class="reveal">
+    <span class="section-label teal">Chapter 0</span>
+    <h2>The Big Picture</h2>
+    <p>At its core, <strong>Information Retrieval (IR)</strong> is about finding the right documents for a user's query. Think of it as the brain behind every search engine — the part that decides which results to show and in what order.</p>
+
+    <div class="diagram">
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1rem;">THE RETRIEVAL PIPELINE</p>
+      <div class="flow-diagram">
+        <div class="flow-box">📝 User's Info Need</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight">Query</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight2">Retrieval Model</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight3">Ranked Results</div>
+      </div>
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-top:1rem;">The <strong>retrieval model</strong> is the relevance decision mechanism — it scores and ranks documents.</p>
+    </div>
+
+    <h3>What Exactly Is a "Model"?</h3>
+    <p>An IR model defines three things: how <em>documents</em> are represented, how <em>queries</em> are represented, and how we <em>match</em> them. Over decades, researchers have developed increasingly sophisticated models:</p>
+
+    <div class="model-timeline">
+      <div class="timeline-item">
+        <div class="year">1973</div>
+        <div class="model-name">Boolean Model</div>
+      </div>
+      <div class="timeline-item">
+        <div class="year">1975</div>
+        <div class="model-name">Vector Space</div>
+      </div>
+      <div class="timeline-item">
+        <div class="year">1976</div>
+        <div class="model-name">BIR / BIM</div>
+      </div>
+      <div class="timeline-item">
+        <div class="year">1994</div>
+        <div class="model-name">BM25 (Okapi)</div>
+      </div>
+      <div class="timeline-item">
+        <div class="year">1998</div>
+        <div class="model-name">Language Models</div>
+      </div>
+      <div class="timeline-item">
+        <div class="year">2002</div>
+        <div class="model-name">DFR Framework</div>
+      </div>
+    </div>
+
+    <div class="insight">
+      <strong>Key Insight:</strong> Progress in retrieval models has directly corresponded with improvements in search effectiveness. Each new model addresses weaknesses of its predecessors!
+    </div>
+
+    <h3>Relevance: The Central Challenge</h3>
+    <p>Relevance is <em>subjective</em> — people often disagree on whether a document is relevant. Retrieval models simplify this by making assumptions:</p>
+
+    <div class="pros-cons">
+      <div class="pros" style="background: rgba(78,205,196,0.05);">
+        <h4 style="margin-top:0;">Topical Relevance</h4>
+        <p style="font-size:0.9rem;">Query and document are about the <em>same topic</em>. This is what most models focus on.</p>
+      </div>
+      <div class="cons" style="background: rgba(162,155,254,0.05); border-color: rgba(162,155,254,0.2);">
+        <h4 style="color: var(--accent4); margin-top:0;">User Relevance</h4>
+        <p style="font-size:0.9rem;">Takes into account novelty, freshness, language preference, user context. Much harder to model!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Boolean Model ===== -->
+<section id="boolean">
+  <div class="reveal">
+    <span class="section-label teal">Chapter 1</span>
+    <h2>Boolean Model</h2>
+    <p>The simplest retrieval model. Documents are either <em>relevant</em> or <em>not relevant</em> — there's no in-between and no ranking.</p>
+
+    <h3>How It Works</h3>
+    <div class="card card-accent">
+      <p><strong>Documents</strong> are represented as a <em>set of keywords</em> (terms).</p>
+      <p><strong>Queries</strong> use Boolean operators: <code>AND</code>, <code>OR</code>, <code>NOT</code>.</p>
+      <p><strong>Matching:</strong> A document is relevant if its terms satisfy the logical expression.</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-label">Boolean Relevance Decision</div>
+      $$R(D, Q) = D \models Q$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">A document D is relevant iff it satisfies the query Q.</p>
+    </div>
+
+    <div class="example numerical">
+      <p><strong>Setup:</strong> We have three documents and three terms A, B, C:</p>
+      <p style="margin: 0.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--accent);">
+        d₁ = {A, B} &nbsp;&nbsp; d₂ = {B, C} &nbsp;&nbsp; d₃ = {A, B, C}
+      </p>
+      <p><strong>Query:</strong> <code>A AND B AND NOT C</code></p>
+      <p style="margin: 0.3rem 0;"><strong>Results:</strong></p>
+      <p>• d₁ = {A, B} → has A ✓, has B ✓, no C ✓ → <span style="color:var(--accent); font-weight:600;">RETRIEVED ✓</span></p>
+      <p>• d₂ = {B, C} → missing A ✗ → <span style="color:var(--accent2); font-weight:600;">NOT retrieved</span></p>
+      <p>• d₃ = {A, B, C} → has C ✗ (violates NOT C) → <span style="color:var(--accent2); font-weight:600;">NOT retrieved</span></p>
+    </div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✓ Advantages</h4>
+        <ul>
+          <li>Simple to understand and implement</li>
+          <li>Exact matching — predictable results</li>
+          <li>Full Boolean Algebra available</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>✗ Disadvantages</h4>
+        <ul>
+          <li>No ranking — results are an unordered set</li>
+          <li>Complex queries confuse users</li>
+          <li>Either "nothing found" or "information overload"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Vector Space ===== -->
+<section id="vsm">
+  <div class="reveal">
+    <span class="section-label purple">Chapter 2</span>
+    <h2>Vector Space Model</h2>
+    <p>Instead of binary yes/no, the Vector Space Model (VSM) represents documents and queries as <em>vectors</em> in a high-dimensional space, where each dimension is a term.</p>
+
+    <h3>The Intuition</h3>
+    <p>Imagine each term as an axis. A document's position in this space depends on which terms it contains and how important they are. The query is also a point. Documents <em>closer</em> to the query are more relevant.</p>
+
+    <div class="diagram">
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1rem;">2D VECTOR SPACE (terms: "cat" and "dog")</p>
+      <svg viewBox="0 0 400 300" style="max-width:400px; margin: 0 auto; display:block;">
+        <!-- Axes -->
+        <line x1="60" y1="250" x2="380" y2="250" stroke="#2a2f3a" stroke-width="2"/>
+        <line x1="60" y1="250" x2="60" y2="30" stroke="#2a2f3a" stroke-width="2"/>
+        <text x="370" y="270" fill="#8892a4" font-size="13" font-family="DM Sans">cat →</text>
+        <text x="20" y="40" fill="#8892a4" font-size="13" font-family="DM Sans">dog ↑</text>
+        <!-- Doc vectors -->
+        <line x1="60" y1="250" x2="300" y2="80" stroke="#4ecdc4" stroke-width="2.5" opacity="0.8"/>
+        <circle cx="300" cy="80" r="6" fill="#4ecdc4"/>
+        <text x="310" y="80" fill="#4ecdc4" font-size="13" font-weight="600" font-family="DM Sans">D₁</text>
+        <line x1="60" y1="250" x2="320" y2="190" stroke="#a29bfe" stroke-width="2.5" opacity="0.8"/>
+        <circle cx="320" cy="190" r="6" fill="#a29bfe"/>
+        <text x="330" y="190" fill="#a29bfe" font-size="13" font-weight="600" font-family="DM Sans">D₂</text>
+        <!-- Query -->
+        <line x1="60" y1="250" x2="260" y2="100" stroke="#ff6b6b" stroke-width="2.5" stroke-dasharray="8,4"/>
+        <circle cx="260" cy="100" r="6" fill="#ff6b6b"/>
+        <text x="270" y="100" fill="#ff6b6b" font-size="13" font-weight="700" font-family="DM Sans">Q</text>
+        <!-- Angle arc -->
+        <path d="M 150 193 A 60 60 0 0 1 170 176" stroke="#ffe66d" stroke-width="1.5" fill="none"/>
+        <text x="155" y="172" fill="#ffe66d" font-size="11" font-family="DM Sans">θ</text>
+      </svg>
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-top:1rem;">D₁ is closer to Q (smaller angle θ), so D₁ ranks higher.</p>
+    </div>
+
+    <div class="formula-box purple">
+      <div class="formula-label">Cosine Similarity</div>
+      $$\text{sim}(D, Q) = \cos(\theta) = \frac{\vec{D} \cdot \vec{Q}}{|\vec{D}| \times |\vec{Q}|} = \frac{\sum_{i=1}^{n} d_i \cdot q_i}{\sqrt{\sum_{i=1}^{n} d_i^2} \cdot \sqrt{\sum_{i=1}^{n} q_i^2}}$$
+    </div>
+
+    <div class="example numerical">
+      <p><strong>Numerical Example:</strong></p>
+      <p>Document D = (3, 2, 0, 1) and Query Q = (1, 0, 0, 2) with terms {cat, dog, fish, bird}.</p>
+      <p>$$\vec{D} \cdot \vec{Q} = (3)(1) + (2)(0) + (0)(0) + (1)(2) = 3 + 0 + 0 + 2 = 5$$</p>
+      <p>$$|\vec{D}| = \sqrt{9+4+0+1} = \sqrt{14} \approx 3.74$$</p>
+      <p>$$|\vec{Q}| = \sqrt{1+0+0+4} = \sqrt{5} \approx 2.24$$</p>
+      <p>$$\cos(\theta) = \frac{5}{3.74 \times 2.24} = \frac{5}{8.37} \approx 0.597$$</p>
+      <p>The similarity score is <strong>0.597</strong> (on a 0–1 scale).</p>
+    </div>
+
+    <div class="caution">
+      <strong>Drawbacks:</strong> The similarity metric (cosine, dice, etc.) is chosen ad-hoc with no theoretical basis. There's no guidance on when to stop ranking, and term weights (like TF-IDF) lack probabilistic justification.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Probabilistic ===== -->
+<section id="probabilistic">
+  <div class="reveal">
+    <span class="section-label red">Chapter 3</span>
+    <h2>Probabilistic Models</h2>
+    <p>Why probabilities? Because IR is full of <strong>uncertainty</strong> — uncertain representations, uncertain queries, uncertain relevance. Probability theory is the natural language for reasoning about uncertainty.</p>
+
+    <h3>The Probability Ranking Principle (PRP)</h3>
+    <div class="card card-accent red">
+      <p><em>"Rank documents in order of decreasing probability of relevance to the user."</em></p>
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:0;">— Robertson (1977)</p>
+    </div>
+
+    <div class="formula-box red">
+      <div class="formula-label">Ranking Criterion</div>
+      $$\text{Rank by } P(R \mid D)$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">Probability that document D is relevant (R) given the query.</p>
+    </div>
+
+    <h3>IR as Classification</h3>
+    <p>Think of it as a two-class classification problem for each document:</p>
+
+    <div class="diagram">
+      <div class="flow-diagram">
+        <div class="flow-box">Document D</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight">P(R|D) &gt; P(NR|D)?</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight" style="background:rgba(78,205,196,0.2);">Yes → Relevant</div>
+      </div>
+      <div class="flow-diagram" style="margin-top: 0.5rem;">
+        <div class="flow-box" style="visibility:hidden;">Document D</div>
+        <span class="flow-arrow" style="visibility:hidden;">→</span>
+        <div class="flow-box" style="visibility:hidden;">P(R|D) &gt; P(NR|D)?</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight3" style="background:rgba(255,107,107,0.2);">No → Not Relevant</div>
+      </div>
+    </div>
+
+    <h3>Bayes' Rule in IR</h3>
+    <p>We use Bayes' Rule to flip the probabilities into something we can estimate:</p>
+
+    <div class="formula-box">
+      <div class="formula-label">Applying Bayes' Rule</div>
+      $$P(R \mid D) = \frac{P(D \mid R) \cdot P(R)}{P(D)}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">Classify as relevant if the <strong>likelihood ratio</strong> exceeds the prior ratio:</p>
+      $$\frac{P(D \mid R)}{P(D \mid NR)} > \frac{P(NR)}{P(R)}$$
+    </div>
+
+    <h3>Binary Independence Model (BIM)</h3>
+    <p>The foundational probabilistic model makes two key assumptions:</p>
+
+    <div class="steps">
+      <div class="step" data-step="1">
+        <strong>Binary representation:</strong> Each document is a vector of 0s and 1s (term present or absent). No term frequency!
+      </div>
+      <div class="step" data-step="2">
+        <strong>Independence:</strong> Terms occur independently in documents. So \(P(A \cap B) = P(A) \cdot P(B)\).
+      </div>
+    </div>
+
+    <p>Define: \(p_i = P(d_i=1 \mid R)\) = probability term \(i\) appears in relevant docs, and \(s_i = P(d_i=1 \mid NR)\) = probability it appears in non-relevant docs.</p>
+
+    <div class="formula-box red">
+      <div class="formula-label">BIM Retrieval Status Value (RSV)</div>
+      $$RSV(D) = \sum_{i: d_i=1} \log \frac{p_i (1 - s_i)}{s_i (1 - p_i)}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">Sum only over terms <em>present</em> in the document.</p>
+    </div>
+
+    <h3>Deriving IDF from BIM</h3>
+    <p>Here's the beautiful part: without relevance information, if we set \(p_i = 0.5\) and estimate \(s_i \approx n_i/N\) (collection frequency), we get:</p>
+
+    <div class="formula-box">
+      <div class="formula-label">IDF from Probabilistic Foundations</div>
+      $$RSV = \sum_{i: d_i=1} \log \frac{N - n_i}{n_i}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">This is exactly <strong>IDF</strong> (Inverse Document Frequency)! A theoretical justification for a widely-used heuristic.</p>
+    </div>
+
+    <div class="example numerical">
+      <p><strong>Numerical Example — IDF Calculation:</strong></p>
+      <p>Collection of N = 10,000 documents. Term "retrieval" appears in n = 50 docs.</p>
+      <p>$$\text{IDF}(\text{retrieval}) = \log \frac{10000 - 50}{50} = \log \frac{9950}{50} = \log(199) \approx 5.29$$</p>
+      <p>Term "the" appears in n = 9,800 docs.</p>
+      <p>$$\text{IDF}(\text{the}) = \log \frac{10000 - 9800}{9800} = \log \frac{200}{9800} = \log(0.0204) \approx -3.89$$</p>
+      <p>Rare terms get high IDF → more informative. Common terms get low/negative IDF → less useful.</p>
+    </div>
+
+    <h3>With Relevance Feedback</h3>
+    <p>If we <em>do</em> know which documents are relevant (from user feedback), we can refine:</p>
+
+    <div class="formula-box">
+      <div class="formula-label">BIM with Relevance Information</div>
+      $$RSV = \sum_{i: d_i=1} \log \frac{r_i / (R - r_i)}{(n_i - r_i) / (N - n_i - R + r_i)}$$
+    </div>
+
+    <table class="comparison-table">
+      <tr><th>Symbol</th><th>Meaning</th></tr>
+      <tr><td>\(r_i\)</td><td>Number of relevant documents containing term \(i\)</td></tr>
+      <tr><td>\(R\)</td><td>Total number of relevant documents</td></tr>
+      <tr><td>\(n_i\)</td><td>Total documents containing term \(i\)</td></tr>
+      <tr><td>\(N\)</td><td>Total documents in collection</td></tr>
+    </table>
+
+    <div class="caution">
+      <strong>Limitation:</strong> BIM uses binary (0/1) representation — it ignores term frequency entirely. Effectiveness drops by up to <strong>50%</strong> without TF. This motivates BM25!
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: BM25 ===== -->
+<section id="bm25">
+  <div class="reveal">
+    <span class="section-label red">Chapter 4</span>
+    <h2>BM25 — Best Match 25</h2>
+    <p>BM25 is arguably the <strong>most important ranking function in IR history</strong>. It extends BIM by adding term frequency and document length, making it dramatically more effective. It's still used in production search engines today!</p>
+
+    <div class="formula-box red">
+      <div class="formula-label">The BM25 Formula</div>
+      $$R(D, Q) = \sum_{i \in Q} \underbrace{\log \frac{(r_i + 0.5)/(R - r_i + 0.5)}{(n_i - r_i + 0.5)/(N - n_i - R + r_i + 0.5)}}_{\text{IDF component}} \cdot \underbrace{\frac{(k_1 + 1) \cdot tf_i}{K + tf_i}}_{\text{TF saturation}} \cdot \underbrace{\frac{(k_2 + 1) \cdot qf_i}{k_2 + qf_i}}_{\text{Query TF}}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:1rem;">where \( K = k_1 \cdot \left( (1-b) + b \cdot \frac{dl}{avgdl} \right) \)</p>
+    </div>
+
+    <h3>Breaking Down BM25</h3>
+    <p>Let's understand each component piece by piece:</p>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'tab-idf')">IDF Component</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-tf')">TF Saturation</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-dl')">Doc Length</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-params')">Parameters</button>
+    </div>
+
+    <div class="tab-content active" id="tab-idf">
+      <h4>IDF — Inverse Document Frequency</h4>
+      <p>Without relevance information (\(R=0, r_i=0\)):</p>
+      $$\log \frac{(0.5)/(0.5)}{(n_i + 0.5)/(N - n_i + 0.5)} = \log \frac{N - n_i + 0.5}{n_i + 0.5}$$
+      <p>This gives <strong>rare terms high weight</strong> and common terms low weight. The 0.5 smoothing prevents log(0) issues.</p>
+    </div>
+
+    <div class="tab-content" id="tab-tf">
+      <h4>TF Saturation — Diminishing Returns</h4>
+      <p>$$\frac{(k_1 + 1) \cdot tf}{K + tf}$$</p>
+      <p>This is a <strong>saturation function</strong>. Unlike raw TF, it doesn't grow linearly. After a point, more occurrences barely increase the score.</p>
+      <p><strong>Intuition:</strong> A document mentioning "python" 50 times isn't 50× more relevant than one mentioning it once — there are diminishing returns!</p>
+      <svg viewBox="0 0 400 200" style="max-width: 400px; display: block; margin: 1rem auto;">
+        <line x1="50" y1="170" x2="380" y2="170" stroke="#2a2f3a" stroke-width="2"/>
+        <line x1="50" y1="170" x2="50" y2="20" stroke="#2a2f3a" stroke-width="2"/>
+        <text x="200" y="195" fill="#8892a4" font-size="12" text-anchor="middle" font-family="DM Sans">tf →</text>
+        <text x="20" y="95" fill="#8892a4" font-size="12" text-anchor="middle" font-family="DM Sans" transform="rotate(-90, 20, 95)">score</text>
+        <!-- Raw TF line -->
+        <line x1="50" y1="170" x2="350" y2="30" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="6,4"/>
+        <text x="355" y="30" fill="#ff6b6b" font-size="11" font-family="DM Sans">Raw TF</text>
+        <!-- BM25 TF curve -->
+        <path d="M 50 170 Q 100 80 150 65 Q 200 52 250 45 Q 300 40 350 38" stroke="#4ecdc4" stroke-width="2.5" fill="none"/>
+        <text x="355" y="42" fill="#4ecdc4" font-size="11" font-family="DM Sans">BM25</text>
+        <!-- k1+1 asymptote -->
+        <line x1="50" y1="35" x2="380" y2="35" stroke="#ffe66d" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+        <text x="382" y="38" fill="#ffe66d" font-size="10" font-family="DM Sans" opacity="0.7">k₁+1</text>
+      </svg>
+    </div>
+
+    <div class="tab-content" id="tab-dl">
+      <h4>Document Length Normalisation</h4>
+      <p>$$K = k_1 \cdot \left( (1 - b) + b \cdot \frac{dl}{avgdl} \right)$$</p>
+      <p>The parameter <strong>b</strong> controls how much document length affects scoring:</p>
+      <p>• <strong>b = 0:</strong> No length normalisation — long and short docs treated equally.</p>
+      <p>• <strong>b = 1:</strong> Full normalisation — a term in a long doc is less important than in a short doc.</p>
+      <p>• <strong>b = 0.75</strong> is the typical sweet spot (TREC experiments).</p>
+    </div>
+
+    <div class="tab-content" id="tab-params">
+      <h4>Parameter Values</h4>
+      <table class="comparison-table">
+        <tr><th>Parameter</th><th>Typical Value</th><th>Controls</th></tr>
+        <tr><td>\(k_1\)</td><td>1.2</td><td>TF saturation speed. Higher = slower saturation.</td></tr>
+        <tr><td>\(k_2\)</td><td>0 – 1000</td><td>Query TF saturation. Often 0 for short queries.</td></tr>
+        <tr><td>\(b\)</td><td>0.75</td><td>Document length normalisation strength.</td></tr>
+      </table>
+    </div>
+
+    <div class="example numerical" style="margin-top: 2rem;">
+      <p><strong>Worked BM25 Example:</strong></p>
+      <p>Collection: N = 10,000 docs, avgdl = 200 words. No relevance info (R=0, r=0).</p>
+      <p>Query: "information retrieval". Document D has dl = 250 words.</p>
+      <p>Term "information": tf = 5, appears in n₁ = 3000 docs.<br>
+         Term "retrieval": tf = 3, appears in n₂ = 100 docs.</p>
+      <p>Using k₁ = 1.2, b = 0.75:</p>
+      <p>$$K = 1.2 \times ((1 - 0.75) + 0.75 \times \frac{250}{200}) = 1.2 \times (0.25 + 0.9375) = 1.425$$</p>
+      <p><strong>IDF for "information":</strong></p>
+      <p>$$\log \frac{10000 - 3000 + 0.5}{3000 + 0.5} = \log \frac{7000.5}{3000.5} \approx \log(2.333) \approx 0.847$$</p>
+      <p><strong>IDF for "retrieval":</strong></p>
+      <p>$$\log \frac{10000 - 100 + 0.5}{100 + 0.5} \approx \log(98.51) \approx 4.59$$</p>
+      <p><strong>TF component for "information" (tf=5):</strong></p>
+      <p>$$\frac{(1.2 + 1) \times 5}{1.425 + 5} = \frac{11}{6.425} \approx 1.712$$</p>
+      <p><strong>TF component for "retrieval" (tf=3):</strong></p>
+      <p>$$\frac{2.2 \times 3}{1.425 + 3} = \frac{6.6}{4.425} \approx 1.492$$</p>
+      <p><strong>Final Score:</strong></p>
+      <p>$$\text{Score} = (0.847 \times 1.712) + (4.59 \times 1.492) = 1.449 + 6.848 = \boxed{8.297}$$</p>
+      <p>Notice: "retrieval" contributes much more because it's rarer (higher IDF)!</p>
+    </div>
+
+    <div class="insight">
+      <strong>Why BM25 is legendary:</strong> It's theoretically grounded (from BIM), includes TF saturation, handles document length, and has only 2–3 tunable parameters. It's still one of the <em>best performing</em> unsupervised ranking models — used by Elasticsearch, Solr, Lucene, and more!
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Language Models ===== -->
+<section id="lm">
+  <div class="reveal">
+    <span class="section-label purple">Chapter 5</span>
+    <h2>Language Models for IR</h2>
+
+    <div class="caution">
+      <strong>Important Distinction:</strong> "Language models" in classical IR are simple <em>probability distributions over words</em> (unigram multinomials) — NOT the neural LLMs (like GPT/BERT) used in modern NLP. Don't confuse them!
+    </div>
+
+    <h3>The Core Idea</h3>
+    <p>Imagine each document generates words randomly according to its own probability distribution. Given a query, we ask: <em>"Which document was most likely to have generated this query?"</em></p>
+
+    <div class="diagram">
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1rem;">THE GENERATIVE STORY</p>
+      <div class="flow-diagram">
+        <div class="flow-box highlight2">User thinks of ideal doc</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight">Picks keywords as query</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box highlight3">System finds matching doc</div>
+      </div>
+    </div>
+
+    <h3>Unigram Language Model</h3>
+    <p>A unigram model treats each word independently — like drawing words from a bag:</p>
+
+    <div class="formula-box purple">
+      <div class="formula-label">Query Likelihood</div>
+      $$P(Q \mid D) = \prod_{q_i \in Q} P(q_i \mid D)$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">Rank documents by how likely each one is to generate the query.</p>
+    </div>
+
+    <p>The Maximum Likelihood Estimate (MLE) is simply:</p>
+
+    <div class="formula-box">
+      <div class="formula-label">Maximum Likelihood Estimate</div>
+      $$P(q_i \mid D) = \frac{f_{q_i, D}}{|D|}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.5rem;">Term frequency in the document divided by document length.</p>
+    </div>
+
+    <div class="example numerical">
+      <p><strong>Example:</strong> Document D = "weather in Glasgow is sunny Glasgow weather" (6 words total).</p>
+      <p>Query Q = "Glasgow weather"</p>
+      <p>$$P(\text{Glasgow} \mid D) = \frac{2}{6} = 0.333$$</p>
+      <p>$$P(\text{weather} \mid D) = \frac{2}{6} = 0.333$$</p>
+      <p>$$P(Q \mid D) = 0.333 \times 0.333 = 0.111$$</p>
+    </div>
+
+    <h3>The Zero Probability Problem</h3>
+    <p>What if a query term is <strong>missing</strong> from the document? Then \(P(q_i \mid D) = 0\), and the entire product becomes zero! This is too harsh — a document about "weather forecasting in Glasgow" shouldn't score zero just because it doesn't contain "forecast".</p>
+
+    <div class="insight">
+      <strong>Solution: Smoothing!</strong> We "borrow" probability from seen words and give it to unseen words, using the collection as a background model.
+    </div>
+
+    <h3>Jelinek-Mercer Smoothing</h3>
+    <p>Mix the document model with the collection model using a parameter λ:</p>
+
+    <div class="formula-box purple">
+      <div class="formula-label">Jelinek-Mercer Smoothed LM</div>
+      $$P(q_i \mid D) = (1 - \lambda) \cdot \frac{f_{q_i, D}}{|D|} + \lambda \cdot \frac{c_{q_i}}{|C|}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">λ = 0 → pure document model. λ = 1 → pure collection model.</p>
+    </div>
+
+    <div class="card">
+      <h4>Effect of λ on Behaviour</h4>
+      <table class="comparison-table">
+        <tr><th>λ Value</th><th>Behaviour</th><th>Best For</th></tr>
+        <tr><td>Small (≈ 0.1)</td><td>Acts like Boolean AND — all terms must be present</td><td>Short queries (2–3 words)</td></tr>
+        <tr><td>Large (≈ 0.7)</td><td>Acts like Boolean OR — coordination-level match</td><td>Long/verbose queries</td></tr>
+      </table>
+    </div>
+
+    <div class="example numerical" style="margin-top:1.5rem;">
+      <p><strong>Smoothing in Action:</strong></p>
+      <p>Same doc D (6 words). Query: "Glasgow forecast". Collection C has 1,000,000 words total.</p>
+      <p>"forecast" has 0 occurrences in D, but c<sub>forecast</sub> = 500 in collection. Using λ = 0.1:</p>
+      <p>$$P(\text{Glasgow} \mid D) = 0.9 \times \frac{2}{6} + 0.1 \times \frac{c_{\text{Glasgow}}}{10^6}$$</p>
+      <p>$$P(\text{forecast} \mid D) = \underbrace{0.9 \times \frac{0}{6}}_0 + 0.1 \times \frac{500}{10^6} = 0.00005$$</p>
+      <p>Now the score is <em>very small</em> but <strong>not zero</strong>! The document still has a chance.</p>
+    </div>
+
+    <h3>Dirichlet Smoothing</h3>
+    <p>An alternative that adapts the amount of smoothing based on document length:</p>
+
+    <div class="formula-box">
+      <div class="formula-label">Dirichlet Smoothed LM</div>
+      $$P(q_i \mid D) = \frac{f_{q_i, D} + \mu \cdot \frac{c_{q_i}}{|C|}}{|D| + \mu}$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">Typical μ: 1000 – 2000. Short docs get more smoothing, long docs less.</p>
+    </div>
+
+    <div class="card card-accent purple">
+      <h4>LM vs. BM25</h4>
+      <p>Language Models don't explicitly model "relevance" — they model <em>query generation</em>. BM25 is generally considered more <strong>robust</strong> across different collections, while LM performance can vary. Both remain highly effective baselines.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: DFR ===== -->
+<section id="dfr">
+  <div class="reveal">
+    <span class="section-label yellow">Chapter 6</span>
+    <h2>Divergence From Randomness (DFR)</h2>
+    <p>DFR is an elegant information-theoretic framework developed at the University of Glasgow. The key intuition is beautifully simple:</p>
+
+    <div class="card card-accent yellow">
+      <p style="font-style:italic; font-size:1.05rem;">"The more the divergence of the within-document term frequency from its frequency within the collection, the more information carried by the word in the document."</p>
+    </div>
+
+    <p>In other words: if a term appears in a document <em>much more</em> than you'd expect by random chance, that term is <strong>informative</strong> for that document.</p>
+
+    <h3>Three Components of DFR</h3>
+
+    <div class="formula-box yellow">
+      <div class="formula-label">DFR Weighting Formula</div>
+      $$w_{d,q} = \sum_{t \in q \cap d} (-\log P_1) \cdot (1 - P_2)$$
+    </div>
+
+    <div class="steps">
+      <div class="step" data-step="1">
+        <strong>Randomness Model (P₁):</strong> How surprising is the term frequency? Measures divergence from a random baseline using distributions like Binomial or Poisson. The <code>-log(P₁)</code> gives high scores when the occurrence is unlikely under randomness (= informative).
+      </div>
+      <div class="step" data-step="2">
+        <strong>Information Gain / After-effect (P₂):</strong> Controls <em>TF absorption</em> — repeated occurrences of a term should give diminishing returns. The Laplace model uses: \(\frac{tf}{tf + 1}\).
+      </div>
+      <div class="step" data-step="3">
+        <strong>Document Length Normalisation:</strong> Normalises tf relative to average document length. Normalisation 2: \(tf_n = tf \cdot \log_2\left(1 + c \cdot \frac{\text{avglen}}{\text{len}(d)}\right)\)
+      </div>
+    </div>
+
+    <h3>PL2: A Concrete DFR Model</h3>
+    <p><strong>P</strong>oisson randomness + <strong>L</strong>aplace after-effect + Normalisation <strong>2</strong>:</p>
+
+    <div class="formula-box yellow">
+      <div class="formula-label">PL2 Scoring Function</div>
+      $$\text{PL2}(d,q) = \frac{1}{tf_n + 1} \cdot \left( tf_n \cdot \log_2 \frac{tf_n}{\lambda} + (\lambda - tf_n) \cdot \log_2 e + 0.5 \cdot \log_2(2\pi \cdot tf_n) \right)$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.8rem;">where \(\lambda = \frac{TF}{N}\) (average term frequency across documents)</p>
+    </div>
+
+    <div class="insight">
+      <strong>Why DFR is special:</strong> It's not a single model but a <em>framework</em> for generating many models. Some (like DPH) are completely <strong>parameter-free</strong> — no tuning required! DPH performs excellently as a "one-size-fits-all" weighting model.
+    </div>
+
+    <div class="example">
+      <p><strong>DFR Intuition with a Card Analogy:</strong></p>
+      <p>Imagine a deck of cards representing all words in the collection. Each "ace" is an occurrence of term <em>t</em>. You draw l(d) cards (document length).</p>
+      <p>If you pull out <em>far more aces</em> than expected, something non-random is happening — that document is <em>really about</em> term t! DFR formalises this with the Binomial/Poisson distribution.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Fields ===== -->
+<section id="fields">
+  <div class="reveal">
+    <span class="section-label pink">Chapter 7</span>
+    <h2>Field-Based Models</h2>
+    <p>Real documents aren't flat text — they have <em>structure</em>. A word in the <strong>title</strong> means something different than the same word buried in the body. Field-based models exploit this.</p>
+
+    <div class="diagram">
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1rem;">DOCUMENT FIELDS EXAMPLE</p>
+      <div style="display: grid; grid-template-columns: 120px 1fr; gap: 8px; text-align:left; max-width:550px; margin:0 auto;">
+        <div style="padding: 8px 14px; background: rgba(253,121,168,0.15); border-radius: 8px; font-weight:600; color: var(--accent5); font-size:0.85rem;">TITLE</div>
+        <div style="padding: 8px 14px; background: var(--bg-card-alt); border-radius: 8px; font-size:0.9rem;">Spanish Steps - Wikipedia</div>
+        <div style="padding: 8px 14px; background: rgba(162,155,254,0.15); border-radius: 8px; font-weight:600; color: var(--accent4); font-size:0.85rem;">BODY</div>
+        <div style="padding: 8px 14px; background: var(--bg-card-alt); border-radius: 8px; font-size:0.9rem;">The Spanish steps is a set of stairs in Rome…</div>
+        <div style="padding: 8px 14px; background: rgba(78,205,196,0.15); border-radius: 8px; font-weight:600; color: var(--accent); font-size:0.85rem;">ANCHOR</div>
+        <div style="padding: 8px 14px; background: var(--bg-card-alt); border-radius: 8px; font-size:0.9rem;">Spanish Steps, Piazza de Spagna</div>
+        <div style="padding: 8px 14px; background: rgba(255,230,109,0.15); border-radius: 8px; font-weight:600; color: var(--accent3); font-size:0.85rem;">URL</div>
+        <div style="padding: 8px 14px; background: var(--bg-card-alt); border-radius: 8px; font-size:0.9rem; font-family: 'JetBrains Mono', monospace; font-size:0.8rem;">en.wikipedia.org/Piazza_de_Spagna</div>
+      </div>
+    </div>
+
+    <h3>Two Approaches to Field Combination</h3>
+
+    <div class="pros-cons">
+      <div class="pros" style="background: rgba(253,121,168,0.05); border-color: rgba(253,121,168,0.2);">
+        <h4 style="color: var(--accent5);">Score Combination</h4>
+        <p style="font-size:0.9rem;">Compute a separate score per field, then combine: \(\text{score} = \sum_f w_f \cdot \text{score}_f\)</p>
+        <p style="font-size:0.85rem; color: var(--accent2);">⚠ Breaks TF absorption!</p>
+      </div>
+      <div class="cons" style="background: rgba(78,205,196,0.05); border-color: rgba(78,205,196,0.2);">
+        <h4 style="color: var(--accent);">Frequency Combination ✓</h4>
+        <p style="font-size:0.9rem;">Combine TFs first, then score: \(tf = \sum_f w_f \cdot tf_f\)</p>
+        <p style="font-size:0.85rem; color: var(--accent);">✓ Preserves TF absorption!</p>
+      </div>
+    </div>
+
+    <h3>BM25F</h3>
+    <p>Robertson et al. (2004) proposed combining <em>per-field normalised</em> term frequencies:</p>
+
+    <div class="formula-box" style="border-left: 3px solid var(--accent5);">
+      <div class="formula-label" style="color: var(--accent5);">BM25F — Per-Field Normalisation</div>
+      $$\widetilde{tf} = \sum_f w_f \cdot \text{Norm}_f(tf_f)$$
+      <p style="color:var(--text-dim); font-size:0.9rem; margin-top:0.5rem;">Each field gets its own weight \(w_f\) and its own length normalisation.</p>
+    </div>
+
+    <h3>PL2F — DFR with Fields</h3>
+    <p>Similarly, the DFR framework extends to fields with Normalisation 2F:</p>
+
+    <div class="formula-box yellow">
+      <div class="formula-label">PL2F Normalised TF</div>
+      $$tf_n = \sum_f w_f \cdot tf_f \cdot \log_2\left(1 + c_f \cdot \frac{\text{avglen}_f}{l_f(d)}\right)$$
+    </div>
+
+    <div class="insight">
+      <strong>Why field length matters differently:</strong> Increasing body length may dilute a term's importance, but increasing anchor text length means more inlinks — a sign of authority! Each field needs <em>separate</em> normalisation.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Proximity ===== -->
+<section id="proximity">
+  <div class="reveal">
+    <span class="section-label teal">Chapter 8</span>
+    <h2>Proximity Models</h2>
+    <p>Unigram models treat documents as "bags of words" — word order doesn't matter. But it does! Searching for "University of Glasgow" shouldn't rank pages about "Glasgow Caledonian University" equally.</p>
+
+    <h3>Markov Random Field (MRF) Model</h3>
+    <p>Metzler & Croft (2005) formalized proximity using three types of dependencies:</p>
+
+    <div class="diagram">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+        <div style="padding: 1.2rem; background: rgba(78,205,196,0.08); border: 1px solid rgba(78,205,196,0.2); border-radius: 12px;">
+          <p style="font-weight:600; color: var(--accent); margin-bottom:0.5rem;">Full Independence</p>
+          <p style="font-size:0.85rem; color:var(--text-dim);">Normal bag-of-words. Each term scored alone.</p>
+        </div>
+        <div style="padding: 1.2rem; background: rgba(162,155,254,0.08); border: 1px solid rgba(162,155,254,0.2); border-radius: 12px;">
+          <p style="font-weight:600; color: var(--accent4); margin-bottom:0.5rem;">Sequential Dependence</p>
+          <p style="font-size:0.85rem; color:var(--text-dim);">Adjacent pairs: "white house", "house rose".</p>
+        </div>
+        <div style="padding: 1.2rem; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); border-radius: 12px;">
+          <p style="font-weight:600; color: var(--accent2); margin-bottom:0.5rem;">Full Dependence</p>
+          <p style="font-size:0.85rem; color:var(--text-dim);">All pairs: "white garden", "house rose", etc.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-label">MRF Combined Score</div>
+      $$\text{score}(d, Q) = \lambda_1 \sum_{t \in Q} w(t, d) + \lambda_2 \sum_{c \in Q_o} w(c, d) + \lambda_3 \sum_{c \in Q_u} w(c, d)$$
+      <p style="color:var(--text-dim); font-size:0.85rem; margin-top:0.8rem;">Q<sub>o</sub> = ordered pairs, Q<sub>u</sub> = unordered pairs. Typically λ₁ = 0.8, λ₂ = λ₃ = 0.1</p>
+    </div>
+
+    <div class="example walkthrough">
+      <p><strong>Query:</strong> "white house rose garden"</p>
+      <p><strong>Full Independence (λ₁ = 0.8):</strong></p>
+      <p style="font-family: 'JetBrains Mono', monospace; font-size:0.88rem; color:var(--accent);">
+        0.8 × [w(white,d) + w(house,d) + w(rose,d) + w(garden,d)]
+      </p>
+      <p><strong>Sequential Dependence (λ₂ = 0.1):</strong></p>
+      <p style="font-family: 'JetBrains Mono', monospace; font-size:0.88rem; color:var(--accent4);">
+        + 0.1 × [w("white house",d) + w("house rose",d) + w("rose garden",d)]
+      </p>
+      <p><strong>Full Dependence (λ₃ = 0.1):</strong></p>
+      <p style="font-family: 'JetBrains Mono', monospace; font-size:0.88rem; color:var(--accent2);">
+        + 0.1 × [w("white rose",d) + w("white garden",d) + w("house garden",d)]
+      </p>
+      <p>Documents where "white house" appears as a phrase get a significant boost!</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== SECTION: Comparison ===== -->
+<section id="comparison">
+  <div class="reveal">
+    <span class="section-label teal">Chapter 9</span>
+    <h2>Model Comparison & Summary</h2>
+
+    <h3>Effectiveness Comparison</h3>
+    <p>On the GOV2 corpus (TREC 2006 Terabyte Track), measured by Mean Average Precision (MAP):</p>
+
+    <table class="comparison-table">
+      <tr><th>Model</th><th>MAP Score</th><th>Key Feature</th></tr>
+      <tr><td>TF-IDF (with doc length norm)</td><td>0.2665</td><td>Ad-hoc, no probabilistic basis</td></tr>
+      <tr><td>Dirichlet LM</td><td>0.2675</td><td>Query likelihood approach</td></tr>
+      <tr><td>DPH (DFR, parameter-free)</td><td>0.2920</td><td>No tuning required!</td></tr>
+      <tr><td><strong>BM25</strong></td><td><strong>0.3015</strong></td><td>Best probabilistic baseline</td></tr>
+      <tr><td><strong>PL2</strong></td><td><strong>0.3045</strong></td><td>DFR — slightly edges BM25</td></tr>
+    </table>
+
+    <h3>Summary of All Models at a Glance</h3>
+
+    <table class="comparison-table">
+      <tr>
+        <th>Model</th>
+        <th>Doc Representation</th>
+        <th>Ranking?</th>
+        <th>Uses TF?</th>
+        <th>Uses IDF?</th>
+        <th>Doc Length?</th>
+      </tr>
+      <tr><td>Boolean</td><td>Set of terms</td><td>No (set retrieval)</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Vector Space</td><td>TF-IDF vector</td><td>Yes (cosine)</td><td>Yes</td><td>Yes</td><td>Optional</td></tr>
+      <tr><td>BIM</td><td>Binary vector</td><td>Yes (RSV)</td><td>No</td><td>Yes (derived)</td><td>No</td></tr>
+      <tr><td><strong>BM25</strong></td><td>TF vector</td><td>Yes</td><td>Yes (saturated)</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Language Model</td><td>Word probabilities</td><td>Yes (query likelihood)</td><td>Yes</td><td>Implicit</td><td>Via smoothing</td></tr>
+      <tr><td>DFR (PL2)</td><td>TF vector</td><td>Yes</td><td>Yes (absorbed)</td><td>Yes</td><td>Yes (Norm 2)</td></tr>
+    </table>
+
+    <h3>Key Takeaways</h3>
+
+    <div class="steps">
+      <div class="step" data-step="1">
+        <strong>Boolean</strong> is simple but inflexible — no ranking, no partial matches.
+      </div>
+      <div class="step" data-step="2">
+        <strong>Vector Space</strong> introduced ranking but lacks theoretical foundations.
+      </div>
+      <div class="step" data-step="3">
+        <strong>BIM</strong> gave us the probabilistic interpretation of IDF but ignores term frequency.
+      </div>
+      <div class="step" data-step="4">
+        <strong>BM25</strong> combines the best of probabilistic theory with TF saturation and length normalisation. Still a gold standard.
+      </div>
+      <div class="step" data-step="5">
+        <strong>Language Models</strong> offer an intuitive "query generation" perspective with effective smoothing techniques.
+      </div>
+      <div class="step" data-step="6">
+        <strong>DFR</strong> provides an information-theoretic framework with parameter-free models.
+      </div>
+      <div class="step" data-step="7">
+        <strong>Field-based</strong> and <strong>Proximity</strong> models add structure and word-order awareness for real-world effectiveness.
+      </div>
+    </div>
+
+    <div class="card" style="background: linear-gradient(135deg, rgba(78,205,196,0.05), rgba(162,155,254,0.05)); border-color: rgba(78,205,196,0.2); margin-top: 2rem;">
+      <h4 style="color: var(--text-bright);">The Modern Landscape</h4>
+      <p>Today, these classical models form the <strong>backbone</strong> of first-stage retrieval. They're combined with machine learning (Learning to Rank), neural models (BERT-based re-rankers), and many other signals (PageRank, spam scores, user behavior) to build modern search systems. Understanding them is essential — they're the foundation everything else builds upon.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <p>Advanced Information Retrieval Models — Tutorial based on lecture material by Craig Macdonald, University of Glasgow (2026).</p>
+  <p style="margin-top:0.5rem; color:var(--text-dim);">Built for learning. All formulas rendered with MathJax.</p>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// Tab switching
+function switchTab(event, tabId) {
+  const parent = event.target.closest('.tabs').parentElement;
+  parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  parent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Active nav highlighting
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.toc-nav a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    link.style.borderBottomColor = link.getAttribute('href') === '#' + current ? 'var(--accent)' : 'transparent';
+  });
+});
+</script>
+
+</body>
+</html>

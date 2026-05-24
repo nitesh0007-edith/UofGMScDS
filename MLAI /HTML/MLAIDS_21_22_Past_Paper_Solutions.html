@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2021-2022 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2021-2022 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 90 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions. Show all working clearly.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression - CO2 Emissions and Temperature Anomaly (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Consider using regression to predict global temperature anomaly from cumulative CO2 emissions data.</p>
+
+            <h3>(a) Rescaling Strategy for High Order Polynomial Regression <span class="marks">[4 marks]</span></h3>
+            <p>Propose a rescaling strategy (with enough details of the procedure) for the cumulative CO2 emissions when using high order polynomial regression. Explain why the proposed strategy is appropriate.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Proposed Rescaling Strategies:</strong> <strong>[2 marks for reasonable strategy]</strong></p>
+
+            <p>Any of the following strategies would be appropriate:</p>
+
+            <p><strong>1. Whitening (Standardization):</strong></p>
+            <div class="formula-box">
+                <p>\[x_{scaled} = \frac{x - \mu}{\sigma}\]</p>
+                <p>where \(\mu\) is the mean and \(\sigma\) is the standard deviation of cumulative CO2 emissions.</p>
+            </div>
+
+            <p><strong>2. Min-Max Scaling:</strong></p>
+            <div class="formula-box">
+                <p>\[x_{scaled} = \frac{x - x_{min}}{x_{max} - x_{min}}\]</p>
+                <p>This scales the data to the range [0, 1].</p>
+            </div>
+
+            <p><strong>3. Logarithmic Transformation:</strong></p>
+            <div class="formula-box">
+                <p>\[x_{scaled} = \log(x)\]</p>
+                <p>This compresses the scale of large values.</p>
+            </div>
+
+            <p><strong>Reasoning for Why This is Appropriate:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The key is to reduce the absolute value of CO2 emissions, such that high order polynomial will still produce well-behaved values (small numbers). Without rescaling, raising large CO2 emission values (e.g., 1.5×10¹²) to high powers would result in extremely large numbers that cause numerical instability.</li>
+                <li><strong>[1 mark]</strong> The matrix inversion in the least squares solution is still stable. Large numbers in the design matrix \(\Phi\) lead to very large values in \(\Phi^T\Phi\), making the matrix ill-conditioned and its inversion numerically unstable.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Example:</strong> If CO2 = 1.5×10¹², then CO2² = 2.25×10²⁴ and CO2³ = 3.375×10³⁶, which are computationally problematic. After rescaling to [0,1], these values become manageable.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Poorly Fitted Data with Order 1 Polynomial <span class="marks">[6 marks]</span></h3>
+            <p>Suppose a polynomial regression model with order of 1 is fitted to the data (without rescaling cumulative CO2 emissions). Identify a subset of data in figure 1 which will most likely be poorly fitted and explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Poorly Fitted Data:</strong> <strong>[1 mark]</strong></p>
+            <p>The densely populated data points in the very left-hand side of the figure, with x values in the range (0, 0.25×10¹²).</p>
+
+            <p><strong>Reasoning:</strong> <strong>[5 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> A polynomial regression model with order 1 is a straight line.</li>
+                <li><strong>[1 mark]</strong> The data in the figure could be fitted with two straight lines - the data shows two distinct linear trends.</li>
+                <li><strong>[1 mark]</strong> One line would go through the densely populated data in (0, 0.25×10¹²) on the x-axis, capturing the early period with negative temperature anomalies.</li>
+                <li><strong>[1 mark]</strong> Another line would go through data from the very left to the very right of x-axis, capturing the overall upward trend.</li>
+                <li><strong>[1 mark]</strong> The latter (global fit) is likely to produce less average squared loss overall, leaving the dense cluster of data in (0, 0.25×10¹²) on x-axis poorly fitted.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Intuition:</strong> A single straight line will try to minimize overall error, so it will compromise by fitting the full range of data reasonably well but will poorly capture the local structure in the left region where many data points cluster around negative anomalies.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) RBF vs Polynomial Basis Functions <span class="marks">[4 marks]</span></h3>
+            <p>Consider fitting the data in figure 1 with a regression using radial basis functions (RBF):</p>
+            <div class="formula-box">
+                <p>\[h_{n,k} = \exp\left(-\frac{(x_n - \mu_k)^2}{2s^2}\right), \quad n = 1, \ldots, N; \quad k = 1, \ldots, K\]</p>
+            </div>
+            <p>where \(x_n\) represents each cumulative CO2 emission. Outline one advantage and one disadvantage of using RBF over polynomials for the data in figure 1.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Advantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> The data is not equally distributed across x values - it is denser in small values and relatively sparser in large x values.</li>
+                <li><strong>[1 mark]</strong> Using location-specific basis functions, RBF can model this localized effect better than polynomial functions which model global effect across all x values, resulting in better fitting performance.</li>
+            </ul>
+
+            <p><strong>Disadvantage:</strong> <strong>[2 marks total]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> RBF has more hyper-parameters (centers \(\mu_k\), bandwidth \(s^2\), number of basis functions K).</li>
+                <li><strong>[1 mark]</strong> Poorly chosen hyper-parameters could lead to overfitting.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Insight:</strong> RBF basis functions are local - each basis function only "activates" for data points near its center \(\mu_k\). This allows adaptive fitting to regions with different data densities. Polynomials are global - each term affects the entire range equally.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Identifying Fitting Strategies from Figures <span class="marks">[6 marks]</span></h3>
+            <p>Suppose we use the RBF in (c) with \(\mu_k\) set to be the same as \(x_n\) (a commonly used approach in RBF), and \(s^2 = 1 \times 10^{24}\), to fit the CO2/Temperature Anomaly data. We used three fitting strategies: linear regression, ridge regression, and lasso, and obtained the following fitting models in Figures 2A, 2B, and 2C.</p>
+            <p>Identify which fitting strategy is used in each figure and explain why (note: each method is used only once).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Figure 2A: Ridge Regression</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Ridge regression.</li>
+                <li><strong>[1 mark]</strong> Explanation: The model ignores many densely populated data points on the left and points that could lead to bigger bends, suggesting weights controlling the corresponding basis functions are very small (but not zero). Ridge regression shrinks coefficients but doesn't set them to zero.</li>
+            </ul>
+
+            <p><strong>Figure 2B: Linear Regression</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Linear regression (unregularized).</li>
+                <li><strong>[1 mark]</strong> Explanation: The model fits the densely populated data points on the left and the rest of the data very well, especially fits the two data points on the very right perfectly, suggesting a large number of basis functions actively contribute to the fitted model with potentially large weights.</li>
+            </ul>
+
+            <p><strong>Figure 2C: Lasso</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li><strong>[1 mark]</strong> Identified as Lasso.</li>
+                <li><strong>[1 mark]</strong> Explanation: The fitted line is a straight line parallel to the x-axis (horizontal line), suggesting all weights of the basis functions are zero (or nearly zero). Out of the three fitting methods, only Lasso with very strong regularization can set all weights to exactly zero, resulting in a constant prediction.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Summary:</strong> Ridge shrinks coefficients smoothly, Linear regression uses many basis functions with large weights for good fit, and Lasso with strong regularization performs extreme feature selection, setting all basis weights to zero.
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Logistic Regression Likelihood Comparison <span class="marks">[6 marks]</span></h3>
+            <p>The likelihood of logistic regression is:</p>
+            <div class="formula-box">
+                <p>\[p(t_n|\mathbf{w}, \mathbf{x}_n) = g(\mathbf{w}^T\mathbf{x}_n)^{t_n}(1 - g(\mathbf{w}^T\mathbf{x}_n))^{1-t_n}\]</p>
+                <p>where \(g(a) = \frac{1}{1 + \exp(-a)}\)</p>
+            </div>
+            <p>Consider fitting this model to a dataset with 2 classes, 2 binary features and 2 examples per class:</p>
+            <ul>
+                <li>Class 0: Example 1 = [1,1], Example 2 = [1,0]</li>
+                <li>Class 1: Example 1 = [1,1], Example 2 = [0,1]</li>
+            </ul>
+            <p>Use the likelihood function to demonstrate which of the following two parameter hypotheses: [0.6, 0.1] and [0.6, 0.8] fits this dataset better.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Marking:</strong> Correct computation of each data likelihood [4 marks total]. Correct comparison of total likelihood [2 marks].</p>
+
+            <p><strong>Step 1: Calculate likelihood for each data point</strong></p>
+
+            <p>For each data point, we compute \(\mathbf{w}^T\mathbf{x}_n\) and then \(g(\mathbf{w}^T\mathbf{x}_n)\):</p>
+
+            <table>
+                <tr>
+                    <th>Data Point</th>
+                    <th>Class t</th>
+                    <th>Features x</th>
+                    <th>w₁ = [0.6, 0.1]<br>w^T x</th>
+                    <th>w₂ = [0.6, 0.8]<br>w^T x</th>
+                    <th>w₁: g(w^T x)</th>
+                    <th>w₂: g(w^T x)</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>[1, 1]</td>
+                    <td>0.7</td>
+                    <td>1.4</td>
+                    <td>0.6682</td>
+                    <td>0.8021</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0</td>
+                    <td>[1, 0]</td>
+                    <td>0.6</td>
+                    <td>0.6</td>
+                    <td>0.6457</td>
+                    <td>0.6457</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>[1, 1]</td>
+                    <td>0.7</td>
+                    <td>1.4</td>
+                    <td>0.6682</td>
+                    <td>0.8021</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>1</td>
+                    <td>[0, 1]</td>
+                    <td>0.1</td>
+                    <td>0.8</td>
+                    <td>0.5250</td>
+                    <td>0.6900</td>
+                </tr>
+            </table>
+
+            <p><strong>Step 2: Calculate log-likelihood for each data point</strong></p>
+
+            <table>
+                <tr>
+                    <th>Data Point</th>
+                    <th>Class t</th>
+                    <th>w₁ Log-Likelihood</th>
+                    <th>w₂ Log-Likelihood</th>
+                    <th>w₁ Likelihood</th>
+                    <th>w₂ Likelihood</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>-1.1032</td>
+                    <td>-1.6204</td>
+                    <td>0.3318</td>
+                    <td>0.1978</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0</td>
+                    <td>-1.0375</td>
+                    <td>-1.0375</td>
+                    <td>0.3543</td>
+                    <td>0.3543</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>-0.4032</td>
+                    <td>-0.2204</td>
+                    <td>0.6682</td>
+                    <td>0.8021</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>1</td>
+                    <td>-0.6444</td>
+                    <td>-0.3711</td>
+                    <td>0.5250</td>
+                    <td>0.6900</td>
+                </tr>
+            </table>
+
+            <p><strong>Step 3: Calculate joint likelihood</strong></p>
+
+            <div class="formula-box">
+                <p><strong>Parameter [0.6, 0.1]:</strong></p>
+                <p>Joint log-likelihood = -1.1032 - 1.0375 - 0.4032 - 0.6444 = <strong>-3.1883</strong></p>
+                <p>Joint likelihood = 0.3318 × 0.3543 × 0.6682 × 0.5250 = <strong>0.0412</strong></p>
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Parameter [0.6, 0.8]:</strong></p>
+                <p>Joint log-likelihood = -1.6204 - 1.0375 - 0.2204 - 0.3711 = <strong>-3.2494</strong></p>
+                <p>Joint likelihood = 0.1978 × 0.3543 × 0.8021 × 0.6900 = <strong>0.0388</strong></p>
+            </div>
+
+            <p><strong>Conclusion:</strong></p>
+            <p>Parameter candidate <strong>[0.6, 0.1]</strong> fits the data better because it has higher joint likelihood (0.0412 > 0.0388) and higher log-likelihood (-3.1883 > -3.2494).</p>
+
+            <div class="note">
+                <strong>Interpretation:</strong> The first parameter set [0.6, 0.1] gives less weight to the second feature, which better matches this contradictory dataset where [1,1] appears in both classes. The second parameter [0.6, 0.8] gives too much weight to the second feature, leading to overconfident (and wrong) predictions.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) SVM with Mislabeled Data - AUC Calculations <span class="marks">[6 marks total]</span></h3>
+            <p>Consider an SVM trained on a dataset where two data points are mislabeled by a non-expert annotator. The classifier outputs are in the table below:</p>
+
+            <table style="width: 80%;">
+                <tr>
+                    <th>Correct label</th>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Noisy label during training</th>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Score of SVM</th>
+                    <td>-9.6</td>
+                    <td>8.8</td>
+                    <td>0.7</td>
+                    <td>?</td>
+                    <td>2.2</td>
+                    <td>0.3</td>
+                </tr>
+            </table>
+
+            <p><strong>(i)</strong> What would be the AUC (computed with the correct labels) if the missing value is 0.6? (Detailed calculation required) <span class="marks">[2 marks]</span></p>
+
+            <p><strong>(ii)</strong> What would be the maximum achievable AUC (computed with the corrupted labels) and corresponding range of possible values for the missing value? Explain why. <span class="marks">[2 marks]</span></p>
+
+            <p><strong>(iii)</strong> If you could correct one of the two corrupted labels to get better AUC (computed with the labels with one remaining wrongly labeled data), assuming the missing value is 0.6 and rest of the scores do not change, which will you correct? Explain why. <span class="marks">[2 marks]</span></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) AUC with missing value = 0.6:</strong> <strong>[2 marks]</strong></p>
+
+            <p>First, let's organize the data with correct labels and scores:</p>
+            <table>
+                <tr>
+                    <th>Sample</th>
+                    <th>Correct Label</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0 (negative)</td>
+                    <td>-9.6</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0 (negative)</td>
+                    <td>8.8</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>0 (negative)</td>
+                    <td>0.7</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>1 (positive)</td>
+                    <td>0.6</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>1 (positive)</td>
+                    <td>2.2</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>1 (positive)</td>
+                    <td>0.3</td>
+                </tr>
+            </table>
+
+            <p>AUC is calculated as the probability that a randomly chosen positive sample has a higher score than a randomly chosen negative sample.</p>
+
+            <p>Positive samples: 4 (score 0.6), 5 (score 2.2), 6 (score 0.3)</p>
+            <p>Negative samples: 1 (score -9.6), 2 (score 8.8), 3 (score 0.7)</p>
+
+            <p>Count correctly ranked pairs (positive score > negative score):</p>
+            <ul>
+                <li>Positive 4 (0.6) vs Negative 1 (-9.6): 0.6 > -9.6 ✓</li>
+                <li>Positive 4 (0.6) vs Negative 2 (8.8): 0.6 < 8.8 ✗</li>
+                <li>Positive 4 (0.6) vs Negative 3 (0.7): 0.6 < 0.7 ✗</li>
+                <li>Positive 5 (2.2) vs Negative 1 (-9.6): 2.2 > -9.6 ✓</li>
+                <li>Positive 5 (2.2) vs Negative 2 (8.8): 2.2 < 8.8 ✗</li>
+                <li>Positive 5 (2.2) vs Negative 3 (0.7): 2.2 > 0.7 ✓</li>
+                <li>Positive 6 (0.3) vs Negative 1 (-9.6): 0.3 > -9.6 ✓</li>
+                <li>Positive 6 (0.3) vs Negative 2 (8.8): 0.3 < 8.8 ✗</li>
+                <li>Positive 6 (0.3) vs Negative 3 (0.7): 0.3 < 0.7 ✗</li>
+            </ul>
+
+            <p>Correctly ranked pairs: 4 out of 9 total pairs</p>
+
+            <div class="formula-box">
+                <p>\[\text{AUC} = \frac{\text{Correctly ranked pairs}}{\text{Total pairs}} = \frac{1 + 2 + 1}{3 \times 3} = \frac{4}{9} \approx 0.44\]</p>
+            </div>
+
+            <p><strong>Answer: AUC = 4/9</strong> <strong>[1 mark for answer, 1 mark for calculation]</strong></p>
+
+            <p><strong>(ii) Maximum AUC with corrupted labels:</strong> <strong>[2 marks]</strong></p>
+
+            <p>With corrupted labels during training:</p>
+            <ul>
+                <li>Positive (corrupted): samples 2, 4, 6</li>
+                <li>Negative (corrupted): samples 1, 3, 5</li>
+            </ul>
+
+            <p>For maximum AUC, all positive samples must score higher than all negative samples:</p>
+            <ul>
+                <li>All positives {2 (8.8), 4 (?), 6 (0.3)} must score > all negatives {1 (-9.6), 3 (0.7), 5 (2.2)}</li>
+                <li>The highest negative score is 2.2</li>
+                <li>For perfect separation: missing value must be > 2.2</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>Maximum AUC = 7/9</strong></p>
+                <p><strong>Range for missing value: > 2.2</strong></p>
+            </div>
+
+            <p>This ensures that positive data (based on corrupted labels) have higher scores than any negative data (based on corrupted labels).</p>
+
+            <p><strong>(iii) Which corrupted label to correct (missing value = 0.6):</strong> <strong>[2 marks]</strong></p>
+
+            <p>The two corrupted labels are:</p>
+            <ul>
+                <li>Sample 2: Correct label 0, noisy label 1, score 8.8</li>
+                <li>Sample 5: Correct label 1, noisy label 0, score 2.2</li>
+            </ul>
+
+            <p><strong>Answer: Correct the label of sample 5 (score 2.2)</strong></p>
+
+            <p><strong>Reasoning:</strong> The other corrupted label (sample 2 with score 8.8) has an extreme score that strongly contradicts the correct label. If we leave sample 2 with incorrect label 1 and very high score 8.8, it will dominate the ranking and result in much lower AUC. Sample 5 with score 2.2 is more moderate and correcting its label will have a more positive impact on AUC.</p>
+
+            <div class="note">
+                <strong>Insight:</strong> Correcting labels of samples with extreme scores has more impact on AUC. Sample 2's score of 8.8 is an outlier - keeping it mislabeled would severely hurt performance.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) SVM Configuration for Noisy Labels <span class="marks">[4 marks]</span></h3>
+            <p>Noisy labels may produce outliers in the training set. How will you configure the SVM in terms of margin and kernel to deal with outliers? Explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Margin Configuration:</strong> <strong>[2 marks]</strong></p>
+            <p>Use <strong>soft margin SVM</strong> to allow outliers to go across the decision boundary without heavily influencing the boundary position. The soft margin allows some misclassification through the slack variables, making the model robust to noisy labels.</p>
+
+            <div class="formula-box">
+                <p>Soft margin objective: \(\min \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_{i}\xi_i\)</p>
+                <p>Use smaller C value to tolerate more violations (outliers)</p>
+            </div>
+
+            <p><strong>Kernel Configuration:</strong> <strong>[2 marks]</strong></p>
+            <p>Choose a <strong>less powerful kernel</strong> to avoid overfitting to the noisy labels. For example:</p>
+            <ul>
+                <li>Use linear kernel instead of RBF if data is roughly linearly separable</li>
+                <li>If using RBF kernel, use larger bandwidth parameter \(\sigma\) to create smoother decision boundaries</li>
+            </ul>
+
+            <div class="note">
+                <strong>Summary:</strong> Soft margin (small C) + simple kernel = robust to outliers from noisy labels. This prevents the model from contorting the decision boundary to fit mislabeled points perfectly.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) K-NN Scoring for AUC Calculation <span class="marks">[4 marks]</span></h3>
+            <p>Calculating AUC requires a classifier to give a score for each data point. A K-nearest neighbor classifier does not normally provide a score, but directly predicts the class for a data point. Outline two approaches to produce scores for computing AUC for a K-nearest neighbor classifier.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Approach 1: Vote Proportions</strong> <strong>[2 marks]</strong></p>
+            <p>Convert vote counts to vote proportions. For a test point:</p>
+            <ul>
+                <li>Find K nearest neighbors</li>
+                <li>Count how many belong to the positive class</li>
+                <li>Score = (number of positive neighbors) / K</li>
+            </ul>
+            <p>Example: If K=5 and 3 neighbors are positive, score = 3/5 = 0.6</p>
+
+            <p><strong>Approach 2: Majority Margin</strong> <strong>[2 marks]</strong></p>
+            <p>Use the margin of the majority vote as the confidence score:</p>
+            <ul>
+                <li>Find K nearest neighbors</li>
+                <li>Count votes for each class: n₊ for positive, n₋ for negative</li>
+                <li>Score = (n₊ - n₋) / K (or simply n₊ - n₋)</li>
+            </ul>
+            <p>Example: If K=5, with 4 positive and 1 negative, score = (4-1)/5 = 0.6</p>
+
+            <div class="note">
+                <strong>Alternative Approaches:</strong> Distance-weighted voting (inverse distance weighting), using the distance to the K-th nearest neighbor, or averaging distances to positive vs negative neighbors.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>Context: Clustering Ellipsoid-Shaped Data</h3>
+            <p>Consider using K-means to perform clustering on data arranged in three ellipsoid shapes (Figure 3A), where we expect to form three clusters as shown in Figure 3B.</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) K-means with Euclidean Distance on Ellipsoids <span class="marks">[2 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[1 mark]</strong> K-means cannot split the data into three clusters along the respective ellipsoids.</p>
+
+            <p><strong>Explanation:</strong> <strong>[1 mark]</strong> Due to the Euclidean distance, points that are close together but in neighboring ellipsoids will be clustered together. K-means creates circular (spherical in higher dimensions) cluster boundaries, so it cannot capture the elongated ellipsoid shapes. Points at the ends of different ellipsoids that are spatially close will be grouped together, rather than respecting the ellipsoid structure.</p>
+
+            <div class="note">
+                <strong>Key Issue:</strong> K-means assumes clusters are isotropic (same variance in all directions), but ellipsoids are anisotropic (different variances along different axes).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means for Ellipsoids <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use Kernel K-means. Would kernel K-means help in this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> <strong>[1 mark]</strong> Yes, kernel K-means could help separate these ellipsoid clusters.</p>
+
+            <p><strong>Explanation:</strong> <strong>[2 marks]</strong> A kernel projects the data onto a different space where data can be more easily separated. The space could have a higher or lower number of dimensions compared to the original data. By choosing an appropriate kernel (e.g., polynomial or RBF), the ellipsoids that overlap in the original 2D space might become linearly separable in the kernel space, allowing K-means to successfully cluster them.</p>
+
+            <div class="note">
+                <strong>Example:</strong> An RBF kernel can map the data to an infinite-dimensional space where the ellipsoids might be separated with spherical boundaries in that space.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Mixture Models for Ellipsoids <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use mixture models. Would mixture models help to better classify the dataset in Figure 3A than K-means and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> Yes, mixture models should be able to better classify the data than K-means.</p>
+
+            <p><strong>Explanation:</strong> Mixture models (specifically Gaussian Mixture Models) are able to model clusters as a mixture of Gaussian distributions with anisotropic Gaussian distributions - where diagonal elements of the covariance matrix are not equal. This means each cluster can have:</p>
+            <ul>
+                <li>Different variances along different dimensions (capturing elongated shapes)</li>
+                <li>Rotated orientations (through full covariance matrices)</li>
+                <li>Different cluster sizes and densities</li>
+            </ul>
+
+            <p>This naturally matches the ellipsoid structure where clusters are elongated in certain directions.</p>
+
+            <div class="formula-box">
+                <p>GMM allows: \(\Sigma_k = \begin{bmatrix} \sigma^2_{k,1} & \rho \\ \rho & \sigma^2_{k,2} \end{bmatrix}\)</p>
+                <p>where \(\sigma^2_{k,1} \neq \sigma^2_{k,2}\) (anisotropic)</p>
+            </div>
+
+            <div class="note">
+                <strong>Key Advantage:</strong> GMM explicitly models the covariance structure of each cluster, allowing it to fit ellipsoid shapes naturally, whereas K-means only uses distances to centroids.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Context: Clustering Data with Different Variances</h3>
+            <p>Now consider clustering data in Figure 4A into three clusters as shown in Figure 4B, where the middle cluster has considerably different variance than the outer two clusters.</p>
+        </div>
+
+        <div class="question">
+            <h3>(d) K-means on Clusters with Different Variances <span class="marks">[2 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> K-means cannot split the data well into three clusters.</p>
+
+            <p><strong>Explanation:</strong> The variance in the middle cluster is considerably different than the variance in the other clusters. K-means only considers distance to centroids and assumes all clusters have similar variance (isotropic, spherical clusters). Therefore, considering only distance won't be sufficient - K-means will struggle to correctly assign points in the diffuse middle cluster, potentially splitting it or merging parts of it with the dense outer clusters.</p>
+
+            <div class="note">
+                <strong>Problem:</strong> Points in the sparse middle cluster might be closer to centroids of the dense outer clusters than to their own cluster's centroid, leading to incorrect assignments.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) Kernel K-means for Different Variances <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use Kernel K-means. Would kernel K-means help in this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> Kernel K-means would not significantly help in this dataset.</p>
+
+            <p><strong>Explanation:</strong> Kernel K-means does not explicitly model variance and since it is still based on distance (just in a transformed space), it won't be robust in classifying data with anisotropic variance. The fundamental issue is that different clusters have different spreads/variances, and kernel K-means still uses the same distance-to-centroid logic, just in a different space. This doesn't address the variance mismatch problem.</p>
+
+            <div class="note">
+                <strong>Limitation:</strong> Kernels help with non-linear separability, not with handling different cluster densities or variances.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) Mixture Models for Different Variances <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use mixture models. Explain whether mixture models could help to better classify this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Answer:</strong> Yes, mixture models with anisotropic variance would work well to model this data.</p>
+
+            <p><strong>Explanation:</strong> Variance in the data is a parameter for each cluster in Gaussian Mixture Models. Each cluster k has its own covariance matrix \(\Sigma_k\), which can model:</p>
+            <ul>
+                <li>Different variances for different clusters</li>
+                <li>The middle cluster can have large variance (\(\sigma^2_{middle}\) large)</li>
+                <li>The outer clusters can have small variance (\(\sigma^2_{outer}\) small)</li>
+            </ul>
+
+            <p>GMM uses probabilistic assignment based on the likelihood of each point belonging to each Gaussian component, which naturally accounts for the different spreads.</p>
+
+            <div class="formula-box">
+                <p>For cluster k: \(p(x|\theta_k) = \mathcal{N}(x|\mu_k, \Sigma_k)\)</p>
+                <p>Each cluster can have different \(\Sigma_k\)</p>
+            </div>
+
+            <div class="note">
+                <strong>Success:</strong> GMM will assign high probability to the middle cluster for points within its large variance region, and high probability to outer clusters for points in their small variance regions.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(g) Feature Selection Methods <span class="marks">[4 marks]</span></h3>
+            <p>Explain why there is a need for feature selection and list two methods and their main characteristics.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Why Feature Selection is Needed:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Due to the <strong>curse of dimensionality</strong>, which states that the number of required samples increases exponentially with the number of features, it is desirable to reduce dimensionality.</li>
+                <li>Feature selection is also important for visualizing data and identifying anomalies.</li>
+                <li>Reduces computational cost and helps avoid overfitting.</li>
+            </ul>
+
+            <div class="formula-box">
+                <p>In high dimensions, data becomes sparse: volume of hypercube = \(L^d\) where d is dimensions</p>
+                <p>Most of the volume is in the corners, far from the center</p>
+            </div>
+
+            <p><strong>Method 1: Feature Subset Selection</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Characteristics:</strong> Use a subset of the original features. Choose those features that maximize the difference between the classes (e.g., using filter methods like correlation, chi-square test, or wrapper methods like forward/backward selection).</p>
+
+            <p><strong>Method 2: Feature Combination/Transformation</strong> <strong>[1 mark]</strong></p>
+            <p><strong>Characteristics:</strong> Combine the original features and find new dimensions. For example, use Principal Component Analysis (PCA) to find dimensions that maximize the variance. This creates new features that are linear combinations of the original features.</p>
+
+            <div class="formula-box">
+                <p><strong>PCA:</strong> Find principal components: \(\mathbf{z} = \mathbf{W}^T\mathbf{x}\)</p>
+                <p>where \(\mathbf{W}\) contains eigenvectors of the covariance matrix</p>
+            </div>
+
+            <div class="note">
+                <strong>Comparison:</strong> Subset selection keeps interpretability (original features), while transformation methods like PCA can achieve better dimensionality reduction but lose direct interpretability.
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | This was a 90-minute examination</p>
+            <p>Remember to show detailed calculations and explanations in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

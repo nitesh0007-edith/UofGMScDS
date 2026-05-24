@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8: Measuring Performance | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 8</span></div>
+            <h1>Measuring <span class="gradient-text">Performance</span></h1>
+            <p class="chapter-description">Learn how to properly evaluate models, understand the bias-variance tradeoff, and avoid common pitfalls in model assessment.</p>
+            <div class="chapter-nav">
+                <a href="chapter7.html" class="nav-btn">← Previous</a>
+                <a href="chapter9.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="train-test-split" class="content-section">
+                <h2>Train-Test Split</h2>
+                <p>Never evaluate on training data! Split your dataset:</p>
+                
+                <ul>
+                    <li><strong>Training set (60-80%):</strong> Learn parameters</li>
+                    <li><strong>Validation set (10-20%):</strong> Tune hyperparameters, early stopping</li>
+                    <li><strong>Test set (10-20%):</strong> Final evaluation only</li>
+                </ul>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Data Leakage</div>
+                    <p>Never let test data influence training decisions. This includes: normalization statistics, feature selection, hyperparameter tuning. Always compute these on training data only.</p>
+                </div>
+            </section>
+            
+            <section id="bias-variance" class="content-section">
+                <h2>Bias-Variance Tradeoff</h2>
+                <p>Model error decomposes into three components:</p>
+                
+                <div class="math-block"><div class="equation">Error = Bias² + Variance + Noise</div></div>
+                
+                <ul>
+                    <li><strong>Bias:</strong> Error from oversimplified assumptions (underfitting)</li>
+                    <li><strong>Variance:</strong> Error from sensitivity to training data (overfitting)</li>
+                    <li><strong>Noise:</strong> Irreducible error in the data</li>
+                </ul>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 The Tradeoff</div>
+                    <p>
+                        <strong>Simple model:</strong> High bias, low variance (underfits)<br>
+                        <strong>Complex model:</strong> Low bias, high variance (overfits)<br>
+                        <strong>Just right:</strong> Balance that minimizes total error
+                    </p>
+                </div>
+            </section>
+            
+            <section id="cross-validation" class="content-section">
+                <h2>Cross-Validation</h2>
+                <p>Get more reliable estimates with limited data using k-fold CV:</p>
+                
+                <ol>
+                    <li>Split data into k folds</li>
+                    <li>Train on k-1 folds, validate on remaining fold</li>
+                    <li>Repeat k times, each fold serving as validation once</li>
+                    <li>Average the k validation scores</li>
+                </ol>
+                
+                <p>Common choice: k = 5 or k = 10</p>
+            </section>
+            
+            <section id="classification-metrics" class="content-section">
+                <h2>Classification Metrics</h2>
+                
+                <h3>Confusion Matrix</h3>
+                <p>Breaks down predictions into true positives (TP), false positives (FP), true negatives (TN), false negatives (FN).</p>
+                
+                <h3>Key Metrics</h3>
+                <ul>
+                    <li><strong>Accuracy:</strong> (TP + TN) / Total — can be misleading for imbalanced data</li>
+                    <li><strong>Precision:</strong> TP / (TP + FP) — "Of predicted positives, how many are correct?"</li>
+                    <li><strong>Recall:</strong> TP / (TP + FN) — "Of actual positives, how many did we find?"</li>
+                    <li><strong>F1 Score:</strong> 2 × (Precision × Recall) / (Precision + Recall)</li>
+                    <li><strong>AUC-ROC:</strong> Area under receiver operating characteristic curve</li>
+                </ul>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 When to Use What</div>
+                    <p>
+                        <strong>Balanced data:</strong> Accuracy is fine<br>
+                        <strong>Imbalanced data:</strong> Use F1, precision/recall, or AUC<br>
+                        <strong>Cost-sensitive:</strong> Tune threshold based on precision/recall tradeoff
+                    </p>
+                </div>
+            </section>
+            
+            <section id="regression-metrics" class="content-section">
+                <h2>Regression Metrics</h2>
+                <ul>
+                    <li><strong>MSE:</strong> Mean squared error (sensitive to outliers)</li>
+                    <li><strong>RMSE:</strong> √MSE (same units as target)</li>
+                    <li><strong>MAE:</strong> Mean absolute error (robust to outliers)</li>
+                    <li><strong>R²:</strong> Coefficient of determination (explained variance)</li>
+                </ul>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Always split data into train/validation/test sets</li>
+                        <li>Bias-variance tradeoff: simple models underfit, complex overfit</li>
+                        <li>Cross-validation gives more reliable estimates</li>
+                        <li>Choose metrics appropriate for your problem</li>
+                        <li>Accuracy can be misleading for imbalanced classes</li>
+                        <li>Never peek at test data during development</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter7.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Backpropagation</span></a>
+                <a href="chapter9.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Regularization →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#train-test-split">Train-Test Split</a></li>
+                    <li><a href="#bias-variance">Bias-Variance</a></li>
+                    <li><a href="#cross-validation">Cross-Validation</a></li>
+                    <li><a href="#classification-metrics">Classification Metrics</a></li>
+                    <li><a href="#regression-metrics">Regression Metrics</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

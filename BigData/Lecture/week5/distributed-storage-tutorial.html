@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distributed Storage Systems - Interactive Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--c:#111827;--ch:#1a2332;--cd:#0d1117;--a:#6366f1;--a2:#8b5cf6;--a3:#06b6d4;--a4:#10b981;--a5:#f59e0b;--a6:#ef4444;--t:#e2e8f0;--tm:#94a3b8;--td:#64748b;--b:#1e293b}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t);line-height:1.75;overflow-x:hidden}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--a);border-radius:4px}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;padding:2rem}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 50% 40%,rgba(99,102,241,.12),transparent 70%);z-index:0}
+.hc{position:relative;z-index:1;max-width:900px}
+.badge{display:inline-flex;padding:6px 18px;border-radius:100px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:var(--a);font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem}
+.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;background:linear-gradient(135deg,#fff,#c7d2fe,var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.15rem;color:var(--tm);max-width:650px;margin:0 auto 2.5rem}
+.hn{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.hn a{padding:10px 22px;border-radius:12px;background:var(--c);border:1px solid var(--b);color:var(--t);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .25s}
+.hn a:hover{border-color:var(--a);transform:translateY(-2px)}
+.gbg{position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(99,102,241,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.03) 1px,transparent 1px);background-size:60px 60px}
+.ct{max-width:1100px;margin:0 auto;padding:0 2rem}
+.sec{padding:6rem 0 4rem}
+.sl{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--a);margin-bottom:1rem}
+.sl .d{width:8px;height:8px;border-radius:50%;background:var(--a);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sec h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;margin-bottom:.75rem}
+.sec .sub{font-size:1.05rem;color:var(--tm);max-width:700px;margin-bottom:3rem}
+.card{background:var(--c);border:1px solid var(--b);border-radius:16px;padding:2rem;margin-bottom:1.5rem;transition:all .3s}
+.card:hover{border-color:rgba(99,102,241,.25);box-shadow:0 0 40px rgba(99,102,241,.15);transform:translateY(-2px)}
+.card h3{font-size:1.3rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:10px}
+.card p,.card li{color:var(--tm);font-size:.95rem;line-height:1.8}
+.card ul{list-style:none;padding:0}.card ul li{padding:6px 0 6px 24px;position:relative}.card ul li::before{content:'>';position:absolute;left:6px;color:var(--a);font-weight:700}
+.ib{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.ibi{background:rgba(99,102,241,.15);color:#818cf8}.ibc{background:rgba(6,182,212,.15);color:#22d3ee}.ibg{background:rgba(16,185,129,.15);color:#34d399}.iba{background:rgba(245,158,11,.15);color:#fbbf24}.ibr{background:rgba(239,68,68,.15);color:#f87171}.ibv{background:rgba(139,92,246,.15);color:#a78bfa}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem}
+.dw{background:var(--cd);border:1px solid var(--b);border-radius:16px;padding:2rem;margin:2rem 0;overflow-x:auto;text-align:center}
+.dw svg{max-width:100%;height:auto}
+.dc{text-align:center;font-size:.82rem;color:var(--td);margin-top:1rem;font-style:italic}
+.co{border-radius:14px;padding:1.5rem 1.75rem;margin:1.5rem 0;display:flex;gap:14px;align-items:flex-start}
+.ci{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.coi{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2)}
+.cow{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
+.cod{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.co p{font-size:.92rem;color:var(--tm);line-height:1.7}.co strong{color:var(--t)}
+.ct2{width:100%;border-collapse:separate;border-spacing:0;margin:1.5rem 0;border-radius:12px;overflow:hidden;border:1px solid var(--b)}
+.ct2 th,.ct2 td{padding:14px 18px;text-align:left;font-size:.88rem;border-bottom:1px solid var(--b)}
+.ct2 th{background:rgba(99,102,241,.08);color:var(--a);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+.ct2 td{color:var(--tm);background:var(--c)}.ct2 tr:last-child td{border-bottom:none}.ct2 tr:hover td{background:var(--ch)}
+.tg{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:600}
+.tgg{background:rgba(16,185,129,.15);color:#34d399}.tgr{background:rgba(239,68,68,.15);color:#f87171}.tga{background:rgba(245,158,11,.15);color:#fbbf24}.tgb{background:rgba(59,130,246,.15);color:#60a5fa}
+.tl{position:relative;padding-left:40px}.tl::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--a),var(--a3),var(--a4))}
+.ti{position:relative;margin-bottom:2rem}.ti::before{content:'';position:absolute;left:-32px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--a);border:3px solid var(--bg)}
+.ti h4{font-size:1rem;font-weight:700;margin-bottom:4px}.ti p{font-size:.9rem;color:var(--tm)}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:var(--cd);border-radius:12px;padding:4px;border:1px solid var(--b);flex-wrap:wrap}
+.tb{padding:10px 20px;border:none;background:transparent;color:var(--tm);font-size:.85rem;font-weight:600;border-radius:8px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.tb.active{background:var(--a);color:#fff}.tb:hover:not(.active){background:rgba(99,102,241,.1);color:var(--t)}
+.tc{display:none}.tc.active{display:block}
+.fs{display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--c);border:1px solid var(--b);border-radius:12px;margin-bottom:12px;transition:all .3s}
+.fs:hover{border-color:var(--a);transform:translateX(6px)}
+.fn{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff;flex-shrink:0}
+.fs p{font-size:.9rem;color:var(--tm)}.fs strong{color:var(--t)}
+.xd{background:var(--cd);border:1px solid var(--b);border-radius:14px;padding:2rem;margin:1.5rem 0}
+.xr{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.xr label{font-weight:600;font-size:.85rem;min-width:80px;color:var(--t)}
+.xbs{display:flex;gap:4px}
+.xb{width:38px;height:38px;border:2px solid var(--b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;user-select:none;background:var(--c);color:var(--tm)}
+.xb.on{background:rgba(99,102,241,.2);border-color:var(--a);color:#fff}
+.xb.re{cursor:default;border-color:var(--a4);background:rgba(16,185,129,.1)}.xb.re.on{background:rgba(16,185,129,.25);color:#34d399}
+.xb.lo{background:rgba(239,68,68,.15);border-color:var(--a6);color:var(--a6);cursor:default}
+.xbt{padding:8px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:8px}
+.xbt:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(99,102,241,.3)}
+.ld{background:var(--cd);border:1px solid var(--b);border-radius:14px;padding:2rem;margin:1.5rem 0;text-align:center}
+.lbw{background:var(--c);border-radius:8px;height:28px;overflow:hidden;margin:1rem 0;border:1px solid var(--b)}
+.lb{height:100%;border-radius:8px;transition:width .5s ease,background .5s ease}
+.ls{font-size:.9rem;font-weight:600;margin-top:8px}
+.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--b),transparent);margin:4rem 0}
+.ft{text-align:center;padding:4rem 2rem;border-top:1px solid var(--b);color:var(--td);font-size:.85rem}
+.pb{position:fixed;top:0;left:0;right:0;height:3px;z-index:1000;background:rgba(0,0,0,.3)}
+.pbi{height:100%;background:linear-gradient(90deg,var(--a),var(--a3));width:0%;transition:width .1s}
+.tf{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:10px}
+.td2{width:10px;height:10px;border-radius:50%;background:var(--b);cursor:pointer;transition:all .3s;position:relative}
+.td2.active{background:var(--a);box-shadow:0 0 12px rgba(99,102,241,.4)}
+.td2:hover::before{content:attr(data-label);position:absolute;right:20px;top:50%;transform:translateY(-50%);background:var(--c);border:1px solid var(--b);padding:4px 12px;border-radius:6px;font-size:.72rem;font-weight:600;white-space:nowrap;color:var(--t)}
+.an{background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(6,182,212,.06));border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:1.5rem 1.75rem;margin:1.5rem 0}
+.ant{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--a2);margin-bottom:8px}.an p{color:var(--tm);font-size:.92rem}
+.qc{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:2rem;margin:1.5rem 0}.qc h4{font-size:1rem;margin-bottom:1rem}
+.qo{display:block;width:100%;text-align:left;padding:12px 16px;border:1px solid var(--b);border-radius:10px;background:var(--cd);color:var(--tm);font-size:.88rem;cursor:pointer;margin-bottom:8px;font-family:'Inter',sans-serif;transition:all .2s}
+.qo:hover{border-color:var(--a)}.qo.ok{border-color:var(--a4);background:rgba(16,185,129,.12);color:#34d399}.qo.no{border-color:var(--a6);background:rgba(239,68,68,.08);color:#f87171}
+.qf{margin-top:10px;font-size:.85rem;font-weight:600;min-height:22px}
+@media(max-width:900px){.tf{display:none}}
+@media(max-width:640px){.ct{padding:0 1rem}.card{padding:1.25rem}.dw{padding:1rem}.hn{flex-direction:column;align-items:center}}
+</style></head><body>
+<div class="gbg"></div><div class="pb"><div class="pbi" id="pb"></div></div>
+<nav class="tf"><div class="td2" data-label="RAID" onclick="go('s1')"></div><div class="td2" data-label="DFS" onclick="go('s2')"></div><div class="td2" data-label="NFS" onclick="go('s3')"></div><div class="td2" data-label="HDFS" onclick="go('s4')"></div><div class="td2" data-label="HDFS R/W" onclick="go('s5')"></div><div class="td2" data-label="Recovery" onclick="go('s6')"></div></nav>
+
+<header class="hero"><div class="hc">
+<div class="badge">Complete Interactive Guide</div>
+<h1>Distributed Storage Systems</h1>
+<p>From RAID fundamentals to HDFS pipelines. Master how modern systems store, replicate, and recover data. Beginner-friendly with visual diagrams and interactive demos.</p>
+<div class="hn"><a href="#s1">RAID</a><a href="#s2">Distributed FS</a><a href="#s3">NFS</a><a href="#s4">HDFS Basics</a><a href="#s5">HDFS R/W</a><a href="#s6">Recovery</a></div>
+</div></header>
+
+<section class="sec ct" id="s1">
+<div class="sl"><span class="d"></span> Module 1</div>
+<h2>RAID &mdash; Redundant Array of Independent Disks</h2>
+<p class="sub">RAID combines multiple hard drives into one logical unit to improve performance, reliability, or both.</p>
+<div class="an"><div class="ant">Real-World Analogy</div><p><strong>RAID 0</strong> splits homework across notebooks (fast, lose one = toast). <strong>RAID 1</strong> writes the same in two notebooks (safe, double paper). <strong>RAID 5</strong> splits AND writes "cheat notes" (parity) to reconstruct any lost one.</p></div>
+
+<div class="dw">
+<svg viewBox="0 0 900 310" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<g transform="translate(20,10)"><rect width="250" height="290" rx="14" fill="#111827" stroke="#1e293b" stroke-width="1.5"/><text x="125" y="28" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="700">RAID 0 &mdash; Striping</text><text x="125" y="46" text-anchor="middle" fill="#64748b" font-size="10">No redundancy &middot; Max speed</text>
+<rect x="30" y="60" width="80" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="70" y="80" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600">Disk 1</text>
+<rect x="40" y="92" width="60" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="70" y="106" text-anchor="middle" fill="#818cf8" font-size="10">A1</text>
+<rect x="40" y="118" width="60" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="70" y="132" text-anchor="middle" fill="#22d3ee" font-size="10">A3</text>
+<rect x="40" y="144" width="60" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="70" y="158" text-anchor="middle" fill="#818cf8" font-size="10">A5</text>
+<rect x="40" y="170" width="60" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="70" y="184" text-anchor="middle" fill="#22d3ee" font-size="10">A7</text>
+<rect x="140" y="60" width="80" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="180" y="80" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600">Disk 2</text>
+<rect x="150" y="92" width="60" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="180" y="106" text-anchor="middle" fill="#22d3ee" font-size="10">A2</text>
+<rect x="150" y="118" width="60" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="180" y="132" text-anchor="middle" fill="#818cf8" font-size="10">A4</text>
+<rect x="150" y="144" width="60" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="180" y="158" text-anchor="middle" fill="#22d3ee" font-size="10">A6</text>
+<rect x="150" y="170" width="60" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="180" y="184" text-anchor="middle" fill="#818cf8" font-size="10">A8</text>
+<text x="125" y="270" text-anchor="middle" fill="#f87171" font-size="10" font-weight="600">1 disk fails = ALL data lost</text></g>
+<g transform="translate(320,10)"><rect width="250" height="290" rx="14" fill="#111827" stroke="#1e293b" stroke-width="1.5"/><text x="125" y="28" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">RAID 1 &mdash; Mirroring</text><text x="125" y="46" text-anchor="middle" fill="#64748b" font-size="10">Full redundancy &middot; 50% capacity</text>
+<rect x="30" y="60" width="80" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="70" y="80" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600">Disk 1</text>
+<rect x="40" y="92" width="60" height="20" rx="4" fill="rgba(16,185,129,.2)" stroke="#10b981"/><text x="70" y="106" text-anchor="middle" fill="#34d399" font-size="10">A1</text>
+<rect x="40" y="118" width="60" height="20" rx="4" fill="rgba(16,185,129,.2)" stroke="#10b981"/><text x="70" y="132" text-anchor="middle" fill="#34d399" font-size="10">A2</text>
+<rect x="40" y="144" width="60" height="20" rx="4" fill="rgba(16,185,129,.2)" stroke="#10b981"/><text x="70" y="158" text-anchor="middle" fill="#34d399" font-size="10">A3</text>
+<rect x="40" y="170" width="60" height="20" rx="4" fill="rgba(16,185,129,.2)" stroke="#10b981"/><text x="70" y="184" text-anchor="middle" fill="#34d399" font-size="10">A4</text>
+<rect x="140" y="60" width="80" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="180" y="80" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600">Disk 2</text>
+<rect x="150" y="92" width="60" height="20" rx="4" fill="rgba(16,185,129,.15)" stroke="#10b981" stroke-dasharray="4 2"/><text x="180" y="106" text-anchor="middle" fill="#34d399" font-size="10">A1</text>
+<rect x="150" y="118" width="60" height="20" rx="4" fill="rgba(16,185,129,.15)" stroke="#10b981" stroke-dasharray="4 2"/><text x="180" y="132" text-anchor="middle" fill="#34d399" font-size="10">A2</text>
+<rect x="150" y="144" width="60" height="20" rx="4" fill="rgba(16,185,129,.15)" stroke="#10b981" stroke-dasharray="4 2"/><text x="180" y="158" text-anchor="middle" fill="#34d399" font-size="10">A3</text>
+<rect x="150" y="170" width="60" height="20" rx="4" fill="rgba(16,185,129,.15)" stroke="#10b981" stroke-dasharray="4 2"/><text x="180" y="184" text-anchor="middle" fill="#34d399" font-size="10">A4</text>
+<text x="125" y="270" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">1 disk fails = data safe</text></g>
+<g transform="translate(620,10)"><rect width="260" height="290" rx="14" fill="#111827" stroke="#1e293b" stroke-width="1.5"/><text x="130" y="28" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">RAID 5 &mdash; Stripe + Parity</text><text x="130" y="46" text-anchor="middle" fill="#64748b" font-size="10">Balanced &middot; Survives 1 failure</text>
+<rect x="15" y="60" width="68" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="49" y="80" text-anchor="middle" fill="#64748b" font-size="9" font-weight="600">Disk 1</text>
+<rect x="22" y="92" width="54" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="49" y="106" text-anchor="middle" fill="#818cf8" font-size="9">A1</text>
+<rect x="22" y="118" width="54" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="49" y="132" text-anchor="middle" fill="#22d3ee" font-size="9">B2</text>
+<rect x="22" y="144" width="54" height="20" rx="4" fill="rgba(245,158,11,.2)" stroke="#f59e0b"/><text x="49" y="158" text-anchor="middle" fill="#fbbf24" font-size="9">Cp</text>
+<rect x="97" y="60" width="68" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="131" y="80" text-anchor="middle" fill="#64748b" font-size="9" font-weight="600">Disk 2</text>
+<rect x="104" y="92" width="54" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="131" y="106" text-anchor="middle" fill="#818cf8" font-size="9">A2</text>
+<rect x="104" y="118" width="54" height="20" rx="4" fill="rgba(245,158,11,.2)" stroke="#f59e0b"/><text x="131" y="132" text-anchor="middle" fill="#fbbf24" font-size="9">Bp</text>
+<rect x="104" y="144" width="54" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="131" y="158" text-anchor="middle" fill="#22d3ee" font-size="9">C2</text>
+<rect x="178" y="60" width="68" height="180" rx="8" fill="#0d1117" stroke="#334155"/><text x="212" y="80" text-anchor="middle" fill="#64748b" font-size="9" font-weight="600">Disk 3</text>
+<rect x="185" y="92" width="54" height="20" rx="4" fill="rgba(245,158,11,.2)" stroke="#f59e0b"/><text x="212" y="106" text-anchor="middle" fill="#fbbf24" font-size="9">Ap</text>
+<rect x="185" y="118" width="54" height="20" rx="4" fill="rgba(6,182,212,.2)" stroke="#06b6d4"/><text x="212" y="132" text-anchor="middle" fill="#22d3ee" font-size="9">B1</text>
+<rect x="185" y="144" width="54" height="20" rx="4" fill="rgba(99,102,241,.2)" stroke="#6366f1"/><text x="212" y="158" text-anchor="middle" fill="#818cf8" font-size="9">C1</text>
+<text x="130" y="270" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="600">Parity rotates across disks</text></g>
+</svg>
+<p class="dc">Figure 1 &mdash; RAID 0 vs RAID 1 vs RAID 5. Yellow blocks = parity data.</p></div>
+
+<table class="ct2"><thead><tr><th>Level</th><th>Technique</th><th>Min Disks</th><th>Tolerance</th><th>Capacity</th><th>Best For</th></tr></thead><tbody>
+<tr><td><strong>RAID 0</strong></td><td>Striping</td><td>2</td><td><span class="tg tgr">None</span></td><td>100%</td><td>Gaming, scratch</td></tr>
+<tr><td><strong>RAID 1</strong></td><td>Mirroring</td><td>2</td><td><span class="tg tgg">1 disk</span></td><td>50%</td><td>OS, critical data</td></tr>
+<tr><td><strong>RAID 5</strong></td><td>Stripe+Parity</td><td>3</td><td><span class="tg tgg">1 disk</span></td><td>(n-1)/n</td><td>File servers</td></tr>
+<tr><td><strong>RAID 6</strong></td><td>Stripe+2xParity</td><td>4</td><td><span class="tg tgg">2 disks</span></td><td>(n-2)/n</td><td>Enterprise</td></tr>
+</tbody></table>
+
+<h3 style="margin-top:2.5rem;margin-bottom:.5rem">Interactive: How XOR Parity Works</h3>
+<p style="color:var(--tm);font-size:.92rem;margin-bottom:1rem">Click bits to toggle. Parity computed via XOR. Simulate a failure and recover!</p>
+<div class="xd" id="xd">
+<div class="xr"><label>Disk 1:</label><div class="xbs" id="x1"></div></div>
+<div class="xr"><label>Disk 2:</label><div class="xbs" id="x2"></div></div>
+<div class="xr"><label>Parity:</label><div class="xbs" id="xp"></div></div>
+<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="xbt" onclick="sf(1)">Disk 1 Failure</button>
+<button class="xbt" onclick="sf(2)">Disk 2 Failure</button>
+<button class="xbt" onclick="rc()">Recover</button>
+<button class="xbt" onclick="rx()" style="background:var(--c);border:1px solid var(--b)">Reset</button></div>
+<div class="qf" id="xf"></div></div>
+<div class="co coi"><span class="ci">&#128161;</span><div><p><strong>Why XOR?</strong> XOR has a magical property: XOR any two of three values (Disk1, Disk2, Parity) to get the third. This is how RAID 5 reconstructs data from a failed disk.</p></div></div>
+</section><hr class="sep">
+
+<section class="sec ct" id="s2">
+<div class="sl"><span class="d"></span> Module 2</div>
+<h2>Distributed File Systems</h2>
+<p class="sub">When one machine isn't enough, DFS spreads data across a network &mdash; introducing challenges around consistency, availability, and performance.</p>
+<div class="an"><div class="ant">Real-World Analogy</div><p>Imagine librarians in different buildings managing copies of the same books. A <strong>DFS</strong> is the rules for keeping every library in sync.</p></div>
+
+<div class="dw">
+<svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<circle cx="400" cy="130" r="50" fill="rgba(99,102,241,.12)" stroke="#6366f1" stroke-width="2"/><text x="400" y="126" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">Distributed</text><text x="400" y="142" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">File System</text>
+<rect x="60" y="25" width="140" height="55" rx="12" fill="#111827" stroke="#8b5cf6" stroke-width="1.5"/><text x="130" y="50" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="700">Namespace</text><text x="130" y="66" text-anchor="middle" fill="#64748b" font-size="9">Directory structure</text><line x1="200" y1="55" x2="350" y2="110" stroke="#8b5cf630" stroke-width="1.5"/>
+<rect x="600" y="25" width="140" height="55" rx="12" fill="#111827" stroke="#06b6d4" stroke-width="1.5"/><text x="670" y="50" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">Storage Format</text><text x="670" y="66" text-anchor="middle" fill="#64748b" font-size="9">How data is stored</text><line x1="600" y1="55" x2="450" y2="110" stroke="#06b6d430" stroke-width="1.5"/>
+<rect x="60" y="180" width="140" height="55" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/><text x="130" y="205" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">Index</text><text x="130" y="221" text-anchor="middle" fill="#64748b" font-size="9">Filename to blocks</text><line x1="200" y1="205" x2="350" y2="150" stroke="#10b98130" stroke-width="1.5"/>
+<rect x="600" y="180" width="140" height="55" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/><text x="670" y="205" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">API</text><text x="670" y="221" text-anchor="middle" fill="#64748b" font-size="9">Read, write, delete</text><line x1="600" y1="205" x2="450" y2="150" stroke="#f59e0b30" stroke-width="1.5"/>
+</svg>
+<p class="dc">Figure 2 &mdash; Four core components of any DFS.</p></div>
+
+<h3 style="margin-bottom:1rem">The Three Core Challenges</h3>
+<div class="g3">
+<div class="card"><h3><span class="ib ibi">&#128260;</span> Consistency</h3><p>Multiple copies must stay in sync. Machine A updates &rarr; Machine B must see it.</p></div>
+<div class="card"><h3><span class="ib ibg">&#9989;</span> Availability</h3><p>System keeps working when hardware fails. Users access files without interruption.</p></div>
+<div class="card"><h3><span class="ib iba">&#9889;</span> Performance</h3><p>Network reads are slower than local. Minimize latency, maximize throughput.</p></div></div>
+<div class="co cow"><span class="ci">&#9888;&#65039;</span><div><p><strong>OneDrive Sync Risks:</strong> <strong>Latency</strong> (read old version), <strong>Conflicts</strong> (two edit at once), <strong>Ordering</strong> (changes arrive out of order). Can cause data loss or corruption.</p></div></div>
+</section><hr class="sep">
+
+<section class="sec ct" id="s3">
+<div class="sl"><span class="d"></span> Module 3</div>
+<h2>NFS &mdash; Network File System</h2>
+<p class="sub">Created in 1984, NFS uses a simple client-server model. The server is stateless &mdash; it doesn't track who's connected.</p>
+<div class="an"><div class="ant">Real-World Analogy</div><p>A shared filing cabinet with a sign-out sheet. Anyone can <strong>read</strong>, but to <strong>edit</strong> you sign out &mdash; nobody else can edit until you return it.</p></div>
+
+<div class="dw">
+<svg viewBox="0 0 750 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<rect x="270" y="25" width="200" height="85" rx="14" fill="rgba(99,102,241,.1)" stroke="#6366f1" stroke-width="2"/><text x="370" y="55" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="700">NFS Server</text><text x="370" y="73" text-anchor="middle" fill="#64748b" font-size="10">Stateless &middot; Lock-based writes</text><text x="370" y="90" text-anchor="middle" fill="#64748b" font-size="10">Multiple read, single write</text>
+<rect x="530" y="35" width="120" height="50" rx="10" fill="#111827" stroke="#334155"/><text x="590" y="58" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="600">Port Mapper</text><text x="590" y="72" text-anchor="middle" fill="#64748b" font-size="9">Server alive?</text><line x1="470" y1="65" x2="528" y2="65" stroke="#334155" stroke-width="1.5"/>
+<rect x="50" y="180" width="160" height="80" rx="14" fill="rgba(6,182,212,.1)" stroke="#06b6d4" stroke-width="1.5"/><text x="130" y="210" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Client 1</text><text x="130" y="235" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">READ &#10003;</text>
+<rect x="290" y="180" width="160" height="80" rx="14" fill="rgba(6,182,212,.1)" stroke="#06b6d4" stroke-width="1.5"/><text x="370" y="210" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Client 2</text><text x="370" y="235" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="600">WRITE (locked)</text>
+<rect x="530" y="180" width="160" height="80" rx="14" fill="rgba(6,182,212,.1)" stroke="#06b6d4" stroke-width="1.5"/><text x="610" y="210" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Client 3</text><text x="610" y="235" text-anchor="middle" fill="#f87171" font-size="10" font-weight="600">BLOCKED &#10007;</text>
+<line x1="130" y1="180" x2="320" y2="110" stroke="#06b6d430" stroke-width="1.5"/><line x1="370" y1="180" x2="370" y2="110" stroke="#f59e0b60" stroke-width="1.5"/><line x1="610" y1="180" x2="420" y2="110" stroke="#ef444440" stroke-width="1.5" stroke-dasharray="6 3"/>
+<text x="370" y="300" text-anchor="middle" fill="#64748b" font-size="10">Multiple clients READ in parallel; only ONE writes at a time (lock-based)</text>
+</svg>
+<p class="dc">Figure 3 &mdash; NFS architecture: parallel reads, exclusive write locks.</p></div>
+
+<h3 style="margin-bottom:1rem">Connection Steps</h3>
+<div class="tl">
+<div class="ti"><h4>1. Contact Port Mapper</h4><p>Client verifies the NFS service is alive.</p></div>
+<div class="ti"><h4>2. Mount Request</h4><p>Client receives a <strong>file handle</strong> &mdash; a reference to the remote filesystem.</p></div>
+<div class="ti"><h4>3. File Operations</h4><p>Read/write as if files are local. Server is stateless &mdash; crash &amp; restart is seamless.</p></div>
+<div class="ti"><h4>4. Write Locking</h4><p>Lock acquired for writes. Persists until explicitly released.</p></div></div>
+<div class="co coi"><span class="ci">&#128273;</span><div><p><strong>Statelessness:</strong> Server stores no client info. Crash recovery is simple, but server can't notify clients of changes.</p></div></div>
+</section><hr class="sep">
+
+<section class="sec ct" id="s4">
+<div class="sl"><span class="d"></span> Module 4</div>
+<h2>HDFS &mdash; Hadoop Distributed File System</h2>
+<p class="sub">Storage backbone of Hadoop. Write-once-read-many on cheap commodity hardware.</p>
+<div class="an"><div class="ant">Real-World Analogy</div><p>A warehouse: <strong>NameNode</strong> = manager with the inventory list (knows where everything is, never touches items). <strong>DataNodes</strong> = shelves storing items. Shelf breaks? Manager copies from other shelves with duplicates.</p></div>
+
+<div class="dw">
+<svg viewBox="0 0 750 350" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<rect x="230" y="15" width="280" height="95" rx="16" fill="rgba(139,92,246,.1)" stroke="#8b5cf6" stroke-width="2"/><text x="370" y="42" text-anchor="middle" fill="#a78bfa" font-size="14" font-weight="800">NameNode (Master)</text><text x="370" y="60" text-anchor="middle" fill="#64748b" font-size="10">Metadata in RAM: permissions, block map</text><text x="370" y="78" text-anchor="middle" fill="#64748b" font-size="10">Recovery: checkpoint + journal (WAL)</text><text x="370" y="95" text-anchor="middle" fill="#f87171" font-size="9" font-weight="600">&#9888; Single Point of Failure</text>
+<g><rect x="30" y="180" width="145" height="130" rx="14" fill="rgba(6,182,212,.08)" stroke="#06b6d4" stroke-width="1.5"/><text x="103" y="205" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">DataNode 1</text>
+<rect x="42" y="218" width="45" height="28" rx="6" fill="rgba(99,102,241,.15)" stroke="#6366f1"/><text x="65" y="236" text-anchor="middle" fill="#818cf8" font-size="9">Blk A</text>
+<rect x="95" y="218" width="45" height="28" rx="6" fill="rgba(16,185,129,.15)" stroke="#10b981"/><text x="118" y="236" text-anchor="middle" fill="#34d399" font-size="9">Blk B</text>
+<rect x="42" y="254" width="45" height="28" rx="6" fill="rgba(245,158,11,.15)" stroke="#f59e0b"/><text x="65" y="272" text-anchor="middle" fill="#fbbf24" font-size="9">Blk D</text></g>
+<g><rect x="225" y="180" width="145" height="130" rx="14" fill="rgba(6,182,212,.08)" stroke="#06b6d4" stroke-width="1.5"/><text x="298" y="205" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">DataNode 2</text>
+<rect x="237" y="218" width="45" height="28" rx="6" fill="rgba(99,102,241,.15)" stroke="#6366f1"/><text x="260" y="236" text-anchor="middle" fill="#818cf8" font-size="9">Blk A</text>
+<rect x="290" y="218" width="45" height="28" rx="6" fill="rgba(6,182,212,.15)" stroke="#06b6d4"/><text x="313" y="236" text-anchor="middle" fill="#22d3ee" font-size="9">Blk C</text>
+<rect x="237" y="254" width="45" height="28" rx="6" fill="rgba(245,158,11,.15)" stroke="#f59e0b"/><text x="260" y="272" text-anchor="middle" fill="#fbbf24" font-size="9">Blk D</text></g>
+<g><rect x="420" y="180" width="145" height="130" rx="14" fill="rgba(6,182,212,.08)" stroke="#06b6d4" stroke-width="1.5"/><text x="493" y="205" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">DataNode 3</text>
+<rect x="432" y="218" width="45" height="28" rx="6" fill="rgba(16,185,129,.15)" stroke="#10b981"/><text x="455" y="236" text-anchor="middle" fill="#34d399" font-size="9">Blk B</text>
+<rect x="485" y="218" width="45" height="28" rx="6" fill="rgba(6,182,212,.15)" stroke="#06b6d4"/><text x="508" y="236" text-anchor="middle" fill="#22d3ee" font-size="9">Blk C</text>
+<rect x="432" y="254" width="45" height="28" rx="6" fill="rgba(139,92,246,.15)" stroke="#8b5cf6"/><text x="455" y="272" text-anchor="middle" fill="#a78bfa" font-size="9">Blk E</text></g>
+<line x1="103" y1="180" x2="310" y2="110" stroke="#06b6d430" stroke-width="1.5"/><line x1="298" y1="180" x2="350" y2="110" stroke="#06b6d430" stroke-width="1.5"/><line x1="493" y1="180" x2="420" y2="110" stroke="#06b6d430" stroke-width="1.5"/>
+<text x="370" y="340" text-anchor="middle" fill="#64748b" font-size="10">Each block replicated to 3 DataNodes by default for fault tolerance</text>
+</svg>
+<p class="dc">Figure 4 &mdash; HDFS: NameNode manages metadata; DataNodes store replicated blocks.</p></div>
+
+<div class="g2">
+<div class="card"><h3><span class="ib ibv">&#128081;</span> NameNode</h3><ul><li><strong>Role:</strong> Metadata &mdash; names, permissions, block locations</li><li><strong>RAM-based</strong> for fast lookups</li><li><strong>Recovery:</strong> Checkpoint + Journal (WAL)</li><li><strong>Weakness:</strong> Single point of failure</li></ul></div>
+<div class="card"><h3><span class="ib ibc">&#128230;</span> DataNode</h3><ul><li><strong>Role:</strong> Store actual data blocks</li><li>Runs on <strong>cheap commodity hardware</strong></li><li><strong>3x replication</strong> by default</li><li><strong>Self-healing:</strong> Auto re-replicates on failure</li></ul></div></div>
+</section><hr class="sep">
+
+<section class="sec ct" id="s5">
+<div class="sl"><span class="d"></span> Module 5</div>
+<h2>HDFS Reads &amp; Writes</h2>
+<p class="sub">Clients read directly from DataNodes. Writes use a sequential pipeline for efficiency.</p>
+
+<div class="tabs"><button class="tb active" onclick="st(event,'tr')">Read Process</button><button class="tb" onclick="st(event,'tw')">Write Pipeline</button><button class="tb" onclick="st(event,'ty')">Why Pipeline?</button></div>
+
+<div class="tc active" id="tr">
+<div class="dw">
+<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<rect x="20" y="70" width="110" height="75" rx="12" fill="rgba(6,182,212,.1)" stroke="#06b6d4" stroke-width="2"/><text x="75" y="100" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Client</text><text x="75" y="120" text-anchor="middle" fill="#64748b" font-size="9">Wants to read</text>
+<rect x="250" y="10" width="160" height="55" rx="12" fill="rgba(139,92,246,.1)" stroke="#8b5cf6" stroke-width="2"/><text x="330" y="35" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="700">NameNode</text><text x="330" y="52" text-anchor="middle" fill="#64748b" font-size="9">Returns block locations</text>
+<path d="M130 82 Q200 25 248 38" fill="none" stroke="#8b5cf6" stroke-width="2" marker-end="url(#m1)"/><text x="170" y="38" fill="#a78bfa" font-size="9" font-weight="600">1. Ask</text>
+<rect x="500" y="35" width="100" height="45" rx="10" fill="rgba(16,185,129,.1)" stroke="#10b981" stroke-width="1.5"/><text x="550" y="55" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">DN-A</text><text x="550" y="70" text-anchor="middle" fill="#64748b" font-size="8">Blk 1,2</text>
+<rect x="500" y="95" width="100" height="45" rx="10" fill="rgba(16,185,129,.1)" stroke="#10b981" stroke-width="1.5"/><text x="550" y="115" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">DN-B</text><text x="550" y="130" text-anchor="middle" fill="#64748b" font-size="8">Blk 3</text>
+<rect x="500" y="155" width="100" height="45" rx="10" fill="rgba(16,185,129,.1)" stroke="#10b981" stroke-width="1.5"/><text x="550" y="175" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">DN-C</text><text x="550" y="190" text-anchor="middle" fill="#64748b" font-size="8">Blk 4</text>
+<line x1="130" y1="100" x2="495" y2="55" stroke="#10b981" stroke-width="2" marker-end="url(#m2)"/>
+<line x1="130" y1="105" x2="495" y2="115" stroke="#10b981" stroke-width="2" marker-end="url(#m2)"/>
+<line x1="130" y1="125" x2="495" y2="175" stroke="#10b981" stroke-width="2" marker-end="url(#m2)"/>
+<text x="300" y="125" fill="#34d399" font-size="9" font-weight="600">2. Read directly!</text>
+<defs><marker id="m1" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#8b5cf6"/></marker><marker id="m2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#10b981"/></marker></defs>
+</svg>
+<p class="dc">Figure 5 &mdash; Client asks NameNode, then reads directly from DataNodes.</p></div></div>
+
+<div class="tc" id="tw">
+<div class="dw">
+<svg viewBox="0 0 750 200" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<rect x="15" y="50" width="105" height="85" rx="12" fill="rgba(6,182,212,.1)" stroke="#06b6d4" stroke-width="2"/><text x="68" y="80" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">Client</text><text x="68" y="100" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="600">64KB packets</text>
+<rect x="185" y="50" width="115" height="85" rx="12" fill="rgba(99,102,241,.1)" stroke="#6366f1" stroke-width="1.5"/><text x="243" y="80" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">DN 1</text><text x="243" y="100" text-anchor="middle" fill="#64748b" font-size="9">Store+Fwd</text>
+<rect x="365" y="50" width="115" height="85" rx="12" fill="rgba(99,102,241,.1)" stroke="#6366f1" stroke-width="1.5"/><text x="423" y="80" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">DN 2</text><text x="423" y="100" text-anchor="middle" fill="#64748b" font-size="9">Store+Fwd</text>
+<rect x="545" y="50" width="115" height="85" rx="12" fill="rgba(99,102,241,.1)" stroke="#6366f1" stroke-width="1.5"/><text x="603" y="80" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">DN 3</text><text x="603" y="100" text-anchor="middle" fill="#34d399" font-size="9" font-weight="600">Final</text>
+<line x1="120" y1="85" x2="180" y2="85" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#m3)"/><line x1="300" y1="85" x2="360" y2="85" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#m3)"/><line x1="480" y1="85" x2="540" y2="85" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#m3)"/>
+<line x1="540" y1="110" x2="485" y2="110" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#m4)"/><line x1="360" y1="110" x2="305" y2="110" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#m4)"/><line x1="180" y1="110" x2="125" y2="110" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#m4)"/>
+<text x="148" y="78" fill="#fbbf24" font-size="8" font-weight="600">data</text><text x="328" y="78" fill="#fbbf24" font-size="8" font-weight="600">data</text><text x="508" y="78" fill="#fbbf24" font-size="8" font-weight="600">data</text>
+<text x="148" y="123" fill="#34d399" font-size="8" font-weight="600">ACK</text><text x="328" y="123" fill="#34d399" font-size="8" font-weight="600">ACK</text><text x="508" y="123" fill="#34d399" font-size="8" font-weight="600">ACK</text>
+<defs><marker id="m3" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#f59e0b"/></marker><marker id="m4" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#34d399"/></marker></defs>
+<text x="375" y="170" text-anchor="middle" fill="#64748b" font-size="10">Data forward, ACKs backward. Writes in PARALLEL as packets propagate.</text>
+</svg>
+<p class="dc">Figure 6 &mdash; HDFS write pipeline.</p></div>
+<div class="fs"><div class="fn">1</div><div><strong>Request DataNode list</strong> &mdash; NameNode selects nodes for the pipeline.</div></div>
+<div class="fs"><div class="fn">2</div><div><strong>Pipeline formed</strong> &mdash; Client&#8594;DN1&#8594;DN2&#8594;DN3 chain established.</div></div>
+<div class="fs"><div class="fn">3</div><div><strong>Stream data</strong> &mdash; 64KB packets flow through. Each node stores &amp; forwards.</div></div>
+<div class="fs"><div class="fn">4</div><div><strong>ACKs return</strong> &mdash; Last node confirms, ACKs bubble back to client.</div></div>
+</div>
+
+<div class="tc" id="ty">
+<h3 style="margin-bottom:1.5rem">Why a Pipeline?</h3>
+<div class="g3">
+<div class="card" style="border-color:rgba(239,68,68,.3)"><h3><span class="ib ibr">&#10060;</span> Broadcast</h3><p>Send to ALL nodes at once. <strong>Saturates client bandwidth</strong> &mdash; 100Mbps / 3 = 33Mbps each.</p></div>
+<div class="card" style="border-color:rgba(239,68,68,.3)"><h3><span class="ib ibr">&#10060;</span> Sequential</h3><p>Send to DN1, wait, DN2, wait... <strong>Extremely slow</strong> &mdash; total time = sum of all transfers.</p></div>
+<div class="card" style="border-color:rgba(16,185,129,.3)"><h3><span class="ib ibg">&#9989;</span> Pipeline</h3><p>Client sends at <strong>full bandwidth</strong>. Each node forwards to next. Near-simultaneous receipt.</p></div></div></div>
+</section><hr class="sep">
+
+<section class="sec ct" id="s6">
+<div class="sl"><span class="d"></span> Module 6</div>
+<h2>HDFS Block States &amp; Recovery</h2>
+<p class="sub">Blocks go through lifecycle states. HDFS uses time-limited leases instead of permanent locks.</p>
+
+<div class="dw">
+<svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+<rect x="20" y="90" width="130" height="65" rx="14" fill="rgba(245,158,11,.12)" stroke="#f59e0b" stroke-width="2"/><text x="85" y="118" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="800">RBW</text><text x="85" y="138" text-anchor="middle" fill="#64748b" font-size="9">Being Written</text>
+<rect x="210" y="15" width="130" height="65" rx="14" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="2"/><text x="275" y="42" text-anchor="middle" fill="#f87171" font-size="12" font-weight="800">RWR</text><text x="275" y="62" text-anchor="middle" fill="#64748b" font-size="9">Waiting Recovery</text>
+<rect x="210" y="170" width="130" height="65" rx="14" fill="rgba(139,92,246,.12)" stroke="#8b5cf6" stroke-width="2"/><text x="275" y="198" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="800">RUR</text><text x="275" y="218" text-anchor="middle" fill="#64748b" font-size="9">Under Recovery</text>
+<rect x="410" y="90" width="130" height="65" rx="14" fill="rgba(16,185,129,.12)" stroke="#10b981" stroke-width="2"/><text x="475" y="116" text-anchor="middle" fill="#34d399" font-size="12" font-weight="800">Finalized</text><text x="475" y="136" text-anchor="middle" fill="#64748b" font-size="9">Gen stamp applied</text>
+<rect x="600" y="95" width="65" height="55" rx="12" fill="rgba(16,185,129,.25)" stroke="#10b981" stroke-width="2.5"/><text x="633" y="120" text-anchor="middle" fill="#34d399" font-size="14" font-weight="800">&#10003;</text><text x="633" y="138" text-anchor="middle" fill="#34d399" font-size="9">Complete</text>
+<line x1="150" y1="100" x2="208" y2="58" stroke="#ef4444" stroke-width="1.5" marker-end="url(#m5)"/><text x="165" y="72" fill="#f87171" font-size="8" font-weight="600">Fail</text>
+<line x1="275" y1="80" x2="275" y2="168" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#m6)"/><text x="295" y="130" fill="#a78bfa" font-size="8" font-weight="600">Returns</text>
+<line x1="340" y1="200" x2="408" y2="145" stroke="#10b981" stroke-width="1.5" marker-end="url(#m7)"/><text x="385" y="180" fill="#34d399" font-size="8">OK</text>
+<line x1="150" y1="130" x2="408" y2="125" stroke="#10b981" stroke-width="1.5" marker-end="url(#m7)"/><text x="280" y="145" fill="#34d399" font-size="8">Normal</text>
+<line x1="540" y1="122" x2="598" y2="122" stroke="#10b981" stroke-width="2" marker-end="url(#m7)"/>
+<defs><marker id="m5" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#ef4444"/></marker><marker id="m6" markerWidth="8" markerHeight="8" refX="4" refY="8" orient="auto"><path d="M0,0 L4,8 L8,0" fill="#8b5cf6"/></marker><marker id="m7" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#10b981"/></marker></defs>
+</svg>
+<p class="dc">Figure 7 &mdash; Block state lifecycle: RBW &#8594; failure &#8594; recovery &#8594; finalized &#8594; complete.</p></div>
+
+<div class="g2" style="margin-top:1.5rem">
+<div class="card"><h3>Committed vs Complete</h3><ul><li><strong>Committed:</strong> &ge;1 replica finalized. Safe but not fully replicated</li><li><strong>Complete:</strong> ALL replicas finalized. Fully reliable</li></ul></div>
+<div class="card"><h3>Leases vs Locks</h3><ul><li><strong>NFS Locks:</strong> Persist until released. Crash = stuck forever!</li><li><strong>HDFS Leases:</strong> Auto-expire. Crash = system self-heals</li></ul></div></div>
+
+<h3 style="margin-top:2.5rem;margin-bottom:.5rem">Interactive: Lease Expiry</h3>
+<p style="color:var(--tm);font-size:.92rem;margin-bottom:1rem">Acquire a lease and watch it count down. Don't renew? It expires automatically!</p>
+<div class="ld" id="ld">
+<div style="display:flex;justify-content:center;gap:12px;margin-bottom:1rem;flex-wrap:wrap">
+<button class="xbt" onclick="sl()">Start Writing</button>
+<button class="xbt" onclick="rl()">Renew</button>
+<button class="xbt" onclick="cl()">Close File</button>
+<button class="xbt" onclick="cr()" style="background:rgba(239,68,68,.2);border:1px solid #ef4444">Simulate Crash</button></div>
+<div class="lbw"><div class="lb" id="lbar" style="width:0%;background:var(--a4)"></div></div>
+<div class="ls" id="lst" style="color:var(--td)">No active lease</div></div>
+
+<h3 style="margin-top:2.5rem;margin-bottom:1rem">NFS vs HDFS</h3>
+<table class="ct2"><thead><tr><th>Feature</th><th>NFS</th><th>HDFS</th></tr></thead><tbody>
+<tr><td><strong>Year</strong></td><td>1984</td><td>2006</td></tr>
+<tr><td><strong>Architecture</strong></td><td>Client-Server</td><td>Master-Worker</td></tr>
+<tr><td><strong>Writes</strong></td><td>Read-write</td><td>Write-once, read-many</td></tr>
+<tr><td><strong>Concurrency</strong></td><td><span class="tg tga">Locks</span></td><td><span class="tg tgg">Leases</span></td></tr>
+<tr><td><strong>State</strong></td><td><span class="tg tgg">Stateless</span></td><td><span class="tg tgb">Stateful</span></td></tr>
+<tr><td><strong>Replication</strong></td><td>None</td><td>3x default</td></tr>
+<tr><td><strong>Hardware</strong></td><td>Reliable servers</td><td>Commodity</td></tr>
+<tr><td><strong>Best For</strong></td><td>File sharing</td><td>Big data batch</td></tr>
+</tbody></table>
+</section><hr class="sep">
+
+<section class="sec ct" id="sq">
+<div class="sl"><span class="d"></span> Knowledge Check</div>
+<h2>Test Your Understanding</h2>
+<p class="sub">Click an answer to check!</p>
+<div class="qc"><h4>1. Best fault tolerance RAID level?</h4>
+<button class="qo" onclick="cq(this,0)">RAID 0</button><button class="qo" onclick="cq(this,0)">RAID 1</button><button class="qo" onclick="cq(this,1)">RAID 6 &mdash; survives 2 concurrent failures</button><button class="qo" onclick="cq(this,0)">RAID 5</button><div class="qf"></div></div>
+<div class="qc"><h4>2. Why is NameNode a single point of failure?</h4>
+<button class="qo" onclick="cq(this,0)">Stores data blocks</button><button class="qo" onclick="cq(this,1)">Holds ALL metadata &mdash; if down, no one finds data</button><button class="qo" onclick="cq(this,0)">No recovery mechanism</button><button class="qo" onclick="cq(this,0)">Requires expensive hardware</button><div class="qf"></div></div>
+<div class="qc"><h4>3. Why pipeline over broadcast?</h4>
+<button class="qo" onclick="cq(this,0)">Easier to program</button><button class="qo" onclick="cq(this,0)">DNs can't accept direct connections</button><button class="qo" onclick="cq(this,1)">Broadcast saturates client bandwidth</button><button class="qo" onclick="cq(this,0)">NameNode requires it</button><div class="qf"></div></div>
+<div class="qc"><h4>4. Key advantage of leases over locks?</h4>
+<button class="qo" onclick="cq(this,0)">Allow multiple writers</button><button class="qo" onclick="cq(this,1)">Auto-expire, preventing deadlocks</button><button class="qo" onclick="cq(this,0)">Faster to acquire</button><button class="qo" onclick="cq(this,0)">Don't need NameNode</button><div class="qf"></div></div>
+<div class="qc"><h4>5. When is a block "Complete"?</h4>
+<button class="qo" onclick="cq(this,0)">Client finishes sending</button><button class="qo" onclick="cq(this,0)">At least 1 replica finalized</button><button class="qo" onclick="cq(this,1)">ALL required replicas finalized</button><button class="qo" onclick="cq(this,0)">NameNode acknowledges</button><div class="qf"></div></div>
+</section>
+
+<footer class="ft"><p><strong>Distributed Storage Systems</strong> &mdash; Interactive Tutorial</p><p style="margin-top:6px">RAID &middot; DFS &middot; NFS &middot; HDFS</p></footer>
+
+<script>
+// Progress & TOC
+var ss=['s1','s2','s3','s4','s5','s6'];
+window.addEventListener('scroll',function(){var h=document.documentElement,p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;document.getElementById('pb').style.width=p+'%';ut();});
+function ut(){var ds=document.querySelectorAll('.td2'),sy=window.scrollY+window.innerHeight/3;ss.forEach(function(id,i){var el=document.getElementById(id);if(!el)return;ds[i].classList.toggle('active',sy>=el.offsetTop&&sy<el.offsetTop+el.offsetHeight);});}
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+
+// Tabs
+function st(e,id){e.target.parentElement.querySelectorAll('.tb').forEach(function(b){b.classList.remove('active');});e.target.classList.add('active');var p=e.target.closest('.ct')||document.body;p.querySelectorAll('.tc').forEach(function(c){c.classList.remove('active');});document.getElementById(id).classList.add('active');}
+
+// XOR
+var d1=[1,0,1,1,0,1,0,0],d2=[0,1,1,0,1,0,1,1],fd=0;
+function rx2(){var a=document.getElementById('x1'),b=document.getElementById('x2'),c=document.getElementById('xp');a.innerHTML='';b.innerHTML='';c.innerHTML='';
+d1.forEach(function(v,i){var e=document.createElement('div');e.className='xb'+(v?' on':'')+(fd===1?' lo':'');e.textContent=fd===1?'?':v;if(fd!==1)e.onclick=function(){d1[i]=1-d1[i];rx2();};a.appendChild(e);});
+d2.forEach(function(v,i){var e=document.createElement('div');e.className='xb'+(v?' on':'')+(fd===2?' lo':'');e.textContent=fd===2?'?':v;if(fd!==2)e.onclick=function(){d2[i]=1-d2[i];rx2();};b.appendChild(e);});
+for(var i=0;i<8;i++){var p=d1[i]^d2[i],e=document.createElement('div');e.className='xb re'+(p?' on':'');e.textContent=p;c.appendChild(e);}}
+function sf(n){if(fd)return;fd=n;document.getElementById('xf').innerHTML='<span style="color:#f87171">Disk '+n+' failed! Click Recover.</span>';rx2();}
+function rc(){if(!fd){document.getElementById('xf').innerHTML='<span style="color:var(--td)">No failure.</span>';return;}var pa=d1.map(function(v,i){return v^d2[i];});if(fd===1)for(var i=0;i<8;i++)d1[i]=pa[i]^d2[i];else for(var i=0;i<8;i++)d2[i]=d1[i]^pa[i];var r=fd;fd=0;document.getElementById('xf').innerHTML='<span style="color:#34d399">Disk '+r+' recovered!</span>';rx2();}
+function rx(){d1=[1,0,1,1,0,1,0,0];d2=[0,1,1,0,1,0,1,1];fd=0;document.getElementById('xf').innerHTML='';rx2();}
+rx2();
+
+// Lease
+var li=null,lt=0,LM=100;
+function ulb(){var b=document.getElementById('lbar'),s=document.getElementById('lst'),p=(lt/LM)*100;b.style.width=p+'%';
+if(p>60){b.style.background='linear-gradient(90deg,#10b981,#34d399)';s.style.color='#34d399';s.textContent='ACTIVE ('+Math.round(p)+'%)';}
+else if(p>25){b.style.background='linear-gradient(90deg,#f59e0b,#fbbf24)';s.style.color='#fbbf24';s.textContent='Running low! ('+Math.round(p)+'%)';}
+else if(p>0){b.style.background='linear-gradient(90deg,#ef4444,#f87171)';s.style.color='#f87171';s.textContent='About to expire! ('+Math.round(p)+'%)';}
+else{b.style.width='0%';s.style.color='#f87171';s.textContent='EXPIRED - file available for others';clearInterval(li);li=null;}}
+function sl(){if(li)clearInterval(li);lt=LM;ulb();li=setInterval(function(){lt-=2;if(lt<=0)lt=0;ulb();},200);}
+function rl(){if(lt<=0&&!li){document.getElementById('lst').textContent='Expired. Start new write.';return;}lt=LM;ulb();}
+function cl(){if(li)clearInterval(li);li=null;lt=0;document.getElementById('lbar').style.width='0%';var s=document.getElementById('lst');s.textContent='File closed. Lease released.';s.style.color='#34d399';}
+function cr(){if(!li&&lt<=0){document.getElementById('lst').textContent='No active lease.';return;}if(li)clearInterval(li);document.getElementById('lst').textContent='CRASHED! Lease auto-expiring...';document.getElementById('lst').style.color='#f87171';li=setInterval(function(){lt-=5;if(lt<=0)lt=0;ulb();if(lt<=0){document.getElementById('lst').textContent='Auto-expired after crash! (NFS lock would be stuck forever)';document.getElementById('lst').style.color='#fbbf24';}},200);}
+
+// Quiz
+function cq(b,ok){var c=b.closest('.qc');if(c.dataset.a)return;c.dataset.a='1';var f=c.querySelector('.qf');if(ok){b.classList.add('ok');f.innerHTML='<span style="color:#34d399">Correct!</span>';}else{b.classList.add('no');f.innerHTML='<span style="color:#f87171">Not quite - review above!</span>';}}
+
+ut();
+</script></body></html>

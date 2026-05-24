@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Modeling - Complete Tutorial</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2234;
+            --bg-code: #0d1117;
+            --accent-gold: #d4a853;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d3748;
+            --gradient-1: linear-gradient(135deg, #1a2234 0%, #0a0f1a 100%);
+            --gradient-accent: linear-gradient(135deg, #d4a853 0%, #f59e0b 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 17px;
+            font-weight: 300;
+        }
+        
+        /* Header */
+        .hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--gradient-1);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            padding: 60px 20px;
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-weight: 300;
+        }
+        
+        .hero .course-info {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .hero .course-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--bg-secondary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            padding: 15px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            background: rgba(212, 168, 83, 0.1);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        
+        section {
+            margin-bottom: 80px;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+        
+        h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+        
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+        
+        li strong {
+            color: var(--accent-gold);
+        }
+        
+        /* Formula Box */
+        .formula-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: 8px;
+            padding: 25px 30px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        
+        .formula-box .formula-title {
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .formula-box p {
+            margin-bottom: 12px;
+        }
+        
+        .formula-box .mjx-chtml {
+            font-size: 110%;
+        }
+        
+        /* Code Blocks */
+        .code-block {
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+        }
+        
+        .code-header {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .code-header .lang {
+            color: var(--accent-cyan);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .code-header .title {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        pre {
+            margin: 0 !important;
+            padding: 20px !important;
+            background: var(--bg-code) !important;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        code {
+            font-family: 'Source Code Pro', monospace;
+        }
+        
+        :not(pre) > code {
+            background: rgba(212, 168, 83, 0.1);
+            color: var(--accent-gold);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 25px 0;
+        }
+        
+        .info-box.warning {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        
+        .info-box.success {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .info-box.concept {
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        .info-box h4 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        
+        .info-box.warning h4 { color: #f59e0b; }
+        .info-box.success h4 { color: #10b981; }
+        .info-box.concept h4 { color: #8b5cf6; }
+        .info-box h4 { color: #3b82f6; }
+        
+        /* Example Boxes */
+        .example {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .example-title::before {
+            content: '💡';
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background: var(--bg-card);
+            color: var(--accent-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+        
+        tr:hover {
+            background: rgba(212, 168, 83, 0.03);
+        }
+        
+        /* Key Concept Card */
+        .key-concept {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .key-concept h4 {
+            color: var(--accent-purple);
+            margin-top: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+        
+        /* Visual Diagram */
+        .diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .diagram pre {
+            background: transparent !important;
+            text-align: left;
+            display: inline-block;
+        }
+        
+        /* TOC */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .toc ol {
+            margin: 0;
+            padding-left: 25px;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .toc a:hover {
+            color: var(--accent-gold);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 40px 30px;
+            text-align: center;
+            margin-top: 80px;
+        }
+        
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 20px rgba(212, 168, 83, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 25px rgba(212, 168, 83, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            nav ul {
+                gap: 0;
+            }
+            
+            nav a {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .formula-box {
+                padding: 20px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero" id="top">
+        <div class="hero-content">
+            <h1>Language Modeling</h1>
+            <p class="subtitle">Predict the probability of text sequences and generate new text using statistical models</p>
+            <div class="course-info">
+                <span>📚 Text as Data</span>
+                <span>🎓 Lab 3</span>
+                <span>👨‍🏫 Sean MacAvaney & Jake Lever</span>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#probability">Probability</a></li>
+            <li><a href="#unigram">Unigram</a></li>
+            <li><a href="#ngram">N-Grams</a></li>
+            <li><a href="#spelling">Spelling</a></li>
+            <li><a href="#generation">Generation</a></li>
+            <li><a href="#smoothing">Smoothing</a></li>
+            <li><a href="#evaluation">Evaluation</a></li>
+            <li><a href="#summary">Summary</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3>📖 Table of Contents</h3>
+            <ol>
+                <li><a href="#introduction">Introduction to Language Modeling</a></li>
+                <li><a href="#probability">Probability Fundamentals</a></li>
+                <li><a href="#unigram">Unigram Language Model</a></li>
+                <li><a href="#ngram">N-Gram Models (Bigram & Trigram)</a></li>
+                <li><a href="#spelling">Application: Spelling Correction</a></li>
+                <li><a href="#generation">Application: Text Generation</a></li>
+                <li><a href="#smoothing">Smoothing Techniques</a></li>
+                <li><a href="#evaluation">Evaluation with Perplexity</a></li>
+                <li><a href="#information">Information Theory Connection</a></li>
+                <li><a href="#summary">Summary & Quick Reference</a></li>
+            </ol>
+        </div>
+        
+        <!-- Section 1: Introduction -->
+        <section id="introduction">
+            <h2>1. Introduction to Language Modeling</h2>
+            
+            <p>Language modeling is the task of building a <strong>predictive model of language</strong>. While previous lectures dealt with unordered (bags of) word representations, today we'll start modeling <strong>sequences of words</strong>.</p>
+            
+            <div class="key-concept">
+                <h4>🎯 What is a Language Model?</h4>
+                <p>A language model is something that can tell us:</p>
+                <ol>
+                    <li><strong>Probability of a whole sentence:</strong> $P(w_1, w_2, \ldots, w_n)$</li>
+                    <li><strong>Probability of the next word:</strong> $P(w_{k+1} | w_1, \ldots, w_k)$</li>
+                </ol>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Language Modeling Exercise</div>
+                <p>Which words make sense to complete: <strong>"Denied the _____"</strong></p>
+                <ul>
+                    <li>✅ "allegations" — makes sense!</li>
+                    <li>❌ "sock" — doesn't fit</li>
+                    <li>✅ "claim" — makes sense!</li>
+                </ul>
+                <p>Neuroscience suggests humans predict the next word when listening. We'll use word statistics to do the same!</p>
+            </div>
+            
+            <h3>Why Do We Need Language Models?</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>How LMs Help</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Speech Recognition</strong></td>
+                        <td>"butter" vs "but her" — choose what's more likely</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spelling Correction</strong></td>
+                        <td>Pick the most probable correction in context</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Machine Translation</strong></td>
+                        <td>Choose the most natural translation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Auto-completion</strong></td>
+                        <td>Predict what the user is typing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Text Generation</strong></td>
+                        <td>Generate coherent, contextual text (ChatGPT!)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="info-box warning">
+                <h4>⚠️ LLMs Don't "Know" What They're Saying</h4>
+                <p>Language models may appear to "know" things and "reason" — but their skills can often be an illusion. They're predicting statistically likely continuations, not understanding meaning. Just like the emoji exercise — you could predict patterns without understanding the "language"!</p>
+            </div>
+        </section>
+        
+        <!-- Section 2: Probability Review -->
+        <section id="probability">
+            <h2>2. Probability Fundamentals</h2>
+            
+            <p>Before diving into language models, let's review essential probability concepts using a deck of cards (4 suits, 13 cards each, 52 total).</p>
+            
+            <h3>Basic Probability</h3>
+            
+            <div class="formula-box">
+                <div class="formula-title">Probability Rules</div>
+                <p>A probability must satisfy:</p>
+                $$0 \leq P(x) \leq 1 \quad \text{and} \quad \sum_x P(x) = 1$$
+                
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>$P(\text{Card is 8}) = \frac{4}{52}$</li>
+                    <li>$P(\text{Card is red}) = \frac{26}{52}$</li>
+                </ul>
+            </div>
+            
+            <h3>Joint Probability — $P(A, B)$</h3>
+            
+            <p>The chance of a set of events happening <strong>together</strong>.</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Joint Probability</div>
+                $$P(\text{Card is 8 AND Card is red}) = P(\text{Card is 8}, \text{Card is red}) = \frac{2}{52}$$
+            </div>
+            
+            <h3>Conditional Probability — $P(A|B)$</h3>
+            
+            <p>The probability of event A <strong>given</strong> that event B has occurred.</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Conditional Probability</div>
+                $$P(A|B) = \frac{P(A, B)}{P(B)}$$
+                
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>$P(\text{Card is 8} | \text{Card is red}) = \frac{2}{26}$</li>
+                    <li>$P(\text{Card is red} | \text{Card is 8}) = \frac{2}{4}$</li>
+                </ul>
+            </div>
+            
+            <h3>Chain Rule</h3>
+            
+            <p>Decomposing joint probabilities into products of conditional probabilities:</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Chain Rule</div>
+                $$P(A, B, C, D) = P(A|B,C,D) \cdot P(B|C,D) \cdot P(C|D) \cdot P(D)$$
+                
+                <p>For language, this means:</p>
+                $$P(w_1, w_2, \ldots, w_n) = P(w_1) \cdot P(w_2|w_1) \cdot P(w_3|w_1,w_2) \cdots P(w_n|w_1,\ldots,w_{n-1})$$
+            </div>
+            
+            <h3>Independence</h3>
+            
+            <p>Events A and B are <strong>independent</strong> if knowing one tells you nothing about the other:</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Independence</div>
+                $$P(A|B) = P(A) \quad \text{and} \quad P(B|A) = P(B)$$
+                $$\Rightarrow P(A,B) = P(A) \cdot P(B)$$
+            </div>
+            
+            <h3>Bayes' Theorem</h3>
+            
+            <div class="formula-box">
+                <div class="formula-title">Bayes' Theorem</div>
+                $$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$$
+            </div>
+        </section>
+        
+        <!-- Section 3: Unigram Model -->
+        <section id="unigram">
+            <h2>3. Unigram Language Model</h2>
+            
+            <p>The simplest language model treats each word <strong>independently</strong> and ignores all context — this is the <strong>unigram model</strong>.</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Unigram Probability</div>
+                $$P(w) = \frac{\text{count}(w)}{N}$$
+                <p>where $N$ is the total number of tokens in the corpus.</p>
+                
+                <p><strong>Sequence Probability (Unigram):</strong></p>
+                $$P(w_1, w_2, \ldots, w_n) = \prod_{i=1}^{n} P(w_i) = \prod_{i=1}^{n} \frac{\text{count}(w_i)}{N}$$
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Example Calculation</div>
+                <p>Corpus has 1000 tokens, "the" appears 50 times:</p>
+                $$P(\text{"the"}) = \frac{50}{1000} = 0.05 = 5\%$$
+            </div>
+            
+            <h3>Implementation: Counting Unigrams</h3>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Step 1: Count Token Occurrences</span>
+                </div>
+                <pre><code class="language-python">from collections import Counter
+
+# Flatten all tokens into one list with START tokens
+posts_flattened_tokens = []
+for post in posts:
+    posts_flattened_tokens += ['&lt;START&gt;'] + post['tokens']
+
+# Count occurrences of each token
+posts_unigram_counts = Counter(posts_flattened_tokens)
+posts_unigram_N = len(posts_flattened_tokens)
+
+# Example: How many times does 'irn' appear?
+print(posts_unigram_counts['irn'])  # e.g., 42</code></pre>
+            </div>
+            
+            <h3>Calculate Token Probability</h3>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Step 2: Unigram Token Probability</span>
+                </div>
+                <pre><code class="language-python">def unigram_token_prob(next_token, unigram_counts, unigram_N):
+    """
+    Calculate the probability of a single token in a unigram model.
+    
+    Args:
+        next_token: The token to calculate probability for
+        unigram_counts: Counter object with token counts
+        unigram_N: Total number of tokens in corpus
+    
+    Returns:
+        Probability of the token (float between 0 and 1)
+    """
+    count = unigram_counts[next_token]
+    probability = count / unigram_N
+    return probability
+
+# Example usage
+prob = unigram_token_prob('irn', posts_unigram_counts, posts_unigram_N)
+print(f"P('irn') = {prob:.6f}")  # e.g., 0.000234
+
+# Unseen token has probability 0
+prob_unseen = unigram_token_prob('totallynotatoken', posts_unigram_counts, posts_unigram_N)
+print(f"P('totallynotatoken') = {prob_unseen}")  # 0</code></pre>
+            </div>
+            
+            <h3>Calculate Sequence Probability</h3>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Step 3: Sequence Probability</span>
+                </div>
+                <pre><code class="language-python">def unigram_sequence_prob(sequence, unigram_counts, unigram_N):
+    """
+    Calculate the probability of a sequence using unigram model.
+    
+    Args:
+        sequence: List of tokens
+        unigram_counts: Counter object with token counts
+        unigram_N: Total number of tokens
+    
+    Returns:
+        Probability of the entire sequence
+    """
+    probability = 1.0
+    
+    for token in sequence:
+        token_prob = unigram_token_prob(token, unigram_counts, unigram_N)
+        probability *= token_prob
+        
+        # If any token has probability 0, whole sequence is 0
+        if probability == 0:
+            break
+    
+    return probability
+
+# Example
+seq = ['i', 'like', 'irn', 'bru']
+prob = unigram_sequence_prob(seq, posts_unigram_counts, posts_unigram_N)
+print(f"P({seq}) = {prob:.10e}")  # Very small number!</code></pre>
+            </div>
+            
+            <h3>Log Probabilities — Avoiding Underflow</h3>
+            
+            <div class="info-box warning">
+                <h4>⚠️ The Underflow Problem</h4>
+                <p>When multiplying many small probabilities, computers quickly hit <strong>numerical underflow</strong> — numbers too small to represent. The solution: work with <strong>logarithms</strong>!</p>
+            </div>
+            
+            <div class="formula-box">
+                <div class="formula-title">Log Probability of Sequence</div>
+                $$\log P(w_1, \ldots, w_n) = \sum_{i=1}^{n} \log P(w_i)$$
+                <p>Multiplication becomes addition — numerically stable!</p>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Log Probability Implementation</span>
+                </div>
+                <pre><code class="language-python">import math
+
+def unigram_sequence_logprob(sequence, unigram_counts, unigram_N):
+    """
+    Calculate log2 probability of a sequence.
+    More numerically stable than regular probabilities.
+    
+    Returns:
+        Log2 probability (negative number, or -inf if any token unseen)
+    """
+    log_probability = 0.0
+    
+    for token in sequence:
+        token_prob = unigram_token_prob(token, unigram_counts, unigram_N)
+        
+        if token_prob == 0:
+            return float('-inf')  # Log of 0 is -infinity
+        
+        log_probability += math.log2(token_prob)
+    
+    return log_probability
+
+# Example
+seq = ['i', 'like', 'irn', 'bru']
+log_prob = unigram_sequence_logprob(seq, posts_unigram_counts, posts_unigram_N)
+print(f"log2 P({seq}) = {log_prob:.2f}")  # e.g., -45.23
+
+# Verify: log2 of regular prob should equal log prob
+regular_prob = unigram_sequence_prob(seq, posts_unigram_counts, posts_unigram_N)
+print(f"Verification: {math.log2(regular_prob):.2f}")  # Same!</code></pre>
+            </div>
+            
+            <div class="info-box">
+                <h4>💡 Why Log Base 2?</h4>
+                <p>Using log base 2 has an information-theoretic interpretation: the negative log probability tells us how many <strong>bits of information</strong> we gain when observing that sequence.</p>
+            </div>
+        </section>
+        
+        <!-- Section 4: N-Gram Models -->
+        <section id="ngram">
+            <h2>4. N-Gram Language Models</h2>
+            
+            <p>Unigrams ignore context. N-gram models improve by considering the <strong>previous N-1 words</strong> when predicting the next word. This uses the <strong>Markov assumption</strong>.</p>
+            
+            <div class="key-concept">
+                <h4>🔗 The Markov Assumption</h4>
+                <p>The probability of a word depends only on a <strong>fixed number of previous words</strong>, not the entire history:</p>
+                $$P(w_i | w_1, \ldots, w_{i-1}) \approx P(w_i | w_{i-n+1}, \ldots, w_{i-1})$$
+            </div>
+            
+            <h3>N-Gram Model Types</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Context Size</th>
+                        <th>Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Unigram</strong></td>
+                        <td>0 (no context)</td>
+                        <td>$P(w_i)$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bigram</strong></td>
+                        <td>1 previous word</td>
+                        <td>$P(w_i | w_{i-1})$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trigram</strong></td>
+                        <td>2 previous words</td>
+                        <td>$P(w_i | w_{i-2}, w_{i-1})$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4-gram</strong></td>
+                        <td>3 previous words</td>
+                        <td>$P(w_i | w_{i-3}, w_{i-2}, w_{i-1})$</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Bigram Model</h3>
+            
+            <div class="formula-box">
+                <div class="formula-title">Bigram Probability</div>
+                $$P(w_i | w_{i-1}) = \frac{\text{count}(w_{i-1}, w_i)}{\text{count}(w_{i-1})}$$
+                
+                <p><strong>Sequence Probability:</strong></p>
+                $$P(w_1, \ldots, w_n) \approx \prod_{i=1}^{n} P(w_i | w_{i-1})$$
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Bigram Example</div>
+                <p>Suppose "irn" appears 100 times, and "irn bru" appears 80 times:</p>
+                $$P(\text{"bru"} | \text{"irn"}) = \frac{\text{count}(\text{"irn bru"})}{\text{count}(\text{"irn"})} = \frac{80}{100} = 0.8$$
+                <p>80% of the time "irn" appears, it's followed by "bru"!</p>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Counting Bigrams</span>
+                </div>
+                <pre><code class="language-python">def count_bigrams(flattened):
+    """
+    Count all bigrams (consecutive token pairs) in the corpus.
+    
+    Args:
+        flattened: List of all tokens in corpus
+    
+    Returns:
+        Counter object mapping bigram tuples to counts
+    """
+    bigrams = []
+    
+    # Create bigrams by pairing consecutive tokens
+    for i in range(len(flattened) - 1):
+        bigram = (flattened[i], flattened[i+1])
+        bigrams.append(bigram)
+    
+    return Counter(bigrams)
+
+# Example
+posts_bigram_counts = count_bigrams(posts_flattened_tokens)
+
+# How often does "irn bru" appear?
+print(posts_bigram_counts[('irn', 'bru')])  # e.g., 35</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Bigram Token Probability</span>
+                </div>
+                <pre><code class="language-python">def bigram_token_prob(prev_token, next_token, unigram_counts, bigram_counts):
+    """
+    Calculate P(next_token | prev_token) using bigram model.
+    
+    Args:
+        prev_token: The previous token (context)
+        next_token: The token we're calculating probability for
+        unigram_counts: Token counts
+        bigram_counts: Bigram counts
+    
+    Returns:
+        Conditional probability
+    """
+    # Count of the bigram
+    bigram_count = bigram_counts[(prev_token, next_token)]
+    
+    # Count of the previous token
+    prev_token_count = unigram_counts[prev_token]
+    
+    # Avoid division by zero
+    if prev_token_count == 0:
+        return 0.0
+    
+    probability = bigram_count / prev_token_count
+    return probability
+
+# Example
+prob = bigram_token_prob('irn', 'bru', posts_unigram_counts, posts_bigram_counts)
+print(f"P('bru' | 'irn') = {prob:.4f}")</code></pre>
+            </div>
+            
+            <h3>Trigram Model</h3>
+            
+            <div class="formula-box">
+                <div class="formula-title">Trigram Probability</div>
+                $$P(w_i | w_{i-2}, w_{i-1}) = \frac{\text{count}(w_{i-2}, w_{i-1}, w_i)}{\text{count}(w_{i-2}, w_{i-1})}$$
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Counting and Calculating Trigrams</span>
+                </div>
+                <pre><code class="language-python">def count_trigrams(flattened):
+    """
+    Count all trigrams (consecutive token triples) in the corpus.
+    """
+    trigrams = []
+    
+    for i in range(len(flattened) - 2):
+        trigram = (flattened[i], flattened[i+1], flattened[i+2])
+        trigrams.append(trigram)
+    
+    return Counter(trigrams)
+
+posts_trigram_counts = count_trigrams(posts_flattened_tokens)
+
+
+def trigram_token_prob(prev_prev_token, prev_token, next_token,
+                       bigram_counts, trigram_counts):
+    """
+    Calculate P(next_token | prev_prev_token, prev_token)
+    """
+    # Count of the full trigram
+    trigram_count = trigram_counts[(prev_prev_token, prev_token, next_token)]
+    
+    # Count of the bigram context
+    bigram_count = bigram_counts[(prev_prev_token, prev_token)]
+    
+    if bigram_count == 0:
+        return 0.0
+    
+    probability = trigram_count / bigram_count
+    return probability
+
+# Example
+prob = trigram_token_prob('i', 'like', 'irn', posts_bigram_counts, posts_trigram_counts)
+print(f"P('irn' | 'i', 'like') = {prob:.4f}")</code></pre>
+            </div>
+            
+            <div class="info-box concept">
+                <h4>🎯 Trade-offs in N-Gram Models</h4>
+                <ul>
+                    <li><strong>Higher N:</strong> More context → better predictions, but sparser data</li>
+                    <li><strong>Lower N:</strong> Less context → simpler predictions, more data available</li>
+                    <li><strong>Sweet spot:</strong> Trigrams often work well for many applications</li>
+                </ul>
+            </div>
+            
+            <h3>Special Tokens: START and END</h3>
+            
+            <p>We introduce special tokens to mark boundaries:</p>
+            <ul>
+                <li><code>&lt;START&gt;</code> — Allows modeling "what word starts a sentence?"</li>
+                <li><code>&lt;END&gt;</code> — Allows modeling "what word ends a sentence?"</li>
+            </ul>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Adding START and END Tokens</span>
+                </div>
+                <pre><code class="language-python"># Example with special tokens
+flattened_tokens = []
+for post in posts:
+    flattened_tokens += ['&lt;START&gt;'] + post['tokens'] + ['&lt;END&gt;']
+
+# Now bigram P(first_word | &lt;START&gt;) is meaningful!</code></pre>
+            </div>
+        </section>
+        
+        <!-- Section 5: Spelling Correction -->
+        <section id="spelling">
+            <h2>5. Application: Spelling Correction</h2>
+            
+            <p>Language models can fix spelling mistakes by finding the most likely correction. This builds on ideas from <a href="http://norvig.com/spell-correct.html" style="color: var(--accent-cyan);">Peter Norvig's spelling corrector</a>.</p>
+            
+            <h3>The Approach</h3>
+            <ol>
+                <li><strong>Generate Candidates:</strong> Find words 1-2 edits away from the misspelled word</li>
+                <li><strong>Filter by Vocabulary:</strong> Keep only candidates that appear in our corpus</li>
+                <li><strong>Rank by Probability:</strong> Use language model to find the most likely word</li>
+            </ol>
+            
+            <h3>Edit Distance Operations</h3>
+            
+            <p>A word can be "1 edit away" through:</p>
+            <ul>
+                <li><strong>Deletion:</strong> remove one letter ("hello" → "helo")</li>
+                <li><strong>Transposition:</strong> swap adjacent letters ("hello" → "hlelo")</li>
+                <li><strong>Replacement:</strong> change one letter ("hello" → "hallo")</li>
+                <li><strong>Insertion:</strong> add one letter ("hello" → "heallo")</li>
+            </ul>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Generate Edit Distance Candidates</span>
+                </div>
+                <pre><code class="language-python">def generate_edits1(token):
+    """Generate all tokens that are 1 edit away from input."""
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    splits = [(token[:i], token[i:]) for i in range(len(token) + 1)]
+    
+    # Delete one letter
+    deletes = [L + R[1:] for L, R in splits if R]
+    
+    # Transpose two adjacent letters
+    transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
+    
+    # Replace one letter
+    replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
+    
+    # Insert one letter
+    inserts = [L + c + R for L, R in splits for c in letters]
+    
+    return set(deletes + transposes + replaces + inserts)
+
+
+def generate_edits2(token):
+    """Generate all tokens that are 2 edits away."""
+    return set(e2 for e1 in generate_edits1(token) 
+                  for e2 in generate_edits1(e1))
+
+# Example
+print(generate_edits1('teh'))  # Includes 'the', 'tea', 'ten', etc.</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Get Valid Candidate Tokens</span>
+                </div>
+                <pre><code class="language-python">def get_candidate_tokens(token, unigram_counts):
+    """
+    Get candidate corrections that appear in our vocabulary.
+    
+    Priority:
+    1. If token exists in corpus, return only that token
+    2. Otherwise, return all 1-2 edit distance tokens in corpus
+    3. If no candidates found, return original token
+    """
+    # If the token is already known, don't correct it
+    if token in unigram_counts:
+        return {token}
+    
+    # Try edits at distance 1
+    candidates = generate_edits1(token) & set(unigram_counts.keys())
+    
+    if candidates:
+        return candidates
+    
+    # Try edits at distance 2
+    candidates = generate_edits2(token) & set(unigram_counts.keys())
+    
+    if candidates:
+        return candidates
+    
+    # No candidates found, return original token
+    return {token}
+
+# Example
+candidates = get_candidate_tokens('gmaig', posts_unigram_counts)
+print(candidates)  # {'gaming', 'gmail', 'image', ...}</code></pre>
+            </div>
+            
+            <h3>Unigram Spelling Corrector</h3>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Unigram Spelling Correction</span>
+                </div>
+                <pre><code class="language-python">def unigram_spelling_correct(token, unigram_counts, unigram_N):
+    """
+    Correct spelling using unigram model.
+    Choose the candidate with highest probability.
+    """
+    candidates = get_candidate_tokens(token, unigram_counts)
+    
+    # Find candidate with maximum probability
+    best_candidate = max(candidates,
+                        key=lambda c: unigram_token_prob(c, unigram_counts, unigram_N))
+    
+    return best_candidate
+
+# Example
+correction = unigram_spelling_correct('gmaig', posts_unigram_counts, posts_unigram_N)
+print(f"'gmaig' corrected to '{correction}'")  # Likely 'gaming'</code></pre>
+            </div>
+            
+            <h3>Bigram Spelling Corrector (Context-Aware)</h3>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Context-Aware Bigram Spelling Correction</span>
+                </div>
+                <pre><code class="language-python">def bigram_spelling_correct(prev_token, token, unigram_counts, bigram_counts):
+    """
+    Correct spelling using bigram model (considers previous word).
+    More accurate than unigram when context matters.
+    """
+    candidates = get_candidate_tokens(token, unigram_counts)
+    
+    # Find candidate with maximum conditional probability
+    best_candidate = max(candidates,
+                        key=lambda c: bigram_token_prob(prev_token, c,
+                                                       unigram_counts,
+                                                       bigram_counts))
+    
+    return best_candidate
+
+# Example showing context matters!
+print(bigram_spelling_correct('e', 'gmaig', 
+                             posts_unigram_counts, 
+                             posts_bigram_counts))  # 'gmail'
+
+print(bigram_spelling_correct('the', 'gmaig', 
+                             posts_unigram_counts, 
+                             posts_bigram_counts))  # 'gaming'</code></pre>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Context Matters!</div>
+                <p>The bigram model gives different corrections based on context:</p>
+                <ul>
+                    <li>"e <strong>gmaig</strong>" → "e <strong>gmail</strong>" (email address likely)</li>
+                    <li>"the <strong>gmaig</strong>" → "the <strong>gaming</strong>" (article before noun)</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Section 6: Text Generation -->
+        <section id="generation">
+            <h2>6. Application: Text Generation</h2>
+            
+            <p>Language models are <strong>generative</strong> — they can create new text that sounds natural! This is the foundation of systems like ChatGPT.</p>
+            
+            <h3>The Generation Process</h3>
+            <ol>
+                <li>Start with a seed sequence (e.g., "I like")</li>
+                <li>Calculate probability distribution for next word</li>
+                <li>Sample from this distribution (higher probability = more likely)</li>
+                <li>Add the chosen word to sequence</li>
+                <li>Repeat until desired length reached</li>
+            </ol>
+            
+            <div class="info-box warning">
+                <h4>⚠️ Why Not Just Pick the Most Likely Word?</h4>
+                <p>Always picking the most probable next token creates boring, repetitive text! Instead, we <strong>sample</strong> from the distribution — high probability words are picked more often, but there's still variety.</p>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Get Probability Distribution for Next Token</span>
+                </div>
+                <pre><code class="language-python">def get_trigram_distribution(prev_prev_token, prev_token,
+                              unigram_counts, bigram_counts, trigram_counts):
+    """
+    Get probability distribution for all possible next tokens
+    given two previous tokens.
+    
+    Returns:
+        Dictionary mapping token -> probability
+    """
+    prob_distribution = {}
+    
+    for token in unigram_counts:
+        p = trigram_token_prob(prev_prev_token, prev_token, token,
+                              bigram_counts, trigram_counts)
+        prob_distribution[token] = p
+    
+    return prob_distribution
+
+# Example: What comes after "i like"?
+dist = get_trigram_distribution('i', 'like',
+                               posts_unigram_counts,
+                               posts_bigram_counts,
+                               posts_trigram_counts)
+# dist = {'to': 0.15, 'the': 0.12, 'it': 0.08, ...}</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Sample from Distribution</span>
+                </div>
+                <pre><code class="language-python">import random
+
+def sample_from_distribution(distribution):
+    """
+    Randomly choose a token weighted by probabilities.
+    Higher probability = higher chance of selection.
+    """
+    population = list(distribution.keys())
+    probabilities = list(distribution.values())
+    
+    choice, = random.choices(population, weights=probabilities, k=1)
+    return choice
+
+# Each time you run this, you might get a different result!
+sample = sample_from_distribution(dist)
+print(sample)  # Could be 'to', 'the', 'it', etc.</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Generate Complete Sequence (Hallucinate Text)</span>
+                </div>
+                <pre><code class="language-python">def hallucinate_text(sequence, max_length,
+                     unigram_counts, bigram_counts, trigram_counts):
+    """
+    Generate text using trigram model.
+    
+    Args:
+        sequence: Starting tokens (list of at least 2 tokens)
+        max_length: Desired final length
+        unigram_counts, bigram_counts, trigram_counts: Model data
+    
+    Returns:
+        Generated sequence of tokens
+    """
+    # Make a copy to avoid modifying original
+    sequence = list(sequence)
+    
+    # Keep generating until we reach max_length
+    while len(sequence) < max_length:
+        # Get last two tokens for context
+        prev_prev_token = sequence[-2]
+        prev_token = sequence[-1]
+        
+        # Get probability distribution for next token
+        trigram_dist = get_trigram_distribution(
+            prev_prev_token, prev_token,
+            unigram_counts, bigram_counts, trigram_counts
+        )
+        
+        # Sample next token from distribution
+        next_token = sample_from_distribution(trigram_dist)
+        
+        # Add to sequence
+        sequence.append(next_token)
+    
+    return sequence
+
+# Generate text!
+start = ["i", "like"]
+generated = hallucinate_text(start, 20,
+                            posts_unigram_counts,
+                            posts_bigram_counts,
+                            posts_trigram_counts)
+print(" ".join(generated))</code></pre>
+            </div>
+            
+            <div class="info-box success">
+                <h4>✨ Try It!</h4>
+                <p>Run the text generation code multiple times with different starting sequences. You'll get different (but hopefully coherent) text each time!</p>
+            </div>
+            
+            <h3>Advanced Generation Techniques</h3>
+            
+            <p>For better text generation, consider:</p>
+            
+            <ul>
+                <li><strong>Top-K sampling:</strong> Filter to only the top K most probable words before sampling</li>
+                <li><strong>Top-P (nucleus) sampling:</strong> Filter to words covering the top P% of probability</li>
+                <li><strong>Beam search:</strong> Grow several candidate sequences and keep the best ones</li>
+                <li><strong>Repetition blocking:</strong> Prevent repeated n-grams</li>
+            </ul>
+        </section>
+        
+        <!-- Section 7: Smoothing -->
+        <section id="smoothing">
+            <h2>7. Smoothing Techniques</h2>
+            
+            <p>Real-world text will <strong>always</strong> contain words we haven't seen during training. Without smoothing, unseen words get probability 0, making entire sentences probability 0!</p>
+            
+            <div class="info-box warning">
+                <h4>⚠️ The Zero Probability Problem</h4>
+                <p><strong>Example:</strong> A speech recognition system choosing between:</p>
+                <ul>
+                    <li>"ginchy toast with but her" — probability 0 (rare word)</li>
+                    <li>"ginchy toast with butter" — probability 0 (same rare word)</li>
+                </ul>
+                <p>One is obviously more plausible, but both have zero probability because "ginchy" (1950s slang for "excellent") wasn't in training data!</p>
+            </div>
+            
+            <h3>Add-K (Laplace) Smoothing</h3>
+            
+            <p>The idea: pretend we saw every possible word K extra times. This ensures no word has zero probability.</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Add-K Smoothed Unigram Probability</div>
+                $$P_{\text{smooth}}(w) = \frac{\text{count}(w) + k}{N + k|V|}$$
+                
+                <p>where:</p>
+                <ul>
+                    <li>$k$ = smoothing parameter (often 0.1 or 1)</li>
+                    <li>$N$ = total number of tokens</li>
+                    <li>$|V|$ = vocabulary size (number of unique tokens)</li>
+                </ul>
+            </div>
+            
+            <div class="diagram">
+                <pre>
+Original Distribution           Smoothed Distribution
+                                                    
+    ┌─────┐                         ┌─────┐        
+    │█████│                         │████ │        
+    │█████│ ┌───┐                   │████ │ ┌───┐  
+    │█████│ │███│                   │████ │ │██ │  
+    │█████│ │███│ ┌─┐               │████ │ │██ │ ┌─┐ ┌─┐
+    │█████│ │███│ │█│               │████ │ │██ │ │█│ │░│
+────┴─────┴─┴───┴─┴─┴───────    ────┴─────┴─┴───┴─┴─┴─┴─┴───
+  "the"   "cat" "xyz" (unseen)    "the"   "cat" "xyz" (now>0!)
+                                                    
+Take some probability from common words, give to rare/unseen words
+                </pre>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Add-K Smoothing Implementation</span>
+                </div>
+                <pre><code class="language-python">def unigram_token_prob_ksmooth(next_token, unigram_counts, unigram_N, k):
+    """
+    Calculate smoothed unigram probability.
+    Ensures unseen tokens still have non-zero probability.
+    
+    Args:
+        next_token: Token to calculate probability for
+        unigram_counts: Token counts from training data
+        unigram_N: Total tokens in training data
+        k: Smoothing parameter (e.g., 0.1 or 1.0)
+    
+    Returns:
+        Smoothed probability
+    """
+    # Get count (0 for unseen tokens)
+    count = unigram_counts[next_token]
+    
+    # Vocabulary size
+    vocab_size = len(unigram_counts)
+    
+    # Smoothed probability
+    probability = (count + k) / (unigram_N + k * vocab_size)
+    
+    return probability
+
+# Example: Even unknown words have probability!
+prob_known = unigram_token_prob_ksmooth('the',
+                                       posts_unigram_counts,
+                                       posts_unigram_N, 0.1)
+prob_unknown = unigram_token_prob_ksmooth('abracadabra',
+                                         posts_unigram_counts,
+                                         posts_unigram_N, 0.1)
+
+print(f"P('the') = {prob_known:.6f}")         # e.g., 0.045123
+print(f"P('abracadabra') = {prob_unknown:.10f}")  # Small but > 0!</code></pre>
+            </div>
+            
+            <h3>Other Smoothing Methods</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Add-1 (Laplace)</strong></td>
+                        <td>K=1, simple but often too aggressive</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Add-K</strong></td>
+                        <td>K can be a fraction (0.1), tuned experimentally</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interpolation</strong></td>
+                        <td>Combine trigram + bigram + unigram with weights</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kneser-Ney</strong></td>
+                        <td>State-of-the-art, considers word versatility</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stupid Backoff</strong></td>
+                        <td>Used at Google: if trigram=0, use 0.4×bigram</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="formula-box">
+                <div class="formula-title">Interpolated Smoothing</div>
+                <p>Combines higher-order (more sparse) with lower-order (less sparse) models:</p>
+                $$P(w_3|w_1,w_2) = \lambda_1 P_{\text{tri}}(w_3|w_1,w_2) + \lambda_2 P_{\text{bi}}(w_3|w_2) + \lambda_3 P_{\text{uni}}(w_3)$$
+                <p>where $\lambda_1 + \lambda_2 + \lambda_3 = 1$ (weights determined experimentally)</p>
+            </div>
+        </section>
+        
+        <!-- Section 8: Evaluation -->
+        <section id="evaluation">
+            <h2>8. Evaluation: Perplexity & Cross-Entropy</h2>
+            
+            <p>How do we know if our language model is good? We need metrics to evaluate performance.</p>
+            
+            <h3>Train/Test Split</h3>
+            
+            <div class="info-box">
+                <h4>🔑 Key Principle</h4>
+                <p><strong>Never evaluate on the same data you trained on!</strong></p>
+                <ul>
+                    <li><strong>Training Set (80%):</strong> Build the model (count tokens, n-grams)</li>
+                    <li><strong>Test Set (20%):</strong> Evaluate how well it predicts new text</li>
+                </ul>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Split Data into Train/Test</span>
+                </div>
+                <pre><code class="language-python">import random
+
+# Shuffle posts randomly
+random.seed(42)  # For reproducibility
+shuffled_posts = random.sample(posts, k=len(posts))
+
+# 80% for training, 20% for testing
+train_frac = 0.8
+split_idx = int(train_frac * len(shuffled_posts))
+
+train_posts = shuffled_posts[:split_idx]
+test_posts = shuffled_posts[split_idx:]
+
+print(f"Training set: {len(train_posts)} posts")
+print(f"Test set: {len(test_posts)} posts")
+
+# Flatten tokens for training set
+train_flattened = []
+for post in train_posts:
+    train_flattened += ['&lt;START&gt;'] + post['tokens'] + ['&lt;END&gt;']
+
+train_unigram_counts = Counter(train_flattened)
+train_unigram_N = len(train_flattened)
+
+# Flatten tokens for test set (but DON'T use for counting!)
+test_flattened = []
+for post in test_posts:
+    test_flattened += ['&lt;START&gt;'] + post['tokens'] + ['&lt;END&gt;']</code></pre>
+            </div>
+            
+            <h3>Cross-Entropy</h3>
+            
+            <p><strong>Cross-entropy</strong> measures the average "surprise" of the model when seeing new text. It's the negative average log probability:</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Cross-Entropy</div>
+                $$H = -\frac{1}{N} \sum_{i=1}^{N} \log_2 P(w_i)$$
+                
+                <p>where $N$ is the total number of tokens in the test set.</p>
+                
+                <p><strong>Interpretation:</strong> Cross-entropy tells us the average number of <strong>bits</strong> needed to encode each word given our model.</p>
+            </div>
+            
+            <h3>Perplexity</h3>
+            
+            <p><strong>Perplexity</strong> is just $2^{\text{cross-entropy}}$ — it's easier to interpret!</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Perplexity</div>
+                $$\text{Perplexity} = 2^H = 2^{-\frac{1}{N}\sum_{i=1}^{N} \log_2 P(w_i)}$$
+                
+                <p>Also written as:</p>
+                $$\text{Perplexity} = \sqrt[N]{\frac{1}{\prod_{i=1}^{N} P(w_i)}}$$
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Understanding Perplexity</div>
+                <p><strong>Perplexity of X</strong> means the model is as confused as if it had to choose uniformly from <strong>X possible words</strong> at each step.</p>
+                <ul>
+                    <li><strong>Perplexity = 1:</strong> Perfect model (always predicts correctly)</li>
+                    <li><strong>Perplexity = 100:</strong> As confused as choosing from 100 words</li>
+                    <li><strong>Perplexity = 10000:</strong> Very confused model (random over vocabulary)</li>
+                </ul>
+                <p><strong>Lower is better!</strong></p>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">Python</span>
+                    <span class="title">Calculate Perplexity</span>
+                </div>
+                <pre><code class="language-python">import math
+
+def unigram_sequence_logprob_ksmooth(sequence, unigram_counts, unigram_N, k):
+    """Calculate log probability of sequence with smoothing."""
+    log_prob = 0.0
+    
+    for token in sequence:
+        token_prob = unigram_token_prob_ksmooth(token, unigram_counts,
+                                               unigram_N, k)
+        log_prob += math.log2(token_prob)
+    
+    return log_prob
+
+
+# Evaluate on TRAINING set
+k = 0.1
+train_logprob = unigram_sequence_logprob_ksmooth(
+    train_flattened, train_unigram_counts, train_unigram_N, k
+)
+
+train_cross_entropy = -train_logprob / len(train_flattened)
+train_perplexity = 2 ** train_cross_entropy
+
+print(f"Training Cross-Entropy: {train_cross_entropy:.4f}")
+print(f"Training Perplexity: {train_perplexity:.2f}")
+
+# Evaluate on TEST set (using training model!)
+test_logprob = unigram_sequence_logprob_ksmooth(
+    test_flattened, train_unigram_counts, train_unigram_N, k
+)
+
+test_cross_entropy = -test_logprob / len(test_flattened)
+test_perplexity = 2 ** test_cross_entropy
+
+print(f"\nTest Cross-Entropy: {test_cross_entropy:.4f}")
+print(f"Test Perplexity: {test_perplexity:.2f}")
+
+print(f"\nTest perplexity is higher than training — this is expected!")</code></pre>
+            </div>
+            
+            <div class="key-concept">
+                <h4>📊 Key Points for Evaluation</h4>
+                <ol>
+                    <li><strong>Always use smoothing</strong> when evaluating on test data</li>
+                    <li><strong>Test perplexity > Training perplexity</strong> is normal and expected</li>
+                    <li><strong>Compare models:</strong> Use perplexity to choose between different models</li>
+                    <li><strong>Context helps:</strong> Bigram/trigram models usually have lower perplexity than unigram</li>
+                </ol>
+            </div>
+            
+            <h3>Perplexity in Practice</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Perplexity (lower = better)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Random (vocabulary size 10,000)</td>
+                        <td>10,000</td>
+                    </tr>
+                    <tr>
+                        <td>Unigram model</td>
+                        <td>~1,000</td>
+                    </tr>
+                    <tr>
+                        <td>Bigram model</td>
+                        <td>~300</td>
+                    </tr>
+                    <tr>
+                        <td>Trigram model</td>
+                        <td>~150</td>
+                    </tr>
+                    <tr>
+                        <td>Modern neural LMs</td>
+                        <td>~20-50</td>
+                    </tr>
+                    <tr>
+                        <td>Perfect model</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Section 9: Information Theory -->
+        <section id="information">
+            <h2>9. Information Theory Connection</h2>
+            
+            <p>Perplexity and cross-entropy come from <strong>Information Theory</strong>, pioneered by Claude Shannon. Let's build intuition with "20 Questions"!</p>
+            
+            <h3>Playing 20 Questions</h3>
+            
+            <p>If someone can only think of 2 things (elephant or giraffe) with equal probability, how many yes/no questions do you need?</p>
+            
+            <div class="diagram">
+                <pre>
+        ┌─────────────────┐
+        │ Elephant (50%)  │
+        │ or              │
+        │ Giraffe (50%)   │
+        └─────────────────┘
+                │
+                ▼
+          1 question!
+      "Is it an elephant?"
+                </pre>
+            </div>
+            
+            <p>If they can think of 8 things with equal probability?</p>
+            
+            <div class="diagram">
+                <pre>
+   ┌────┬────┬────┬────┬────┬────┬────┬────┐
+   │ ✈️  │ 🚁  │ 🦉  │ 🪰  │ 🦢  │ 🚜  │ 🐕  │ 🐋  │
+   └────┴────┴────┴────┴────┴────┴────┴────┘
+                      │
+                      ▼
+               3 questions!
+     "Does it fly?" "Is it man-made?" "Is it X?"
+                </pre>
+            </div>
+            
+            <h3>Entropy</h3>
+            
+            <p><strong>Entropy</strong> measures the average uncertainty (in bits) of a probability distribution:</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Entropy Formula</div>
+                $$H(P) = -\sum_x P(x) \log_2 P(x)$$
+                
+                <p><strong>Intuition:</strong> It's the expected number of yes/no questions (bits) needed to identify an outcome.</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Entropy Examples</div>
+                <p><strong>Uniform over 2 items:</strong> $H = -2 \times 0.5 \times \log_2(0.5) = 1$ bit</p>
+                <p><strong>Uniform over 8 items:</strong> $H = -8 \times 0.125 \times \log_2(0.125) = 3$ bits</p>
+                <p><strong>Non-uniform (peaked):</strong> Lower entropy! Easier to predict.</p>
+            </div>
+            
+            <h3>Cross-Entropy: Mismatched Models</h3>
+            
+            <p>What if you use a <strong>wrong model</strong> to encode data from the true distribution?</p>
+            
+            <div class="formula-box">
+                <div class="formula-title">Cross-Entropy</div>
+                $$H(P, Q) = -\sum_x P(x) \log_2 Q(x)$$
+                
+                <p>where $P$ is the true distribution and $Q$ is your model's distribution.</p>
+                
+                <p><strong>Interpretation:</strong> The average bits needed if you use model $Q$ to encode data from $P$. Always ≥ entropy of $P$.</p>
+            </div>
+            
+            <div class="info-box concept">
+                <h4>🎯 The Connection</h4>
+                <p>When we evaluate our language model on test data:</p>
+                <ul>
+                    <li>$P$ = the "true" distribution of language (approximated by test data)</li>
+                    <li>$Q$ = our language model's probability distribution</li>
+                    <li>Cross-entropy = how well our model "compresses" real language</li>
+                    <li>Perplexity = $2^{\text{cross-entropy}}$ = interpretable measure</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Section 10: Summary -->
+        <section id="summary">
+            <h2>10. Summary & Quick Reference</h2>
+            
+            <div class="key-concept">
+                <h4>📋 What You Learned</h4>
+                <ul>
+                    <li>Built unigram, bigram, and trigram language models</li>
+                    <li>Applied LMs to spelling correction with context</li>
+                    <li>Generated text using trigram distributions</li>
+                    <li>Dealt with unseen words using smoothing</li>
+                    <li>Evaluated models using perplexity and cross-entropy</li>
+                </ul>
+            </div>
+            
+            <h3>Formula Quick Reference</h3>
+            
+            <div class="formula-box">
+                <div class="formula-title">All Key Formulas</div>
+                
+                <p><strong>Unigram Probability:</strong></p>
+                $$P(w) = \frac{\text{count}(w)}{N}$$
+                
+                <p><strong>Bigram Probability:</strong></p>
+                $$P(w_i | w_{i-1}) = \frac{\text{count}(w_{i-1}, w_i)}{\text{count}(w_{i-1})}$$
+                
+                <p><strong>Trigram Probability:</strong></p>
+                $$P(w_i | w_{i-2}, w_{i-1}) = \frac{\text{count}(w_{i-2}, w_{i-1}, w_i)}{\text{count}(w_{i-2}, w_{i-1})}$$
+                
+                <p><strong>Add-K Smoothing:</strong></p>
+                $$P_{\text{smooth}}(w) = \frac{\text{count}(w) + k}{N + k|V|}$$
+                
+                <p><strong>Cross-Entropy:</strong></p>
+                $$H = -\frac{1}{N}\sum_{i=1}^{N} \log_2 P(w_i)$$
+                
+                <p><strong>Perplexity:</strong></p>
+                $$\text{Perplexity} = 2^H$$
+            </div>
+            
+            <h3>Key Takeaways</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Key Point</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N-Grams</strong></td>
+                        <td>Higher N = more context but sparser data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Log Probabilities</strong></td>
+                        <td>Always use to avoid numerical underflow</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Smoothing</strong></td>
+                        <td>Essential for handling unseen words</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perplexity</strong></td>
+                        <td>Lower = better; test > train is normal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Generation</strong></td>
+                        <td>Sample from distribution for variety</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>What's Next?</h3>
+            
+            <div class="info-box">
+                <h4>🚀 Beyond N-Grams: Neural Language Models</h4>
+                <p>N-gram models are the foundation, but modern LLMs use neural networks:</p>
+                <ul>
+                    <li><strong>Word Embeddings:</strong> Dense vector representations (Word2Vec, GloVe)</li>
+                    <li><strong>RNNs/LSTMs:</strong> Handle longer context than fixed windows</li>
+                    <li><strong>Transformers:</strong> Attention mechanism, GPT, BERT, ChatGPT</li>
+                </ul>
+                <p>These models capture much more context and achieve much lower perplexity!</p>
+            </div>
+            
+            <h3>Practice Exercises</h3>
+            
+            <ol>
+                <li>Implement a trigram spelling corrector</li>
+                <li>Calculate perplexity for bigram and trigram models</li>
+                <li>Experiment with different smoothing parameters (k values)</li>
+                <li>Generate text with different starting sequences</li>
+                <li>Compare perplexity across different model orders</li>
+            </ol>
+            
+            <h3>Further Reading</h3>
+            
+            <ul>
+                <li><strong>Speech and Language Processing</strong> by Jurafsky & Martin (Chapter 3)</li>
+                <li><a href="http://norvig.com/spell-correct.html" style="color: var(--accent-cyan);">Peter Norvig's Spelling Corrector</a></li>
+                <li><a href="http://norvig.com/ngrams/" style="color: var(--accent-cyan);">Natural Language Corpus Data: Beautiful Data</a></li>
+            </ul>
+        </section>
+        
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>Language Modeling Tutorial | Text as Data | Lab 3</p>
+        <p>Created for MSc Data Science - University of Glasgow</p>
+    </footer>
+    
+    <!-- Back to Top -->
+    <a href="#top" class="back-to-top">↑</a>
+    
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS Exam Question Patterns & Solving Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            opacity: 0.95;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.6s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin: 30px 0 25px 0;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 6px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .pattern-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .pattern-card.mcq {
+            border-left-color: #e74c3c;
+        }
+
+        .pattern-card.short {
+            border-left-color: #f39c12;
+        }
+
+        .pattern-card.long {
+            border-left-color: #2ecc71;
+        }
+
+        .pattern-card.scenario {
+            border-left-color: #3498db;
+        }
+
+        .question-type-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .badge-mcq { background: #e74c3c; color: white; }
+        .badge-short { background: #f39c12; color: white; }
+        .badge-long { background: #2ecc71; color: white; }
+        .badge-scenario { background: #3498db; color: white; }
+
+        .time-allocation {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .marks-info {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .strategy-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 6px solid #667eea;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .example-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #dee2e6;
+        }
+
+        .model-answer {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .common-mistake {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .pro-tip {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 6px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .step-by-step {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-by-step li {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .step-by-step li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .keyword-box {
+            background: #e8daef;
+            border-left: 5px solid #8e44ad;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .template-box {
+            background: #f5f5f5;
+            border: 3px dashed #667eea;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 RPS Exam Question Patterns</h1>
+            <p class="subtitle">Complete Guide to Identifying & Solving Every Question Type</p>
+        </header>
+
+        <nav>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('overview')">📋 Overview</button>
+                <button class="nav-btn" onclick="showSection('mcq')">🎯 MCQ Questions</button>
+                <button class="nav-btn" onclick="showSection('short')">📄 Short Answer</button>
+                <button class="nav-btn" onclick="showSection('long')">📖 Long Answer</button>
+                <button class="nav-btn" onclick="showSection('scenario')">💼 Scenario Based</button>
+                <button class="nav-btn" onclick="showSection('keywords')">🔑 Keywords</button>
+                <button class="nav-btn" onclick="showSection('templates')">📋 Answer Templates</button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <div id="overview" class="section active">
+                <h2>📋 Exam Overview & Pattern Analysis</h2>
+
+                <div class="time-allocation">
+                    <h3>⏰ Time Management (90 Minutes Total)</h3>
+                    <ul>
+                        <li><strong>MCQs (1 mark each):</strong> 1 minute per question</li>
+                        <li><strong>Short Answer (2-4 marks):</strong> 3-5 minutes per question</li>
+                        <li><strong>Medium Answer (6-12 marks):</strong> 8-15 minutes per question</li>
+                        <li><strong>Long Answer (15-25 marks):</strong> 20-30 minutes per question</li>
+                        <li><strong>Review Time:</strong> 5-10 minutes at the end</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Common Question Topics</h3>
+                <table>
+                    <tr>
+                        <th>Topic Area</th>
+                        <th>Frequency</th>
+                        <th>Question Types</th>
+                        <th>Typical Marks</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Protection & Ethics</strong></td>
+                        <td>Very High</td>
+                        <td>MCQ, Short Answer, Scenario</td>
+                        <td>1-15 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Scientific Method & Hypothesis</strong></td>
+                        <td>Very High</td>
+                        <td>MCQ, Short Answer, Long Answer</td>
+                        <td>1-25 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Experimental Design</strong></td>
+                        <td>High</td>
+                        <td>Scenario, Long Answer</td>
+                        <td>10-25 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Variables (IV, DV, etc.)</strong></td>
+                        <td>High</td>
+                        <td>MCQ, Short Answer, Scenario</td>
+                        <td>1-12 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Research Methods</strong></td>
+                        <td>High</td>
+                        <td>MCQ, Short Answer</td>
+                        <td>1-8 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Types & Analysis</strong></td>
+                        <td>Medium</td>
+                        <td>MCQ, Short Answer</td>
+                        <td>1-6 marks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BCS Code of Conduct</strong></td>
+                        <td>Medium</td>
+                        <td>MCQ, Short Answer</td>
+                        <td>1-6 marks</td>
+                    </tr>
+                </table>
+
+                <h3>📊 Mark Distribution Pattern</h3>
+                <div class="strategy-box">
+                    <h4>Typical Paper Structure:</h4>
+                    <ul>
+                        <li><strong>Section A (MCQs):</strong> 10-15 questions × 1 mark = 10-15 marks</li>
+                        <li><strong>Section B (Short Answer):</strong> 5-8 questions × 2-4 marks = 15-25 marks</li>
+                        <li><strong>Section C (Long Answer):</strong> 2-3 questions × 15-25 marks = 40-60 marks</li>
+                        <li><strong>Total:</strong> Approximately 100 marks</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Success Strategy</h3>
+                <div class="pro-tip">
+                    <h4>💡 Top Tips for Maximum Marks:</h4>
+                    <ol>
+                        <li><strong>Read ALL questions first</strong> - Identify easy marks</li>
+                        <li><strong>Answer what you know first</strong> - Build confidence and secure marks</li>
+                        <li><strong>Use bullet points</strong> - Examiners love clear, structured answers</li>
+                        <li><strong>Define before explaining</strong> - Always start with a definition</li>
+                        <li><strong>Use examples</strong> - Concrete examples demonstrate understanding</li>
+                        <li><strong>Match marks to detail</strong> - 1 mark = 1 point, 10 marks = 10 points</li>
+                        <li><strong>Watch the clock</strong> - Don't spend 20 minutes on a 5-mark question</li>
+                        <li><strong>Leave no blanks</strong> - Even partial answers can earn marks</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- MCQ Section -->
+            <div id="mcq" class="section">
+                <h2>🎯 MCQ Question Patterns</h2>
+
+                <div class="pattern-card mcq">
+                    <span class="question-type-badge badge-mcq">PATTERN 1: Definition-Based MCQs</span>
+                    <h3>What to Expect</h3>
+                    <p>Questions testing your knowledge of key terms and concepts.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: What is a hypothesis?</strong></p>
+                        <p>A) A proven scientific fact<br>
+                        B) A specific and testable explanation of a phenomenon<br>
+                        C) A research question<br>
+                        D) The results of an experiment</p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Correct Answer: B</h4>
+                        <p><strong>Why:</strong> A hypothesis is defined as "a specific and testable explanation of a phenomenon"</p>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Solve:</h4>
+                        <ul>
+                            <li>Look for <strong>exact definitions</strong> from your notes</li>
+                            <li>Eliminate obviously wrong answers first</li>
+                            <li>Watch for words like "always", "never" - usually wrong</li>
+                            <li>If unsure, use logic and examples to test each option</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pattern-card mcq">
+                    <span class="question-type-badge badge-mcq">PATTERN 2: Scenario-Based MCQs</span>
+                    <h3>What to Expect</h3>
+                    <p>Short scenarios requiring you to identify concepts or violations.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: A researcher tests a new keyboard by having all participants use both Keyboard A and Keyboard B. What type of design is this?</strong></p>
+                        <p>A) Between-subjects design<br>
+                        B) Within-subjects design<br>
+                        C) Mixed design<br>
+                        D) Randomized design</p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Correct Answer: B</h4>
+                        <p><strong>Why:</strong> "All participants use both" = within-subjects (same participants in all conditions)</p>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Solve:</h4>
+                        <ol class="step-by-step">
+                            <li>Read the scenario carefully and underline key information</li>
+                            <li>Identify the concept being tested (experimental design, variables, ethics, etc.)</li>
+                            <li>Match the scenario to the definition</li>
+                            <li>Check your answer makes sense in context</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pattern-card mcq">
+                    <span class="question-type-badge badge-mcq">PATTERN 3: Application MCQs</span>
+                    <h3>What to Expect</h3>
+                    <p>Questions asking you to apply principles to new situations.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: Which GDPR principle is violated if a company collects customer birthdates for age verification but uses them for targeted marketing?</strong></p>
+                        <p>A) Data minimization<br>
+                        B) Purpose limitation<br>
+                        C) Storage limitation<br>
+                        D) Accuracy</p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Correct Answer: B</h4>
+                        <p><strong>Why:</strong> Purpose limitation means data should only be used for the purpose it was collected (age verification), not for other purposes (marketing)</p>
+                    </div>
+
+                    <div class="common-mistake">
+                        <h4>❌ Common Mistakes:</h4>
+                        <ul>
+                            <li>Not reading the question fully - missing key words like "NOT", "EXCEPT"</li>
+                            <li>Choosing the first answer that seems right without checking others</li>
+                            <li>Confusing similar concepts (e.g., IV vs DV, within vs between)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 MCQ Pro Tips:</h4>
+                    <ul>
+                        <li><strong>Time allocation:</strong> 1 minute per MCQ max</li>
+                        <li><strong>Circle keywords:</strong> NOT, EXCEPT, ALWAYS, NEVER</li>
+                        <li><strong>Use elimination:</strong> Cross out wrong answers</li>
+                        <li><strong>Trust your instinct:</strong> First answer is often correct</li>
+                        <li><strong>Don't overthink:</strong> MCQs test knowledge, not tricks</li>
+                        <li><strong>Mark and return:</strong> If stuck, mark it and come back</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Short Answer Section -->
+            <div id="short" class="section">
+                <h2>📄 Short Answer Question Patterns (2-4 marks)</h2>
+
+                <div class="pattern-card short">
+                    <span class="question-type-badge badge-short">PATTERN 1: Define + Example (2-3 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>Questions asking for a definition and an example or brief explanation.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: What is a confounding factor? Give an example. (3 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (3 marks):</h4>
+                        <p><strong>Definition (1 mark):</strong> A confounding factor is a variable that changes and impacts the results of an experiment, preventing cause-and-effect relationships from being inferred.</p>
+                        <p><strong>Example (2 marks):</strong> In a study testing whether a new teaching method improves test scores, prior knowledge of the subject could be a confounding factor. If students who already knew more about the topic were placed in the new method group, their higher scores might be due to prior knowledge rather than the teaching method.</p>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Structure Your Answer:</h4>
+                        <ol class="step-by-step">
+                            <li><strong>Start with a clear definition</strong> - Use the exact definition from your notes (1 mark)</li>
+                            <li><strong>Provide a concrete example</strong> - Use a real scenario, preferably from computing/HCI (1-2 marks)</li>
+                            <li><strong>Keep it brief</strong> - 2-3 sentences total for 2-3 marks</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pattern-card short">
+                    <span class="question-type-badge badge-short">PATTERN 2: List + Brief Explanation (3-4 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>Questions asking you to list multiple items with brief explanations.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: List THREE principles of the UK Data Protection Act. (3 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (3 marks):</h4>
+                        <p><strong>1. Data Minimization:</strong> Personal data should be adequate, relevant and not excessive in relation to the purpose.</p>
+                        <p><strong>2. Accuracy:</strong> Personal data must be accurate and up to date.</p>
+                        <p><strong>3. Purpose Limitation:</strong> Personal data shall only be processed for specified and lawful purposes.</p>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Structure Your Answer:</h4>
+                        <ul>
+                            <li><strong>Use numbered or bullet points</strong> - Makes it easy for examiner to award marks</li>
+                            <li><strong>Name + brief explanation</strong> - Each point = 1 mark</li>
+                            <li><strong>Don't over-explain</strong> - One sentence per point is enough</li>
+                            <li><strong>Match quantity to marks</strong> - 3 marks = 3 points</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pattern-card short">
+                    <span class="question-type-badge badge-short">PATTERN 3: Compare/Contrast (4 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>Questions asking you to identify differences or similarities.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: State TWO differences between within-subjects and between-subjects experimental design. (4 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (4 marks):</h4>
+                        <p><strong>Difference 1 (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Within-subjects:</strong> The same participants experience all conditions</li>
+                            <li><strong>Between-subjects:</strong> Different participants are used for each condition</li>
+                        </ul>
+                        <p><strong>Difference 2 (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Within-subjects:</strong> Requires fewer participants but risks order effects</li>
+                            <li><strong>Between-subjects:</strong> Requires more participants but avoids order effects</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Structure Your Answer:</h4>
+                        <ol class="step-by-step">
+                            <li><strong>Use a clear format</strong> - Label each concept clearly</li>
+                            <li><strong>Make the contrast obvious</strong> - Use "whereas", "while", "in contrast"</li>
+                            <li><strong>Give equal weight</strong> - Explain both sides equally</li>
+                            <li><strong>Use a table if helpful</strong> - Visual comparison can be clearer</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 Short Answer Pro Tips:</h4>
+                    <ul>
+                        <li><strong>Time: 3-5 minutes</strong> - Don't overthink, keep it concise</li>
+                        <li><strong>Use bullet points</strong> - Faster to write, easier to mark</li>
+                        <li><strong>Define first, explain second</strong> - Always start with definition</li>
+                        <li><strong>One mark = one point</strong> - 4 marks means 4 distinct points</li>
+                        <li><strong>Use examples from computing</strong> - Shows applied understanding</li>
+                        <li><strong>Check the verb</strong> - "List" vs "Explain" vs "Compare" need different approaches</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Long Answer Section -->
+            <div id="long" class="section">
+                <h2>📖 Long Answer Question Patterns (15-25 marks)</h2>
+
+                <div class="pattern-card long">
+                    <span class="question-type-badge badge-long">PATTERN 1: Design an Experiment (15-25 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>The most common long answer question - design a complete experiment for a given scenario.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: You are tasked with evaluating whether a new code editor improves programming productivity compared to an existing editor. Design an experiment to test this, covering: hypothesis, variables, design, participants, and data collection. (25 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer Structure (25 marks):</h4>
+
+                        <p><strong>1. Research Question & Hypothesis (3 marks):</strong></p>
+                        <ul>
+                            <li><strong>Research Question:</strong> Does the new code editor improve programming productivity compared to the existing editor?</li>
+                            <li><strong>Hypothesis:</strong> Students using the new code editor will complete programming tasks faster and with fewer errors than those using the existing editor.</li>
+                        </ul>
+
+                        <p><strong>2. Variables (6 marks):</strong></p>
+                        <ul>
+                            <li><strong>Independent Variable (IV):</strong> Type of code editor (2 levels: new editor, existing editor)</li>
+                            <li><strong>Dependent Variables (DV):</strong>
+                                <ul>
+                                    <li>Task completion time (minutes)</li>
+                                    <li>Number of syntax errors</li>
+                                    <li>Code quality score (0-100)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Control Variables:</strong> Same programming tasks, same computer hardware, same time limit, same testing environment</li>
+                            <li><strong>Random Variables:</strong> Programming experience, typing speed, prior familiarity with editors</li>
+                        </ul>
+
+                        <p><strong>3. Experimental Design (5 marks):</strong></p>
+                        <ul>
+                            <li><strong>Design Type:</strong> Between-subjects design</li>
+                            <li><strong>Justification:</strong> Avoids learning effects - participants won't improve on second task due to practice. Also prevents carryover effects from one editor to another.</li>
+                            <li><strong>Conditions:</strong> 2 conditions (new editor group vs existing editor group)</li>
+                        </ul>
+
+                        <p><strong>4. Participants (3 marks):</strong></p>
+                        <ul>
+                            <li><strong>Sample size:</strong> 60 participants (30 per condition)</li>
+                            <li><strong>Selection:</strong> Computer Science students in year 2, recruited via email</li>
+                            <li><strong>Assignment:</strong> Random assignment to conditions to control for individual differences</li>
+                        </ul>
+
+                        <p><strong>5. Procedure (4 marks):</strong></p>
+                        <ul>
+                            <li>Participants complete informed consent and pre-task questionnaire</li>
+                            <li>Brief tutorial on assigned editor (10 minutes)</li>
+                            <li>Complete 3 programming tasks of increasing difficulty (45 minutes)</li>
+                            <li>Complete post-task satisfaction questionnaire</li>
+                        </ul>
+
+                        <p><strong>6. Data Collection & Analysis (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Collection:</strong> Automatic logging of completion time and errors; manual code quality assessment</li>
+                            <li><strong>Analysis:</strong> Independent t-tests to compare means between groups for each DV</li>
+                        </ul>
+
+                        <p><strong>7. Ethical Considerations (2 marks):</strong></p>
+                        <ul>
+                            <li>Obtain informed consent from all participants</li>
+                            <li>Right to withdraw at any time without penalty</li>
+                            <li>Data anonymization and secure storage</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>Step-by-Step Solution Strategy:</h4>
+                        <ol class="step-by-step">
+                            <li><strong>Read carefully and underline key requirements</strong> - What exactly are they asking for?</li>
+                            <li><strong>Use the experimental checklist</strong> - RQ, IV, DV, Controls, Random, Confounding, Design, Participants</li>
+                            <li><strong>Define "better"</strong> - If question says "better", specify what that means (faster? more accurate?)</li>
+                            <li><strong>Choose appropriate design</strong> - Within vs Between, justify your choice</li>
+                            <li><strong>Be specific</strong> - Don't say "collect data", say HOW you'll collect it</li>
+                            <li><strong>Use headings</strong> - Makes your answer clear and organized</li>
+                            <li><strong>Allocate marks</strong> - Spend more detail on higher-mark sections</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pattern-card long">
+                    <span class="question-type-badge badge-long">PATTERN 2: Critique an Experiment (12-18 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>Given a poorly designed experiment, identify problems and suggest improvements.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: A researcher wants to test if background music improves coding performance. They play classical music in the lab and have 20 students complete a coding task. They find students complete tasks 10% faster than usual. Critique this experimental design and suggest improvements. (15 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer Structure (15 marks):</h4>
+
+                        <p><strong>Problems Identified (9 marks - 3 marks each):</strong></p>
+
+                        <p><strong>Problem 1: No Control Group</strong></p>
+                        <ul>
+                            <li><strong>Issue:</strong> There's no comparison group working without music, so we can't determine if music actually caused the improvement</li>
+                            <li><strong>Impact:</strong> The 10% improvement could be due to other factors (time of day, task familiarity, Hawthorne effect)</li>
+                            <li><strong>Improvement:</strong> Use between-subjects design with two groups: one with music, one without (control group)</li>
+                        </ul>
+
+                        <p><strong>Problem 2: Confounding Variables Not Controlled</strong></p>
+                        <ul>
+                            <li><strong>Issue:</strong> Many factors could affect results: music preference, prior coding experience, task difficulty</li>
+                            <li><strong>Impact:</strong> Can't establish cause-and-effect relationship</li>
+                            <li><strong>Improvement:</strong> Control for experience level, use same task for all, measure baseline performance first</li>
+                        </ul>
+
+                        <p><strong>Problem 3: Vague Comparison ("than usual")</strong></p>
+                        <ul>
+                            <li><strong>Issue:</strong> "Faster than usual" is not a valid comparison - whose usual? When measured?</li>
+                            <li><strong>Impact:</strong> Results are not scientifically meaningful</li>
+                            <li><strong>Improvement:</strong> Establish baseline by having same students complete similar task without music, or use control group</li>
+                        </ul>
+
+                        <p><strong>Additional Issues (6 marks - 2 marks each):</strong></p>
+                        <ul>
+                            <li><strong>Small sample size:</strong> 20 participants may not be enough for statistical power</li>
+                            <li><strong>No randomization:</strong> Should randomly assign participants to conditions</li>
+                            <li><strong>Single music type:</strong> Only tested classical music - results don't generalize to all music</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Critique an Experiment:</h4>
+                        <ol class="step-by-step">
+                            <li><strong>Use the experimental checklist</strong> - Look for missing elements (control group, random assignment, etc.)</li>
+                            <li><strong>Identify confounding factors</strong> - What else could explain the results?</li>
+                            <li><strong>For each problem, provide:</strong>
+                                <ul>
+                                    <li>What the problem is</li>
+                                    <li>Why it's a problem (impact on validity)</li>
+                                    <li>How to fix it</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prioritize major flaws</strong> - Focus on issues that invalidate the results</li>
+                            <li><strong>Be constructive</strong> - Always suggest improvements</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 Long Answer Pro Tips:</h4>
+                    <ul>
+                        <li><strong>Time: 20-30 minutes</strong> - Plan for 2 minutes planning, 25 writing, 3 reviewing</li>
+                        <li><strong>Use the checklist</strong> - Never forget to mention IV, DV, controls</li>
+                        <li><strong>Justify everything</strong> - Don't just say "between-subjects", explain WHY</li>
+                        <li><strong>Be specific</strong> - "25 participants" not "some participants"</li>
+                        <li><strong>Use computing examples</strong> - Shows you understand the domain</li>
+                        <li><strong>Structure with headings</strong> - Makes it easy to follow and mark</li>
+                        <li><strong>Write legibly</strong> - Illegible = no marks</li>
+                        <li><strong>Leave space</strong> - You might want to add more later</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Scenario Based Section -->
+            <div id="scenario" class="section">
+                <h2>💼 Scenario-Based Question Patterns</h2>
+
+                <div class="pattern-card scenario">
+                    <span class="question-type-badge badge-scenario">PATTERN 1: Ethics Violation Scenarios (6-12 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>A scenario describing a research situation with ethical issues. You must identify violations and suggest corrections.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: A tech company conducts an experiment on their app users without informing them. They randomly show some users a frustrating interface with frequent pop-ups to see if it increases ad clicks. They collect user behavior data and store it indefinitely. Identify the ethical issues and explain how the company should have conducted this research properly. (10 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (10 marks):</h4>
+
+                        <p><strong>Ethical Issues Identified (6 marks):</strong></p>
+
+                        <p><strong>1. Lack of Informed Consent (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Violation:</strong> Users were not informed about the experiment or asked for consent to participate</li>
+                            <li><strong>Principle violated:</strong> Right to informed consent - participants must know they're in a study and agree to participate</li>
+                        </ul>
+
+                        <p><strong>2. Potential Harm to Participants (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Violation:</strong> Deliberately creating a frustrating experience could cause psychological distress or anger</li>
+                            <li><strong>Principle violated:</strong> Duty to avoid harm - researchers must not harm participants</li>
+                        </ul>
+
+                        <p><strong>3. Data Protection Violations (2 marks):</strong></p>
+                        <ul>
+                            <li><strong>Violation:</strong> Storing data indefinitely violates storage limitation principle - data should not be kept longer than necessary</li>
+                            <li><strong>GDPR Principle:</strong> Storage limitation</li>
+                        </ul>
+
+                        <p><strong>Proper Research Conduct (4 marks):</strong></p>
+                        <ul>
+                            <li><strong>Obtain informed consent:</strong> Inform users about the experiment, explain what data will be collected, and obtain explicit consent</li>
+                            <li><strong>Right to withdraw:</strong> Allow users to opt-out at any time without penalty</li>
+                            <li><strong>Minimize harm:</strong> Use less frustrating interventions or compensate users for their time</li>
+                            <li><strong>Data management:</strong> Only store data for the duration needed for analysis, then delete it</li>
+                            <li><strong>Ethics approval:</strong> Obtain approval from an ethics committee before starting</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>How to Tackle Ethics Scenarios:</h4>
+                        <ol class="step-by-step">
+                            <li><strong>Read carefully</strong> - Underline actions that seem problematic</li>
+                            <li><strong>Use frameworks:</strong>
+                                <ul>
+                                    <li>GDPR principles (consent, purpose limitation, data minimization, etc.)</li>
+                                    <li>BCS Code of Conduct (public interest, competence, duty to authority, duty to profession)</li>
+                                    <li>Research ethics (informed consent, right to withdraw, no harm, confidentiality)</li>
+                                </ul>
+                            </li>
+                            <li><strong>For each violation:</strong>
+                                <ul>
+                                    <li>Identify what's wrong</li>
+                                    <li>Name the principle/law violated</li>
+                                    <li>Explain the impact</li>
+                                    <li>Suggest how to fix it</li>
+                                </ul>
+                            </li>
+                            <li><strong>Be specific</strong> - Don't just say "violated ethics", say which principle</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pattern-card scenario">
+                    <span class="question-type-badge badge-scenario">PATTERN 2: Variable Identification Scenarios (4-8 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>A brief experimental scenario where you identify different types of variables.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: Researchers test three different programming languages (Python, Java, C++) to see which allows students to complete coding tasks fastest. All students use the same computer in the same lab. Identify the independent variable, dependent variable, and two control variables. (6 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (6 marks):</h4>
+                        <p><strong>Independent Variable (2 marks):</strong> Programming language (with 3 levels: Python, Java, C++)</p>
+                        <p><strong>Dependent Variable (2 marks):</strong> Task completion time (measured in minutes or seconds)</p>
+                        <p><strong>Control Variables (2 marks - 1 each):</strong></p>
+                        <ul>
+                            <li>Computer hardware (same computer for all)</li>
+                            <li>Testing environment (same lab for all)</li>
+                        </ul>
+                        <p><em>Other acceptable control variables: Same tasks, same time limit, same instructors</em></p>
+                    </div>
+
+                    <div class="strategy-box">
+                        <h4>Quick Variable Identification Guide:</h4>
+                        <ul>
+                            <li><strong>Independent Variable (IV):</strong> What the researcher CHANGES (look for "test", "compare", "different")</li>
+                            <li><strong>Dependent Variable (DV):</strong> What the researcher MEASURES (look for "time", "accuracy", "score", "rate")</li>
+                            <li><strong>Control Variables:</strong> What stays THE SAME (look for "same computer", "same room", etc.)</li>
+                            <li><strong>Random Variables:</strong> What VARIES but isn't controlled (participant experience, age, etc.)</li>
+                            <li><strong>Confounding:</strong> What COULD affect results but wasn't considered (prior knowledge, etc.)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pattern-card scenario">
+                    <span class="question-type-badge badge-scenario">PATTERN 3: Design Choice Scenarios (6-10 marks)</span>
+                    <h3>What to Expect</h3>
+                    <p>Scenario where you must choose and justify within vs between subjects design.</p>
+
+                    <div class="example-question">
+                        <h4>Example Question:</h4>
+                        <p><strong>Q: You want to test if a new UI design for a mobile app is better than the current design. Should you use within-subjects or between-subjects design? Justify your choice and explain potential problems with your chosen design. (8 marks)</strong></p>
+                    </div>
+
+                    <div class="model-answer">
+                        <h4>✓ Model Answer (8 marks):</h4>
+
+                        <p><strong>Recommended Design (2 marks):</strong> Between-subjects design</p>
+
+                        <p><strong>Justification (3 marks):</strong></p>
+                        <ul>
+                            <li>Avoids <strong>learning effects</strong> - participants won't improve on the second UI just because they learned from the first</li>
+                            <li>Prevents <strong>carryover effects</strong> - experience with one UI won't influence perception of the other</li>
+                            <li>More <strong>realistic assessment</strong> - users typically don't switch between UIs in real life</li>
+                        </ul>
+
+                        <p><strong>Potential Problems (3 marks):</strong></p>
+                        <ul>
+                            <li><strong>Individual differences:</strong> Need more participants since different people have different abilities/preferences</li>
+                            <li><strong>Larger sample size needed:</strong> Requires approximately double the participants compared to within-subjects</li>
+                            <li><strong>Statistical power:</strong> Harder to detect small differences due to individual variation</li>
+                        </ul>
+
+                        <p><strong>Mitigation:</strong> Use random assignment to balance individual differences across groups</p>
+                    </div>
+
+                    <div class="pro-tip">
+                        <h4>💡 When to Use Which Design:</h4>
+                        <table>
+                            <tr>
+                                <th>Use Within-Subjects When:</th>
+                                <th>Use Between-Subjects When:</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li>Few participants available</li>
+                                        <li>Individual differences are large</li>
+                                        <li>Learning effects are minimal</li>
+                                        <li>Tasks are very different</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Learning effects are likely</li>
+                                        <li>Testing can't be repeated</li>
+                                        <li>Conditions might influence each other</li>
+                                        <li>Enough participants available</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keywords Section -->
+            <div id="keywords" class="section">
+                <h2>🔑 Command Words & What They Mean</h2>
+
+                <div class="keyword-box">
+                    <h3>Understanding Command Words is Critical!</h3>
+                    <p>The command word tells you exactly what type of answer is expected. Using the wrong approach loses marks.</p>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Command Word</th>
+                        <th>What It Means</th>
+                        <th>What To Do</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Define</strong></td>
+                        <td>Give the precise meaning</td>
+                        <td>State the exact definition, no examples needed</td>
+                        <td>"Define hypothesis" → "A specific and testable explanation of a phenomenon"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Explain</strong></td>
+                        <td>Make clear, give reasons</td>
+                        <td>Say what it is AND why/how it works</td>
+                        <td>"Explain confounding" → "A factor that changes and impacts results, preventing cause-effect inference"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Describe</strong></td>
+                        <td>Give characteristics or main features</td>
+                        <td>Provide details about what it is and how it works</td>
+                        <td>"Describe the scientific method" → List all 8 steps with brief explanation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>List/State</strong></td>
+                        <td>Provide brief points</td>
+                        <td>Bullet points, no explanation needed (unless asked)</td>
+                        <td>"List 3 GDPR principles" → Just name them</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identify</strong></td>
+                        <td>Name or recognize</td>
+                        <td>Point out specific items from a scenario</td>
+                        <td>"Identify the IV" → "Programming language"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compare</strong></td>
+                        <td>Show similarities AND differences</td>
+                        <td>Explain how items are alike and different</td>
+                        <td>"Compare within vs between" → Show contrasts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contrast</strong></td>
+                        <td>Show differences only</td>
+                        <td>Focus on how items differ</td>
+                        <td>"Contrast quantitative vs qualitative" → Differences only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Justify</strong></td>
+                        <td>Give reasons for a decision/choice</td>
+                        <td>Explain why you chose this option</td>
+                        <td>"Justify between-subjects" → Explain why this design is appropriate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluate/Critique</strong></td>
+                        <td>Assess strengths and weaknesses</td>
+                        <td>Give pros AND cons, make judgment</td>
+                        <td>"Evaluate this experiment" → Identify good and bad points</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Discuss</strong></td>
+                        <td>Present different viewpoints</td>
+                        <td>Show multiple perspectives, reach conclusion</td>
+                        <td>"Discuss data protection" → Cover different aspects</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Suggest</strong></td>
+                        <td>Propose ideas or solutions</td>
+                        <td>Offer reasonable options (multiple acceptable)</td>
+                        <td>"Suggest improvements" → Provide possible solutions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Design</strong></td>
+                        <td>Create a plan or system</td>
+                        <td>Provide complete experimental design with all components</td>
+                        <td>"Design an experiment" → Use full checklist</td>
+                    </tr>
+                </table>
+
+                <div class="common-mistake">
+                    <h4>❌ Common Command Word Mistakes:</h4>
+                    <ul>
+                        <li><strong>"Define" but you explain:</strong> Definition should be one precise sentence, not a paragraph</li>
+                        <li><strong>"List" but you explain:</strong> Just list the items unless it says "and explain"</li>
+                        <li><strong>"Compare" but you only describe one:</strong> Must cover BOTH items</li>
+                        <li><strong>"Justify" but you just state:</strong> Must give REASONS why</li>
+                        <li><strong>"Evaluate" but you're one-sided:</strong> Must give positives AND negatives</li>
+                    </ul>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 Quick Check:</h4>
+                    <p><strong>Before writing, ask yourself:</strong></p>
+                    <ul>
+                        <li>"What is the command word?"</li>
+                        <li>"What type of answer does it need?"</li>
+                        <li>"Am I doing what it asks?"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Templates Section -->
+            <div id="templates" class="section">
+                <h2>📋 Answer Templates for Common Questions</h2>
+
+                <h3>Template 1: Experimental Design Question</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Design an experiment to test [X]"
+
+<strong>STRUCTURE (25 marks):</strong>
+
+1. HYPOTHESIS & RESEARCH QUESTION (3 marks)
+   - Research Question: [State clear question]
+   - Hypothesis: [Specific, testable prediction]
+
+2. VARIABLES (6 marks)
+   - Independent Variable: [What you change] with [N] levels: [level 1, level 2...]
+   - Dependent Variable(s): [What you measure]
+     • [DV1]: [How measured]
+     • [DV2]: [How measured]
+   - Control Variables: [What stays same]
+   - Random Variables: [What varies naturally]
+
+3. EXPERIMENTAL DESIGN (5 marks)
+   - Design Type: [Within-subjects OR Between-subjects]
+   - Justification: [Why this design?]
+     • Avoids [specific problem]
+     • Appropriate because [reason]
+   - Number of Conditions: [N]
+
+4. PARTICIPANTS (3 marks)
+   - Sample Size: [N participants] ([N per condition if between-subjects])
+   - Selection Criteria: [Who? Why?]
+   - Assignment: [Random/Matched/Counterbalanced]
+
+5. PROCEDURE (4 marks)
+   - Step 1: [Consent, briefing]
+   - Step 2: [Training/familiarization]
+   - Step 3: [Task performance]
+   - Step 4: [Data collection, debriefing]
+
+6. DATA COLLECTION & ANALYSIS (2 marks)
+   - Collection Method: [How data recorded]
+   - Analysis Plan: [Statistical tests to use]
+
+7. ETHICS (2 marks)
+   - Informed consent obtained
+   - Right to withdraw
+   - Data anonymization
+   - [Any specific ethical considerations]
+                </div>
+
+                <h3>Template 2: Critique an Experiment</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Critique this experimental design"
+
+<strong>STRUCTURE (15 marks):</strong>
+
+For each problem identified (3-4 problems × 3-4 marks each):
+
+PROBLEM [N]: [Name of the problem]
+- Issue: [What is wrong?]
+- Impact: [Why does this matter? What does it affect?]
+- Improvement: [How to fix it?]
+
+<strong>COMMON PROBLEMS TO LOOK FOR:</strong>
+✓ No control group
+✓ No random assignment
+✓ Small sample size
+✓ Confounding variables not controlled
+✓ Unclear/unmeasurable DV
+✓ IV not properly manipulated
+✓ No baseline measurement
+✓ Selection bias
+✓ Order effects not controlled (if within-subjects)
+✓ Ethical violations
+                </div>
+
+                <h3>Template 3: Ethics Violation Question</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Identify ethical issues in this scenario"
+
+<strong>STRUCTURE (10 marks):</strong>
+
+VIOLATION 1: [Name] (2-3 marks)
+- What happened: [Describe the violation]
+- Principle violated: [GDPR/BCS/Research Ethics principle]
+- Why it matters: [Impact on participants/data subjects]
+
+VIOLATION 2: [Name] (2-3 marks)
+- What happened: [Describe the violation]
+- Principle violated: [Which principle?]
+- Why it matters: [Impact]
+
+[Repeat for 3-4 violations]
+
+PROPER CONDUCT (3-4 marks):
+- [Fix for violation 1]
+- [Fix for violation 2]
+- [Additional safeguards]
+
+<strong>KEY PRINCIPLES TO CHECK:</strong>
+GDPR: Consent, Purpose Limitation, Data Minimization, Accuracy,
+       Storage Limitation, Security, Accountability
+
+Research Ethics: Informed Consent, Right to Withdraw, No Harm,
+                 Confidentiality, Debriefing
+
+BCS: Public Interest, Professional Competence, Duty to Authority,
+     Duty to Profession
+                </div>
+
+                <h3>Template 4: Variable Identification</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Identify the variables in this scenario"
+
+<strong>STRUCTURE:</strong>
+
+Independent Variable (IV): [What is deliberately changed]
+- Levels: [List all levels/conditions]
+
+Dependent Variable (DV): [What is measured]
+- Measurement: [How it's measured - units, scale, etc.]
+
+Control Variables: [What is kept constant]
+- [Variable 1]: [How controlled]
+- [Variable 2]: [How controlled]
+
+Random Variables: [What is allowed to vary]
+- [Variable 1]
+- [Variable 2]
+
+Potential Confounding Factors: [What could affect results]
+- [Factor 1]: [Why it's confounding]
+- [Factor 2]: [Why it's confounding]
+
+<strong>QUICK CHECK:</strong>
+- IV = What you CHANGE (cause)
+- DV = What you MEASURE (effect)
+- Control = What you KEEP SAME
+- Random = What VARIES naturally
+- Confounding = What COULD MESS UP your results
+                </div>
+
+                <h3>Template 5: Define + Example Question</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Define [term] and give an example" (3-4 marks)
+
+<strong>STRUCTURE:</strong>
+
+DEFINITION (1-2 marks):
+[Precise definition in one clear sentence]
+
+EXAMPLE (1-2 marks):
+[Concrete example, preferably from computing/HCI]
+- Context: [Brief setup]
+- Illustration: [How the example demonstrates the concept]
+
+<strong>COMMON TERMS TO KNOW:</strong>
+✓ Hypothesis
+✓ Independent/Dependent Variable
+✓ Control Variable
+✓ Confounding Factor
+✓ Within/Between-subjects design
+✓ Nominal/Ordinal/Interval/Ratio data
+✓ Quantitative/Qualitative research
+✓ Informed Consent
+✓ Data Minimization
+✓ Purpose Limitation
+                </div>
+
+                <h3>Template 6: Compare/Contrast Question</h3>
+                <div class="template-box">
+<strong>QUESTION TYPE:</strong> "Compare X and Y" (4-6 marks)
+
+<strong>STRUCTURE:</strong>
+
+DIFFERENCE 1 (2 marks):
+- X: [Characteristic of X]
+- Y: [Contrasting characteristic of Y]
+
+DIFFERENCE 2 (2 marks):
+- X: [Another characteristic of X]
+- Y: [Contrasting characteristic of Y]
+
+[If "compare" includes similarities:]
+SIMILARITY 1 (1 mark):
+- Both: [Shared characteristic]
+
+<strong>ALTERNATIVE FORMAT - Table:</strong>
+┌────────────────┬─────────────────┬─────────────────┐
+│ Aspect         │ X               │ Y               │
+├────────────────┼─────────────────┼─────────────────┤
+│ [Aspect 1]     │ [X's approach]  │ [Y's approach]  │
+│ [Aspect 2]     │ [X's approach]  │ [Y's approach]  │
+└────────────────┴─────────────────┴─────────────────┘
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 How to Use These Templates:</h4>
+                    <ul>
+                        <li><strong>Memorize the structure</strong> - Know what sections to include</li>
+                        <li><strong>Adapt to the question</strong> - Templates are guides, not rigid rules</li>
+                        <li><strong>Practice with past papers</strong> - Apply templates to real questions</li>
+                        <li><strong>Time yourself</strong> - Can you complete the template in the allocated time?</li>
+                        <li><strong>Use headings</strong> - Makes your answer clear and organized</li>
+                        <li><strong>Check mark allocation</strong> - Spend more time on higher-mark sections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>RPS Exam Question Patterns & Solving Guide</strong></p>
+            <p>Your Complete Strategy for Maximum Marks</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">Practice these patterns with past papers for best results!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('RPS Question Patterns Guide Loaded! 🎯');
+        });
+    </script>
+</body>
+</html>

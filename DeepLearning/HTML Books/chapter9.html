@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9: Regularization | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 9</span></div>
+            <h1><span class="gradient-text">Regularization</span></h1>
+            <p class="chapter-description">Fight overfitting with techniques like dropout, weight decay, and data augmentation—essential tools for training models that generalize.</p>
+            <div class="chapter-nav">
+                <a href="chapter8.html" class="nav-btn">← Previous</a>
+                <a href="chapter10.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="overfitting" class="content-section">
+                <h2>The Overfitting Problem</h2>
+                <p>Deep networks have enormous capacity—they can memorize training data instead of learning patterns. <strong>Regularization</strong> techniques constrain the model to prefer simpler solutions.</p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Regularization</div>
+                    <p>Any technique that helps a model generalize better to unseen data, typically by constraining model complexity or introducing noise during training.</p>
+                </div>
+            </section>
+            
+            <section id="weight-decay" class="content-section">
+                <h2>Weight Decay (L2 Regularization)</h2>
+                <p>Add a penalty on large weights to the loss:</p>
+                
+                <div class="math-block"><div class="equation">L_reg = L + λ Σ w²</div></div>
+                
+                <p>This encourages smaller weights, leading to smoother functions. λ controls regularization strength.</p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 L1 vs L2</div>
+                    <p>
+                        <strong>L2 (Ridge):</strong> Shrinks weights toward zero (smoother)<br>
+                        <strong>L1 (Lasso):</strong> Drives weights exactly to zero (sparse)<br>
+                        Typical λ values: 1e-4 to 1e-2
+                    </p>
+                </div>
+            </section>
+            
+            <section id="dropout" class="content-section">
+                <h2>Dropout</h2>
+                <p>Randomly set neurons to zero during training with probability p:</p>
+                
+                <ul>
+                    <li>Prevents neurons from co-adapting</li>
+                    <li>Acts like training an ensemble of sub-networks</li>
+                    <li>At test time, use all neurons but scale by (1-p)</li>
+                </ul>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Typical Usage</div>
+                    <p>
+                        • p = 0.5 for hidden layers<br>
+                        • p = 0.1-0.2 for input layer<br>
+                        • Not used after convolutional layers (use batch norm instead)<br>
+                        • Disable during evaluation: model.eval()
+                    </p>
+                </div>
+            </section>
+            
+            <section id="batch-norm" class="content-section">
+                <h2>Batch Normalization</h2>
+                <p>Normalize activations within each mini-batch:</p>
+                
+                <div class="math-block"><div class="equation">ĥ = (h - μ_batch) / σ_batch<br>output = γĥ + β</div></div>
+                
+                <p>Benefits: stabilizes training, allows higher learning rates, provides regularization effect.</p>
+            </section>
+            
+            <section id="data-augmentation" class="content-section">
+                <h2>Data Augmentation</h2>
+                <p>Artificially expand training data by applying transformations:</p>
+                
+                <h3>For Images</h3>
+                <ul>
+                    <li>Random crops, flips, rotations</li>
+                    <li>Color jittering, brightness changes</li>
+                    <li>Cutout, MixUp, CutMix</li>
+                </ul>
+                
+                <h3>For Text</h3>
+                <ul>
+                    <li>Synonym replacement</li>
+                    <li>Back-translation</li>
+                    <li>Random insertion/deletion</li>
+                </ul>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Insight</div>
+                    <p>Data augmentation is often the most effective regularization technique. It directly addresses the root cause of overfitting: insufficient training data diversity.</p>
+                </div>
+            </section>
+            
+            <section id="early-stopping" class="content-section">
+                <h2>Early Stopping</h2>
+                <p>Stop training when validation loss stops improving:</p>
+                <ol>
+                    <li>Monitor validation loss each epoch</li>
+                    <li>Save model when validation loss improves</li>
+                    <li>Stop if no improvement for N epochs (patience)</li>
+                    <li>Restore best saved model</li>
+                </ol>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Regularization prevents overfitting by constraining model complexity</li>
+                        <li>Weight decay (L2) penalizes large weights</li>
+                        <li>Dropout randomly zeros neurons during training</li>
+                        <li>Batch normalization stabilizes and regularizes</li>
+                        <li>Data augmentation is highly effective—expand your data</li>
+                        <li>Early stopping prevents training too long</li>
+                        <li>Combine multiple techniques for best results</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter8.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Measuring Performance</span></a>
+                <a href="chapter10.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Convolutional Networks →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#overfitting">Overfitting Problem</a></li>
+                    <li><a href="#weight-decay">Weight Decay</a></li>
+                    <li><a href="#dropout">Dropout</a></li>
+                    <li><a href="#batch-norm">Batch Norm</a></li>
+                    <li><a href="#data-augmentation">Data Augmentation</a></li>
+                    <li><a href="#early-stopping">Early Stopping</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

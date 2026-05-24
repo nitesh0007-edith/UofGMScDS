@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Visualization with Vega-Lite - Complete Tutorial</title>
+
+    <!-- Load Vega, Vega-Lite, and Vega-Embed -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+        }
+
+        h3 {
+            color: #7f8c8d;
+            margin-top: 30px;
+        }
+
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .code-box {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .viz-container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        ul {
+            line-height: 1.8;
+        }
+
+        .toc {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Information Visualization with Vega-Lite</h1>
+    <p><strong>Complete Tutorial - Based on UW Data Visualization Curriculum</strong></p>
+
+    <div class="info-box">
+        <p><strong>📚 Tutorial Coverage:</strong> This tutorial covers all 6 essential topics for your Information Visualization project:</p>
+        <ol>
+            <li>Introduction to Vega-Lite</li>
+            <li>Marks and Encoding</li>
+            <li>Data Transformation</li>
+            <li>Scales, Axes, and Legends</li>
+            <li>Multi-view Composition</li>
+            <li>Interaction</li>
+        </ol>
+    </div>
+
+    <div class="toc">
+        <h3>📑 Table of Contents</h3>
+        <ul>
+            <li><a href="#part1">Part 1: Introduction to Vega-Lite</a></li>
+            <li><a href="#part2">Part 2: Marks and Encoding</a></li>
+            <li><a href="#part3">Part 3: Data Transformation</a></li>
+            <li><a href="#part4">Part 4: Scales, Axes, and Legends</a></li>
+            <li><a href="#part5">Part 5: Multi-view Composition</a></li>
+            <li><a href="#part6">Part 6: Interaction</a></li>
+        </ul>
+    </div>
+
+    <!-- Part 1: Introduction -->
+    <div class="section" id="part1">
+        <h2>Part 1: Introduction to Vega-Lite</h2>
+
+        <div class="info-box">
+            <p><strong>What is Vega-Lite?</strong></p>
+            <p>Vega-Lite is a high-level grammar of interactive graphics. It provides a concise JSON syntax for creating visualizations that are:</p>
+            <ul>
+                <li><strong>Declarative:</strong> Describe what you want, not how to draw it</li>
+                <li><strong>Data-driven:</strong> Visualizations are built from data</li>
+                <li><strong>Interactive:</strong> Built-in support for user interactions</li>
+                <li><strong>Web-based:</strong> Runs in any modern browser</li>
+            </ul>
+        </div>
+
+        <h3>Example 1.1: Your First Vega-Lite Chart</h3>
+        <p>A simple scatter plot showing the relationship between horsepower and fuel efficiency.</p>
+
+        <div class="viz-container">
+            <div id="vis1_1"></div>
+        </div>
+
+        <div class="code-box">
+// Basic Vega-Lite specification structure
+const spec1_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "A simple scatter plot",
+  "data": {
+    "url": "https://vega.github.io/vega-lite/data/cars.json"
+  },
+  "mark": "point",  // Visual element type
+  "encoding": {     // Map data to visual properties
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"}
+  }
+};
+        </div>
+
+        <h3>Example 1.2: Enhanced Chart with Multiple Encodings</h3>
+        <p>Adding color, size, and tooltips to show more information.</p>
+
+        <div class="viz-container">
+            <div id="vis1_2"></div>
+        </div>
+
+        <div class="code-box">
+// Enhanced chart with multiple encoding channels
+const spec1_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},  // Color by origin
+    "size": {"field": "Weight_in_lbs", "type": "quantitative"},  // Size by weight
+    "tooltip": [  // Show multiple fields on hover
+      {"field": "Name", "type": "nominal"},
+      {"field": "Horsepower", "type": "quantitative"},
+      {"field": "Miles_per_Gallon", "type": "quantitative"}
+    ]
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Car Performance: Horsepower vs MPG"
+};
+        </div>
+    </div>
+
+    <!-- Part 2: Marks and Encoding -->
+    <div class="section" id="part2">
+        <h2>Part 2: Marks and Encoding</h2>
+
+        <div class="info-box">
+            <p><strong>Marks</strong> are the visual elements that represent data:</p>
+            <ul>
+                <li><code>point</code> - Scatter plot points</li>
+                <li><code>bar</code> - Bar charts</li>
+                <li><code>line</code> - Line charts</li>
+                <li><code>area</code> - Filled areas</li>
+                <li><code>rect</code> - Rectangles (heatmaps)</li>
+                <li><code>text</code> - Text labels</li>
+            </ul>
+
+            <p><strong>Encoding channels</strong> map data to visual properties:</p>
+            <ul>
+                <li><code>x, y</code> - Position</li>
+                <li><code>color</code> - Color</li>
+                <li><code>size</code> - Size</li>
+                <li><code>shape</code> - Shape</li>
+                <li><code>opacity</code> - Transparency</li>
+            </ul>
+
+            <p><strong>Data types</strong> affect interpretation:</p>
+            <ul>
+                <li><code>quantitative</code> - Continuous numbers</li>
+                <li><code>nominal</code> - Unordered categories</li>
+                <li><code>ordinal</code> - Ordered categories</li>
+                <li><code>temporal</code> - Dates/times</li>
+            </ul>
+        </div>
+
+        <h3>Example 2.1: Bar Chart</h3>
+        <p>Count of cars by origin.</p>
+
+        <div class="viz-container">
+            <div id="vis2_1"></div>
+        </div>
+
+        <div class="code-box">
+const spec2_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "bar",  // Bar mark type
+  "encoding": {
+    "x": {"field": "Origin", "type": "nominal"},
+    "y": {"aggregate": "count", "type": "quantitative"},  // Count records
+    "color": {"field": "Origin", "type": "nominal"}
+  },
+  "width": 400,
+  "title": "Number of Cars by Origin"
+};
+        </div>
+
+        <h3>Example 2.2: Line Chart</h3>
+        <p>Average MPG over time.</p>
+
+        <div class="viz-container">
+            <div id="vis2_2"></div>
+        </div>
+
+        <div class="code-box">
+const spec2_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": {"type": "line", "point": true},  // Line with points
+  "encoding": {
+    "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+    "y": {
+      "aggregate": "mean",  // Calculate average
+      "field": "Miles_per_Gallon",
+      "type": "quantitative",
+      "title": "Average MPG"
+    },
+    "tooltip": [
+      {"field": "Year", "type": "ordinal"},
+      {"aggregate": "mean", "field": "Miles_per_Gallon", "type": "quantitative"}
+    ]
+  },
+  "width": 600,
+  "title": "Average MPG Over Time"
+};
+        </div>
+
+        <h3>Example 2.3: Comparing Data Types</h3>
+        <p>Cylinders encoded as quantitative (continuous) vs ordinal (discrete).</p>
+
+        <div class="viz-container">
+            <div id="vis2_3"></div>
+        </div>
+
+        <div class="code-box">
+// Two charts side by side showing different data type encodings
+const spec2_3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "hconcat": [  // Horizontal concatenation
+    {
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "Cylinders", "type": "quantitative"},  // Continuous
+        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+        "color": {"field": "Cylinders", "type": "quantitative"}
+      },
+      "width": 250,
+      "title": "Cylinders as Quantitative"
+    },
+    {
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "Cylinders", "type": "ordinal"},  // Discrete
+        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+        "color": {"field": "Cylinders", "type": "ordinal"}
+      },
+      "width": 250,
+      "title": "Cylinders as Ordinal"
+    }
+  ]
+};
+        </div>
+    </div>
+
+    <!-- Part 3: Data Transformation -->
+    <div class="section" id="part3">
+        <h2>Part 3: Data Transformation</h2>
+
+        <div class="info-box">
+            <p><strong>Transform data before visualization without modifying the source:</strong></p>
+            <ul>
+                <li><strong>Filter:</strong> Select subset of data</li>
+                <li><strong>Calculate:</strong> Create new fields</li>
+                <li><strong>Aggregate:</strong> Summarize data (mean, sum, count, etc.)</li>
+                <li><strong>Bin:</strong> Group continuous data into bins</li>
+                <li><strong>Window:</strong> Running calculations</li>
+            </ul>
+        </div>
+
+        <h3>Example 3.1: Filtering Data</h3>
+        <p>Show only fuel-efficient cars (MPG > 30).</p>
+
+        <div class="viz-container">
+            <div id="vis3_1"></div>
+        </div>
+
+        <div class="code-box">
+const spec3_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "transform": [
+    {"filter": "datum.Miles_per_Gallon > 30"}  // Filter condition
+  ],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},
+    "tooltip": [
+      {"field": "Name", "type": "nominal"},
+      {"field": "Miles_per_Gallon", "type": "quantitative"}
+    ]
+  },
+  "width": 600,
+  "title": "Fuel-Efficient Cars (MPG > 30)"
+};
+        </div>
+
+        <h3>Example 3.2: Calculate New Fields</h3>
+        <p>Create horsepower per cylinder metric.</p>
+
+        <div class="viz-container">
+            <div id="vis3_2"></div>
+        </div>
+
+        <div class="code-box">
+const spec3_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "transform": [
+    {
+      "calculate": "datum.Horsepower / datum.Cylinders",  // New field
+      "as": "HP_per_Cylinder"
+    }
+  ],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Cylinders", "type": "ordinal"},
+    "y": {"field": "HP_per_Cylinder", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},
+    "tooltip": [
+      {"field": "Name", "type": "nominal"},
+      {"field": "HP_per_Cylinder", "type": "quantitative", "format": ".2f"}
+    ]
+  },
+  "width": 600,
+  "title": "Horsepower per Cylinder"
+};
+        </div>
+
+        <h3>Example 3.3: Binning (Histogram)</h3>
+        <p>Distribution of horsepower using bins.</p>
+
+        <div class="viz-container">
+            <div id="vis3_3"></div>
+        </div>
+
+        <div class="code-box">
+const spec3_3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "bin": {"maxbins": 20},  // Create bins
+      "field": "Horsepower",
+      "type": "quantitative"
+    },
+    "y": {
+      "aggregate": "count",
+      "type": "quantitative"
+    },
+    "tooltip": [
+      {"bin": true, "field": "Horsepower"},
+      {"aggregate": "count"}
+    ]
+  },
+  "width": 600,
+  "title": "Distribution of Horsepower"
+};
+        </div>
+    </div>
+
+    <!-- Part 4: Scales, Axes, and Legends -->
+    <div class="section" id="part4">
+        <h2>Part 4: Scales, Axes, and Legends</h2>
+
+        <div class="info-box">
+            <p><strong>Scales</strong> map data values to visual values.</p>
+            <p><strong>Axes</strong> provide reference marks for position scales.</p>
+            <p><strong>Legends</strong> provide reference marks for color, size, shape scales.</p>
+            <p>All can be customized for better communication.</p>
+        </div>
+
+        <h3>Example 4.1: Custom Color Scale</h3>
+        <p>Define specific colors for each origin.</p>
+
+        <div class="viz-container">
+            <div id="vis4_1"></div>
+        </div>
+
+        <div class="code-box">
+const spec4_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": {"type": "point", "filled": true, "size": 100},
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {
+      "field": "Origin",
+      "type": "nominal",
+      "scale": {
+        "domain": ["USA", "Europe", "Japan"],  // Define categories
+        "range": ["#e74c3c", "#3498db", "#2ecc71"]  // Define colors
+      },
+      "legend": {
+        "title": "Country of Origin",
+        "orient": "right",
+        "titleFontSize": 14,
+        "labelFontSize": 12
+      }
+    },
+    "tooltip": [
+      {"field": "Name", "type": "nominal"},
+      {"field": "Origin", "type": "nominal"}
+    ]
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Custom Color Scale"
+};
+        </div>
+
+        <h3>Example 4.2: Customizing Axes</h3>
+        <p>Format axis titles, labels, and grid.</p>
+
+        <div class="viz-container">
+            <div id="vis4_2"></div>
+        </div>
+
+        <div class="code-box">
+const spec4_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "point",
+  "encoding": {
+    "x": {
+      "field": "Horsepower",
+      "type": "quantitative",
+      "axis": {
+        "title": "Horsepower (HP)",
+        "titleFontSize": 14,
+        "titleFontWeight": "bold",
+        "grid": true,
+        "gridColor": "lightgray"
+      }
+    },
+    "y": {
+      "field": "Miles_per_Gallon",
+      "type": "quantitative",
+      "axis": {
+        "title": "Fuel Efficiency (MPG)",
+        "titleFontSize": 14,
+        "titleFontWeight": "bold",
+        "format": ".1f",  // Format numbers
+        "grid": true
+      }
+    },
+    "color": {"field": "Origin", "type": "nominal"}
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Customized Axes"
+};
+        </div>
+
+        <h3>Example 4.3: Logarithmic Scale</h3>
+        <p>Use log scale for better visualization of skewed data.</p>
+
+        <div class="viz-container">
+            <div id="vis4_3"></div>
+        </div>
+
+        <div class="code-box">
+const spec4_3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "point",
+  "encoding": {
+    "x": {
+      "field": "Horsepower",
+      "type": "quantitative",
+      "scale": {"type": "log"},  // Logarithmic scale
+      "axis": {"title": "Horsepower (log scale)"}
+    },
+    "y": {
+      "field": "Miles_per_Gallon",
+      "type": "quantitative",
+      "scale": {"zero": false}  // Don't force zero baseline
+    },
+    "color": {"field": "Origin", "type": "nominal"}
+  },
+  "width": 600,
+  "title": "Logarithmic Scale Example"
+};
+        </div>
+    </div>
+
+    <!-- Part 5: Multi-view Composition -->
+    <div class="section" id="part5">
+        <h2>Part 5: Multi-view Composition</h2>
+
+        <div class="info-box">
+            <p><strong>Combine multiple views to create complex visualizations:</strong></p>
+            <ul>
+                <li><code>hconcat</code> - Horizontal concatenation (side by side)</li>
+                <li><code>vconcat</code> - Vertical concatenation (stacked)</li>
+                <li><code>layer</code> - Overlay charts on same axes</li>
+                <li><code>facet</code> - Create small multiples</li>
+                <li><code>repeat</code> - Repeat charts with different fields</li>
+            </ul>
+        </div>
+
+        <h3>Example 5.1: Dashboard Layout</h3>
+        <p>Multiple views arranged in a dashboard.</p>
+
+        <div class="viz-container">
+            <div id="vis5_1"></div>
+        </div>
+
+        <div class="code-box">
+const spec5_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "vconcat": [  // Vertical concatenation
+    {
+      "hconcat": [  // Horizontal concatenation
+        {
+          "mark": "point",
+          "encoding": {
+            "x": {"field": "Horsepower", "type": "quantitative"},
+            "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+            "color": {"field": "Origin", "type": "nominal"}
+          },
+          "width": 300,
+          "height": 250,
+          "title": "HP vs MPG"
+        },
+        {
+          "mark": "bar",
+          "encoding": {
+            "x": {"bin": {"maxbins": 15}, "field": "Horsepower"},
+            "y": {"aggregate": "count"}
+          },
+          "width": 300,
+          "height": 250,
+          "title": "HP Distribution"
+        }
+      ]
+    },
+    {
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Origin", "type": "nominal"},
+        "y": {"aggregate": "mean", "field": "Miles_per_Gallon"},
+        "color": {"field": "Origin", "type": "nominal"}
+      },
+      "width": 620,
+      "title": "Average MPG by Origin"
+    }
+  ]
+};
+        </div>
+
+        <h3>Example 5.2: Layered Chart</h3>
+        <p>Scatter plot with regression line.</p>
+
+        <div class="viz-container">
+            <div id="vis5_2"></div>
+        </div>
+
+        <div class="code-box">
+const spec5_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "layer": [  // Layer multiple marks
+    {
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "Horsepower", "type": "quantitative"},
+        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+        "color": {"field": "Origin", "type": "nominal"}
+      }
+    },
+    {
+      "mark": {"type": "line", "color": "red", "size": 3},
+      "transform": [
+        {
+          "regression": "Miles_per_Gallon",  // Calculate regression
+          "on": "Horsepower"
+        }
+      ],
+      "encoding": {
+        "x": {"field": "Horsepower", "type": "quantitative"},
+        "y": {"field": "Miles_per_Gallon", "type": "quantitative"}
+      }
+    }
+  ],
+  "width": 600,
+  "height": 400,
+  "title": "Scatter Plot with Regression Line"
+};
+        </div>
+
+        <h3>Example 5.3: Faceted Chart (Small Multiples)</h3>
+        <p>Separate charts for each category.</p>
+
+        <div class="viz-container">
+            <div id="vis5_3"></div>
+        </div>
+
+        <div class="code-box">
+const spec5_3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},
+    "column": {"field": "Origin", "type": "nominal"}  // Facet by origin
+  },
+  "width": 250,
+  "height": 250,
+  "title": "HP vs MPG by Origin (Faceted)"
+};
+        </div>
+    </div>
+
+    <!-- Part 6: Interaction -->
+    <div class="section" id="part6">
+        <h2>Part 6: Interaction</h2>
+
+        <div class="info-box">
+            <p><strong>Make visualizations interactive and explorable:</strong></p>
+            <ul>
+                <li><strong>Selection:</strong> Click or drag to select data</li>
+                <li><strong>Binding:</strong> Connect to UI elements (dropdowns, sliders)</li>
+                <li><strong>Conditional Encoding:</strong> Change appearance based on selection</li>
+                <li><strong>Linked Views:</strong> Selection affects multiple charts</li>
+                <li><strong>Tooltips:</strong> Show details on hover</li>
+            </ul>
+        </div>
+
+        <h3>Example 6.1: Click to Highlight</h3>
+        <p>Click on legend to filter data.</p>
+
+        <div class="viz-container">
+            <div id="vis6_1"></div>
+        </div>
+
+        <div class="code-box">
+const spec6_1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "params": [{
+    "name": "origin_selection",
+    "select": {"type": "point", "fields": ["Origin"]},  // Selection parameter
+    "bind": "legend"  // Bind to legend
+  }],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {
+      "field": "Origin",
+      "type": "nominal",
+      "condition": {
+        "param": "origin_selection",  // Conditional encoding
+        "value": null
+      }
+    },
+    "opacity": {
+      "condition": {"param": "origin_selection", "value": 1},
+      "value": 0.2
+    },
+    "size": {
+      "condition": {"param": "origin_selection", "value": 100},
+      "value": 30
+    }
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Click on Legend to Filter"
+};
+        </div>
+
+        <h3>Example 6.2: Brush Selection</h3>
+        <p>Drag to select a region.</p>
+
+        <div class="viz-container">
+            <div id="vis6_2"></div>
+        </div>
+
+        <div class="code-box">
+const spec6_2 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "params": [{
+    "name": "brush",
+    "select": {"type": "interval"}  // Interval selection (brush)
+  }],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {
+      "condition": {
+        "param": "brush",
+        "field": "Origin",
+        "type": "nominal"
+      },
+      "value": "lightgray"
+    },
+    "size": {
+      "condition": {"param": "brush", "value": 100},
+      "value": 30
+    }
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Drag to Select Region (Brush)"
+};
+        </div>
+
+        <h3>Example 6.3: Linked Views</h3>
+        <p>Selection in one chart affects another.</p>
+
+        <div class="viz-container">
+            <div id="vis6_3"></div>
+        </div>
+
+        <div class="code-box">
+const spec6_3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "params": [{
+    "name": "brush_linked",
+    "select": {"type": "interval"}  // Shared selection
+  }],
+  "hconcat": [
+    {
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "Horsepower", "type": "quantitative"},
+        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+        "color": {
+          "condition": {
+            "param": "brush_linked",
+            "field": "Origin",
+            "type": "nominal"
+          },
+          "value": "lightgray"
+        }
+      },
+      "width": 300,
+      "height": 300,
+      "title": "Select Here"
+    },
+    {
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "Weight_in_lbs", "type": "quantitative"},
+        "y": {"field": "Acceleration", "type": "quantitative"},
+        "color": {
+          "condition": {
+            "param": "brush_linked",
+            "field": "Origin",
+            "type": "nominal"
+          },
+          "value": "lightgray"
+        }
+      },
+      "width": 300,
+      "height": 300,
+      "title": "Linked View"
+    }
+  ]
+};
+        </div>
+
+        <h3>Example 6.4: Dropdown Filter</h3>
+        <p>Use dropdown menu to filter by origin.</p>
+
+        <div class="viz-container">
+            <div id="vis6_4"></div>
+        </div>
+
+        <div class="code-box">
+const spec6_4 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "params": [{
+    "name": "origin_select",
+    "select": {"type": "point", "fields": ["Origin"]},
+    "bind": {
+      "input": "select",
+      "options": [null, "USA", "Europe", "Japan"],  // Dropdown options
+      "labels": ["All", "USA", "Europe", "Japan"],
+      "name": "Origin: "
+    },
+    "value": null
+  }],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},
+    "opacity": {
+      "condition": {"param": "origin_select", "value": 1},
+      "value": 0.1
+    }
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Filter by Origin Using Dropdown"
+};
+        </div>
+
+        <h3>Example 6.5: Slider Filter</h3>
+        <p>Use slider to filter by year.</p>
+
+        <div class="viz-container">
+            <div id="vis6_5"></div>
+        </div>
+
+        <div class="code-box">
+const spec6_5 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+  "params": [{
+    "name": "year_slider",
+    "value": 1970,
+    "bind": {
+      "input": "range",  // Slider input
+      "min": 1970,
+      "max": 1982,
+      "step": 1,
+      "name": "Minimum Year: "
+    }
+  }],
+  "transform": [
+    {"filter": "datum.Year >= year_slider"}  // Filter based on slider
+  ],
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"},
+    "tooltip": [
+      {"field": "Name", "type": "nominal"},
+      {"field": "Year", "type": "ordinal"}
+    ]
+  },
+  "width": 600,
+  "height": 400,
+  "title": "Filter by Year Using Slider"
+};
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="section">
+        <h2>🎓 Summary and Next Steps</h2>
+
+        <div class="info-box">
+            <p><strong>Congratulations!</strong> You've completed all 6 essential topics:</p>
+            <ul>
+                <li>✓ Introduction to Vega-Lite</li>
+                <li>✓ Marks and Encoding</li>
+                <li>✓ Data Transformation</li>
+                <li>✓ Scales, Axes, and Legends</li>
+                <li>✓ Multi-view Composition</li>
+                <li>✓ Interaction</li>
+            </ul>
+        </div>
+
+        <h3>📚 Practice Exercises:</h3>
+        <ol>
+            <li>Load your own dataset and create visualizations</li>
+            <li>Create a dashboard with filtering and linked views</li>
+            <li>Explore other datasets from the Vega-Lite examples</li>
+            <li>Combine multiple interaction techniques</li>
+        </ol>
+
+        <h3>🔗 Helpful Resources:</h3>
+        <ul>
+            <li><a href="https://vega.github.io/vega-lite/" target="_blank">Vega-Lite Documentation</a></li>
+            <li><a href="https://vega.github.io/vega-lite/examples/" target="_blank">Example Gallery</a></li>
+            <li><a href="https://observablehq.com/@uwdata" target="_blank">UW Data Lab Notebooks</a></li>
+            <li><a href="https://vega.github.io/editor/" target="_blank">Vega Editor (Online)</a></li>
+        </ul>
+
+        <h3>💡 Tips for Your Project:</h3>
+        <ul>
+            <li>Start with simple visualizations and build complexity</li>
+            <li>Think about the story you want to tell</li>
+            <li>Use interaction to enable exploration</li>
+            <li>Test with users and iterate</li>
+            <li>Document your design choices</li>
+        </ul>
+    </div>
+
+    <script>
+        // Function to embed Vega-Lite specifications
+        function embedSpec(id, spec) {
+            vegaEmbed('#' + id, spec, {
+                actions: {
+                    export: true,
+                    source: false,
+                    compiled: false,
+                    editor: true
+                }
+            }).catch(console.error);
+        }
+
+        // Part 1: Introduction
+        const spec1_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "A simple scatter plot",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"}
+            }
+        };
+
+        const spec1_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "size": {"field": "Weight_in_lbs", "type": "quantitative"},
+                "tooltip": [
+                    {"field": "Name", "type": "nominal"},
+                    {"field": "Horsepower", "type": "quantitative"},
+                    {"field": "Miles_per_Gallon", "type": "quantitative"}
+                ]
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Car Performance: Horsepower vs MPG"
+        };
+
+        // Part 2: Marks and Encoding
+        const spec2_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "bar",
+            "encoding": {
+                "x": {"field": "Origin", "type": "nominal"},
+                "y": {"aggregate": "count", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"}
+            },
+            "width": 400,
+            "title": "Number of Cars by Origin"
+        };
+
+        const spec2_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": {"type": "line", "point": true},
+            "encoding": {
+                "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+                "y": {
+                    "aggregate": "mean",
+                    "field": "Miles_per_Gallon",
+                    "type": "quantitative",
+                    "title": "Average MPG"
+                },
+                "tooltip": [
+                    {"field": "Year", "type": "ordinal"},
+                    {"aggregate": "mean", "field": "Miles_per_Gallon", "type": "quantitative"}
+                ]
+            },
+            "width": 600,
+            "title": "Average MPG Over Time"
+        };
+
+        const spec2_3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "hconcat": [
+                {
+                    "mark": "point",
+                    "encoding": {
+                        "x": {"field": "Cylinders", "type": "quantitative"},
+                        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                        "color": {"field": "Cylinders", "type": "quantitative"}
+                    },
+                    "width": 250,
+                    "title": "Cylinders as Quantitative"
+                },
+                {
+                    "mark": "point",
+                    "encoding": {
+                        "x": {"field": "Cylinders", "type": "ordinal"},
+                        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                        "color": {"field": "Cylinders", "type": "ordinal"}
+                    },
+                    "width": 250,
+                    "title": "Cylinders as Ordinal"
+                }
+            ]
+        };
+
+        // Part 3: Data Transformation
+        const spec3_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "transform": [
+                {"filter": "datum.Miles_per_Gallon > 30"}
+            ],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "tooltip": [
+                    {"field": "Name", "type": "nominal"},
+                    {"field": "Miles_per_Gallon", "type": "quantitative"}
+                ]
+            },
+            "width": 600,
+            "title": "Fuel-Efficient Cars (MPG > 30)"
+        };
+
+        const spec3_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "transform": [
+                {
+                    "calculate": "datum.Horsepower / datum.Cylinders",
+                    "as": "HP_per_Cylinder"
+                }
+            ],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Cylinders", "type": "ordinal"},
+                "y": {"field": "HP_per_Cylinder", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "tooltip": [
+                    {"field": "Name", "type": "nominal"},
+                    {"field": "HP_per_Cylinder", "type": "quantitative", "format": ".2f"}
+                ]
+            },
+            "width": 600,
+            "title": "Horsepower per Cylinder"
+        };
+
+        const spec3_3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "bar",
+            "encoding": {
+                "x": {
+                    "bin": {"maxbins": 20},
+                    "field": "Horsepower",
+                    "type": "quantitative"
+                },
+                "y": {
+                    "aggregate": "count",
+                    "type": "quantitative"
+                },
+                "tooltip": [
+                    {"bin": true, "field": "Horsepower"},
+                    {"aggregate": "count"}
+                ]
+            },
+            "width": 600,
+            "title": "Distribution of Horsepower"
+        };
+
+        // Part 4: Scales, Axes, and Legends
+        const spec4_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": {"type": "point", "filled": true, "size": 100},
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {
+                    "field": "Origin",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": ["USA", "Europe", "Japan"],
+                        "range": ["#e74c3c", "#3498db", "#2ecc71"]
+                    },
+                    "legend": {
+                        "title": "Country of Origin",
+                        "orient": "right",
+                        "titleFontSize": 14,
+                        "labelFontSize": 12
+                    }
+                },
+                "tooltip": [
+                    {"field": "Name", "type": "nominal"},
+                    {"field": "Origin", "type": "nominal"}
+                ]
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Custom Color Scale"
+        };
+
+        const spec4_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "point",
+            "encoding": {
+                "x": {
+                    "field": "Horsepower",
+                    "type": "quantitative",
+                    "axis": {
+                        "title": "Horsepower (HP)",
+                        "titleFontSize": 14,
+                        "titleFontWeight": "bold",
+                        "grid": true,
+                        "gridColor": "lightgray"
+                    }
+                },
+                "y": {
+                    "field": "Miles_per_Gallon",
+                    "type": "quantitative",
+                    "axis": {
+                        "title": "Fuel Efficiency (MPG)",
+                        "titleFontSize": 14,
+                        "titleFontWeight": "bold",
+                        "format": ".1f",
+                        "grid": true
+                    }
+                },
+                "color": {"field": "Origin", "type": "nominal"}
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Customized Axes"
+        };
+
+        const spec4_3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "point",
+            "encoding": {
+                "x": {
+                    "field": "Horsepower",
+                    "type": "quantitative",
+                    "scale": {"type": "log"},
+                    "axis": {"title": "Horsepower (log scale)"}
+                },
+                "y": {
+                    "field": "Miles_per_Gallon",
+                    "type": "quantitative",
+                    "scale": {"zero": false}
+                },
+                "color": {"field": "Origin", "type": "nominal"}
+            },
+            "width": 600,
+            "title": "Logarithmic Scale Example"
+        };
+
+        // Part 5: Multi-view Composition
+        const spec5_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "vconcat": [
+                {
+                    "hconcat": [
+                        {
+                            "mark": "point",
+                            "encoding": {
+                                "x": {"field": "Horsepower", "type": "quantitative"},
+                                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                                "color": {"field": "Origin", "type": "nominal"}
+                            },
+                            "width": 300,
+                            "height": 250,
+                            "title": "HP vs MPG"
+                        },
+                        {
+                            "mark": "bar",
+                            "encoding": {
+                                "x": {"bin": {"maxbins": 15}, "field": "Horsepower"},
+                                "y": {"aggregate": "count"}
+                            },
+                            "width": 300,
+                            "height": 250,
+                            "title": "HP Distribution"
+                        }
+                    ]
+                },
+                {
+                    "mark": "bar",
+                    "encoding": {
+                        "x": {"field": "Origin", "type": "nominal"},
+                        "y": {"aggregate": "mean", "field": "Miles_per_Gallon"},
+                        "color": {"field": "Origin", "type": "nominal"}
+                    },
+                    "width": 620,
+                    "title": "Average MPG by Origin"
+                }
+            ]
+        };
+
+        const spec5_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "layer": [
+                {
+                    "mark": "point",
+                    "encoding": {
+                        "x": {"field": "Horsepower", "type": "quantitative"},
+                        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                        "color": {"field": "Origin", "type": "nominal"}
+                    }
+                },
+                {
+                    "mark": {"type": "line", "color": "red", "size": 3},
+                    "transform": [
+                        {
+                            "regression": "Miles_per_Gallon",
+                            "on": "Horsepower"
+                        }
+                    ],
+                    "encoding": {
+                        "x": {"field": "Horsepower", "type": "quantitative"},
+                        "y": {"field": "Miles_per_Gallon", "type": "quantitative"}
+                    }
+                }
+            ],
+            "width": 600,
+            "height": 400,
+            "title": "Scatter Plot with Regression Line"
+        };
+
+        const spec5_3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "column": {"field": "Origin", "type": "nominal"}
+            },
+            "width": 250,
+            "height": 250,
+            "title": "HP vs MPG by Origin (Faceted)"
+        };
+
+        // Part 6: Interaction
+        const spec6_1 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "params": [{
+                "name": "origin_selection",
+                "select": {"type": "point", "fields": ["Origin"]},
+                "bind": "legend"
+            }],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {
+                    "field": "Origin",
+                    "type": "nominal",
+                    "condition": {
+                        "param": "origin_selection",
+                        "value": null
+                    }
+                },
+                "opacity": {
+                    "condition": {"param": "origin_selection", "value": 1},
+                    "value": 0.2
+                },
+                "size": {
+                    "condition": {"param": "origin_selection", "value": 100},
+                    "value": 30
+                }
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Click on Legend to Filter"
+        };
+
+        const spec6_2 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "params": [{
+                "name": "brush",
+                "select": {"type": "interval"}
+            }],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {
+                    "condition": {
+                        "param": "brush",
+                        "field": "Origin",
+                        "type": "nominal"
+                    },
+                    "value": "lightgray"
+                },
+                "size": {
+                    "condition": {"param": "brush", "value": 100},
+                    "value": 30
+                }
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Drag to Select Region (Brush)"
+        };
+
+        const spec6_3 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "params": [{
+                "name": "brush_linked",
+                "select": {"type": "interval"}
+            }],
+            "hconcat": [
+                {
+                    "mark": "point",
+                    "encoding": {
+                        "x": {"field": "Horsepower", "type": "quantitative"},
+                        "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                        "color": {
+                            "condition": {
+                                "param": "brush_linked",
+                                "field": "Origin",
+                                "type": "nominal"
+                            },
+                            "value": "lightgray"
+                        }
+                    },
+                    "width": 300,
+                    "height": 300,
+                    "title": "Select Here"
+                },
+                {
+                    "mark": "point",
+                    "encoding": {
+                        "x": {"field": "Weight_in_lbs", "type": "quantitative"},
+                        "y": {"field": "Acceleration", "type": "quantitative"},
+                        "color": {
+                            "condition": {
+                                "param": "brush_linked",
+                                "field": "Origin",
+                                "type": "nominal"
+                            },
+                            "value": "lightgray"
+                        }
+                    },
+                    "width": 300,
+                    "height": 300,
+                    "title": "Linked View"
+                }
+            ]
+        };
+
+        const spec6_4 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "params": [{
+                "name": "origin_select",
+                "select": {"type": "point", "fields": ["Origin"]},
+                "bind": {
+                    "input": "select",
+                    "options": [null, "USA", "Europe", "Japan"],
+                    "labels": ["All", "USA", "Europe", "Japan"],
+                    "name": "Origin: "
+                },
+                "value": null
+            }],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "opacity": {
+                    "condition": {"param": "origin_select", "value": 1},
+                    "value": 0.1
+                }
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Filter by Origin Using Dropdown"
+        };
+
+        const spec6_5 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://vega.github.io/vega-lite/data/cars.json"},
+            "params": [{
+                "name": "year_slider",
+                "value": 1970,
+                "bind": {
+                    "input": "range",
+                    "min": 1970,
+                    "max": 1982,
+                    "step": 1,
+                    "name": "Minimum Year: "
+                }
+            }],
+            "transform": [
+                {"filter": "datum.Year >= year_slider"}
+            ],
+            "mark": "point",
+            "encoding": {
+                "x": {"field": "Horsepower", "type": "quantitative"},
+                "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+                "color": {"field": "Origin", "type": "nominal"},
+                "tooltip": [
+                    {"field": "Name", "type": "nominal"},
+                    {"field": "Year", "type": "ordinal"}
+                ]
+            },
+            "width": 600,
+            "height": 400,
+            "title": "Filter by Year Using Slider"
+        };
+
+        // Embed all visualizations
+        embedSpec('vis1_1', spec1_1);
+        embedSpec('vis1_2', spec1_2);
+        embedSpec('vis2_1', spec2_1);
+        embedSpec('vis2_2', spec2_2);
+        embedSpec('vis2_3', spec2_3);
+        embedSpec('vis3_1', spec3_1);
+        embedSpec('vis3_2', spec3_2);
+        embedSpec('vis3_3', spec3_3);
+        embedSpec('vis4_1', spec4_1);
+        embedSpec('vis4_2', spec4_2);
+        embedSpec('vis4_3', spec4_3);
+        embedSpec('vis5_1', spec5_1);
+        embedSpec('vis5_2', spec5_2);
+        embedSpec('vis5_3', spec5_3);
+        embedSpec('vis6_1', spec6_1);
+        embedSpec('vis6_2', spec6_2);
+        embedSpec('vis6_3', spec6_3);
+        embedSpec('vis6_4', spec6_4);
+        embedSpec('vis6_5', spec6_5);
+
+        console.log("✓ All visualizations loaded successfully!");
+    </script>
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data Exam 2023 - Solutions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #6366f108 0%, #3730a308 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 40%, #6366f1 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .level-note {
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #92400e;
+    font-weight: 500;
+  }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #3730a3; color: white; transform: translateY(-1px); }
+  .nav-link.m-only { border: 1px dashed #6366f1; }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #1e1b4b; }
+  .q-marks {
+    background: linear-gradient(135deg, #1e1b4b, #6366f1);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #3730a3;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #1e1b4b;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #3730a3, #6366f1);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #3730a3, #6366f1);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #1e1b4b; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border: 1px solid #a5b4fc;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #3730a3; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #312e81; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #92400e; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #1e1b4b; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #6366f1; background: #eef2ff; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #1e1b4b; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  .m-level-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #3730a3;
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    border: 1px dashed #6366f1;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #7c3aed;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #1e1b4b, #3730a3);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #1e1b4b; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Big Data Exam 2023 — Solutions</h1>
+  <div class="subtitle">University of Glasgow — M-Level & H-Level Summer Diet</div>
+  <div class="badge-row">
+    <span class="badge">M: 75 Marks / 4 Qs</span>
+    <span class="badge">H: 60 Marks / 3 Qs</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="level-note">
+    <strong>Note:</strong> H-level paper includes Q1–Q3 only (60 marks). M-level includes Q1–Q4 (75 marks). Solutions below are generated from course knowledge — no official answers available.
+  </div>
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — Big Data & MapReduce</a>
+    <a href="#q2" class="nav-link">Q2 — Spark & YARN</a>
+    <a href="#q3" class="nav-link">Q3 — Storage Systems</a>
+    <a href="#q4" class="nav-link m-only">Q4 — HDFS Replication (M only)</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — Big Data Concepts & MapReduce</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q1a -->
+    <div class="q-text">
+      <strong>(a)</strong> Describe how BBC video encoding can be characterised as a Big Data problem using the 5V dimensions. <span class="marks-badge">6 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>BBC Video Encoding and the 5Vs of Big Data</h4>
+
+      <p>The BBC produces thousands of hours of video content annually — live broadcasts, on-demand shows, news segments, documentaries — all of which must be encoded into multiple formats (SD, HD, 4K) and codecs (H.264, H.265, VP9, AV1) for streaming across devices. This is a textbook Big Data challenge when viewed through the lens of the 5V framework.</p>
+
+      <table>
+        <tr><th>Dimension</th><th>How It Applies to BBC Video Encoding</th></tr>
+        <tr>
+          <td><strong>Volume</strong></td>
+          <td>The raw data is enormous. A single hour of uncompressed 4K video is approximately 300GB. The BBC's archive contains over 15 million items spanning decades. When you factor in multiple encoded versions per title, you're looking at <strong>petabytes</strong> of data that must be stored and processed. Even daily intake of new content runs into terabytes.</td>
+        </tr>
+        <tr>
+          <td><strong>Velocity</strong></td>
+          <td>Live broadcasts (news, sports events like Wimbledon, the World Cup) demand <strong>real-time or near-real-time encoding</strong>. The raw feed must be encoded and pushed to CDNs within seconds of capture. Meanwhile, new on-demand content is uploaded continuously by production teams across BBC Studios worldwide.</td>
+        </tr>
+        <tr>
+          <td><strong>Variety</strong></td>
+          <td>The data is highly heterogeneous. Each piece of content exists in multiple resolutions (480p, 720p, 1080p, 4K), multiple codecs (H.264 for older devices, H.265 for modern ones, VP9 for web), multiple audio tracks (English, Welsh, Gaelic, audio description), subtitles in various languages, and rich metadata (programme info, scene descriptions, rights data).</td>
+        </tr>
+        <tr>
+          <td><strong>Veracity</strong></td>
+          <td>Encoding must be <strong>accurate and trustworthy</strong>. A single encoding artefact — colour banding, audio/video desync, dropped frames — renders content unwatchable. The BBC must verify each encoded version against quality benchmarks. Corrupted metadata could mean the wrong content is served, or rights-restricted content is shown in the wrong region.</td>
+        </tr>
+        <tr>
+          <td><strong>Value</strong></td>
+          <td>Properly encoded video is directly tied to revenue and audience engagement. Efficient encoding using modern codecs (AV1) can reduce file sizes by 30–50%, saving <strong>millions in CDN and storage costs</strong>. Poor encoding quality drives viewers to competitors. Adaptive bitrate streaming (enabled by multi-format encoding) provides smooth playback that retains subscribers.</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>Real-World Comparison: Netflix</h5>
+        <p>Netflix encodes each title into approximately <strong>120 different versions</strong> — combinations of resolution, bitrate, and codec. For their catalogue of ~17,000 titles, that means over 2 million encoded files. When a new season of a flagship show drops at midnight globally, all 120 versions per episode must be ready simultaneously — that is Volume meeting Velocity at scale. Each version is a different format (Variety), each must be pixel-perfect (Veracity), and the entire effort exists to keep 230 million subscribers paying (Value).</p>
+      </div>
+    </div>
+
+    <!-- Q1b -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(b)</strong> Describe the differences between batch and stream processing. <span class="marks-badge">4 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Batch vs Stream Processing</h4>
+
+      <p>These are the two fundamental paradigms for processing data at scale, and they differ in almost every dimension — data model, latency, completeness, and use cases.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Batch Processing</h5>
+          <p>Operates on <strong>complete, bounded datasets</strong>. The entire dataset is available before processing begins. Achieves high throughput by processing large volumes at once, but incurs <strong>higher latency</strong> — results are available minutes to hours after the data arrives.</p>
+          <p style="margin-top: 0.5rem;"><strong>Example:</strong> Hadoop MapReduce processes yesterday's web server logs overnight to produce a daily traffic report. The report is comprehensive and accurate, but it reflects yesterday's state, not right now.</p>
+          <p style="margin-top: 0.5rem;"><strong>Use cases:</strong> Monthly financial reports, training machine learning models, historical trend analysis, ETL pipelines, building search indexes.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Stream Processing</h5>
+          <p>Operates on <strong>unbounded, continuous data</strong> — records arrive indefinitely and are processed as they appear. Achieves <strong>very low latency</strong> (milliseconds to seconds) but processes fewer records per unit time than batch.</p>
+          <p style="margin-top: 0.5rem;"><strong>Example:</strong> Apache Spark Streaming or Flink analyses credit card transactions as they happen, flagging suspicious patterns within milliseconds. You catch fraud <em>as it occurs</em>, not the next morning.</p>
+          <p style="margin-top: 0.5rem;"><strong>Use cases:</strong> Fraud detection, live dashboards, real-time recommendations, IoT sensor monitoring, alerting systems.</p>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <h5>The Fundamental Trade-off</h5>
+        <p><strong>Latency vs Completeness.</strong> Batch gives you <em>complete, accurate</em> results but hours later. Stream gives you <em>instant</em> results but they may be incomplete or require later correction. Modern systems like Apache Beam and the Lambda Architecture attempt to combine both — stream for speed, batch for accuracy.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Everyday Analogy</h5>
+        <p><strong>Batch</strong> is like a newspaper: comprehensive coverage of yesterday's events, delivered this morning. You get the full picture, but it's already old. <strong>Stream</strong> is like a live Twitter feed: instant updates as events unfold, but you might see incomplete information, rumours, or corrections later. Most news organisations now use both — the live feed for breaking news, the newspaper for analysis.</p>
+      </div>
+    </div>
+
+    <!-- Q1c -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(c)</strong> Design a MapReduce solution for BBC video encoding/processing. <span class="marks-badge">10 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>MapReduce Design for Video Encoding</h4>
+
+      <p>Video encoding is an inherently parallelisable problem — each video (or segment of a video) can be encoded independently. This maps naturally to the MapReduce paradigm, though several design decisions require careful thought.</p>
+
+      <h4>Mapper Design</h4>
+
+      <ol class="step-list">
+        <li><strong>Input:</strong> Each mapper receives one video file or one segment of a large video as its input split. The key-value pair is <code>(video_filename, raw_video_bytes)</code>. We need a <strong>custom InputFormat</strong> because video files cannot be split at arbitrary byte offsets — you must split at scene boundaries or GOP (Group of Pictures) boundaries to avoid corrupting the video stream.</li>
+        <li><strong>Processing:</strong> The mapper runs the actual encoding algorithm — transcoding the raw video from its source format to the target format and resolution. For example, converting a 4K H.264 master to a 720p H.265 stream. This is the most <strong>CPU-intensive</strong> step and dominates the total job time.</li>
+        <li><strong>Output:</strong> The mapper emits <code>(video_id + segment_number, encoded_segment_bytes)</code>. The composite key ensures segments can be reassembled in the correct order during the reduce phase.</li>
+      </ol>
+
+      <h4>Reducer Design</h4>
+
+      <ol class="step-list">
+        <li><strong>Grouping:</strong> The framework groups all encoded segments by <code>video_id</code>. The secondary sort on <code>segment_number</code> ensures segments arrive in order.</li>
+        <li><strong>Assembly:</strong> The reducer concatenates ordered segments into a complete encoded video file. It writes the final output to HDFS.</li>
+        <li><strong>Validation:</strong> The reducer performs quality checks — verifying frame counts, checking audio/video sync, validating container format integrity. Failed validations can trigger re-encoding of specific segments.</li>
+      </ol>
+
+      <div class="code-block">// Pseudo-code for the MapReduce Video Encoder
+
+class VideoMapper extends Mapper&lt;Text, BytesWritable, CompositeKey, BytesWritable&gt; {
+  void map(Text filename, BytesWritable rawVideo, Context ctx) {
+    EncodedSegment segment = FFmpegEncoder.encode(rawVideo, TARGET_FORMAT);
+    CompositeKey key = new CompositeKey(filename, segmentNumber);
+    ctx.write(key, new BytesWritable(segment.bytes));
+  }
+}
+
+class VideoReducer extends Reducer&lt;CompositeKey, BytesWritable, Text, BytesWritable&gt; {
+  void reduce(CompositeKey key, Iterable&lt;BytesWritable&gt; segments, Context ctx) {
+    ByteArrayOutputStream finalVideo = new ByteArrayOutputStream();
+    for (BytesWritable seg : segments) {   // segments arrive in order
+      finalVideo.write(seg.getBytes());
+    }
+    if (QualityChecker.validate(finalVideo)) {
+      ctx.write(key.getVideoId(), new BytesWritable(finalVideo.toByteArray()));
+    }
+  }
+}
+
+// Custom InputFormat: splits by video file (or GOP boundaries for large files)
+class VideoInputFormat extends FileInputFormat&lt;Text, BytesWritable&gt; {
+  // Override isSplitable() to split only at scene/GOP boundaries
+  // Override createRecordReader() to return whole video segments
+}</div>
+
+      <h4>Key Design Considerations</h4>
+
+      <ul class="bullet-list">
+        <li><strong>Data locality is critical:</strong> Raw 4K video files are massive (300GB+ per hour). Moving them across the network is prohibitively expensive. The scheduler must assign map tasks to nodes where the raw video blocks are already stored in HDFS. This is the core advantage of "moving computation to data."</li>
+        <li><strong>Multiple output formats:</strong> If the BBC needs each video in 10 formats, you can either run 10 separate MR jobs (simple but reads raw data 10 times) or use Hadoop's <code>MultipleOutputs</code> class to produce all formats in a single mapper pass (complex but reads once).</li>
+        <li><strong>CPU-bound workload:</strong> Video encoding is computationally expensive, unlike typical MR tasks that are I/O-bound. You may need to configure fewer map tasks per node than usual, or use nodes with more CPU cores and less disk.</li>
+        <li><strong>Speculative execution:</strong> Since encoding is CPU-intensive, some tasks may run slower. Hadoop's speculative execution can launch backup copies of slow tasks on idle nodes. However, this doubles CPU usage, so it should be tuned carefully.</li>
+        <li><strong>Combiner is not applicable:</strong> Unlike word count, video segments cannot be "combined" — they are unique binary data, not aggregatable values.</li>
+      </ul>
+
+      <div class="example-box">
+        <h5>Real-World Implementation</h5>
+        <p>YouTube processes over 500 hours of video uploaded every minute. Their encoding pipeline is essentially a massive distributed MapReduce-like system: each uploaded video is split into segments, encoded in parallel across thousands of machines into multiple resolutions and codecs, then reassembled. The reason you can watch a just-uploaded video in 360p quickly (fast low-res encode) but 4K takes longer (slow high-res encode) is exactly this parallel pipeline at work.</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Answer Strategy</h5>
+        <p>For 10 marks, cover: (1) custom InputFormat and why, (2) mapper input/output with key design, (3) reducer assembly and validation, (4) data locality importance, (5) CPU-bound nature. A simple diagram showing the pipeline from raw video through map/shuffle/reduce to encoded output is very effective.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — Spark & YARN</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q2a -->
+    <div class="q-text">
+      <strong>(a)</strong> What are the advantages of Spark over Hadoop MapReduce? <span class="marks-badge">6 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Spark's Advantages Over Hadoop MapReduce</h4>
+
+      <p>While Hadoop MapReduce pioneered large-scale distributed data processing, it has fundamental architectural limitations that Spark was specifically designed to overcome. The improvements are not incremental — for many workloads, Spark is <strong>10x to 100x faster</strong>.</p>
+
+      <table>
+        <tr><th>Feature</th><th>Hadoop MapReduce</th><th>Apache Spark</th></tr>
+        <tr>
+          <td><strong>Data Persistence</strong></td>
+          <td>Writes intermediate results to HDFS (disk) after every stage</td>
+          <td>Keeps data in memory (RDDs). Only spills to disk when memory is full</td>
+        </tr>
+        <tr>
+          <td><strong>Execution Model</strong></td>
+          <td>Rigid 2-stage: Map → Reduce. Multi-step jobs require chaining multiple MR jobs</td>
+          <td>DAG (Directed Acyclic Graph) of arbitrary transformations — map, filter, join, group, etc. in one job</td>
+        </tr>
+        <tr>
+          <td><strong>Optimisation</strong></td>
+          <td>No cross-stage optimisation. Each MR job is independent</td>
+          <td>Lazy evaluation builds full plan first; Catalyst optimizer eliminates redundant operations and minimises shuffles</td>
+        </tr>
+        <tr>
+          <td><strong>API Breadth</strong></td>
+          <td>Only MapReduce. Need separate tools for SQL, streaming, ML, graph</td>
+          <td>Unified API: Spark SQL, Spark Streaming, MLlib, GraphX — all in one framework</td>
+        </tr>
+        <tr>
+          <td><strong>Iterative Algorithms</strong></td>
+          <td>Reads data from disk on every iteration. 100 iterations = 100 disk reads</td>
+          <td>Cache data in memory. 100 iterations = 1 disk read + 99 memory reads. Massive speedup for ML</td>
+        </tr>
+        <tr>
+          <td><strong>Ease of Use</strong></td>
+          <td>Verbose Java code. Even word count is ~60 lines</td>
+          <td>Concise APIs in Scala, Python, Java, R. Word count is ~5 lines</td>
+        </tr>
+      </table>
+
+      <div class="concept-box">
+        <h5>In-Memory Processing: The Core Advantage</h5>
+        <p>Consider a video analytics pipeline that reads a dataset, filters it, joins it with metadata, and computes statistics. In Hadoop, each of these 4 steps is a separate MR job that writes to and reads from HDFS. That is <strong>8 disk I/O operations</strong>. In Spark, the data is read once into memory, and all 4 transformations happen in-memory — just <strong>1 disk read</strong>. Since disk is ~100x slower than RAM, the speedup is dramatic.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>The Kitchen Analogy</h5>
+        <p>Hadoop MapReduce is like a cook who must put every ingredient back in the fridge after each step: chop onions, refrigerate; take them out, saut&eacute;, refrigerate; take them out, add to sauce, refrigerate. Spark keeps all ingredients on the counter (in memory) throughout the entire recipe. The constant trips to the fridge (disk) are what make Hadoop slow for multi-step pipelines.</p>
+      </div>
+    </div>
+
+    <!-- Q2b -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(b)</strong> Explain how task re-execution works in Spark vs Hadoop MapReduce for fault recovery. <span class="marks-badge">6 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Task Re-execution & Fault Recovery</h4>
+
+      <p>Both systems must handle failures gracefully — in a cluster of thousands of nodes, hardware failures are not exceptions but daily occurrences. However, they use fundamentally different strategies for recovery.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Hadoop MapReduce</h5>
+          <p><strong>Strategy: Re-read from stable storage.</strong></p>
+          <p>When a map or reduce task fails, the <strong>Application Master</strong> detects the failure and re-schedules the task on a different (healthy) node. The re-executed task reads its input from HDFS from scratch — since HDFS data is replicated (RF=3), it is always available even if the original node is dead.</p>
+          <p style="margin-top: 0.5rem;">By default, Hadoop retries a failed task up to <strong>4 times</strong> before marking the entire job as failed. It can also use <strong>speculative execution</strong> — proactively launching duplicate copies of slow tasks on other nodes, using whichever finishes first.</p>
+          <p style="margin-top: 0.5rem;"><strong>Strength:</strong> Simple and robust. HDFS guarantees data availability.</p>
+          <p><strong>Weakness:</strong> Re-reading from disk is slow, especially for large intermediate datasets.</p>
+        </div>
+        <div class="comparison-card highlight">
+          <h5>Apache Spark</h5>
+          <p><strong>Strategy: RDD lineage-based recomputation.</strong></p>
+          <p>Spark's RDDs (Resilient Distributed Datasets) maintain a <strong>lineage graph</strong> — the complete sequence of transformations that created each RDD from its parent. If a partition of an RDD is lost (because the node holding it in memory crashed), Spark does <strong>not</strong> re-run the entire job. Instead, it recomputes <em>only the lost partition</em> by replaying the transformations from the nearest available ancestor.</p>
+          <p style="margin-top: 0.5rem;">If the ancestor is cached in memory on another node, recomputation is fast. If the ancestor is the original HDFS input, Spark re-reads just that partition from disk.</p>
+          <p style="margin-top: 0.5rem;"><strong>Strength:</strong> Fine-grained recovery. Only lost partitions are recomputed.</p>
+          <p><strong>Weakness:</strong> Long lineage chains make recomputation expensive.</p>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <h5>Spark Checkpointing: Solving the Long Lineage Problem</h5>
+        <p>For jobs with very long chains of transformations (e.g., iterative ML algorithms running 1000 iterations), the lineage can become extremely deep. If a failure occurs, replaying 1000 transformations is expensive. Spark addresses this with <strong>checkpointing</strong> — periodically saving an RDD's contents to HDFS, which truncates the lineage. Recovery then starts from the most recent checkpoint rather than the original input.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>The Photography Analogy</h5>
+        <p>Imagine a photographer editing a photo with 20 steps (crop, brightness, contrast, filter, etc.). <strong>Hadoop's approach:</strong> if the edited photo is lost, re-take the entire photo from scratch and start over. <strong>Spark's approach:</strong> the photographer remembers every editing step (lineage). They find the original raw image (or a saved intermediate version) and replay only the steps needed. <strong>Checkpointing:</strong> the photographer saves the photo after every 5 edits, so at worst they only replay 5 steps, not all 20.</p>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>Key distinction:</strong> Hadoop stores actual data redundantly (HDFS replication). Spark stores <em>the recipe to recreate the data</em> (lineage). This is why Spark uses less disk space but may need more computation time during recovery.</p>
+      </div>
+    </div>
+
+    <!-- Q2c -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(c)</strong> Describe the YARN architecture and its components. <span class="marks-badge">8 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>YARN Architecture (Yet Another Resource Negotiator)</h4>
+
+      <p>YARN is the <strong>cluster resource management layer</strong> of the Hadoop ecosystem. It was introduced in Hadoop 2.0 to address a critical limitation: Hadoop 1.0's JobTracker combined resource management with application scheduling in a single component, creating a scalability bottleneck and limiting the cluster to running only MapReduce jobs.</p>
+
+      <h4>The Four Core Components</h4>
+
+      <ol class="step-list">
+        <li><strong>Resource Manager (RM) — The Global Scheduler:</strong> A single master daemon that runs on a dedicated node. It has a complete view of the cluster's total capacity (CPU cores, memory, disk across all nodes) and decides <em>which applications get which resources</em>. It has two sub-components: the <strong>Scheduler</strong> (allocates containers based on policies like capacity or fair scheduling) and the <strong>Application Manager</strong> (accepts job submissions and launches the first container for each application). Critically, the RM does NOT monitor task progress — it only manages resources.</li>
+        <li><strong>Node Manager (NM) — The Per-Node Agent:</strong> One NM runs on every worker node in the cluster. It is responsible for launching and monitoring <strong>containers</strong> on its node, tracking resource usage (CPU, memory), and reporting health status back to the RM via heartbeats. If a container exceeds its allocated memory, the NM kills it. Think of the NM as a floor manager in a building — they manage the rooms on their floor and report to the central office.</li>
+        <li><strong>Application Master (AM) — The Per-Application Coordinator:</strong> One AM is created for <em>each submitted application</em>. It runs inside a container on a worker node (not on the RM node). The AM negotiates containers with the RM, distributes tasks to those containers, monitors task progress, and handles task failures (retries). For MapReduce: the AM manages map and reduce tasks. For Spark: the AM manages executor processes. Each AM is independent — a crash in one application's AM does not affect any other application.</li>
+        <li><strong>Container — The Unit of Resource Allocation:</strong> A container is an abstract bundle of resources: a specific amount of CPU cores and memory on a specific node. Applications run inside containers. The RM allocates containers; the NM launches them; the AM uses them. A single node can run many containers simultaneously, each isolated from the others.</li>
+      </ol>
+
+      <div class="concept-box">
+        <h5>How They Work Together</h5>
+        <p><strong>Step 1:</strong> Client submits an application to the RM. <strong>Step 2:</strong> RM allocates a container on a worker node and launches the AM inside it. <strong>Step 3:</strong> AM assesses the job requirements and requests additional containers from the RM. <strong>Step 4:</strong> RM grants containers on various nodes. <strong>Step 5:</strong> AM contacts the NMs on those nodes to launch tasks in the granted containers. <strong>Step 6:</strong> Tasks run, report progress to AM, and AM reports completion to RM.</p>
+      </div>
+
+      <h4>Advantages Over Hadoop 1.0's JobTracker</h4>
+
+      <table>
+        <tr><th>Feature</th><th>Hadoop 1.0 (JobTracker)</th><th>YARN</th></tr>
+        <tr>
+          <td><strong>Multi-tenancy</strong></td>
+          <td>Only MapReduce could run</td>
+          <td>Spark, Flink, MR, Tez, Storm — all on the SAME cluster simultaneously</td>
+        </tr>
+        <tr>
+          <td><strong>Resource Flexibility</strong></td>
+          <td>Fixed map slots and reduce slots — unused reduce slots couldn't be used for maps</td>
+          <td>Generic containers — any resource can be used for any purpose</td>
+        </tr>
+        <tr>
+          <td><strong>Scalability</strong></td>
+          <td>JobTracker managed both resources AND application logic — bottleneck at ~4,000 nodes</td>
+          <td>RM only manages resources; AMs handle application logic — scales to 10,000+ nodes</td>
+        </tr>
+        <tr>
+          <td><strong>Failure Isolation</strong></td>
+          <td>JobTracker failure killed ALL running jobs</td>
+          <td>One AM crashing only affects its own application; all others continue</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>The Hotel Analogy</h5>
+        <p>YARN is like a hotel management system. The <strong>Resource Manager</strong> is the front desk — they know which rooms are available and assign them to events. The <strong>Node Manager</strong> is the floor housekeeper on each floor — they prepare rooms, monitor cleanliness, and report issues. The <strong>Application Master</strong> is the event coordinator for each wedding or conference — they request rooms from the front desk and coordinate activities within their allocated rooms. Each event (application) has its own coordinator, so a chaotic wedding doesn't disrupt the quiet conference next door (failure isolation).</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Answer Strategy</h5>
+        <p>For 8 marks, name and describe all 4 components (RM, NM, AM, Container) with their specific roles. Then explain at least 3 advantages over the old JobTracker model. A simple architecture diagram showing RM at top, multiple NMs below, with AMs and containers inside nodes, is worth drawing if time allows.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — Storage Systems</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+
+    <!-- Q3a -->
+    <div class="q-text">
+      <strong>(a)</strong> Compare RAID 1 and RAID 6 — their mechanisms, trade-offs, and use cases. <span class="marks-badge">6 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>RAID 1 vs RAID 6</h4>
+
+      <p>RAID (Redundant Array of Independent Disks) provides fault tolerance at the hardware level by spreading or duplicating data across multiple physical disks. RAID 1 and RAID 6 take very different approaches to achieving this redundancy.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>RAID 1 — Mirroring</h5>
+          <p><strong>Mechanism:</strong> Every write is duplicated identically to a second disk. The two disks are exact mirror copies of each other at all times.</p>
+          <p style="margin-top: 0.5rem;"><strong>Storage efficiency:</strong> 50% — you lose half your total disk capacity to redundancy. With 2 x 1TB disks, you get 1TB usable.</p>
+          <p style="margin-top: 0.5rem;"><strong>Read performance:</strong> Excellent — the controller can read from either disk, effectively doubling read throughput.</p>
+          <p style="margin-top: 0.5rem;"><strong>Write performance:</strong> Good — writes go to both disks simultaneously (parallel), so there is minimal overhead.</p>
+          <p style="margin-top: 0.5rem;"><strong>Fault tolerance:</strong> Survives <strong>1 disk failure</strong>.</p>
+          <p style="margin-top: 0.5rem;"><strong>Recovery:</strong> Simple — copy the surviving disk to a replacement. No computation needed.</p>
+        </div>
+        <div class="comparison-card highlight">
+          <h5>RAID 6 — Double Parity</h5>
+          <p><strong>Mechanism:</strong> Data is striped across multiple disks with <strong>two independent parity blocks</strong> distributed across all disks. Parity is calculated using different algorithms (e.g., P + Q parity using Reed-Solomon coding).</p>
+          <p style="margin-top: 0.5rem;"><strong>Storage efficiency:</strong> Much better at scale — with N disks, you lose only 2 disks to parity. With 6 x 1TB disks, you get 4TB usable (67%). With 10 disks: 80%.</p>
+          <p style="margin-top: 0.5rem;"><strong>Read performance:</strong> Good — data is striped, so reads can be parallelised across disks.</p>
+          <p style="margin-top: 0.5rem;"><strong>Write performance:</strong> Slower — every write requires calculating and writing <strong>two</strong> parity blocks (write penalty). Small random writes are especially expensive.</p>
+          <p style="margin-top: 0.5rem;"><strong>Fault tolerance:</strong> Survives <strong>2 simultaneous disk failures</strong>.</p>
+          <p style="margin-top: 0.5rem;"><strong>Recovery:</strong> Complex — must recalculate lost data from parity. CPU-intensive and time-consuming.</p>
+        </div>
+      </div>
+
+      <table>
+        <tr><th>Property</th><th>RAID 1</th><th>RAID 6</th></tr>
+        <tr><td>Redundancy method</td><td>Full mirror (copy)</td><td>Double parity (calculation)</td></tr>
+        <tr><td>Min. disks needed</td><td>2</td><td>4</td></tr>
+        <tr><td>Disks tolerated failing</td><td>1</td><td>2</td></tr>
+        <tr><td>Storage efficiency (6 disks)</td><td>50%</td><td>67%</td></tr>
+        <tr><td>Write overhead</td><td>Low (parallel mirror)</td><td>High (2 parity calculations)</td></tr>
+        <tr><td>Best for</td><td>OS drives, small critical data</td><td>Large storage arrays, archival</td></tr>
+      </table>
+
+      <div class="example-box">
+        <h5>Everyday Analogy</h5>
+        <p><strong>RAID 1</strong> is like photocopying every important document — dead simple, but you use twice the paper. <strong>RAID 6</strong> is like using a mathematical error-correcting code: you add two "check" pages to every set of documents, and if any two pages are destroyed, you can reconstruct them from the check pages. It requires more math, but you use far less paper overall — especially when you have many documents.</p>
+      </div>
+    </div>
+
+    <!-- Q3b -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(b)</strong> Explain how HBase/HDFS handles storage differently from RAID, and the trade-offs involved. <span class="marks-badge">6 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>HBase Storage via HDFS vs RAID</h4>
+
+      <p>HBase does <strong>not</strong> use RAID at all. Instead, it relies entirely on <strong>HDFS software-level replication</strong> running on commodity hardware — a fundamentally different philosophy from traditional enterprise storage.</p>
+
+      <div class="concept-box">
+        <h5>The Key Philosophical Difference</h5>
+        <p>RAID protects against <strong>disk failures within a single machine</strong> using specialised hardware controllers. HDFS protects against <strong>disk failures, node failures, and entire rack failures</strong> using software replication across many cheap machines. RAID says "make each machine reliable." HDFS says "assume every machine will fail, and plan for it."</p>
+      </div>
+
+      <table>
+        <tr><th>Property</th><th>RAID (Traditional)</th><th>HDFS Replication (HBase)</th></tr>
+        <tr><td><strong>Protection level</strong></td><td>Disk failure only</td><td>Disk + node + rack failure</td></tr>
+        <tr><td><strong>Hardware</strong></td><td>Expensive RAID controllers, enterprise disks</td><td>Commodity servers, cheap JBOD (Just a Bunch Of Disks)</td></tr>
+        <tr><td><strong>Replication mechanism</strong></td><td>Hardware-level parity or mirroring</td><td>Software-level full copies across network</td></tr>
+        <tr><td><strong>Default redundancy</strong></td><td>RAID 6: 2 parity disks (~1.5x overhead)</td><td>RF=3: three full copies (3x overhead)</td></tr>
+        <tr><td><strong>Rack awareness</strong></td><td>Not applicable (single machine)</td><td>Yes — replicas placed on different racks to survive rack-level failures</td></tr>
+        <tr><td><strong>Recovery speed</strong></td><td>Limited by single machine's I/O</td><td>Parallel recovery from many nodes simultaneously</td></tr>
+        <tr><td><strong>Scalability</strong></td><td>Limited by single server capacity</td><td>Scales horizontally to thousands of nodes</td></tr>
+      </table>
+
+      <p><strong>HDFS Rack-Aware Replica Placement:</strong> With the default replication factor of 3, HDFS places the first replica on the local node, the second on a different node in a <strong>different rack</strong>, and the third on another node in that same remote rack. This means even if an entire rack loses power (its switch fails, or there is a fire), two copies of every block survive on the other rack.</p>
+
+      <p><strong>The Storage Cost Trade-off:</strong> HDFS uses 3x storage (vs RAID 6's ~1.5x), which seems wasteful. However, HDFS provides much stronger fault tolerance, uses dramatically cheaper hardware (no RAID controllers), and enables parallel reads from multiple replicas for better performance. At the scale of Google, Facebook, or the BBC, the savings on hardware costs far outweigh the extra disk usage.</p>
+
+      <div class="example-box">
+        <h5>The Insurance Analogy</h5>
+        <p><strong>RAID</strong> is like having a spare tyre in your car — it protects against one tyre going flat, but if the whole car is stolen or flooded, you've lost everything. <strong>HDFS replication</strong> is like parking three identical cars in three different cities. You survive car theft, flood, earthquake — virtually any localised disaster. It costs 3x as much, but your "data" is far safer. And because the cars are cheap models (commodity hardware), the total cost may still be less than one luxury car with fancy insurance (enterprise RAID).</p>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>In practice:</strong> HBase nodes use <strong>JBOD (Just a Bunch Of Disks)</strong> — each disk operates independently with no RAID controller. If one disk fails, only the blocks on that disk are lost, and HDFS automatically re-replicates them from copies on other nodes. Using RAID on HDFS nodes would be redundant and wasteful — you'd be protecting data that's already protected by software replication.</p>
+      </div>
+    </div>
+
+    <!-- Q3c -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(c)</strong> Explain Cassandra's virtual nodes (vnodes), how they work, and their benefits. <span class="marks-badge">8 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Cassandra Virtual Nodes (Vnodes)</h4>
+
+      <p>Cassandra uses <strong>consistent hashing</strong> to distribute data across nodes. Each row key is hashed to a position on a circular hash ring, and each node is responsible for a range of that ring. Virtual nodes (vnodes) fundamentally change how those ranges are assigned.</p>
+
+      <h4>Traditional Approach (Without Vnodes)</h4>
+
+      <p>Each physical node owns <strong>one large, contiguous range</strong> on the hash ring. For example, with 4 nodes, each owns 25% of the ring as a single block.</p>
+
+      <div class="warning-box">
+        <p><strong>Problems with single ranges:</strong> (1) Adding a new node means one existing node must split its range and transfer a massive chunk of data — a slow, network-intensive operation. (2) If one node fails, all its data must be rebuilt from its immediate neighbours, putting enormous load on just 1-2 nodes. (3) If one node has better hardware, there is no way to give it proportionally more data.</p>
+      </div>
+
+      <h4>Virtual Nodes Approach</h4>
+
+      <p>With vnodes, each physical node owns <strong>many small, non-contiguous ranges</strong> on the hash ring. By default, Cassandra assigns <strong>256 vnodes</strong> per physical node. Each vnode is a small token range — a tiny slice of the ring — and a physical node's 256 vnodes are scattered randomly around the ring, interleaved with other nodes' vnodes.</p>
+
+      <div class="code-block">Traditional (4 nodes, 1 range each):
+Ring: [====Node A====][====Node B====][====Node C====][====Node D====]
+
+Vnodes (4 nodes, 8 vnodes each = 32 total):
+Ring: [A][C][B][D][A][B][D][C][A][D][C][B][A][C][B][D][A][B]...
+       ^-- Node A's vnodes are scattered throughout the ring</div>
+
+      <h4>Benefits of Vnodes</h4>
+
+      <ol class="step-list">
+        <li><strong>Faster, smoother rebalancing when adding/removing nodes:</strong> When a new node joins, it takes over some vnodes from <em>many</em> existing nodes (not just one). Each existing node loses only a small fraction of its data, so the transfer is distributed across the entire cluster. Similarly, removing a node distributes its small ranges across many nodes. This is dramatically faster than moving one giant range.</li>
+        <li><strong>Faster rebuild after failure:</strong> When a node dies, its 256 vnodes are scattered across the ring, meaning its data is replicated on <em>many different</em> nodes. All of those nodes can participate in the rebuild simultaneously, in parallel. Traditional approach: 1-2 neighbours rebuild one huge range (serial bottleneck). Vnodes: potentially dozens of nodes each rebuild a small piece (massively parallel).</li>
+        <li><strong>Better data distribution and hotspot mitigation:</strong> With many small ranges, the law of large numbers helps average out any natural skew in the hash distribution. If some keys happen to cluster in one part of the ring, vnodes ensure that range is shared by many physical nodes rather than burdening a single one.</li>
+        <li><strong>Heterogeneous hardware support:</strong> A more powerful server can be assigned <em>more vnodes</em> (e.g., 512 instead of 256), so it owns proportionally more of the ring and stores more data. A weaker server gets fewer vnodes. This is impossible with the traditional one-range-per-node approach — each node owns exactly one equal slice regardless of its capacity.</li>
+        <li><strong>Simplified operations:</strong> With vnodes, operators no longer need to manually calculate and assign token ranges when adding nodes. Cassandra automatically distributes vnodes across the cluster, making cluster management much simpler.</li>
+      </ol>
+
+      <div class="example-box">
+        <h5>The Postman Analogy</h5>
+        <p><strong>Traditional approach:</strong> Each postman covers one entire ZIP code — a large, contiguous area. If a postman is sick, their entire ZIP code has no delivery, and one neighbouring postman must cover the whole extra area alone. Adding a new postman means redrawing ZIP code boundaries and transferring all the mail for a huge area.</p>
+        <p style="margin-top: 0.5rem;"><strong>Vnodes approach:</strong> Each postman covers 256 individual streets scattered randomly across the city. If a postman is sick, their scattered streets are easily covered by many neighbouring postmen, each picking up just a few extra streets. Adding a new postman simply means reassigning a few streets from each existing postman — barely noticeable to any one person. And a postman with a bike gets 100 streets, while one with a van gets 400 — naturally handling heterogeneous capacity.</p>
+      </div>
+
+      <div class="summary-box">
+        <h5>Quick Summary</h5>
+        <p>Vnodes transform the consistent hash ring from "few large ranges per node" to "many small scattered ranges per node." This enables parallel rebuilds, smooth rebalancing, hotspot mitigation, and heterogeneous hardware support — all critical for operating large-scale Cassandra clusters in production.</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Answer Strategy</h5>
+        <p>For 8 marks, explain: (1) what vnodes are (many small non-contiguous ranges vs one large range), (2) how they sit on the consistent hash ring, (3) at least 4 benefits with brief justifications. A diagram showing the ring with scattered vnodes vs contiguous ranges is extremely effective and worth the time to draw.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 4 ===================== -->
+  <div class="question-card" id="q4" style="border: 2px solid #6366f1;">
+    <div class="q-header">
+      <span class="q-title">Question 4 — HDFS Replication</span>
+      <span class="q-marks">15 marks</span>
+      <span class="m-level-badge">M-Level Only</span>
+    </div>
+
+    <div class="warning-box" style="margin-bottom: 1.5rem;">
+      <p><strong>M-Level Only:</strong> This question appears only on the M-level paper (75 marks total). H-level students do not answer this question.</p>
+    </div>
+
+    <!-- Q4a -->
+    <div class="q-text">
+      <strong>(a)</strong> What are the effects of increasing the HDFS replication factor from 3 to 5? <span class="marks-badge">5 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Increasing Replication Factor: RF=3 to RF=5</h4>
+
+      <p>Changing the replication factor from 3 to 5 has wide-ranging implications across performance, storage, fault tolerance, and network usage. It is not a simple "more is better" decision — there are significant costs.</p>
+
+      <table>
+        <tr><th>Dimension</th><th>RF=3 (Default)</th><th>RF=5 (Increased)</th><th>Impact</th></tr>
+        <tr>
+          <td><strong>Write Latency</strong></td>
+          <td>Pipeline of 3 nodes</td>
+          <td>Pipeline of 5 nodes</td>
+          <td>Slower — write acknowledged only when all 5 nodes confirm. The slowest node in the pipeline determines latency, and the probability of encountering a slow node increases with pipeline length.</td>
+        </tr>
+        <tr>
+          <td><strong>Storage Cost</strong></td>
+          <td>3x raw data size</td>
+          <td>5x raw data size</td>
+          <td>67% more storage needed. A 1PB dataset now uses 5PB instead of 3PB — an enormous cost increase at scale.</td>
+        </tr>
+        <tr>
+          <td><strong>Read Performance</strong></td>
+          <td>Choose from 3 replicas</td>
+          <td>Choose from 5 replicas</td>
+          <td>Potentially faster — more replicas means better chance of finding one on the same rack or even the same node as the reader (improved data locality).</td>
+        </tr>
+        <tr>
+          <td><strong>Fault Tolerance</strong></td>
+          <td>Survives 2 node failures</td>
+          <td>Survives 4 node failures</td>
+          <td>Much stronger — the system can lose 4 nodes simultaneously without losing any data.</td>
+        </tr>
+        <tr>
+          <td><strong>NameNode Memory</strong></td>
+          <td>3 block-location mappings per block</td>
+          <td>5 block-location mappings per block</td>
+          <td>67% more metadata in NameNode's RAM — can push large clusters toward NN memory limits.</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>When Would You Use RF=5?</h5>
+        <p>In practice, RF=5 is used for extremely critical data that absolutely cannot be lost — for example, financial transaction logs at a bank, or the master copy of a genome database. The BBC might use RF=5 for their most valuable archived content (irreplaceable historical footage) while keeping RF=3 for daily operational data. It is a conscious trade-off: spending more on storage and accepting slower writes in exchange for near-bulletproof durability.</p>
+      </div>
+    </div>
+
+    <!-- Q4b -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(b)</strong> What are the effects of decreasing the HDFS replication factor from 3 to 1? <span class="marks-badge">5 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Decreasing Replication Factor: RF=3 to RF=1</h4>
+
+      <p>Reducing to a single copy is the most dramatic change you can make, and it fundamentally <strong>breaks HDFS's core reliability guarantee</strong>.</p>
+
+      <table>
+        <tr><th>Dimension</th><th>RF=3 (Default)</th><th>RF=1 (Single Copy)</th><th>Impact</th></tr>
+        <tr>
+          <td><strong>Write Latency</strong></td>
+          <td>Pipeline of 3 nodes</td>
+          <td>No pipeline — write to 1 node</td>
+          <td>Much faster — no network overhead, no waiting for 2 more nodes to confirm.</td>
+        </tr>
+        <tr>
+          <td><strong>Storage Cost</strong></td>
+          <td>3x raw data size</td>
+          <td>1x raw data size</td>
+          <td>3x less storage — massive savings. A 1PB dataset uses exactly 1PB instead of 3PB.</td>
+        </tr>
+        <tr>
+          <td><strong>Read Performance</strong></td>
+          <td>Choose from 3 replicas</td>
+          <td>Only 1 copy — no choice</td>
+          <td>All reads for a block go to the single DataNode holding it. This creates <strong>hotspots</strong> — popular blocks cause heavy load on specific nodes with no way to distribute reads.</td>
+        </tr>
+        <tr>
+          <td><strong>Fault Tolerance</strong></td>
+          <td>Survives 2 node failures</td>
+          <td>Survives 0 node failures</td>
+          <td><strong>CRITICAL:</strong> Any single disk or node failure causes <strong>permanent, irrecoverable data loss</strong>. There is no backup. The data is gone forever.</td>
+        </tr>
+        <tr>
+          <td><strong>Data Locality</strong></td>
+          <td>3 locations to schedule tasks near data</td>
+          <td>1 location only</td>
+          <td>Scheduler has no flexibility — tasks must run on or near that one node, or data must travel over the network.</td>
+        </tr>
+      </table>
+
+      <div class="warning-box">
+        <p><strong>NEVER use RF=1 for production data.</strong> In a cluster of 1000 nodes, with ~2% annual disk failure rates, you will lose data regularly. The only acceptable use case for RF=1 is truly temporary, disposable, or easily re-creatable data — such as intermediate results of a MapReduce job that can be recomputed, or a cache that can be rebuilt from an external source.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>The Backup Analogy</h5>
+        <p>Think of your university dissertation. <strong>RF=3:</strong> You have it on your laptop, a USB drive, and Google Drive. Your laptop gets stolen? No problem — two copies survive. <strong>RF=1:</strong> You have it only on your laptop. Laptop stolen, hard drive crashes, coffee spill — your dissertation is gone. <em>Permanently.</em> Every student who has lost an essay this way understands viscerally why RF=1 is unacceptable for important data.</p>
+      </div>
+    </div>
+
+    <!-- Q4c -->
+    <div class="q-text" style="margin-top: 1.5rem;">
+      <strong>(c)</strong> Discuss the network and resource implications of changing the replication factor. <span class="marks-badge">5 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Network & Resource Implications</h4>
+
+      <p>The replication factor does not just affect storage — it has cascading effects on network bandwidth, NameNode memory, write latency, and read patterns. Understanding these implications is essential for capacity planning.</p>
+
+      <ol class="step-list">
+        <li><strong>Network bandwidth during writes:</strong> Each additional replica means one more hop in the write pipeline. Going from RF=3 to RF=5 adds 2 more network transfers per block write. Since HDFS blocks are 128MB by default, that is 256MB of additional network traffic <em>per block</em>. At cluster scale with thousands of concurrent writes, this can saturate inter-rack network links.</li>
+        <li><strong>Cross-rack traffic:</strong> HDFS's rack-aware placement strategy places replicas on different racks for fault tolerance. With RF=3, one replica is local and two cross the rack switch. With RF=5, three or four replicas cross rack boundaries. Cross-rack bandwidth is typically the scarcest resource in a data centre (rack-local switches have much more bandwidth than the aggregation layer), so higher RF disproportionately strains this bottleneck.</li>
+        <li><strong>NameNode memory pressure:</strong> The NameNode stores a mapping of every block to every DataNode that holds a replica. With RF=3, each block has 3 mappings in the NN's memory. With RF=5, each block has 5 mappings — a 67% increase. For a cluster storing 100 million blocks, this means an additional ~200 million mapping entries. Since the NN keeps all metadata in RAM, this can push the NN toward its memory ceiling, potentially requiring more expensive hardware.</li>
+        <li><strong>Write latency and tail latency:</strong> In a write pipeline, the client waits for an acknowledgement from the <em>last</em> node in the chain. The write latency is determined by the slowest node. With more nodes in the pipeline, the probability of encountering a slow node (due to garbage collection, disk contention, or network congestion) increases. This is the "tail latency" problem — the more nodes involved, the higher the chance of a slow outlier.</li>
+        <li><strong>Read benefit — improved locality:</strong> Higher RF is not all cost. More replicas distributed across more nodes and racks mean that when a MapReduce or Spark task needs to read a block, there are more locations where it can find the data nearby. This improves <strong>data locality scheduling</strong> — more tasks can be node-local or rack-local, reducing network traffic during reads. This is especially valuable for read-heavy workloads.</li>
+      </ol>
+
+      <div class="concept-box">
+        <h5>The Cost-Benefit Equation</h5>
+        <p>Higher RF = <strong>more network cost during writes</strong> + more storage + more NN memory, BUT <strong>less network cost during reads</strong> + better fault tolerance + better data locality. The optimal RF depends on your workload's read/write ratio, the criticality of the data, and your cluster's network capacity.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Practical Perspective</h5>
+        <p>Consider it like backup copies of your thesis. <strong>RF=1:</strong> One copy on your laptop. Fast to save (one write), uses no extra space, but any failure = permanent loss. <strong>RF=3:</strong> Laptop + USB + cloud. Takes longer to save everywhere, uses 3x space, but you survive almost any disaster. <strong>RF=5:</strong> Add two more backups (a friend's computer, a university server). Even safer, but every save now takes longer and you're managing 5 copies. The right number depends on how irreplaceable the data is and how much effort you're willing to invest in redundancy.</p>
+      </div>
+
+      <div class="summary-box">
+        <h5>Key Takeaway</h5>
+        <p>Replication factor is not a "set and forget" parameter — it is a deliberate engineering trade-off between durability, performance, cost, and network capacity. Most production HDFS clusters use RF=3 as the default, increase to RF=5 only for mission-critical data, and never use RF=1 except for disposable temporary data. The network is usually the binding constraint.</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Answer Strategy</h5>
+        <p>For 5 marks, discuss at least 4 of the 5 points above: write bandwidth, cross-rack traffic, NN memory, pipeline latency, read locality. Be specific — mention actual numbers (128MB blocks, 3 vs 5 mappings) rather than vague generalities. This question rewards concrete technical reasoning over hand-waving.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

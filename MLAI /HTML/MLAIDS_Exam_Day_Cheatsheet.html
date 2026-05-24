@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS Exam Day Cheatsheet</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+
+        .quick-nav {
+            background: #f8f9fa;
+            padding: 12px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .quick-nav a {
+            background: white;
+            color: #667eea;
+            padding: 6px 15px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            border: 2px solid #667eea;
+        }
+
+        .quick-nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 20px;
+            column-count: 2;
+            column-gap: 25px;
+        }
+
+        .section {
+            break-inside: avoid;
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .subsection {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            break-inside: avoid;
+        }
+
+        .subsection h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .formula-box {
+            background: white;
+            border: 1px solid #667eea;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .formula-box h4 {
+            color: #764ba2;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 4px solid #e17055;
+            font-size: 0.9em;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.85em;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 4px solid #6c5ce7;
+            font-size: 0.9em;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 4px solid #ffc107;
+            font-size: 0.9em;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .content {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 MLAIDS Exam Cheatsheet</h1>
+            <p>Concise Theory & Formulas | Based on Past Papers</p>
+        </div>
+
+        <div class="quick-nav">
+            <a href="#regression">📈 Regression</a>
+            <a href="#classification">🎯 Classification</a>
+            <a href="#unsupervised">🔍 Unsupervised</a>
+            <a href="#evaluation">📊 Metrics</a>
+            <a href="#tips">💡 Exam Tips</a>
+        </div>
+
+        <div class="content">
+
+            <!-- REGRESSION -->
+            <div class="section" id="regression">
+                <div class="section-header">📈 REGRESSION</div>
+
+                <div class="subsection">
+                    <h3>Linear Regression</h3>
+                    <div class="formula-box">
+                        <p><strong>Model:</strong> \(y = w^Tx + b\)</p>
+                        <p><strong>MSE Loss:</strong> \(L = \frac{1}{N}\sum(y_i - w^Tx_i)^2\)</p>
+                        <p><strong>Solution:</strong> \(w = (\Phi^T\Phi)^{-1}\Phi^Ty\)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>Squared vs Absolute Loss:</strong> Squared loss \(e^2\) grows faster than absolute \(|e|\) → outliers have much larger influence with squared loss
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Basis Functions</h3>
+                    <div class="formula-box">
+                        <p><strong>Polynomial:</strong> \(\phi(x) = [1, x, x^2, ..., x^d]\)</p>
+                        <p><strong>RBF/Gaussian:</strong> \(\phi_k(x) = \exp\left(-\frac{(x-\mu_k)^2}{2s^2}\right)\)</p>
+                        <p><strong>Sigmoid:</strong> \(\phi_k(x) = \sigma\left(\frac{x-\mu_k}{s}\right)\)</p>
+                    </div>
+                    <div class="tip-box">
+                        <strong>RBF advantages:</strong> Local features, handles gaps in data. <strong>RBF disadvantages:</strong> Need to choose centers \(\mu_k\) and width \(s\)
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Regularization</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th></th>
+                            <th>Ridge (L2)</th>
+                            <th>Lasso (L1)</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Penalty</strong></td>
+                            <td>\(\lambda\sum w_j^2\)</td>
+                            <td>\(\lambda\sum|w_j|\)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Effect</strong></td>
+                            <td>Shrinks → 0</td>
+                            <td>Sets = 0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use</strong></td>
+                            <td>All features relevant</td>
+                            <td>Feature selection</td>
+                        </tr>
+                    </table>
+                    <div class="formula-box">
+                        <p><strong>Ridge solution:</strong> \(w = (\Phi^T\Phi + \lambda I)^{-1}\Phi^Ty\)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Rescaling/Normalization</h3>
+                    <div class="formula-box">
+                        <p><strong>Whitening/Z-score:</strong> \(x' = \frac{x - \mu}{\sigma}\) → mean=0, std=1</p>
+                        <p><strong>Min-Max:</strong> \(x' = \frac{x - \min}{\max - \min}\) → range [0,1]</p>
+                        <p><strong>Log transform:</strong> \(x' = \log(x)\) → reduces skewness</p>
+                    </div>
+                    <div class="warning-box">
+                        <strong>When to rescale:</strong> High-degree polynomials, features with different scales, distance-based algorithms
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Model Complexity & Validation</h3>
+                    <div class="key-point">
+                        <strong>Training loss cannot choose complexity</strong> → always decreases with complexity → overfitting. Use validation/cross-validation instead.
+                    </div>
+                    <div class="formula-box">
+                        <p><strong>K-fold CV:</strong> Split into K folds, train on K-1, validate on 1, average K results</p>
+                        <p><strong>Common K:</strong> 5 or 10. K=N is LOOCV</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Bias-Variance Trade-off</h3>
+                    <div class="formula-box">
+                        <p>\(\text{Error} = \text{Bias}^2 + \text{Variance} + \text{Noise}\)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>High Bias:</strong> Underfitting, too simple<br>
+                        <strong>High Variance:</strong> Overfitting, too complex
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLASSIFICATION -->
+            <div class="section" id="classification">
+                <div class="section-header">🎯 CLASSIFICATION</div>
+
+                <div class="subsection">
+                    <h3>k-Nearest Neighbors (k-NN)</h3>
+                    <div class="formula-box">
+                        <p><strong>Algorithm:</strong></p>
+                        <ol style="font-size: 0.85em;">
+                            <li>Compute distances to all training points</li>
+                            <li>Find k nearest neighbors</li>
+                            <li>Majority vote for classification</li>
+                        </ol>
+                        <p><strong>Distance:</strong> \(d = \sqrt{\sum(x_i - x_j)^2}\) (Euclidean)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>Decision boundary:</strong> Perpendicular bisectors between nearest neighbors of different classes (for k=1)
+                    </div>
+                    <div class="tip-box">
+                        <strong>Small k:</strong> Complex boundaries, noise-sensitive<br>
+                        <strong>Large k:</strong> Smooth boundaries, may underfit
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Logistic Regression</h3>
+                    <div class="formula-box">
+                        <p><strong>Sigmoid:</strong> \(\sigma(z) = \frac{1}{1+e^{-z}}\)</p>
+                        <p><strong>Model:</strong> \(P(y=1|x) = \sigma(w^Tx + b)\)</p>
+                        <p><strong>Loss:</strong> \(L = -\frac{1}{N}\sum[y_i\log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)]\)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>Why sigmoid?</strong> Maps to (0,1), smooth/differentiable, probabilistic interpretation
+                    </div>
+                    <div class="formula-box">
+                        <p><strong>Likelihood for dataset {(x₁,y₁), (x₂,y₂)}:</strong></p>
+                        <p>\(L = P(y_1|x_1) \times P(y_2|x_2)\)</p>
+                        <p>If y₁=1, y₂=0: \(L = \sigma(w^Tx_1) \times (1-\sigma(w^Tx_2))\)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Support Vector Machines (SVM)</h3>
+                    <div class="formula-box">
+                        <p><strong>Decision boundary:</strong> \(w^Tx + b = 0\)</p>
+                        <p><strong>Margin:</strong> \(\frac{2}{\|w\|}\) → SVM maximizes this</p>
+                        <p><strong>Prediction:</strong> \(y = \text{sign}(w^Tx + b)\)</p>
+                    </div>
+                    <div class="formula-box">
+                        <p><strong>Hard margin:</strong> \(\min \frac{1}{2}\|w\|^2\) s.t. \(y_i(w^Tx_i+b) \geq 1\)</p>
+                        <p><strong>Soft margin:</strong> \(\min \frac{1}{2}\|w\|^2 + C\sum\xi_i\) s.t. \(y_i(w^Tx_i+b) \geq 1-\xi_i\)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>Support vectors:</strong> Points on/within margin (\(\alpha_i > 0\))<br>
+                        <strong>Large C:</strong> Small margin, fewer violations<br>
+                        <strong>Small C:</strong> Large margin, more violations
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Lagrange Multipliers (for SVM)</h3>
+                    <div class="formula-box">
+                        <p><strong>Weight vector:</strong> \(w = \sum_{i=1}^{N}\alpha_i y_i x_i\)</p>
+                        <p><strong>Only support vectors have \(\alpha_i > 0\)</strong></p>
+                        <p>Example: If points (2,0)→class +1, (0,2)→class -1, (0,-2)→class -1 are support vectors and \(\alpha_1=0.5, \alpha_2=\alpha_3=0.25\):</p>
+                        <p>\(w = 0.5(+1)[2,0] + 0.25(-1)[0,2] + 0.25(-1)[0,-2] = [1,0]\)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Kernel Trick</h3>
+                    <div class="formula-box">
+                        <p><strong>Linear:</strong> \(K(x_i,x_j) = x_i^Tx_j\)</p>
+                        <p><strong>Polynomial:</strong> \(K(x_i,x_j) = (x_i^Tx_j + c)^d\)</p>
+                        <p><strong>RBF:</strong> \(K(x_i,x_j) = \exp(-\gamma\|x_i-x_j\|^2)\)</p>
+                    </div>
+                    <div class="tip-box">
+                        <strong>Key idea:</strong> Data appears only as inner products → replace \(x_i^Tx_j\) with \(K(x_i,x_j)\) to get non-linear boundaries without computing \(\phi(x)\) explicitly
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Decision Trees</h3>
+                    <div class="formula-box">
+                        <p><strong>Entropy:</strong> \(H = -\sum p_i\log_2(p_i)\)</p>
+                        <p><strong>Info Gain:</strong> \(IG(S,A) = H(S) - \sum\frac{|S_v|}{|S|}H(S_v)\)</p>
+                    </div>
+                    <div class="key-point">
+                        Choose attribute with <strong>highest information gain</strong> for splitting
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Generalization & Overfitting</h3>
+                    <div class="key-point">
+                        <strong>Generalization:</strong> Ability to perform well on unseen data<br>
+                        <strong>Overfitting:</strong> Memorizing training data (including noise) → poor test performance
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVALUATION METRICS -->
+            <div class="section" id="evaluation">
+                <div class="section-header">📊 EVALUATION METRICS</div>
+
+                <div class="subsection">
+                    <h3>Confusion Matrix</h3>
+                    <table class="comparison-table" style="font-size: 0.8em;">
+                        <tr>
+                            <th></th>
+                            <th>Pred +</th>
+                            <th>Pred -</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Actual +</strong></td>
+                            <td style="background: #d4edda;">TP</td>
+                            <td style="background: #f8d7da;">FN</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Actual -</strong></td>
+                            <td style="background: #f8d7da;">FP</td>
+                            <td style="background: #d4edda;">TN</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Classification Metrics</h3>
+                    <div class="formula-box">
+                        <p><strong>Accuracy:</strong> \(\frac{TP+TN}{TP+TN+FP+FN}\)</p>
+                        <p><strong>Precision:</strong> \(\frac{TP}{TP+FP}\) (of predicted +, how many correct?)</p>
+                        <p><strong>Recall/Sensitivity:</strong> \(\frac{TP}{TP+FN}\) (of actual +, how many found?)</p>
+                        <p><strong>Specificity:</strong> \(\frac{TN}{TN+FP}\) (of actual -, how many correct?)</p>
+                        <p><strong>F1-Score:</strong> \(\frac{2 \cdot Precision \cdot Recall}{Precision + Recall}\)</p>
+                    </div>
+                    <div class="warning-box">
+                        <strong>Accuracy misleading with imbalanced classes!</strong> Use precision/recall/F1 instead
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>ROC Curve & AUC</h3>
+                    <div class="formula-box">
+                        <p><strong>ROC:</strong> Plot TPR vs FPR at different thresholds</p>
+                        <p><strong>AUC = 1.0:</strong> Perfect classifier</p>
+                        <p><strong>AUC = 0.5:</strong> Random guessing</p>
+                        <p><strong>AUC < 0.5:</strong> Worse than random</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>Cannot compute AUC from single confusion matrix</strong> → need predictions at multiple thresholds
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Regression Metrics</h3>
+                    <div class="formula-box">
+                        <p><strong>MSE:</strong> \(\frac{1}{N}\sum(y_i-\hat{y}_i)^2\)</p>
+                        <p><strong>MAE:</strong> \(\frac{1}{N}\sum|y_i-\hat{y}_i|\) (robust to outliers)</p>
+                        <p><strong>R²:</strong> \(1 - \frac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}\) (0 to 1)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UNSUPERVISED LEARNING -->
+            <div class="section" id="unsupervised">
+                <div class="section-header">🔍 UNSUPERVISED LEARNING</div>
+
+                <div class="subsection">
+                    <h3>K-means Clustering</h3>
+                    <div class="formula-box">
+                        <p><strong>Objective:</strong> \(\min \sum_{k=1}^{K}\sum_{x \in C_k}\|x-\mu_k\|^2\)</p>
+                        <p><strong>Algorithm:</strong></p>
+                        <ol style="font-size: 0.85em;">
+                            <li>Initialize K centroids randomly</li>
+                            <li>Assign each point to nearest centroid</li>
+                            <li>Update centroids: \(\mu_k = \frac{1}{|C_k|}\sum_{x \in C_k}x\)</li>
+                            <li>Repeat 2-3 until convergence</li>
+                        </ol>
+                    </div>
+                    <div class="warning-box">
+                        <strong>Total distance always decreases with more K</strong> → cannot use for selecting K. Use elbow method, silhouette score, or cross-validation instead
+                    </div>
+                    <div class="tip-box">
+                        <strong>Overcoming local optima:</strong> Run multiple times with different random initializations, keep best (lowest objective)
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Kernel K-means</h3>
+                    <div class="key-point">
+                        <strong>For anisotropic/elongated Gaussian clusters:</strong> Use Gaussian kernel to encode anisotropy. Gives better fit than standard K-means for non-spherical clusters
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Gaussian Mixture Models (GMM)</h3>
+                    <div class="formula-box">
+                        <p><strong>Model:</strong> \(p(x) = \sum_{k=1}^{K}\pi_k\mathcal{N}(x|\mu_k,\Sigma_k)\)</p>
+                        <p><strong>EM Algorithm:</strong></p>
+                        <p><strong>E-step:</strong> Calculate responsibilities</p>
+                        <p>\(r_{ik} = \frac{\pi_k\mathcal{N}(x_i|\mu_k,\Sigma_k)}{\sum_j\pi_j\mathcal{N}(x_i|\mu_j,\Sigma_j)}\)</p>
+                        <p><strong>M-step:</strong> Update \(\mu_k, \Sigma_k, \pi_k\)</p>
+                        <p>\(\mu_k = \frac{\sum r_{ik}x_i}{\sum r_{ik}}\), \(\pi_k = \frac{1}{N}\sum r_{ik}\)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>K-means vs GMM</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Aspect</th>
+                            <th>K-means</th>
+                            <th>GMM</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Assignment</strong></td>
+                            <td>Hard (binary)</td>
+                            <td>Soft (probabilistic)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Parameters</strong></td>
+                            <td>Centers only</td>
+                            <td>\(\mu_k, \Sigma_k, \pi_k\)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shape</strong></td>
+                            <td>Spherical</td>
+                            <td>Elliptical (any orientation)</td>
+                        </tr>
+                    </table>
+                    <div class="tip-box">
+                        <strong>When to use GMM over K-means:</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Non-spherical/anisotropic clusters</li>
+                            <li>Need probability estimates</li>
+                            <li>Data type where distance unclear but likelihood computable</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>GMM Model Selection</h3>
+                    <div class="formula-box">
+                        <p><strong>Choosing K:</strong></p>
+                        <ol style="font-size: 0.85em;">
+                            <li>Use k-fold cross-validation</li>
+                            <li>For each K, compute average log-likelihood on validation folds</li>
+                            <li>Select K with maximum average log-likelihood</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>GMM Outlier Detection</h3>
+                    <div class="formula-box">
+                        <p><strong>Algorithm:</strong></p>
+                        <ol style="font-size: 0.85em;">
+                            <li>Fit GMM using EM algorithm</li>
+                            <li>Compute responsibilities \(r_{nk}\) for each point</li>
+                            <li>If \(\max_k(r_{nk}) < \text{threshold}\) → outlier</li>
+                        </ol>
+                        <p><strong>Intuition:</strong> If a point doesn't fit any cluster well (low responsibility for all clusters), it's an outlier</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Principal Component Analysis (PCA)</h3>
+                    <div class="formula-box">
+                        <p><strong>Steps:</strong></p>
+                        <ol style="font-size: 0.85em;">
+                            <li>Center data: \(X' = X - \bar{X}\)</li>
+                            <li>Compute covariance: \(C = \frac{1}{N}X'^TX'\)</li>
+                            <li>Find eigenvalues \(\lambda_i\) and eigenvectors \(v_i\)</li>
+                            <li>Sort by eigenvalue (largest first)</li>
+                            <li>Select top k eigenvectors</li>
+                        </ol>
+                        <p><strong>Variance explained:</strong> \(\frac{\sum_{i=1}^{k}\lambda_i}{\sum_{j=1}^{D}\lambda_j}\)</p>
+                    </div>
+                    <div class="key-point">
+                        <strong>PC1:</strong> Direction of maximum variance<br>
+                        <strong>PC2:</strong> Orthogonal to PC1, next highest variance<br>
+                        <strong>PCs are orthogonal</strong> (uncorrelated)
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXAM TIPS -->
+            <div class="section" id="tips">
+                <div class="section-header">💡 EXAM TIPS</div>
+
+                <div class="subsection">
+                    <h3>Common Question Types</h3>
+                    <div class="tip-box">
+                        <strong>1. Calculate metrics from confusion matrix</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Write formula first</li>
+                            <li>Identify TP, FP, TN, FN carefully</li>
+                            <li>Substitute values</li>
+                            <li>Show all working</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <strong>2. k-NN classification</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Calculate ALL distances</li>
+                            <li>Show distance formula</li>
+                            <li>Identify k nearest</li>
+                            <li>Count class votes</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <strong>3. Compare methods (Ridge/Lasso, K-means/GMM)</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Use table format</li>
+                            <li>Cover: objective, assumptions, pros/cons</li>
+                            <li>Give specific examples</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        <strong>4. Explain concepts</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Clear definition</li>
+                            <li>Mathematical formulation</li>
+                            <li>Intuition/purpose</li>
+                            <li>Concrete example</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Common Mistakes</h3>
+                    <div class="warning-box">
+                        <strong>❌ Confusing precision and recall</strong><br>
+                        Precision = of predicted +, how many correct?<br>
+                        Recall = of actual +, how many found?
+                    </div>
+                    <div class="warning-box">
+                        <strong>❌ Not showing working</strong><br>
+                        Always: Formula → Substitute → Calculate → Answer
+                    </div>
+                    <div class="warning-box">
+                        <strong>❌ Forgetting assumptions</strong><br>
+                        State: linearly separable (hard SVM), normally distributed noise (linear regression with MSE), spherical clusters (K-means)
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Key Formulas Summary</h3>
+                    <div class="formula-box" style="font-size: 0.8em;">
+                        <p>\(w = (\Phi^T\Phi)^{-1}\Phi^Ty\) (Linear Regression)</p>
+                        <p>\(w = (\Phi^T\Phi + \lambda I)^{-1}\Phi^Ty\) (Ridge)</p>
+                        <p>\(\sigma(z) = \frac{1}{1+e^{-z}}\) (Sigmoid)</p>
+                        <p>\(\text{Margin} = \frac{2}{\|w\|}\) (SVM)</p>
+                        <p>\(\mu_k = \frac{1}{|C_k|}\sum x\) (K-means)</p>
+                        <p>\(\text{Accuracy} = \frac{TP+TN}{Total}\)</p>
+                        <p>\(\text{Precision} = \frac{TP}{TP+FP}\)</p>
+                        <p>\(\text{Recall} = \frac{TP}{TP+FN}\)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Time Management</h3>
+                    <div class="key-point">
+                        <strong>Rule: 1 mark ≈ 1 minute</strong>
+                        <ul style="font-size: 0.85em;">
+                            <li>Read all questions first (5 mins)</li>
+                            <li>Answer easy questions first</li>
+                            <li>Don't get stuck on hard questions</li>
+                            <li>Leave 5-10 mins for review</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-left: 5px solid #e74c3c;">
+                    <h3 style="color: #c0392b;">🎯 Final Checklist</h3>
+                    <ul style="font-size: 0.9em;">
+                        <li>✅ Bias-variance trade-off</li>
+                        <li>✅ Ridge vs Lasso</li>
+                        <li>✅ Confusion matrix metrics</li>
+                        <li>✅ k-NN step-by-step</li>
+                        <li>✅ SVM margin & support vectors</li>
+                        <li>✅ K-means vs GMM</li>
+                        <li>✅ PCA variance explained</li>
+                        <li>✅ Cross-validation</li>
+                        <li>✅ When to use precision vs recall</li>
+                        <li>✅ Lagrange multipliers for SVM</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center;">
+            <h2 style="margin-bottom: 10px;">🎓 Good Luck!</h2>
+            <p>Show working • Manage time • Stay calm</p>
+        </div>
+    </div>
+</body>
+</html>

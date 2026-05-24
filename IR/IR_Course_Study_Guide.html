@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Retrieval Course - Study Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #667eea;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .book-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .book-card h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .book-card a {
+            color: #764ba2;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .book-card a:hover {
+            text-decoration: underline;
+        }
+
+        .week-card {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .week-card:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .week-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .week-header h3 {
+            color: white;
+            margin: 0;
+        }
+
+        .reading-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .reading-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .reading-section ul {
+            margin-left: 20px;
+        }
+
+        .reading-section li {
+            margin-bottom: 8px;
+        }
+
+        .tips-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .tips-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .important-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .important-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .resource-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .resource-card h4 {
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .badge-fundamental {
+            background: #007bff;
+            color: white;
+        }
+
+        .badge-advanced {
+            background: #6610f2;
+            color: white;
+        }
+
+        .badge-practical {
+            background: #28a745;
+            color: white;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            border-left: 3px solid #667eea;
+        }
+
+        .timeline-item {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Information Retrieval Course</h1>
+            <p>Your Complete Study Guide for Spring 2026</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#books">Textbooks</a></li>
+                <li><a href="#approach">Study Approach</a></li>
+                <li><a href="#schedule">Weekly Schedule</a></li>
+                <li><a href="#tips">Success Tips</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- OVERVIEW SECTION -->
+            <section id="overview">
+                <h2>📋 Course Overview</h2>
+                <p>Welcome to Information Retrieval! This course covers the fundamental concepts and advanced techniques behind modern search engines. You'll learn about:</p>
+
+                <div class="resources-grid" style="margin-top: 30px;">
+                    <div class="resource-card">
+                        <h4>🔍 Core Concepts</h4>
+                        <p>Text processing, indexing, and retrieval algorithms</p>
+                    </div>
+                    <div class="resource-card">
+                        <h4>📊 Evaluation</h4>
+                        <p>Measuring effectiveness with precision, recall, and more</p>
+                    </div>
+                    <div class="resource-card">
+                        <h4>🤖 Advanced Topics</h4>
+                        <p>Neural IR, learning to rank, and web search</p>
+                    </div>
+                    <div class="resource-card">
+                        <h4>⚡ Efficiency</h4>
+                        <p>Compression, pruning, and scalable architectures</p>
+                    </div>
+                </div>
+
+                <div class="important-box" style="margin-top: 30px;">
+                    <h4>📅 Course Timeline</h4>
+                    <p><strong>Duration:</strong> 10 weeks (Jan 12 - Mar 16, 2026)</p>
+                    <p><strong>Assessment:</strong> 25% Coursework + 5% Quizzes + 70% Final Exam</p>
+                    <p><strong>Labs:</strong> PyTerrier hands-on exercises starting Week 3</p>
+                </div>
+            </section>
+
+            <!-- TEXTBOOKS SECTION -->
+            <section id="books">
+                <h2>📖 Recommended Textbooks</h2>
+
+                <div class="book-card">
+                    <h4>Book 1: Search Engines: Information Retrieval in Practice</h4>
+                    <p><strong>Authors:</strong> Bruce Croft, Donald Metzler, Trevor Strohman</p>
+                    <p><strong>Publisher:</strong> Addison Wesley</p>
+                    <p><strong>Focus:</strong> Practical, implementation-focused approach to IR</p>
+                    <p><strong>Online Access:</strong> <a href="https://ciir.cs.umass.edu/irbook/" target="_blank">https://ciir.cs.umass.edu/irbook/</a></p>
+                    <p style="margin-top: 10px;"><em>Best for: Understanding practical implementations, system architecture, and real-world applications</em></p>
+                </div>
+
+                <div class="book-card">
+                    <h4>Book 2: Introduction to Information Retrieval</h4>
+                    <p><strong>Authors:</strong> Christopher Manning, Prabhakar Raghavan, Hinrich Schütze</p>
+                    <p><strong>Publisher:</strong> Cambridge University Press</p>
+                    <p><strong>Focus:</strong> Comprehensive theoretical foundation with mathematical rigor</p>
+                    <p><strong>Online Access:</strong> <a href="https://nlp.stanford.edu/IR-book/" target="_blank">https://nlp.stanford.edu/IR-book/</a></p>
+                    <p style="margin-top: 10px;"><em>Best for: Deep theoretical understanding, mathematical foundations, and comprehensive coverage</em></p>
+                </div>
+
+                <h3>📚 How to Use These Books</h3>
+
+                <div class="tips-box">
+                    <h4>Complementary Approach</h4>
+                    <ul>
+                        <li><strong>Book 1 (Croft et al.):</strong> Read first for practical understanding and implementation details</li>
+                        <li><strong>Book 2 (Manning et al.):</strong> Use for deeper theoretical grounding and mathematical proofs</li>
+                        <li><strong>Strategy:</strong> Start with Book 1 for the week's topic, then dive into Book 2 for deeper understanding</li>
+                        <li><strong>Exercises:</strong> Both books have excellent exercises - try problems from both</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- STUDY APPROACH SECTION -->
+            <section id="approach">
+                <h2>🎯 Recommended Study Approach</h2>
+
+                <h3>Weekly Study Cycle</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>Monday - Pre-Lecture (2-3 hours)</h4>
+                        <ul>
+                            <li>Read assigned chapters from Book 1 (practical perspective)</li>
+                            <li>Skim corresponding sections in Book 2</li>
+                            <li>Note down questions and unclear concepts</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>During Lecture (3 hours)</h4>
+                        <ul>
+                            <li>Active note-taking using Cornell method</li>
+                            <li>Ask questions about pre-reading</li>
+                            <li>Link concepts to textbook examples</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>Tuesday-Thursday - Deep Study (4-5 hours)</h4>
+                        <ul>
+                            <li>Re-read Book 2 sections for theoretical depth</li>
+                            <li>Work through textbook examples</li>
+                            <li>Solve end-of-chapter exercises</li>
+                            <li>Create concept maps and summaries</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>Friday - Lab Session + Practice (3-4 hours)</h4>
+                        <ul>
+                            <li>Attend lab and complete PyTerrier exercises</li>
+                            <li>Implement concepts from lectures</li>
+                            <li>Experiment with variations</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>Weekend - Review & Consolidate (2-3 hours)</h4>
+                        <ul>
+                            <li>Review week's materials</li>
+                            <li>Complete any unfinished exercises</li>
+                            <li>Prepare for next week's topics</li>
+                            <li>Work on coursework assignments</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="important-box" style="margin-top: 30px;">
+                    <h4>🎓 Learning Strategies That Work</h4>
+                    <ul>
+                        <li><strong>Active Recall:</strong> Test yourself regularly without looking at notes</li>
+                        <li><strong>Spaced Repetition:</strong> Review concepts at increasing intervals</li>
+                        <li><strong>Feynman Technique:</strong> Explain concepts in simple terms as if teaching someone</li>
+                        <li><strong>Practice with Real Data:</strong> Use PyTerrier with different datasets</li>
+                        <li><strong>Connect Concepts:</strong> Build a concept map showing relationships between topics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- WEEKLY SCHEDULE SECTION -->
+            <section id="schedule">
+                <h2>📅 Weekly Schedule & Reading Guide</h2>
+
+                <!-- Week 1 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 1: Introduction and IR Systems Architecture</h3>
+                        <p>Jan 12-16, 2026</p>
+                        <span class="badge badge-fundamental">Fundamental</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 1:</strong> Search Engines and Information Retrieval</li>
+                            <li><strong>Chapter 2:</strong> Architecture of a Search Engine</li>
+                            <li><strong>Chapter 3:</strong> Crawls and Feeds</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 1:</strong> Boolean retrieval</li>
+                            <li><strong>Chapter 2:</strong> The term vocabulary and postings lists</li>
+                            <li><strong>Chapter 3:</strong> Dictionaries and tolerant retrieval</li>
+                            <li><strong>Chapter 4:</strong> Index construction</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand the difference between IR and database queries</li>
+                            <li>Master inverted index structure and construction</li>
+                            <li>Learn text processing: tokenization, stemming, stopwords</li>
+                            <li>Grasp the concept of document representation (bag of words)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Build a small inverted index by hand (Book 2, Ch 1 exercises)</li>
+                            <li>Compare different stemming algorithms</li>
+                            <li>Analyze the space complexity of different index structures</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 2 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 2: Term Weighting Models (Vector Space)</h3>
+                        <p>Jan 19-23, 2026</p>
+                        <span class="badge badge-fundamental">Fundamental</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 7:</strong> Retrieval Models (Focus on Vector Space Model)</li>
+                            <li><strong>Section 7.1:</strong> An Overview of Retrieval Models</li>
+                            <li><strong>Section 7.2:</strong> Retrieval Based on Term Frequency</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 6:</strong> Scoring, term weighting, and the vector space model</li>
+                            <li><strong>Section 6.2:</strong> The vector space model for scoring</li>
+                            <li><strong>Section 6.3:</strong> Variant tf-idf functions</li>
+                            <li><strong>Section 6.4:</strong> Document and query weighting schemes</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Master TF-IDF weighting scheme and its variants</li>
+                            <li>Understand cosine similarity for document ranking</li>
+                            <li>Learn document length normalization techniques</li>
+                            <li>Grasp the geometric interpretation of vector space</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Calculate TF-IDF scores for sample documents by hand</li>
+                            <li>Implement different normalization schemes</li>
+                            <li>Compare rankings with different term weighting schemes</li>
+                            <li>Book 2, Chapter 6 exercises (especially 6.1, 6.2, 6.5)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 3 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 3: Evaluation of IR Systems (Part 1); PyTerrier Platform</h3>
+                        <p>Jan 26-30, 2026</p>
+                        <span class="badge badge-fundamental">Fundamental</span>
+                        <span class="badge badge-practical">Practical</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 8:</strong> Evaluating Search Engines</li>
+                            <li><strong>Section 8.1:</strong> Measuring Effectiveness</li>
+                            <li><strong>Section 8.2:</strong> Test Collections</li>
+                            <li><strong>Section 8.3:</strong> Effectiveness Metrics</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 8:</strong> Evaluation in information retrieval</li>
+                            <li><strong>Section 8.1-8.4:</strong> Precision, Recall, F-measure</li>
+                            <li><strong>Section 8.6:</strong> A broader perspective: System quality and user utility</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-box">
+                        <h4>🔧 PyTerrier Introduction</h4>
+                        <p><strong>Official Documentation:</strong> <a href="https://pyterrier.readthedocs.io/" target="_blank">https://pyterrier.readthedocs.io/</a></p>
+                        <ul>
+                            <li>Install PyTerrier on your system</li>
+                            <li>Complete the quickstart tutorial</li>
+                            <li>Practice indexing a small collection</li>
+                            <li>Run basic retrieval experiments</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand precision, recall, and F-measure</li>
+                            <li>Learn about Mean Average Precision (MAP)</li>
+                            <li>Master the concept of test collections (Cranfield paradigm)</li>
+                            <li>Understand relevance judgments and their limitations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 4 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 4: Evaluation (Part 2), Relevance Feedback</h3>
+                        <p>Feb 2-6, 2026</p>
+                        <span class="badge badge-fundamental">Fundamental</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 8:</strong> Evaluating Search Engines (continued)</li>
+                            <li><strong>Section 8.4:</strong> The Cranfield Evaluation Paradigm</li>
+                            <li><strong>Section 8.5:</strong> TREC</li>
+                            <li><strong>Chapter 9:</strong> Classification and Filtering</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 8:</strong> Evaluation (continued)</li>
+                            <li><strong>Section 8.5:</strong> Assessing relevance</li>
+                            <li><strong>Chapter 9:</strong> Relevance feedback and query expansion</li>
+                            <li><strong>Section 9.1:</strong> Relevance feedback and pseudo relevance feedback</li>
+                            <li><strong>Section 9.2:</strong> Global methods for query reformulation</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Learn advanced metrics: NDCG, ERR, RBP</li>
+                            <li>Understand statistical significance testing</li>
+                            <li>Master Rocchio algorithm for relevance feedback</li>
+                            <li>Learn pseudo-relevance feedback techniques</li>
+                            <li>Understand query expansion methods</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Calculate NDCG for sample rankings</li>
+                            <li>Implement Rocchio algorithm in PyTerrier</li>
+                            <li>Compare effectiveness of different feedback methods</li>
+                            <li>Book 2, Chapter 9 exercises</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 5 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 5: Advanced Retrieval Models</h3>
+                        <p>Feb 9-13, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 7:</strong> Retrieval Models (advanced sections)</li>
+                            <li><strong>Section 7.3:</strong> Probabilistic Models</li>
+                            <li><strong>Section 7.4:</strong> Language Models</li>
+                            <li><strong>Chapter 11:</strong> Probabilistic Retrieval</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 11:</strong> Probabilistic information retrieval</li>
+                            <li><strong>Section 11.3:</strong> The Binary Independence Model (BIM)</li>
+                            <li><strong>Section 11.4:</strong> An appraisal and some extensions</li>
+                            <li><strong>Chapter 12:</strong> Language models for information retrieval</li>
+                            <li><strong>Section 12.1-12.3:</strong> Query likelihood, smoothing</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand BM25 ranking function and its parameters</li>
+                            <li>Master language modeling approach to IR</li>
+                            <li>Learn different smoothing techniques (Jelinek-Mercer, Dirichlet)</li>
+                            <li>Understand DFR (Divergence From Randomness) framework</li>
+                            <li>Compare strengths/weaknesses of different models</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Calculate BM25 scores by hand</li>
+                            <li>Implement language models with different smoothing</li>
+                            <li>Compare model effectiveness on test collections</li>
+                            <li>Tune BM25 parameters (k1, b) using PyTerrier</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 6 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 6: Machine Learning for IR & Learning to Rank</h3>
+                        <p>Feb 16-20, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 9:</strong> Classification and Filtering</li>
+                            <li><strong>Chapter 14:</strong> Machine Learning Methods</li>
+                            <li><strong>Section 14.4:</strong> Learning to Rank</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 15:</strong> Support vector machines and machine learning on documents</li>
+                            <li>Read supplementary papers on Learning to Rank (provided on Moodle)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand three approaches: pointwise, pairwise, listwise</li>
+                            <li>Learn popular LTR algorithms: RankSVM, RankNet, LambdaMART</li>
+                            <li>Master feature engineering for ranking</li>
+                            <li>Understand loss functions for ranking</li>
+                            <li>Learn how to evaluate LTR models</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-box">
+                        <h4>🔧 PyTerrier LTR Practice</h4>
+                        <ul>
+                            <li>Use PyTerrier's learning to rank features</li>
+                            <li>Extract features from multiple retrieval models</li>
+                            <li>Train and evaluate LTR models</li>
+                            <li>Experiment with feature combinations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 7 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 7: Web Search (Link Analysis, PageRank)</h3>
+                        <p>Feb 23-27, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 10:</strong> Web Search</li>
+                            <li><strong>Section 10.1:</strong> The Web</li>
+                            <li><strong>Section 10.2:</strong> Web Characteristics</li>
+                            <li><strong>Section 10.3:</strong> The Retrieval Process</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 19:</strong> Web search basics</li>
+                            <li><strong>Chapter 21:</strong> Link analysis</li>
+                            <li><strong>Section 21.1:</strong> The Web as a graph</li>
+                            <li><strong>Section 21.2:</strong> PageRank</li>
+                            <li><strong>Section 21.3:</strong> HITS (Hyperlink-Induced Topic Search)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand the web graph and its properties</li>
+                            <li>Master PageRank algorithm and computation</li>
+                            <li>Learn HITS (hubs and authorities)</li>
+                            <li>Understand anchor text and its importance</li>
+                            <li>Learn about spam detection techniques</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Calculate PageRank for small graphs by hand</li>
+                            <li>Implement power iteration method</li>
+                            <li>Analyze the impact of damping factor</li>
+                            <li>Compare PageRank and HITS on sample graphs</li>
+                            <li>Book 2, Chapter 21 exercises</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 8 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 8: Neural Networks for IR</h3>
+                        <p>Mar 2-6, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                        <span class="badge badge-practical">Practical</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 14:</strong> Machine Learning Methods (Neural Network sections)</li>
+                            <li>Supplementary materials on Neural IR (provided on Moodle)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Additional Resources</h4>
+                        <ul>
+                            <li>Read recent survey papers on Neural IR (check Moodle)</li>
+                            <li>Explore BERT for IR applications</li>
+                            <li>Study dense retrieval methods (DPR, ColBERT)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Understand word embeddings (Word2Vec, GloVe)</li>
+                            <li>Learn neural ranking models (DRMM, KNRM, MatchPyramid)</li>
+                            <li>Master transformer-based models for IR (BERT, T5)</li>
+                            <li>Understand dense vs sparse retrieval</li>
+                            <li>Learn about bi-encoder and cross-encoder architectures</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-box">
+                        <h4>🔧 PyTerrier Neural IR Tutorial</h4>
+                        <ul>
+                            <li>Use PyTerrier's neural re-ranking pipelines</li>
+                            <li>Experiment with pre-trained models</li>
+                            <li>Compare neural vs traditional methods</li>
+                            <li>Understand computational trade-offs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 9 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 9: Efficient IR (Compression, Pruning)</h3>
+                        <p>Mar 9-13, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 5:</strong> Index Compression</li>
+                            <li><strong>Section 5.1:</strong> Compression of Term Dictionaries</li>
+                            <li><strong>Section 5.2:</strong> Postings List Compression</li>
+                            <li><strong>Chapter 6:</strong> Query Processing (efficiency aspects)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 4:</strong> Index construction (efficiency)</li>
+                            <li><strong>Chapter 5:</strong> Index compression</li>
+                            <li><strong>Section 5.3:</strong> Postings file compression</li>
+                            <li><strong>Chapter 7:</strong> Computing scores in a complete search system</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>💡 Key Focus Areas</h4>
+                        <ul>
+                            <li>Learn compression techniques: VByte, Gamma, Delta coding</li>
+                            <li>Understand DAAT (Document-At-A-Time) processing</li>
+                            <li>Master TAAT (Term-At-A-Time) processing</li>
+                            <li>Learn query optimization techniques</li>
+                            <li>Understand index pruning strategies</li>
+                            <li>Master early termination methods (WAND, MaxScore)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <h4>✏️ Practice Exercises</h4>
+                        <ul>
+                            <li>Compress sample postings using different methods</li>
+                            <li>Calculate compression ratios</li>
+                            <li>Analyze time-space tradeoffs</li>
+                            <li>Implement DAAT vs TAAT query processing</li>
+                            <li>Book 2, Chapter 5 exercises</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Week 10 -->
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3>Week 10: Web Search Evaluation & Course Review</h3>
+                        <p>Mar 16-20, 2026</p>
+                        <span class="badge badge-advanced">Advanced</span>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 1 (Croft et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 10:</strong> Web Search (evaluation sections)</li>
+                            <li><strong>Section 10.4:</strong> Ranking</li>
+                            <li><strong>Section 10.5:</strong> Evaluation</li>
+                        </ul>
+                    </div>
+
+                    <div class="reading-section">
+                        <h4>📖 Book 2 (Manning et al.)</h4>
+                        <ul>
+                            <li><strong>Chapter 19:</strong> Web search basics (continued)</li>
+                            <li><strong>Section 19.6:</strong> The search user experience</li>
+                            <li>Review all previous chapters for exam preparation</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-box">
+                        <h4>🎯 Final Exam Preparation</h4>
+                        <ul>
+                            <li>Review all weekly summaries and concept maps</li>
+                            <li>Re-do key exercises from both textbooks</li>
+                            <li>Practice past exam questions (check Moodle)</li>
+                            <li>Form study groups for discussion</li>
+                            <li>Prepare question list for office hours</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SUCCESS TIPS SECTION -->
+            <section id="tips">
+                <h2>🎓 Tips for Success</h2>
+
+                <h3>Study Strategies</h3>
+
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h4>📝 Effective Note-Taking</h4>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Use Cornell method</li>
+                            <li>Create concept maps</li>
+                            <li>Summarize in your own words</li>
+                            <li>Link concepts across weeks</li>
+                        </ul>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>💪 Active Learning</h4>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Work through all examples</li>
+                            <li>Solve textbook exercises</li>
+                            <li>Implement algorithms</li>
+                            <li>Test yourself regularly</li>
+                        </ul>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>🤝 Collaboration</h4>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Form study groups</li>
+                            <li>Discuss on Moodle forums</li>
+                            <li>Attend office hours</li>
+                            <li>Explain concepts to peers</li>
+                        </ul>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>⚡ Practice</h4>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Code in PyTerrier weekly</li>
+                            <li>Experiment with datasets</li>
+                            <li>Try different parameters</li>
+                            <li>Build personal projects</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Time Management</h3>
+
+                <div class="tips-box">
+                    <h4>⏰ Recommended Weekly Time Investment</h4>
+                    <ul>
+                        <li><strong>Lectures:</strong> 3 hours (mandatory)</li>
+                        <li><strong>Pre-reading:</strong> 2-3 hours</li>
+                        <li><strong>Deep study & exercises:</strong> 4-5 hours</li>
+                        <li><strong>Lab work:</strong> 3-4 hours</li>
+                        <li><strong>Review & consolidation:</strong> 2-3 hours</li>
+                        <li><strong>Total:</strong> ~15-18 hours per week</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 40px;">Common Pitfalls to Avoid</h3>
+
+                <div class="important-box">
+                    <h4>⚠️ Don't Fall Into These Traps</h4>
+                    <ul>
+                        <li><strong>Passive reading:</strong> Always take notes and work examples</li>
+                        <li><strong>Cramming:</strong> Consistent daily study beats last-minute cramming</li>
+                        <li><strong>Skipping labs:</strong> Hands-on practice is crucial for understanding</li>
+                        <li><strong>Ignoring math:</strong> Work through mathematical derivations, don't skip them</li>
+                        <li><strong>Not asking questions:</strong> Use office hours and forums actively</li>
+                        <li><strong>Delaying coursework:</strong> Start assignments early, don't wait until deadline</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RESOURCES SECTION -->
+            <section id="resources">
+                <h2>🔗 Additional Resources</h2>
+
+                <h3>Online Resources</h3>
+
+                <div class="book-card">
+                    <h4>🌐 Official Course Materials</h4>
+                    <ul>
+                        <li><strong>Moodle:</strong> Lecture slides, lab materials, announcements</li>
+                        <li><strong>PyTerrier Documentation:</strong> <a href="https://pyterrier.readthedocs.io/" target="_blank">https://pyterrier.readthedocs.io/</a></li>
+                        <li><strong>PyTerrier GitHub:</strong> <a href="https://github.com/terrier-org/pyterrier" target="_blank">https://github.com/terrier-org/pyterrier</a></li>
+                    </ul>
+                </div>
+
+                <div class="book-card">
+                    <h4>📚 Supplementary Reading</h4>
+                    <ul>
+                        <li><strong>IR Resources:</strong> <a href="https://www.staff.city.ac.uk/~sbrp622/irbookslides.html" target="_blank">IR Book Slides</a></li>
+                        <li><strong>TREC:</strong> <a href="https://trec.nist.gov/" target="_blank">Text REtrieval Conference</a></li>
+                        <li><strong>SIGIR:</strong> ACM Special Interest Group on IR</li>
+                        <li><strong>ArXiv cs.IR:</strong> Latest research papers</li>
+                    </ul>
+                </div>
+
+                <div class="book-card">
+                    <h4>🛠️ Tools & Datasets</h4>
+                    <ul>
+                        <li><strong>ir_datasets:</strong> Access to common IR test collections</li>
+                        <li><strong>Elasticsearch:</strong> Popular open-source search engine</li>
+                        <li><strong>Apache Lucene/Solr:</strong> Java-based search libraries</li>
+                        <li><strong>Anserini:</strong> Toolkit for reproducible IR research</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px;">Practice Datasets</h3>
+
+                <div class="tips-box">
+                    <h4>📊 Recommended Datasets for Practice</h4>
+                    <ul>
+                        <li><strong>TREC Collections:</strong> Standard benchmarks (available via PyTerrier)</li>
+                        <li><strong>MS MARCO:</strong> Large-scale dataset from Microsoft</li>
+                        <li><strong>Cranfield:</strong> Classic small test collection</li>
+                        <li><strong>CACM:</strong> Computer science abstracts</li>
+                        <li><strong>VASWANI:</strong> Document collection for experiments</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px;">Video Lectures</h3>
+
+                <div class="book-card">
+                    <h4>🎥 Supplementary Video Resources</h4>
+                    <ul>
+                        <li><strong>Stanford CS276:</strong> Information Retrieval and Web Search (YouTube)</li>
+                        <li><strong>Coursera:</strong> Text Retrieval and Search Engines (UIUC)</li>
+                        <li><strong>PyTerrier Tutorials:</strong> YouTube channel with hands-on demos</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- FINAL TIPS SECTION -->
+            <section>
+                <h2>🎯 Final Words of Advice</h2>
+
+                <div class="important-box">
+                    <h4>Remember:</h4>
+                    <ul>
+                        <li><strong>Consistency beats intensity:</strong> Regular study is better than occasional marathons</li>
+                        <li><strong>Understanding > Memorization:</strong> Focus on concepts, not rote learning</li>
+                        <li><strong>Theory + Practice:</strong> Both textbooks and PyTerrier are equally important</li>
+                        <li><strong>Ask questions early:</strong> Don't let confusion accumulate</li>
+                        <li><strong>Connect the dots:</strong> IR concepts build on each other</li>
+                        <li><strong>Start assignments early:</strong> Give yourself time for debugging and learning</li>
+                    </ul>
+                </div>
+
+                <div class="tips-box">
+                    <h4>📧 Getting Help</h4>
+                    <ul>
+                        <li><strong>Lecturers:</strong> craig.macdonald@glasgow.ac.uk, sean.macavaney@glasgow.ac.uk</li>
+                        <li><strong>Office Hours:</strong> Check Moodle for schedule</li>
+                        <li><strong>Moodle Forums:</strong> Post questions and help others</li>
+                        <li><strong>Lab Sessions:</strong> Friday afternoons - bring your questions!</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white;">
+                    <h3 style="color: white; margin-bottom: 15px;">🚀 You've Got This!</h3>
+                    <p style="font-size: 1.1em;">Information Retrieval is a fascinating field that powers the tools we use every day. Approach it with curiosity, practice consistently, and don't hesitate to seek help. Good luck with your studies!</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Information Retrieval Course - Spring 2026</strong></p>
+            <p>University of Glasgow - School of Computing Science</p>
+            <p style="margin-top: 10px; opacity: 0.8;">📚 Study smart, practice hard, and enjoy the journey!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Add active state to navigation
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

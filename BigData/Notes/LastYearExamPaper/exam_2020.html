@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data Exam 2020 - Solutions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #88133708 0%, #be123c08 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #881337 0%, #be123c 40%, #f43f5e 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #be123c; color: white; transform: translateY(-1px); }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #881337; }
+  .q-marks {
+    background: linear-gradient(135deg, #881337, #f43f5e);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #be123c;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #881337;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #be123c, #f43f5e);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #be123c, #f43f5e);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #881337; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #fff1f2, #fecdd3);
+    border: 1px solid #fda4af;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #9f1239; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #881337; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #92400e; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #881337; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #f43f5e; background: #fff1f2; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #881337; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #be123c;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #881337, #be123c);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #881337; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  .true-badge { display: inline-block; background: #dcfce7; color: #166534; padding: 0.1rem 0.6rem; border-radius: 8px; font-size: 0.78rem; font-weight: 600; }
+  .false-badge { display: inline-block; background: #fee2e2; color: #991b1b; padding: 0.1rem 0.6rem; border-radius: 8px; font-size: 0.78rem; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Big Data Exam 2020 — Solutions</h1>
+  <div class="subtitle">University of Glasgow — H Level Summer Diet — Official Answers</div>
+  <div class="badge-row">
+    <span class="badge">60 Marks</span>
+    <span class="badge">3 Questions</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — HDFS Client Read</a>
+    <a href="#q2" class="nav-link">Q2 — MapReduce DISTINCT</a>
+    <a href="#q3" class="nav-link">Q3 — NoSQL & Distributed Systems</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — HDFS Client Read Protocol & Concepts</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+    <div class="q-text">
+      (a) Describe the steps involved in the HDFS client read protocol. (b) Identify which statements about core HDFS concepts are true or false.
+    </div>
+
+    <!-- Q1a -->
+    <div class="answer-section">
+      <h4>Part (a): HDFS Client Read Protocol <span class="marks-badge">10 marks</span></h4>
+
+      <p>When a client application wants to read a file stored in HDFS, it follows a carefully designed protocol that keeps the NameNode out of the data transfer path entirely. This separation of <strong>metadata operations</strong> (handled by NameNode) from <strong>data operations</strong> (handled by DataNodes) is the single most important architectural decision in HDFS — without it, the NameNode would become a crippling bottleneck as soon as you scale to hundreds of clients reading simultaneously.</p>
+
+      <ol class="step-list">
+        <li><strong>Client calls <code>open()</code> on DistributedFileSystem:</strong> The client application initiates a read by calling the <code>open()</code> method on the DistributedFileSystem object. This is the entry point — like picking up the phone to call the library's front desk before visiting.</li>
+        <li><strong>DistributedFileSystem contacts NameNode via RPC:</strong> Under the hood, the DFS object makes a Remote Procedure Call (RPC) to the NameNode, requesting the locations of all blocks that make up the target file. The NameNode looks up its in-memory metadata and returns the block IDs along with the list of DataNodes hosting each block's replicas.</li>
+        <li><strong>Block locations sorted by proximity (rack-awareness):</strong> The NameNode doesn't just return random DataNode addresses — it sorts them by <em>network distance</em> from the client. If the client is on Rack A, a DataNode on Rack A comes first, then one on Rack B (same data center), then one in a different data center. This is HDFS's rack-aware optimization that minimizes network hops.</li>
+        <li><strong>Client receives FSDataInputStream wrapping DFSInputStream:</strong> The client gets back a stream object. The <code>FSDataInputStream</code> is the public API wrapper, while the <code>DFSInputStream</code> underneath manages the actual block-level communication with DataNodes. The client doesn't need to know about blocks at all — it just reads bytes.</li>
+        <li><strong>DFSInputStream connects to closest DataNode for first block:</strong> The stream automatically connects to the nearest DataNode for Block 0 of the file. This happens transparently — the client just calls <code>read()</code> and data arrives.</li>
+        <li><strong>Data streams directly from DataNode to client:</strong> Data flows DataNode &rarr; DFSInputStream &rarr; client application. The NameNode is completely uninvolved at this stage. This is critical: if 1000 clients are reading files simultaneously, they each talk to different DataNodes directly, and the NameNode is not stressed at all.</li>
+        <li><strong>End of block — close connection, move to next block:</strong> When all bytes of the current block have been read, the DFSInputStream closes its connection to that DataNode and opens a new connection to the closest DataNode for the <em>next</em> block. This block-hopping is invisible to the client application.</li>
+        <li><strong>Transparent failure handling:</strong> If a DataNode becomes unreachable mid-read, the DFSInputStream silently switches to the next closest replica of that block. The client never sees an error — it just continues reading without interruption.</li>
+        <li><strong>Checksum verification at the client:</strong> After receiving block data, the client verifies it against the stored checksum. If there's a mismatch (data corruption), the DFSInputStream reports the bad block to the NameNode and retries with the next replica. This means HDFS can self-heal from silent data corruption.</li>
+        <li><strong>Client calls <code>close()</code> on FSDataInputStream:</strong> When done reading, the client closes the stream, which releases all DataNode connections.</li>
+      </ol>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: The Library Catalog</h5>
+        <p>Think of HDFS read like visiting a massive university library. You walk to the <strong>information desk</strong> (NameNode) and ask "Where is the book 'Distributed Systems'?" The librarian checks the catalog (metadata) and tells you: "Chapter 1 is on Shelf 3A, Row B. Chapter 2 is on Shelf 7C, Row D. Chapter 3 is on Shelf 2A, Row A — and that's the closest shelf to where you're standing." You then walk to each shelf yourself and pick up the chapters directly. The librarian never leaves the desk, never carries a single page for you — they only pointed you in the right direction. If Shelf 3A is locked (DataNode failure), the librarian also told you "there's a backup copy on Shelf 5B" — so you just go there instead.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>Why This Architecture Matters</h5>
+        <p><strong>NameNode is NOT in the data path.</strong> This is the single most exam-critical point. If the NameNode had to relay every byte of data between DataNodes and clients, it would become a bottleneck at ~100 clients. By only serving lightweight metadata (block locations = a few kilobytes), the NameNode can serve thousands of clients per second. The actual heavy lifting (terabytes of data transfer) happens peer-to-peer between clients and DataNodes.</p>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>Common Exam Pitfall:</strong> Students sometimes write that "the NameNode sends data to the client" — this is WRONG and will cost marks. The NameNode only sends <em>metadata</em> (block locations). All actual data flows directly from DataNodes to the client.</p>
+      </div>
+    </div>
+
+    <!-- Q1b -->
+    <div class="answer-section">
+      <h4>Part (b): HDFS Core Concepts — True/False <span class="marks-badge">10 marks</span></h4>
+
+      <p>These statements test your understanding of how HDFS components work together. Each one touches on a fundamental design principle that makes HDFS capable of storing petabytes of data reliably across thousands of commodity machines.</p>
+
+      <table>
+        <tr><th>Statement</th><th>Verdict</th><th>Explanation</th></tr>
+        <tr>
+          <td>NameNode stores ALL metadata in memory</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>The entire namespace (directory tree, file-to-block mappings, permissions) lives in RAM for sub-millisecond lookups. This is why NameNode needs a beefy machine with lots of RAM — a cluster with 100 million files might need 60+ GB of heap.</td>
+        </tr>
+        <tr>
+          <td>DataNodes store actual data blocks on local disks</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Each DataNode stores blocks as regular files on its local Linux filesystem (typically ext4 or xfs). A block = one file on the DN's disk. DataNodes are cheap commodity machines with lots of disk space but modest RAM.</td>
+        </tr>
+        <tr>
+          <td>HDFS files are write-once by default</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>The original HDFS design only supported create-and-write-once-read-many. Append support was added later (HDFS-265), but random writes are still not supported. This simplifies replication enormously — you never have to worry about two writers modifying the same block simultaneously.</td>
+        </tr>
+        <tr>
+          <td>Default replication factor = 3</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Each block is stored on 3 different DataNodes by default. The placement policy: 1st replica on the writer's node (or a random node), 2nd replica on a different rack, 3rd replica on the same rack as the 2nd but a different node. This survives both node failures AND entire rack failures.</td>
+        </tr>
+        <tr>
+          <td>NameNode is a single point of failure</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>If the NameNode dies, the entire filesystem is inaccessible (you can't find any blocks without the metadata). Mitigated by HA mode: a Standby NameNode keeps a synchronized copy and takes over within seconds using ZooKeeper for leader election.</td>
+        </tr>
+        <tr>
+          <td>DataNodes send heartbeats every 3 seconds</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Every 3 seconds, each DN sends a heartbeat to the NN saying "I'm alive." If the NN misses 10 consecutive heartbeats (~30 seconds), it declares that DN dead and begins re-replicating its blocks to other DNs to restore the replication factor.</td>
+        </tr>
+        <tr>
+          <td>Block reports are sent periodically to NameNode</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Every ~6 hours (configurable), each DN sends a full block report — a list of every block ID stored on that DN. The NN uses this to verify that its in-memory metadata matches reality. This is also how the NN rebuilds its block-to-DN mapping after a restart.</td>
+        </tr>
+        <tr>
+          <td>NameNode makes all replication decisions</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>The NN alone decides when to replicate (under-replicated block), where to place replicas (rack-aware placement), and when to delete excess replicas (over-replicated). DataNodes just follow orders — they never initiate replication on their own.</td>
+        </tr>
+        <tr>
+          <td>Data never flows through the NameNode</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>This is the golden rule of HDFS architecture. The NN only handles metadata. All data transfer happens directly between clients and DataNodes (for reads) or through DataNode pipelines (for writes). This separation is what makes HDFS scalable to thousands of concurrent clients.</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>Analogy: The Airport Control Tower</h5>
+        <p>The NameNode is like an airport control tower. It knows where every plane (block) is, which runway (DataNode) it's on, and coordinates takeoffs and landings (replication decisions). But the control tower never carries passengers or cargo itself — that's the planes' job. If the control tower goes dark, no plane can land or take off (single point of failure), but the planes already in the air keep flying (data already on DataNodes is safe, just inaccessible until the NN recovers).</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Strategy for Q1</h5>
+        <p>For Part (a), draw a numbered sequence showing Client &rarr; NameNode &rarr; Client &rarr; DataNode. Emphasize: "NameNode provides metadata ONLY, data flows directly from DataNodes." For Part (b), briefly justify each true/false — a one-liner per statement is sufficient but always explain WHY, not just state the verdict.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — MapReduce Job Design for DISTINCT</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+    <div class="q-text">
+      (a) Design a MapReduce job that implements the DISTINCT operation on a specific column of a table/file. (b) Design a MapReduce job that performs aggregation with DISTINCT — grouping by one column and counting distinct values of another column.
+    </div>
+
+    <!-- Q2a -->
+    <div class="answer-section">
+      <h4>Part (a): MapReduce for DISTINCT <span class="marks-badge">10 marks</span></h4>
+
+      <p>The DISTINCT operation removes duplicate values from a dataset, returning only unique entries. In SQL, this is <code>SELECT DISTINCT column FROM table</code>. The beauty of implementing this in MapReduce is that the framework's <strong>shuffle and sort phase</strong> already groups identical keys together — so deduplication comes almost for free if you choose your key wisely.</p>
+
+      <div class="concept-box">
+        <h5>The Core Insight</h5>
+        <p><strong>Make the target column value the MAP KEY.</strong> Since MapReduce guarantees that all values sharing the same key are routed to the same reducer, and the reducer is called exactly once per unique key, simply emitting the column value as the key automatically deduplicates it. The reducer just outputs the key and ignores the values entirely.</p>
+      </div>
+
+      <p><strong>Mapper</strong> (5 marks): Parse each input line, extract the target column value, and emit it as the key. The value is irrelevant — we use <code>NullWritable</code> to save bandwidth.</p>
+
+      <div class="code-block">// Mapper: emit column value as key, null as value
+map(key, line):
+    fields = line.split(",")          // or whatever delimiter
+    target_value = fields[TARGET_COL] // extract the column we want DISTINCT on
+    emit(target_value, NullWritable)  // key = column value, value = nothing</div>
+
+      <p><strong>Reducer</strong> (5 marks): The reducer receives each unique key exactly once (with a list of null values). It simply outputs the key — that IS the distinct value.</p>
+
+      <div class="code-block">// Reducer: output each unique key once
+reduce(key, values):
+    emit(key, NullWritable)  // just write the key — it's already unique
+    // We completely ignore 'values' — they're all NullWritable anyway</div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: Sorting Mail by ZIP Code</h5>
+        <p>Imagine a post office needs to know which ZIP codes received mail today. Workers (mappers) read each letter's ZIP code and toss it into a labeled bin. Each bin represents a unique ZIP. At the end, a supervisor (reducer) walks past the bins and writes down each label — that's the list of distinct ZIPs. They don't count letters, don't open them — just note which bins exist. The physical sorting (shuffle &amp; sort) did the deduplication automatically.</p>
+      </div>
+
+      <p><strong>Walkthrough example:</strong> Suppose we have a file of customer orders and want distinct cities:</p>
+
+      <table>
+        <tr><th>Input Line</th><th>Mapper Output (key, value)</th></tr>
+        <tr><td>Order1, Alice, London</td><td>("London", null)</td></tr>
+        <tr><td>Order2, Bob, Paris</td><td>("Paris", null)</td></tr>
+        <tr><td>Order3, Carol, London</td><td>("London", null)</td></tr>
+        <tr><td>Order4, Dave, Tokyo</td><td>("Tokyo", null)</td></tr>
+        <tr><td>Order5, Eve, Paris</td><td>("Paris", null)</td></tr>
+      </table>
+
+      <p>After shuffle &amp; sort, the reducer sees: <code>("London", [null, null])</code>, <code>("Paris", [null, null])</code>, <code>("Tokyo", [null])</code>. Output: London, Paris, Tokyo. Three distinct cities — duplicates eliminated.</p>
+
+      <div class="warning-box">
+        <p><strong>Why not use a Combiner?</strong> You <em>can</em> add a combiner (identical to the reducer) to reduce network traffic during the shuffle phase. Each mapper node would locally deduplicate before sending data to reducers. This is an optimization, not a requirement — but mentioning it in the exam shows deeper understanding.</p>
+      </div>
+    </div>
+
+    <!-- Q2b -->
+    <div class="answer-section">
+      <h4>Part (b): MapReduce for GROUP BY with COUNT DISTINCT <span class="marks-badge">10 marks</span></h4>
+
+      <p>This is the more complex variant: <code>SELECT group_col, COUNT(DISTINCT value_col) FROM table GROUP BY group_col</code>. We need to group rows by one column and, within each group, count how many <em>unique</em> values exist in another column. This requires the reducer to actively track uniqueness using a data structure.</p>
+
+      <p><strong>Mapper:</strong> Emit the grouping column as the key and the column we want to count distinct values of as the value.</p>
+
+      <div class="code-block">// Mapper: key = group column, value = column to deduplicate
+map(key, line):
+    fields = line.split(",")
+    group_value = fields[GROUP_COL]   // e.g., "department"
+    dedup_value = fields[VALUE_COL]   // e.g., "employee_city"
+    emit(group_value, dedup_value)</div>
+
+      <p><strong>Reducer:</strong> For each group key, collect all values into a <code>HashSet</code> (which automatically deduplicates), then output the set's size as the count.</p>
+
+      <div class="code-block">// Reducer: use HashSet for deduplication, output count
+reduce(group_key, values):
+    HashSet&lt;String&gt; unique = new HashSet&lt;&gt;()
+    for each v in values:
+        unique.add(v)         // duplicates are silently ignored by the set
+    emit(group_key, unique.size())  // count of distinct values</div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: Teacher Counting Unique Students</h5>
+        <p>Imagine a school where multiple teachers (mappers) grade homework. Each teacher writes a slip: "Subject: Maths, Student: Alice", "Subject: Maths, Student: Bob", "Subject: Maths, Student: Alice" (Alice submitted twice). The slips are sorted into piles by subject (shuffle). The head teacher (reducer) goes through the Maths pile, keeping a checklist of unique names (HashSet). Alice appears twice but only gets one tick. Final count: 2 unique students in Maths.</p>
+      </div>
+
+      <p><strong>Walkthrough example:</strong> Count distinct cities per department:</p>
+
+      <table>
+        <tr><th>Input</th><th>Mapper Output</th></tr>
+        <tr><td>Alice, Sales, London</td><td>("Sales", "London")</td></tr>
+        <tr><td>Bob, Sales, Paris</td><td>("Sales", "Paris")</td></tr>
+        <tr><td>Carol, Sales, London</td><td>("Sales", "London")</td></tr>
+        <tr><td>Dave, Engineering, Tokyo</td><td>("Engineering", "Tokyo")</td></tr>
+        <tr><td>Eve, Engineering, Tokyo</td><td>("Engineering", "Tokyo")</td></tr>
+      </table>
+
+      <p>After shuffle: <code>("Sales", ["London", "Paris", "London"])</code> and <code>("Engineering", ["Tokyo", "Tokyo"])</code>.</p>
+      <p>Reducer for Sales: HashSet = {London, Paris} &rarr; emit("Sales", 2). Reducer for Engineering: HashSet = {Tokyo} &rarr; emit("Engineering", 1).</p>
+
+      <div class="warning-box">
+        <p><strong>Memory Consideration:</strong> The HashSet approach works well when the number of distinct values per group fits in memory. If a single group has billions of distinct values, you'd need approximate algorithms (like HyperLogLog) or a secondary sort / multi-pass approach. For the exam, the HashSet solution is the expected answer.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>Why This Works — MapReduce Guarantees</h5>
+        <p>MapReduce guarantees that <strong>all values for the same key are sent to the same reducer</strong>. This means all rows belonging to "Sales" end up at one reducer, all "Engineering" rows at another. Within each reducer call, we see every value for that group — so using a HashSet gives us a complete picture of unique values. No data is split across reducers for the same key.</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Strategy for Q2</h5>
+        <p>For Part (a): Write the pseudocode for mapper and reducer (5 lines total). State clearly: "The shuffle phase groups identical keys, so each unique value appears as a reducer key exactly once." For Part (b): Emphasize the HashSet in the reducer. A walkthrough example with 3-4 rows is worth extra marks — it proves you understand the data flow end-to-end.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — NoSQL & Distributed Systems Concepts</span>
+      <span class="q-marks">20 marks</span>
+    </div>
+    <div class="q-text">
+      (a) Evaluate statements about LSM Trees. (b) Explain BigTable's storage model — row store vs column store. (c) Compare standard and order-preserving consistent hashing. (d) Discuss quorum replication and linearizability.
+    </div>
+
+    <!-- Q3a -->
+    <div class="answer-section">
+      <h4>Part (a): LSM Tree Statements — True/False Analysis <span class="marks-badge">5 marks</span></h4>
+
+      <p>Log-Structured Merge Trees (LSM Trees) are the storage engine behind Cassandra, HBase, LevelDB, RocksDB, and many modern databases. Their fundamental innovation is turning expensive random disk writes into cheap sequential ones — at the cost of slightly more complex reads.</p>
+
+      <table>
+        <tr><th>Statement</th><th>Verdict</th><th>Detailed Explanation</th></tr>
+        <tr>
+          <td>LSM trees convert random writes to sequential writes</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>This is the <strong>core advantage</strong>. A B-tree must seek to the right page and update in place (random I/O). An LSM tree writes to an in-memory buffer (MemTable) and periodically flushes it as a sorted, immutable file (SSTable) in one sequential disk write. Sequential writes are 100-1000x faster than random writes on HDDs.</td>
+        </tr>
+        <tr>
+          <td>Writes go to MemTable first, then flushed as SSTable</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Every write is first inserted into the MemTable (a sorted in-memory structure, typically a red-black tree or skip list). When the MemTable reaches a size threshold (e.g., 64MB), it's frozen and written to disk as an SSTable — a sorted, immutable file. A new empty MemTable takes its place.</td>
+        </tr>
+        <tr>
+          <td>LSM reads can be slower than B-tree reads</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>To read a key, LSM must check: (1) the current MemTable, (2) the frozen MemTable being flushed, (3) multiple SSTables on disk from newest to oldest. In the worst case, this means checking many files. B-trees find the key in O(log n) with a single index lookup. Bloom filters mitigate this by quickly ruling out SSTables that definitely don't contain the key.</td>
+        </tr>
+        <tr>
+          <td>Compaction merges SSTables to improve read performance</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Over time, many SSTables accumulate on disk. Compaction is a background process that merges multiple SSTables into a single, larger SSTable — deduplicating keys and discarding deleted entries (tombstones). Fewer SSTables = fewer files to check during reads = better read performance.</td>
+        </tr>
+        <tr>
+          <td>Bloom filters help avoid unnecessary disk reads</td>
+          <td><span class="true-badge">TRUE</span></td>
+          <td>Each SSTable has an associated Bloom filter — a probabilistic data structure that can say "this key is <strong>definitely NOT</strong> in this SSTable" or "this key <strong>might be</strong> in this SSTable." If the Bloom filter says no, we skip that SSTable entirely, saving a disk read. False positive rate is typically &lt;1%.</td>
+        </tr>
+      </table>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: The Sticky Note Strategy</h5>
+        <p>Imagine you're taking notes during a busy day. The <strong>B-tree approach</strong> is like finding the exact right page in your thick, organized notebook and inserting a note in alphabetical order every time — you spend most of your time flipping pages (random seeking). The <strong>LSM approach</strong> is like scribbling on a sticky note (MemTable) and slapping it on your desk. When your desk is full of stickies, you sort them all at once and staple them into a neat packet (flush to SSTable). Finding a specific note later means checking multiple packets (slower reads), but the writing itself was blazing fast because you never had to search for the right position.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>LSM Write Path Summary</h5>
+        <p><strong>Write &rarr; WAL (write-ahead log) &rarr; MemTable &rarr; [threshold reached] &rarr; Flush to SSTable &rarr; [background] Compaction merges SSTables.</strong> The WAL ensures durability — if the machine crashes before flushing, the MemTable can be rebuilt from the WAL on restart.</p>
+      </div>
+    </div>
+
+    <!-- Q3b -->
+    <div class="answer-section">
+      <h4>Part (b): BigTable — Row Store vs Column Store <span class="marks-badge">5 marks</span></h4>
+
+      <p>This is one of the most commonly confused topics. BigTable (and its open-source counterpart HBase) is <strong>neither a pure row store nor a pure column store</strong> — it's a <strong>column-family store</strong>, which is a hybrid that takes the best of both worlds.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Pure Row Store (e.g., MySQL)</h5>
+          <p>All columns of a row are stored contiguously on disk. Reading one column requires loading the entire row. Great for OLTP (fetching complete records), wasteful for analytics (scanning one column across millions of rows).</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Pure Column Store (e.g., Parquet)</h5>
+          <p>Each individual column is stored in its own file/segment. Scanning one column across millions of rows is extremely fast. But reconstructing a full row requires reading from many separate files.</p>
+        </div>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card highlight" style="grid-column: 1 / -1;">
+          <h5>BigTable / HBase: Column-Family Store (The Hybrid)</h5>
+          <p>Columns are grouped into <strong>column families</strong> (declared at table creation time). Each column family is stored in its own set of HFiles/SSTables on disk. <em>Within</em> a column family, data is stored <strong>row-oriented</strong> — all columns in that family for a given row are contiguous. <em>Across</em> column families, data is stored separately — reading one family does NOT require loading others.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: The Filing Cabinet</h5>
+        <p>Think of a big filing cabinet for employee records. Each <strong>drawer</strong> is a column family: one drawer for "personal info" (name, address, phone), another for "payroll" (salary, tax, bank details), another for "medical" (health records). When HR needs someone's payroll info, they only open the "payroll" drawer — they never touch the "medical" drawer. But within that drawer, all payroll fields for one person are clipped together (row-oriented within the family). This is far more efficient than either (a) storing everything in one massive folder per person (pure row store — must scan medical records to find salary) or (b) having separate drawers for every single field like "first name", "last name", "salary" individually (pure column store — too fragmented for record-level access).</p>
+      </div>
+
+      <table>
+        <tr><th>Property</th><th>Row Store</th><th>Column Store</th><th>Column-Family (BigTable)</th></tr>
+        <tr><td>Storage unit</td><td>Entire row</td><td>Single column</td><td>Column family (group of columns)</td></tr>
+        <tr><td>Read one column, all rows</td><td>Slow (loads full rows)</td><td>Fast (reads one file)</td><td>Medium (reads one family)</td></tr>
+        <tr><td>Read all columns, one row</td><td>Fast (contiguous)</td><td>Slow (many files)</td><td>Medium (one read per family)</td></tr>
+        <tr><td>Schema flexibility</td><td>Fixed schema</td><td>Fixed schema</td><td>Flexible within families</td></tr>
+      </table>
+    </div>
+
+    <!-- Q3c -->
+    <div class="answer-section">
+      <h4>Part (c): Consistent Hashing — Standard vs Order-Preserving <span class="marks-badge">5 marks</span></h4>
+
+      <p>Both techniques distribute data across nodes arranged in a logical ring, but they differ fundamentally in <em>how</em> keys are mapped to positions on that ring — and this difference has profound implications for what queries are efficient.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>Standard Consistent Hashing</h5>
+          <p><strong>How it works:</strong> Apply a hash function (e.g., Murmur3, MD5) to the key, producing a hash value. This hash value determines the position on the ring. The key is assigned to the first node clockwise from that position.</p>
+          <p><strong>Key property:</strong> The hash function <em>destroys</em> the natural ordering of keys. Keys "user_1000" and "user_1001" will likely land on completely different nodes, potentially on opposite sides of the ring.</p>
+          <p><strong>Advantage:</strong> Excellent uniform distribution regardless of key patterns. Even if all keys start with "A", the hash spreads them evenly.</p>
+          <p><strong>Disadvantage:</strong> Range queries are impossible. "Give me all users with IDs 1000-2000" requires contacting ALL nodes, since those keys are scattered everywhere.</p>
+          <p><strong>Used by:</strong> Cassandra (with Murmur3Partitioner), DynamoDB, Riak.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Order-Preserving Consistent Hashing</h5>
+          <p><strong>How it works:</strong> The key maps DIRECTLY to a position on the ring without hashing — or uses an order-preserving hash. Keys that are numerically/lexicographically close stay close on the ring.</p>
+          <p><strong>Key property:</strong> The natural ordering of keys is <em>preserved</em>. Adjacent keys land on the same node or neighboring nodes.</p>
+          <p><strong>Advantage:</strong> Range queries are efficient! "All users 1000-2000" maps to a contiguous arc on the ring, hitting only 1-2 nodes instead of all nodes.</p>
+          <p><strong>Disadvantage:</strong> Potential hotspots. If keys are timestamps, all recent writes cluster on one node (the one responsible for "now"). If keys have a skewed distribution (e.g., most start with "S"), some nodes get overloaded.</p>
+          <p><strong>Used by:</strong> BigTable/HBase (rows sorted by key), Cassandra (with ByteOrderedPartitioner — rarely used).</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: Student Dormitory Assignment</h5>
+        <p><strong>Standard hashing</strong> is like assigning students to dorms by hashing their name — "Alice" goes to Dorm 7, "Bob" to Dorm 2, "Carol" to Dorm 7, "Dave" to Dorm 5. The distribution is even, but friends whose names are close alphabetically might be in completely different buildings. If you want to find "all students from A-C," you have to check every single dorm. <strong>Order-preserving</strong> is like assigning alphabetically — A-F in Dorm 1, G-L in Dorm 2, etc. Now you can easily find "all students from M-P" by going to Dorm 3. But if 80% of students have last names starting with S-Z, Dorm 5 is wildly overcrowded while Dorm 1 is nearly empty.</p>
+      </div>
+
+      <table>
+        <tr><th>Property</th><th>Standard Hashing</th><th>Order-Preserving</th></tr>
+        <tr><td>Key ordering</td><td>Destroyed by hash function</td><td>Preserved on the ring</td></tr>
+        <tr><td>Data distribution</td><td>Uniform (excellent)</td><td>Depends on key distribution (risky)</td></tr>
+        <tr><td>Range queries</td><td>Not supported (must scan all nodes)</td><td>Efficient (contiguous ring arc)</td></tr>
+        <tr><td>Hotspot risk</td><td>Low</td><td>High (skewed keys = skewed load)</td></tr>
+        <tr><td>Point queries</td><td>O(1) — hash and go</td><td>O(1) — direct position lookup</td></tr>
+      </table>
+    </div>
+
+    <!-- Q3d -->
+    <div class="answer-section">
+      <h4>Part (d): Quorum Replication & Linearizability <span class="marks-badge">5 marks</span></h4>
+
+      <p>Quorum-based replication is the most flexible approach to balancing consistency and availability in distributed systems. But there's a subtle and critical distinction: <strong>quorum overlap guarantees freshness, but NOT linearizability</strong>.</p>
+
+      <div class="concept-box">
+        <h5>Quorum Rules Recap</h5>
+        <p><strong>R + W > N</strong> — Read quorum + Write quorum > Total replicas. Guarantees every read set overlaps with every write set, so at least one node in any read has the latest write.</p>
+        <p><strong>W + W > N</strong> — Two write quorums always overlap. Guarantees write-write conflict detection — no two writes can succeed without at least one node seeing both.</p>
+        <p><strong>Example:</strong> N=3, R=2, W=2. Any 2 nodes you read from must include at least 1 node that participated in the last write (since 2+2=4 > 3).</p>
+      </div>
+
+      <p><strong>Linearizability</strong> is a stronger guarantee: every operation appears to take effect instantaneously at some point between its start and end. In other words, once a write completes, ALL subsequent reads (even from different clients) must see it. It provides the illusion of a single copy of the data, even though it's replicated.</p>
+
+      <div class="warning-box">
+        <p><strong>Critical Insight: Quorum ALONE does NOT guarantee linearizability.</strong> Here's why: two concurrent writes W1 and W2 might reach different subsets of nodes in different orders. Client A reads from nodes that saw W2 last, Client B reads from nodes that saw W1 last — both satisfy the quorum rule (R+W>N), but they see different "latest" values. This violates linearizability because the system appears to go backward in time for one of the clients.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy: The Jury Problem</h5>
+        <p>Quorum replication is like requiring majority agreement in a jury system. With 5 jurors (N=5), you need 3 to agree on a verdict (W=3 for writes) and ask 3 for the result (R=3 for reads). Since 3+3=6 > 5, at least one juror in any "read panel" participated in the last "write decision." BUT — imagine two trials happening simultaneously for the same case. Jury A convicts at 2:00 PM, Jury B acquits at 2:01 PM. Depending on which 3 jurors you ask, you might get different verdicts. <strong>To be truly linearizable, you need a single supreme court (consensus protocol)</strong> that serializes all decisions into one definitive order.</p>
+      </div>
+
+      <p><strong>What's needed beyond quorum for linearizability?</strong></p>
+      <ul class="bullet-list">
+        <li><strong>Version vectors / Lamport timestamps:</strong> Attach a logical clock to each write so nodes can determine causal ordering. This detects conflicts but doesn't resolve them automatically.</li>
+        <li><strong>Consensus protocols (Paxos, Raft):</strong> All writes go through a leader elected by consensus. The leader serializes writes into a total order. This provides true linearizability but at the cost of latency and availability (requires majority of nodes to be reachable).</li>
+        <li><strong>Last-Write-Wins (LWW):</strong> Cassandra's approach — attach a wall-clock timestamp to each write, always keep the latest timestamp. This provides <em>eventual consistency</em> (all nodes converge to the same value eventually) but NOT linearizability, because wall clocks can drift and concurrent writes with close timestamps may resolve differently on different nodes.</li>
+      </ul>
+
+      <table>
+        <tr><th>Property</th><th>Quorum (R+W>N)</th><th>Quorum + Consensus</th></tr>
+        <tr><td>Freshness</td><td>Yes (overlap guarantees seeing latest write)</td><td>Yes</td></tr>
+        <tr><td>Linearizability</td><td>No (concurrent writes can cause inconsistency)</td><td>Yes (total ordering via leader)</td></tr>
+        <tr><td>Availability</td><td>High (any R or W nodes suffice)</td><td>Lower (leader must be reachable)</td></tr>
+        <tr><td>Latency</td><td>Low (contact nearest nodes)</td><td>Higher (must go through leader)</td></tr>
+        <tr><td>Example system</td><td>Cassandra (LWW + tunable consistency)</td><td>ZooKeeper, etcd (Raft/Paxos-based)</td></tr>
+      </table>
+
+      <div class="summary-box">
+        <h5>Q3 Key Takeaways</h5>
+        <p>(a) LSM Trees trade read speed for write speed — sequential writes to SSTables, Bloom filters and compaction mitigate read cost. (b) BigTable is a column-family store — a hybrid between row and column stores, offering selective access at the family level. (c) Standard hashing gives uniform distribution but no range queries; order-preserving enables range queries but risks hotspots. (d) Quorum ensures freshness (R+W>N) but linearizability requires additional mechanisms like consensus protocols or version vectors.</p>
+      </div>
+
+      <div class="moodle-tip">
+        <h5>Exam Strategy for Q3</h5>
+        <p>This question has 4 sub-parts at 5 marks each — budget roughly 3-4 minutes per part. For (a), state each LSM property clearly and explain the mechanism. For (b), explicitly name the three storage models and place BigTable in the middle. For (c), draw two rings — one with hashed positions, one with ordered positions. For (d), state the quorum formula, then explain WHY it's not sufficient for linearizability with a concrete scenario.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

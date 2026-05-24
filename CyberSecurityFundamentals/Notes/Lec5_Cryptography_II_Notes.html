@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSF Lec 5: Cryptography II — Asymmetric Encryption</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #1f2937;
+  --border: #30363d; --text: #e6edf3; --text2: #8b949e;
+  --blue: #58a6ff; --green: #3fb950; --red: #f85149;
+  --orange: #ff7b72; --purple: #bc8cff; --yellow: #e3b341;
+  --cyan: #79c0ff; --pink: #f778ba;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; }
+
+/* ===== NAV ===== */
+nav { position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); padding: 0 1rem; display: flex; align-items: center; gap: .5rem; overflow-x: auto; }
+nav a { color: var(--text2); text-decoration: none; padding: .75rem .6rem; font-size: .82rem; white-space: nowrap;
+        border-bottom: 2px solid transparent; transition: all .2s; }
+nav a:hover, nav a.active { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-title { color: var(--purple); font-weight: 700; font-size: .9rem; padding: .75rem .6rem; white-space: nowrap; }
+
+/* ===== HERO ===== */
+.hero { text-align: center; padding: 4rem 2rem 3rem; background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+        position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(88,166,255,.08) 0%, transparent 60%),
+              radial-gradient(circle at 70% 50%, rgba(188,140,255,.08) 0%, transparent 60%); }
+.hero h1 { font-size: clamp(1.8rem,4vw,3rem); font-weight: 800; position: relative;
+  background: linear-gradient(135deg, var(--blue), var(--purple), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--text2); margin-top: .8rem; font-size: 1rem; position: relative; }
+.tags { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1.2rem; position: relative; }
+.tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: .3rem .9rem; font-size: .78rem; color: var(--cyan); }
+
+/* ===== SECTIONS ===== */
+section { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; }
+section + section { border-top: 1px solid var(--border); }
+h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .6rem; }
+h2 .icon { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 .8rem; color: var(--cyan); }
+h4 { font-size: 1rem; font-weight: 600; margin: 1rem 0 .5rem; color: var(--yellow); }
+p { color: var(--text2); margin-bottom: .8rem; }
+ul, ol { color: var(--text2); padding-left: 1.4rem; margin-bottom: .8rem; }
+li { margin-bottom: .3rem; }
+strong { color: var(--text); }
+
+/* ===== CARDS ===== */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
+.card-blue  { border-left: 3px solid var(--blue); }
+.card-green { border-left: 3px solid var(--green); }
+.card-red   { border-left: 3px solid var(--red); }
+.card-purple{ border-left: 3px solid var(--purple); }
+.card-yellow{ border-left: 3px solid var(--yellow); }
+.card-orange{ border-left: 3px solid var(--orange); }
+.card-cyan  { border-left: 3px solid var(--cyan); }
+.card-pink  { border-left: 3px solid var(--pink); }
+
+/* ===== GRID ===== */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+
+/* ===== MATH BLOCKS ===== */
+.math-block { background: #0a0e14; border: 1px solid var(--border); border-radius: 10px;
+              padding: 1.2rem 1.5rem; margin: 1rem 0; overflow-x: auto; font-size: 1.05rem; }
+
+/* ===== CODE BLOCKS ===== */
+pre { background: #0a0e14; border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .88rem; line-height: 1.6; margin: .8rem 0; }
+code { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .88rem; background: rgba(255,255,255,.06);
+       padding: .1rem .35rem; border-radius: 4px; color: var(--cyan); }
+.kw { color: var(--orange); } .fn { color: var(--blue); } .str { color: var(--green); }
+.num { color: var(--purple); } .cm { color: var(--text2); font-style: italic; }
+.var { color: var(--yellow); }
+
+/* ===== STEP BOXES ===== */
+.steps { counter-reset: step; }
+.step { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+.step-num { counter-increment: step; background: var(--blue); color: #000; border-radius: 50%;
+            width: 2rem; height: 2rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: .85rem; content: counter(step); }
+.step-body { flex: 1; }
+
+/* ===== DIAGRAM ===== */
+.diagram { width: 100%; overflow-x: auto; }
+svg { max-width: 100%; display: block; margin: auto; }
+
+/* ===== TABS ===== */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+.tab-btn { background: none; border: none; color: var(--text2); padding: .75rem 1.2rem; cursor: pointer;
+           font-size: .88rem; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .2s; }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+.tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn .3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ===== INTERACTIVE ===== */
+.calc-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; }
+.input-row { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-bottom: 1rem; }
+.input-row label { color: var(--text2); font-size: .88rem; min-width: 70px; }
+input[type=number], input[type=text] { background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); padding: .5rem .75rem; font-size: .9rem; width: 120px; }
+input:focus { outline: none; border-color: var(--blue); }
+button { background: var(--blue); color: #000; border: none; border-radius: 8px; padding: .55rem 1.2rem;
+         font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+button:hover { opacity: .85; }
+button.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+button.danger { background: var(--red); color: #fff; }
+.output-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-top: .8rem;
+              min-height: 60px; font-family: monospace; font-size: .9rem; white-space: pre-wrap; color: var(--cyan); }
+
+/* ===== QUIZ ===== */
+.quiz-q { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
+.quiz-options { display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+.quiz-options label { display: flex; align-items: center; gap: .6rem; cursor: pointer; color: var(--text2);
+                       background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: .6rem 1rem; transition: all .2s; }
+.quiz-options label:hover { border-color: var(--blue); }
+.quiz-options input[type=radio] { accent-color: var(--blue); width: 16px; height: 16px; }
+.quiz-feedback { padding: .6rem 1rem; border-radius: 8px; font-size: .88rem; margin-top: .5rem; display: none; }
+.correct { background: rgba(63,185,80,.15); border: 1px solid var(--green); color: var(--green); }
+.wrong   { background: rgba(248,81,73,.15); border: 1px solid var(--red); color: var(--red); }
+
+/* ===== EXAM Q ===== */
+.exam-q { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }
+.exam-q-header { padding: 1rem 1.4rem; background: var(--bg3); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.exam-q-header:hover { background: #2d333b; }
+.exam-q-body { padding: 1.4rem; border-top: 1px solid var(--border); }
+.marks { background: var(--yellow); color: #000; border-radius: 20px; padding: .2rem .7rem; font-size: .75rem; font-weight: 700; }
+.solution { background: rgba(63,185,80,.07); border: 1px solid rgba(63,185,80,.3); border-radius: 10px; padding: 1.2rem; margin-top: 1rem; }
+.solution h4 { color: var(--green); margin-bottom: .8rem; }
+.toggle-sol { background: none; border: 1px solid var(--green); color: var(--green); margin-top: 1rem; }
+.toggle-sol:hover { background: rgba(63,185,80,.1); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+@keyframes slideRight { from { transform: translateX(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.pulse { animation: pulse 2s infinite; }
+.bounce-anim { animation: bounce 1.5s infinite; }
+
+/* ===== HIGHLIGHT ===== */
+.highlight { background: rgba(88,166,255,.12); border-left: 3px solid var(--blue); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; }
+.warn { background: rgba(227,179,65,.1); border-left: 3px solid var(--yellow); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; }
+.danger-box { background: rgba(248,81,73,.1); border-left: 3px solid var(--red); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; }
+
+/* ===== ALGORITHM BOX ===== */
+.algo { background: #0a0e14; border: 1px solid var(--purple); border-radius: 10px; padding: 1.2rem; margin: 1rem 0; }
+.algo-title { color: var(--purple); font-weight: 700; font-size: .9rem; margin-bottom: .8rem; letter-spacing: .05em; }
+.algo-line { font-family: 'Cascadia Code', monospace; font-size: .88rem; color: var(--text); line-height: 1.9; }
+.algo-line .ind1 { padding-left: 1.5rem; }
+.algo-line .ind2 { padding-left: 3rem; }
+.algo-kw { color: var(--orange); }
+.algo-cm { color: var(--text2); font-style: italic; }
+
+/* ===== TABLE ===== */
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; }
+th { background: var(--bg3); color: var(--cyan); padding: .7rem 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+tr:hover td { background: rgba(255,255,255,.02); }
+.t-center { text-align: center; }
+
+/* ===== PROGRESS ===== */
+.progress-bar { background: var(--bg3); border-radius: 20px; height: 8px; margin-top: .3rem; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width .5s; }
+
+/* ===== ANIMATION CANVAS ===== */
+.anim-area { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+.box-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.enc-box { background: var(--bg); border: 2px solid var(--border); border-radius: 8px; padding: .5rem 1rem;
+           text-align: center; min-width: 80px; font-family: monospace; font-size: .9rem; transition: all .4s; }
+.enc-box.plain  { border-color: var(--green); color: var(--green); }
+.enc-box.cipher { border-color: var(--red); color: var(--red); }
+.enc-box.key    { border-color: var(--purple); color: var(--purple); }
+.enc-box.result { border-color: var(--blue); color: var(--blue); }
+.arrow { color: var(--text2); font-size: 1.2rem; }
+
+/* Responsive */
+@media (max-width:600px) { section { padding: 2rem 1rem; } h2 { font-size: 1.3rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-title">CSF Lec 5</span>
+  <a href="#overview" onclick="setActive(this)">Overview</a>
+  <a href="#asymmetric" onclick="setActive(this)">Asymmetric</a>
+  <a href="#rsa" onclick="setActive(this)">RSA</a>
+  <a href="#diffie" onclick="setActive(this)">Diffie-Hellman</a>
+  <a href="#comparison" onclick="setActive(this)">Comparison</a>
+  <a href="#interactive" onclick="setActive(this)">Interactive</a>
+  <a href="#exam" onclick="setActive(this)">Exam Q&amp;A</a>
+  <a href="#quiz" onclick="setActive(this)">Quiz</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Cryptography II</h1>
+  <p>COMPSCI 5063 — Cyber Security Fundamentals (M) &nbsp;|&nbsp; Dr Emma Li</p>
+  <div class="tags">
+    <span class="tag">Asymmetric Encryption</span>
+    <span class="tag">RSA Algorithm</span>
+    <span class="tag">Diffie-Hellman</span>
+    <span class="tag">Public-Key Cryptography</span>
+    <span class="tag">Euler's Totient</span>
+    <span class="tag">Man-in-the-Middle</span>
+    <span class="tag">Key Exchange</span>
+  </div>
+</div>
+
+<!-- ============================================================ OVERVIEW -->
+<section id="overview">
+<h2><span class="icon">📋</span> Overview &amp; Learning Goals</h2>
+<div class="grid2">
+  <div class="card card-blue">
+    <h3>Topics This Week</h3>
+    <ul>
+      <li>Asymmetric (Public-Key) Encryption fundamentals</li>
+      <li>Confidentiality <em>vs</em> Authentication modes</li>
+      <li>Requirements for public-key systems</li>
+      <li>RSA algorithm — full key generation, encryption, decryption</li>
+      <li>Diffie-Hellman Key Exchange</li>
+      <li>Primitive roots &amp; modular arithmetic</li>
+      <li>Man-in-the-Middle attack on DH</li>
+    </ul>
+  </div>
+  <div class="card card-purple">
+    <h3>Why This Matters for Your Exam</h3>
+    <ul>
+      <li>RSA private key derivation — full calculation = <strong>10 marks</strong></li>
+      <li>ECB/CBC block cipher modes — decryption table = <strong>6 marks</strong></li>
+      <li>ECB weakness + CBC fix — <strong>7 marks</strong></li>
+      <li>DH Man-in-the-Middle appears in past papers</li>
+      <li>Symmetric vs Asymmetric comparison commonly tested</li>
+    </ul>
+  </div>
+</div>
+
+<div class="highlight">
+  <strong>Quick Recap — Symmetric vs Asymmetric:</strong> In symmetric encryption (AES, DES, RC4) both parties share the <em>same secret key</em>. In asymmetric encryption each party has a <em>key pair</em>: a public key (freely shared) and a private key (never shared).
+</div>
+</section>
+
+<!-- ============================================================ ASYMMETRIC -->
+<section id="asymmetric">
+<h2><span class="icon">🔐</span> Asymmetric Encryption</h2>
+
+<h3>The Core Idea</h3>
+<p>Each user generates a mathematically related key pair. The public key is published; the private key is kept secret. The keys are <strong>complementary</strong> — what one encrypts, only the other can decrypt.</p>
+
+<!-- CONFIDENTIALITY DIAGRAM -->
+<h3>Mode 1: Confidentiality (Secret Message)</h3>
+<div class="anim-area">
+  <p style="color:var(--text2);font-size:.88rem;margin-bottom:1rem;">Alice wants to send Bob a <em>secret</em> message. Only Bob can read it.</p>
+  <div class="box-row" id="conf-diagram">
+    <div class="enc-box plain">Plaintext M</div>
+    <div class="arrow">→</div>
+    <div class="enc-box" style="border-color:var(--blue);color:var(--blue);">Encrypt<br><small>Bob's PUBLIC key</small></div>
+    <div class="arrow">→</div>
+    <div class="enc-box cipher">Ciphertext C</div>
+    <div class="arrow">──── network ────→</div>
+    <div class="enc-box" style="border-color:var(--purple);color:var(--purple);">Decrypt<br><small>Bob's PRIVATE key</small></div>
+    <div class="arrow">→</div>
+    <div class="enc-box plain">Plaintext M</div>
+  </div>
+  <p style="color:var(--text2);font-size:.84rem;margin-top:.8rem;">Eve intercepts the ciphertext but cannot decrypt it — she does <em>not</em> have Bob's private key.</p>
+</div>
+
+<!-- AUTHENTICATION DIAGRAM -->
+<h3>Mode 2: Authentication (Digital Signature)</h3>
+<div class="anim-area">
+  <p style="color:var(--text2);font-size:.88rem;margin-bottom:1rem;">Bob signs a message with his <em>private</em> key. Anyone with Bob's public key can verify it came from Bob.</p>
+  <div class="box-row">
+    <div class="enc-box plain">Plaintext M</div>
+    <div class="arrow">→</div>
+    <div class="enc-box" style="border-color:var(--purple);color:var(--purple);">Encrypt<br><small>Bob's PRIVATE key</small></div>
+    <div class="arrow">→</div>
+    <div class="enc-box cipher">Ciphertext C</div>
+    <div class="arrow">──── network ────→</div>
+    <div class="enc-box" style="border-color:var(--blue);color:var(--blue);">Decrypt<br><small>Bob's PUBLIC key</small></div>
+    <div class="arrow">→</div>
+    <div class="enc-box plain">Plaintext M ✓</div>
+  </div>
+  <p style="color:var(--text2);font-size:.84rem;margin-top:.8rem;">If decryption with Bob's public key succeeds → message must have come from Bob (<strong>authentication</strong>).</p>
+</div>
+
+<h3>Requirements for a Public-Key System</h3>
+<div class="grid2">
+  <div class="card card-green">
+    <h4>Computationally EASY (Must Be)</h4>
+    <ul>
+      <li>Generate a key pair (public key <em>e,n</em> — private key <em>d</em>)</li>
+      <li>Encrypt: given public key + plaintext → ciphertext</li>
+      <li>Decrypt: given private key + ciphertext → plaintext</li>
+    </ul>
+  </div>
+  <div class="card card-red">
+    <h4>Computationally INFEASIBLE (Must Be)</h4>
+    <ul>
+      <li>Determine private key from public key alone</li>
+      <li>Recover plaintext knowing only public key + ciphertext</li>
+      <li>Find factorisation of a large semi-prime <em>n = pq</em></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card card-cyan">
+  <h4>The Trap-Door Property</h4>
+  <p>Public-key schemes rely on <strong>one-way trap-door functions</strong>: easy to compute in one direction, computationally hard to reverse <em>unless</em> you know the trap-door (private key).</p>
+  <ul>
+    <li><strong>RSA</strong> — trap-door = factoring large integers</li>
+    <li><strong>Diffie-Hellman</strong> — trap-door = discrete logarithm problem</li>
+    <li><strong>Elliptic Curve (ECC)</strong> — trap-door = elliptic curve discrete log</li>
+  </ul>
+</div>
+
+<h3>Either Key Can Play Either Role</h3>
+<div class="math-block">
+$$\text{Decrypt}(K_{priv},\; \text{Encrypt}(K_{pub},\; M)) = M$$
+$$\text{Decrypt}(K_{pub},\; \text{Encrypt}(K_{priv},\; M)) = M$$
+</div>
+<p>The <em>same</em> mathematical relationship works in both directions. Which key is "public" and which is "private" is a <strong>policy decision</strong>, not a mathematical one.</p>
+</section>
+
+<!-- ============================================================ RSA -->
+<section id="rsa">
+<h2><span class="icon">🔢</span> RSA Algorithm</h2>
+
+<div class="grid3">
+  <div class="card card-blue">
+    <h4>Invented</h4>
+    <p>1977 — Ron <strong>R</strong>ivest, Adi <strong>S</strong>hamir, Len <strong>A</strong>dleman (MIT)</p>
+  </div>
+  <div class="card card-blue">
+    <h4>Type</h4>
+    <p>Asymmetric block cipher</p>
+  </div>
+  <div class="card card-blue">
+    <h4>Used In</h4>
+    <p>SSL/TLS, HTTPS, SSH, PGP, digital certificates</p>
+  </div>
+</div>
+
+<!-- ====== RSA MATHS ====== -->
+<h3>Mathematical Foundations</h3>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab(event,'rsa-euler')">Euler's Totient</button>
+  <button class="tab-btn" onclick="openTab(event,'rsa-modinv')">Modular Inverse</button>
+  <button class="tab-btn" onclick="openTab(event,'rsa-extended')">Extended Euclidean</button>
+  <button class="tab-btn" onclick="openTab(event,'rsa-fastmod')">Fast Modular Exp</button>
+</div>
+
+<div id="rsa-euler" class="tab-content active">
+  <h4>Euler's Totient Function φ(n)</h4>
+  <p>φ(n) counts the number of integers from 1 to n−1 that are <strong>coprime</strong> to n (share no common factor with n).</p>
+  <div class="math-block">
+    $$\varphi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right)$$
+    <br>
+    <strong>For RSA where n = pq (p,q prime):</strong><br>
+    $$\varphi(pq) = (p-1)(q-1)$$
+  </div>
+  <div class="card card-green">
+    <h4>Example</h4>
+    <p>p = 7, q = 17 → n = 119 → φ(119) = (7−1)(17−1) = 6 × 16 = <strong>96</strong></p>
+    <p>p = 41, q = 43 → n = 1763 → φ(1763) = 40 × 42 = <strong>1680</strong></p>
+  </div>
+</div>
+
+<div id="rsa-modinv" class="tab-content">
+  <h4>Multiplicative Inverse mod φ(n)</h4>
+  <p>In RSA, the private key d must satisfy:</p>
+  <div class="math-block">
+    $$d \cdot e \equiv 1 \pmod{\varphi(n)}$$
+  </div>
+  <p>This means d is the <strong>modular multiplicative inverse</strong> of e modulo φ(n). It exists if and only if gcd(e, φ(n)) = 1.</p>
+  <div class="highlight">
+    RSA Key Relationship: <strong>e · d = 1 + k·φ(n)</strong> for some integer k ≥ 0.
+  </div>
+</div>
+
+<div id="rsa-extended" class="tab-content">
+  <h4>Extended Euclidean Algorithm (to find d)</h4>
+  <p>Given e and φ(n), find d such that e·d ≡ 1 (mod φ(n)).</p>
+  <div class="algo">
+    <div class="algo-title">ALGORITHM: Extended Euclidean</div>
+    <div class="algo-line"><span class="algo-kw">Input:</span> a = e, b = φ(n)</div>
+    <div class="algo-line"><span class="algo-kw">Step 1:</span> Run Euclidean algorithm — divide repeatedly</div>
+    <div class="algo-line ind1">b = q₀·a + r₀</div>
+    <div class="algo-line ind1">a = q₁·r₀ + r₁  ← keep until remainder = 1</div>
+    <div class="algo-line"><span class="algo-kw">Step 2:</span> Back-substitute to express 1 = x·e + y·φ(n)</div>
+    <div class="algo-line"><span class="algo-kw">Result:</span> d = x mod φ(n)  <span class="algo-cm">(make positive if negative)</span></div>
+  </div>
+
+  <div class="card card-yellow">
+    <h4>Worked Example: e=17, φ(n)=1680</h4>
+    <pre>
+<span class="cm">-- Euclidean Algorithm (forward pass) --</span>
+1680 = 98 × 17 + 14      <span class="cm">→ r₀ = 14</span>
+  17 = 1  × 14 + 3       <span class="cm">→ r₁ = 3</span>
+  14 = 4  × 3  + 2       <span class="cm">→ r₂ = 2</span>
+   3 = 1  × 2  + 1       <span class="cm">→ r₃ = 1 ← GCD = 1 ✓</span>
+
+<span class="cm">-- Back-substitution (reverse pass) --</span>
+1 = 3 - 1×2
+1 = 3 - 1×(14 - 4×3)    = 5×3 - 1×14
+1 = 5×(17 - 1×14) - 14  = 5×17 - 6×14
+1 = 5×17 - 6×(1680 - 98×17)
+1 = 5×17 - 6×1680 + 588×17
+1 = <span class="num">593</span>×17 - 6×1680
+
+<span class="cm">→ d = 593</span>  (since 593 × 17 mod 1680 = 1 ✓)
+    </pre>
+  </div>
+</div>
+
+<div id="rsa-fastmod" class="tab-content">
+  <h4>Fast Modular Exponentiation</h4>
+  <p>Direct computation of M^e mod n is impractical for large exponents. Use the property:</p>
+  <div class="math-block">
+    $$(A \times B) \bmod C = ((A \bmod C) \times (B \bmod C)) \bmod C$$
+  </div>
+  <div class="card card-green">
+    <h4>Example: Compute 2³ mod 5 step-by-step</h4>
+    <pre>
+<span class="cm">Compute 7^3 mod 11:</span>
+7^1 mod 11 = 7
+7^2 mod 11 = (7 × 7) mod 11 = 49 mod 11 = 5
+7^3 mod 11 = (5 × 7) mod 11 = 35 mod 11 = 2
+
+<span class="cm">Compute 88^3 mod 187 (RSA decryption):</span>
+88^2 mod 187 = 7744 mod 187 = 77
+88^3 mod 187 = (77 × 88) mod 187 = 6776 mod 187 = 88  <span class="cm">← back to plaintext!</span>
+    </pre>
+  </div>
+</div>
+
+<!-- ====== RSA KEY GENERATION ====== -->
+<h3>RSA Key Generation — Step-by-Step</h3>
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Choose two large prime numbers p and q</strong>
+      <div class="math-block">p = 7,\quad q = 17 \quad \text{(small example)}</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Compute n = p × q</strong>
+      <div class="math-block">n = 7 \times 17 = 119</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Compute Euler's totient φ(n) = (p−1)(q−1)</strong>
+      <div class="math-block">\varphi(119) = 6 \times 16 = 96</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Choose public exponent e such that 1 &lt; e &lt; φ(n) and gcd(e, φ(n)) = 1</strong>
+      <div class="math-block">e = 5 \quad \text{(since gcd(5, 96) = 1)}</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Find private key d = e⁻¹ mod φ(n) using Extended Euclidean Algorithm</strong>
+      <div class="math-block">d \times 5 \equiv 1 \pmod{96} \implies d = 77</div>
+      <p style="color:var(--text2);font-size:.88rem;">Verify: 5 × 77 = 385 = 4 × 96 + 1 ✓</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <strong>Keys</strong>
+      <div class="grid2">
+        <div class="card card-blue"><h4>Public Key</h4><div class="math-block">KU = (e, n) = (5, 119)</div></div>
+        <div class="card card-purple"><h4>Private Key</h4><div class="math-block">KR = (d, n) = (77, 119)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== RSA ENCRYPTION/DECRYPTION ====== -->
+<h3>RSA Encryption &amp; Decryption</h3>
+<div class="math-block">
+$$\text{Encrypt:}\quad C = M^e \bmod n$$
+$$\text{Decrypt:}\quad M = C^d \bmod n$$
+</div>
+
+<div class="card card-orange">
+  <h4>Full Example (p=7, q=17, e=5, d=77, n=119)</h4>
+  <pre>
+<span class="cm">Plaintext:</span>  M = 19
+
+<span class="cm">Encryption:</span>
+C = 19^5 mod 119
+  = 2476099 mod 119
+  = <span class="num">66</span>
+
+<span class="cm">Decryption:</span>
+M = 66^77 mod 119
+  = ... (use fast modular exponentiation)
+  = <span class="num">19</span>  ✓
+
+<span class="cm">Quick way (fast modular exp for encryption):</span>
+19^1 mod 119 = 19
+19^2 mod 119 = 361 mod 119 = 4    (361 = 3×119 + 4)
+19^4 mod 119 = 4^2 mod 119 = 16
+19^5 = 19^4 × 19^1 mod 119 = 16 × 19 mod 119 = 304 mod 119 = <span class="num">66</span>
+  </pre>
+</div>
+
+<!-- EXAM WORKED SOLUTION -->
+<h3>Exam-Style Full Worked Example — e=17, n=1763</h3>
+<div class="card card-yellow">
+  <h4>Question: Public key e=17, n=1763. Find private key d. [10 marks]</h4>
+  <div class="tabs" style="margin-top:1rem;">
+    <button class="tab-btn active" onclick="openTab(event,'rsa-step1')">Step 1: Factor n</button>
+    <button class="tab-btn" onclick="openTab(event,'rsa-step2')">Step 2: φ(n)</button>
+    <button class="tab-btn" onclick="openTab(event,'rsa-step3')">Step 3: GCD check</button>
+    <button class="tab-btn" onclick="openTab(event,'rsa-step4')">Step 4: Find d</button>
+    <button class="tab-btn" onclick="openTab(event,'rsa-step5')">Step 5: Verify</button>
+  </div>
+  <div id="rsa-step1" class="tab-content active">
+    <h4>Factor n = 1763</h4>
+    <p>Trial division: test primes 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41...</p>
+    <pre>
+1763 ÷ 41 = 43.0  → 41 × 43 = 1763 ✓
+
+So:  <span class="num">p = 41,  q = 43</span>
+    </pre>
+  </div>
+  <div id="rsa-step2" class="tab-content">
+    <h4>Compute φ(1763)</h4>
+    <div class="math-block">
+      $$\varphi(1763) = (p-1)(q-1) = (41-1)(43-1) = 40 \times 42 = \mathbf{1680}$$
+    </div>
+  </div>
+  <div id="rsa-step3" class="tab-content">
+    <h4>Verify gcd(17, 1680) = 1</h4>
+    <pre>
+1680 = 98 × 17 + 14
+  17 =  1 × 14 + 3
+  14 =  4 × 3  + 2
+   3 =  1 × 2  + 1
+   2 =  2 × 1  + 0   ← GCD = 1 ✓
+    </pre>
+    <p>Since GCD = 1, the modular inverse exists and RSA is valid.</p>
+  </div>
+  <div id="rsa-step4" class="tab-content">
+    <h4>Find d: Extended Euclidean Back-Substitution</h4>
+    <pre>
+From forward pass:
+1680 = 98×17 + 14   →  14 = 1680 - 98×17
+  17 =  1×14 + 3    →   3 = 17 - 1×14
+  14 =  4×3  + 2    →   2 = 14 - 4×3
+   3 =  1×2  + 1    →   1 = 3 - 1×2
+
+Back-substitute:
+1 = 3 - 1×2
+  = 3 - 1×(14 - 4×3)
+  = 5×3 - 14
+  = 5×(17 - 14) - 14
+  = 5×17 - 6×14
+  = 5×17 - 6×(1680 - 98×17)
+  = 5×17 - 6×1680 + 588×17
+  = <span class="num">593</span>×17 - 6×1680
+
+Therefore:  d = <span class="num">593</span>
+    </pre>
+  </div>
+  <div id="rsa-step5" class="tab-content">
+    <h4>Verify d = 593</h4>
+    <pre>
+17 × 593 = 10081
+10081 mod 1680 = ?
+
+10081 ÷ 1680 = 6.00...  →  6 × 1680 = 10080
+10081 - 10080 = <span class="num">1</span>  ✓
+
+Private key: d = <span class="num">593</span>,  n = 1763
+KR = (593, 1763)
+    </pre>
+  </div>
+</div>
+
+<!-- RSA SECURITY -->
+<h3>RSA Security — Why Is It Hard to Break?</h3>
+<div class="grid2">
+  <div class="card card-red">
+    <h4>The Factoring Problem</h4>
+    <p>An attacker knows <em>n</em> and <em>e</em> (both public). To find <em>d</em>, they need φ(n) = (p−1)(q−1), which requires factoring n into p and q.</p>
+    <p>For 2048-bit RSA: <strong>n ≈ 10⁶¹⁷ </strong>. No known polynomial-time algorithm for factoring.</p>
+  </div>
+  <div class="card card-green">
+    <h4>Brute Force Key Size</h4>
+    <div class="math-block">
+      $$\text{Time} = \frac{2^k}{\text{encryptions/second}}$$
+    </div>
+    <p>For 16-bit key at 2⁸ enc/sec: 2¹⁶/2⁸ = <strong>256 seconds</strong> (~4 min)</p>
+    <p>For 32-bit key: 2³²/2⁸ = 2²⁴ sec ≈ <strong>194 days</strong></p>
+    <p>Doubling key size <strong>squares</strong> the search space!</p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ DIFFIE-HELLMAN -->
+<section id="diffie">
+<h2><span class="icon">🤝</span> Diffie-Hellman Key Exchange</h2>
+
+<div class="card card-cyan">
+  <h4>Purpose</h4>
+  <p>Two parties establish a <strong>shared secret key</strong> over an insecure channel without ever transmitting the key itself. That shared key is then used for symmetric encryption (e.g., AES).</p>
+</div>
+
+<h3>Primitive Roots</h3>
+<p>A number α is a <strong>primitive root</strong> mod q if its powers generate all values from 1 to q−1 (mod q). This is required for DH security.</p>
+
+<div class="card card-blue">
+  <h4>Example: Is 2 a primitive root mod 7?</h4>
+  <pre>
+2^1 mod 7 = 2
+2^2 mod 7 = 4
+2^3 mod 7 = 8 mod 7 = 1   ← cycles after 3 steps, NOT all of {1..6}
+
+→ 2 is <span class="var">NOT</span> a primitive root mod 7
+
+Is 3 a primitive root mod 7?
+3^1=3,  3^2=2,  3^3=6,  3^4=4,  3^5=5,  3^6=1
+→ Generates {1,2,3,4,5,6} — 3 IS a primitive root mod 7 ✓
+  </pre>
+</div>
+
+<h3>DH Key Exchange Protocol</h3>
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Public parameters (known to everyone including Eve)</strong>
+      <div class="math-block">q = \text{large prime},\quad \alpha = \text{primitive root of } q</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Alice chooses secret X_A, computes and sends Y_A</strong>
+      <div class="math-block">Y_A = \alpha^{X_A} \bmod q</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Bob chooses secret X_B, computes and sends Y_B</strong>
+      <div class="math-block">Y_B = \alpha^{X_B} \bmod q</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Both compute the shared key K independently</strong>
+      <div class="math-block">
+        \text{Alice:}\quad K = Y_B^{X_A} \bmod q = \alpha^{X_B \cdot X_A} \bmod q \\[6pt]
+        \text{Bob:}\quad K = Y_A^{X_B} \bmod q = \alpha^{X_A \cdot X_B} \bmod q
+      </div>
+      <div class="highlight">Both computations give the same K because α^(X_A·X_B) = α^(X_B·X_A)!</div>
+    </div>
+  </div>
+</div>
+
+<h3>Numerical Example</h3>
+<div class="card card-orange">
+  <pre>
+<span class="cm">Public parameters:</span>
+  q = 23   (prime)
+  α = 5    (primitive root mod 23)
+
+<span class="cm">Alice's secret: X_A = 6</span>
+  Y_A = 5^6 mod 23
+       = 15625 mod 23
+       = 8
+
+<span class="cm">Bob's secret:   X_B = 15</span>
+  Y_B = 5^15 mod 23
+       = 5^8 × 5^4 × 5^2 × 5^1 mod 23
+       = 16 × 4 × 2 × 5 mod 23  (computing powers)
+       = 19
+
+<span class="cm">Shared Key — Alice computes:</span>
+  K = Y_B^X_A mod 23 = 19^6 mod 23
+    = (19^2)^3 mod 23 = 16^3 mod 23 = 4096 mod 23 = <span class="num">2</span>
+
+<span class="cm">Shared Key — Bob computes:</span>
+  K = Y_A^X_B mod 23 = 8^15 mod 23
+    = 8^8 × 8^4 × 8^2 × 8^1 mod 23
+    = 4 × 2 × 18 × 8 mod 23 = <span class="num">2</span>  ✓
+
+<span class="cm">Both arrive at K = 2 without ever transmitting it!</span>
+  </pre>
+</div>
+
+<h3>Why Eve Cannot Find K (Discrete Log Problem)</h3>
+<div class="card card-red">
+  <p>Eve knows: <strong>q=23, α=5, Y_A=8, Y_B=19</strong></p>
+  <p>To find K she needs X_A (or X_B). This requires solving the <strong>discrete logarithm</strong>:</p>
+  <div class="math-block">5^{X_A} \equiv 8 \pmod{23} \implies X_A = ?</div>
+  <p>For small numbers she can brute force. For q with hundreds of digits → <strong>computationally infeasible</strong>.</p>
+</div>
+
+<!-- MAN IN THE MIDDLE -->
+<h3>Man-in-the-Middle Attack on DH</h3>
+<div class="warn">
+  <strong>DH does NOT provide authentication!</strong> An adversary can impersonate both parties.
+</div>
+
+<div class="anim-area">
+  <table>
+    <thead>
+      <tr><th>Alice</th><th>Adversary (Eve)</th><th>Bob</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sends Y_A →</td>
+        <td>Intercepts Y_A<br>Generates own X_E, Y_E<br>Forwards Y_E to Bob</td>
+        <td>← Receives Y_E (thinks it's Y_A)</td>
+      </tr>
+      <tr>
+        <td>← Receives Y_E (thinks it's Y_B)</td>
+        <td>Computes K_AE using Y_A + X_E<br>Computes K_BE using Y_B + X_E</td>
+        <td>Sends Y_B →</td>
+      </tr>
+      <tr>
+        <td>K_Alice = Y_E^X_A = K_AE</td>
+        <td>Decrypts/re-encrypts all messages</td>
+        <td>K_Bob = Y_E^X_B = K_BE</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="color:var(--red);margin-top:.8rem;font-size:.88rem;">Alice and Bob each think they share a key — but Eve sits in the middle, reading and modifying everything.</p>
+</div>
+
+<div class="card card-green">
+  <h4>Mitigation: Authenticated DH</h4>
+  <ul>
+    <li><strong>Digital certificates</strong> — bind public keys to identities (PKI)</li>
+    <li><strong>Pre-shared secret</strong> — out-of-band verification</li>
+    <li><strong>TLS</strong> uses DH with server certificates to prevent MITM</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============================================================ COMPARISON -->
+<section id="comparison">
+<h2><span class="icon">⚖️</span> Symmetric vs Asymmetric — The Full Picture</h2>
+
+<table>
+  <thead><tr><th>Property</th><th>Symmetric (AES/DES/RC4)</th><th>Asymmetric (RSA/DH)</th></tr></thead>
+  <tbody>
+    <tr><td>Keys</td><td>One shared secret key</td><td>Public + Private key pair</td></tr>
+    <tr><td>Speed</td><td class="t-center"><span style="color:var(--green)">Fast ✓</span></td><td class="t-center"><span style="color:var(--red)">Slow (10-1000× slower)</span></td></tr>
+    <tr><td>Key distribution</td><td class="t-center"><span style="color:var(--red)">Hard (need secure channel)</span></td><td class="t-center"><span style="color:var(--green)">Easy (public key can be shared openly)</span></td></tr>
+    <tr><td>Authentication</td><td class="t-center"><span style="color:var(--red)">No (shared key)</span></td><td class="t-center"><span style="color:var(--green)">Yes (private key = proof of identity)</span></td></tr>
+    <tr><td>Security basis</td><td>Key secrecy</td><td>Hard mathematical problems (factoring, DLP)</td></tr>
+    <tr><td>Typical key size</td><td>128–256 bits (AES)</td><td>2048–4096 bits (RSA)</td></tr>
+    <tr><td>Example uses</td><td>File encryption, disk encryption</td><td>SSL/TLS handshake, digital signatures</td></tr>
+  </tbody>
+</table>
+
+<h3>Is One Outdated?</h3>
+<div class="grid2">
+  <div class="card card-blue">
+    <h4>"Is asymmetric more secure than symmetric?"</h4>
+    <p><strong>No.</strong> Security depends on key length and the computational work to break the cipher — not on the type. A 128-bit AES key provides comparable security to a 3072-bit RSA key.</p>
+  </div>
+  <div class="card card-blue">
+    <h4>"Is symmetric encryption outdated?"</h4>
+    <p><strong>No.</strong> Symmetric encryption has much lower computational overhead. AES is used everywhere for bulk data: SSD encryption, Google Cloud, TLS data transfer.</p>
+  </div>
+</div>
+
+<div class="highlight">
+  <strong>Hybrid Approach (used in practice):</strong> TLS uses asymmetric encryption (RSA/DH) <em>only</em> to securely exchange a symmetric session key. Then uses AES for the actual data — best of both worlds.
+</div>
+
+<h3>Is Public Key Distribution Trivial?</h3>
+<div class="warn">
+  <strong>No!</strong> You still need to trust that the public key genuinely belongs to who you think it does. Without infrastructure (PKI / Certificate Authorities), MITM attacks are possible. This is why HTTPS uses certificates signed by trusted CAs.
+</div>
+</section>
+
+<!-- ============================================================ INTERACTIVE -->
+<section id="interactive">
+<h2><span class="icon">🧮</span> Interactive Calculators</h2>
+
+<!-- RSA CALCULATOR -->
+<h3>RSA Key Generator</h3>
+<div class="calc-box">
+  <p style="color:var(--text2);font-size:.88rem;margin-bottom:1rem;">Enter two prime numbers to generate RSA keys. Use small primes for learning (e.g., 7 and 17).</p>
+  <div class="input-row">
+    <label>p (prime):</label><input type="number" id="rsa-p" value="7" min="2">
+    <label>q (prime):</label><input type="number" id="rsa-q" value="17" min="2">
+    <label>e:</label><input type="number" id="rsa-e" value="5" min="2">
+    <button onclick="computeRSA()">Generate Keys</button>
+    <button class="secondary" onclick="verifyPrime()">Check Primes</button>
+  </div>
+  <div class="output-box" id="rsa-output">Click "Generate Keys" to compute RSA parameters...</div>
+</div>
+
+<!-- RSA ENCRYPT/DECRYPT -->
+<h3>RSA Encrypt / Decrypt</h3>
+<div class="calc-box">
+  <div class="input-row">
+    <label>Message M:</label><input type="number" id="rsa-msg" value="19" min="1">
+    <label>e:</label><input type="number" id="rsa-e2" value="5">
+    <label>d:</label><input type="number" id="rsa-d2" value="77">
+    <label>n:</label><input type="number" id="rsa-n2" value="119">
+    <button onclick="rsaEncDec()">Encrypt &amp; Decrypt</button>
+  </div>
+  <div class="output-box" id="rsa-enc-output">Enter values and click to compute...</div>
+</div>
+
+<!-- DH CALCULATOR -->
+<h3>Diffie-Hellman Key Exchange</h3>
+<div class="calc-box">
+  <div class="input-row">
+    <label>q (prime):</label><input type="number" id="dh-q" value="23">
+    <label>α (prim.root):</label><input type="number" id="dh-alpha" value="5">
+    <label>X_A (Alice):</label><input type="number" id="dh-xa" value="6">
+    <label>X_B (Bob):</label><input type="number" id="dh-xb" value="15">
+    <button onclick="computeDH()">Compute DH</button>
+  </div>
+  <div class="output-box" id="dh-output">Click to compute Diffie-Hellman key exchange...</div>
+</div>
+
+<!-- MODULAR INVERSE FINDER -->
+<h3>Modular Inverse Finder (Extended Euclidean)</h3>
+<div class="calc-box">
+  <p style="color:var(--text2);font-size:.88rem;margin-bottom:1rem;">Find d such that e·d ≡ 1 (mod m) — used to find RSA private key</p>
+  <div class="input-row">
+    <label>e:</label><input type="number" id="ext-e" value="17">
+    <label>m = φ(n):</label><input type="number" id="ext-m" value="1680">
+    <button onclick="extEuclid()">Find Inverse</button>
+  </div>
+  <div class="output-box" id="ext-output">Enter values and click to compute...</div>
+</div>
+
+<!-- PRIMITIVE ROOT CHECKER -->
+<h3>Primitive Root Checker</h3>
+<div class="calc-box">
+  <div class="input-row">
+    <label>α:</label><input type="number" id="pr-alpha" value="5">
+    <label>q (prime):</label><input type="number" id="pr-q" value="23">
+    <button onclick="checkPrimRoot()">Check &amp; Show Powers</button>
+  </div>
+  <div class="output-box" id="pr-output">Enter values and click to check...</div>
+</div>
+</section>
+
+<!-- ============================================================ EXAM Q&A -->
+<section id="exam">
+<h2><span class="icon">📝</span> Exam Questions &amp; Full Solutions</h2>
+
+<p style="color:var(--text2);">All questions from the May 2025 exam paper + additional exam-style questions generated from lecture content.</p>
+
+<!-- Q1 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div>
+      <span style="color:var(--yellow);font-weight:700;">Q1 (May 2025)</span> — Travelsafe website vulnerability (URL session IDs)
+    </div>
+    <span class="marks">5 marks</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <p>A company called Travelsafe operates through a website that uses URL session IDs. The website serves as an exploratory environment where visitors are provided with a search box to identify possible holiday locations. Mention and describe a potential vulnerability and the corresponding defence mechanisms that can be employed to mitigate it.</p>
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>Model Answer (5 marks)</h4>
+      <p><strong>Vulnerability 1: SQL Injection (via search box)</strong></p>
+      <p>The search box allows user input to be sent to a database query. If input is not sanitised, an attacker can inject SQL commands like <code>' OR '1'='1</code> to access or delete unauthorised data.</p>
+      <p><strong>Vulnerability 2: Session Hijacking / Predictable Session IDs</strong></p>
+      <p>URL session IDs are visible in browser history, server logs, and Referer headers. If IDs are predictable or short, an attacker can guess or brute-force them. If URLs are shared (e.g. by copy-paste), session tokens are exposed.</p>
+      <p><strong>Defence Mechanisms:</strong></p>
+      <ul>
+        <li>Use <strong>parameterised queries / prepared statements</strong> to prevent SQL injection</li>
+        <li>Use <strong>cryptographically random</strong> session IDs (long, unpredictable)</li>
+        <li>Store session IDs in <strong>HTTP-only cookies</strong> instead of URLs</li>
+        <li>Implement <strong>session expiration</strong> and re-authentication</li>
+        <li>Use <strong>HTTPS</strong> to prevent network sniffing of session tokens</li>
+        <li>Apply <strong>input validation</strong> and output encoding</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--yellow);font-weight:700;">Q2 (May 2025)</span> — Single Sign-On (SSO) — CIA + advantages</div>
+    <span class="marks">7 marks</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <p>1) Argue for the advantages and disadvantages of using SSO over traditional approaches. 2) Explain what SSO means for Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation.</p>
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>Model Answer</h4>
+      <p><strong>Advantages of SSO:</strong></p>
+      <ul>
+        <li>Single authentication event → less password fatigue → users choose stronger passwords</li>
+        <li>Centralised access control — easy to revoke access (leave company → one account disabled)</li>
+        <li>Reduced attack surface — fewer credentials to steal</li>
+        <li>Better user experience, lower IT support costs</li>
+      </ul>
+      <p><strong>Disadvantages of SSO:</strong></p>
+      <ul>
+        <li>Single point of failure — if SSO provider is compromised, ALL systems are compromised</li>
+        <li>Complexity — harder to implement correctly</li>
+        <li>Vendor lock-in</li>
+      </ul>
+      <p><strong>SSO and Security Properties:</strong></p>
+      <ul>
+        <li><strong>Confidentiality</strong>: Improved — fewer credentials to protect; but breach of SSO = breach of everything</li>
+        <li><strong>Integrity</strong>: Improved — centralised policy enforcement ensures consistent data access rules</li>
+        <li><strong>Authenticity</strong>: Improved — one strong auth (e.g., MFA) covers all services</li>
+        <li><strong>Accountability</strong>: Improved — unified audit log across all services</li>
+        <li><strong>Non-repudiation</strong>: Improved — single identity for all actions makes it harder to deny actions; tokens are signed</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--yellow);font-weight:700;">Q3 (May 2025)</span> — Block cipher ECB/CBC decryption + ECB weakness</div>
+    <span class="marks">13 marks</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <p>Block cipher on 4-bit blocks. Permutation table:</p>
+    <table style="margin:1rem 0;">
+      <tr><th>m</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td><td>f</td></tr>
+      <tr><th>E_K(m)</th><td>1</td><td>b</td><td>5</td><td>c</td><td>7</td><td>e</td><td>2</td><td>a</td><td>4</td><td>9</td><td>f</td><td>d</td><td>0</td><td>3</td><td>6</td><td>8</td></tr>
+    </table>
+    <p>(a) ECB: decrypt 187b06 [2 marks]</p>
+    <p>(b) CBC: decrypt 301be with IV=1 [4 marks]</p>
+    <p>(c) Explain why ECB is not secure; suggest a better mode [7 marks]</p>
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>Part (a) — ECB Decryption of 187b06 [2 marks]</h4>
+      <p>ECB decrypts each block independently. We need the <strong>inverse permutation</strong>: find m given E_K(m).</p>
+      <p>Inverse table (swap rows of original):</p>
+      <table style="margin:.5rem 0;font-size:.85rem;">
+        <tr><th>Cipher</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td><td>f</td></tr>
+        <tr><th>Plain</th><td>c</td><td>0</td><td>6</td><td>d</td><td>8</td><td>2</td><td>e</td><td>4</td><td>f</td><td>9</td><td>7</td><td>1</td><td>3</td><td>b</td><td>5</td><td>a</td></tr>
+      </table>
+      <pre>
+Ciphertext: 1  8  7  b  0  6
+Decrypt:    0  f  4  1  c  e
+
+Plaintext: <span class="num">0f41ce</span>
+      </pre>
+
+      <h4>Part (b) — CBC Decryption of 301be, IV=1 [4 marks]</h4>
+      <p>In CBC decryption: P_i = D_K(C_i) XOR C_{i-1}, with C_0 = IV.</p>
+      <pre>
+Ciphertext blocks: C₁=3, C₂=0, C₃=1, C₄=b, C₅=e
+IV = C₀ = 1
+
+P₁ = D_K(3) XOR C₀ = d XOR 1 = <span class="num">c</span>    (d=1101, 1=0001 → 1100=c)
+P₂ = D_K(0) XOR C₁ = c XOR 3 = <span class="num">f</span>    (c=1100, 3=0011 → 1111=f)
+P₃ = D_K(1) XOR C₂ = 0 XOR 0 = <span class="num">0</span>
+P₄ = D_K(b) XOR C₃ = 1 XOR 1 = <span class="num">0</span>
+P₅ = D_K(e) XOR C₄ = 5 XOR b = <span class="num">e</span>    (5=0101, b=1011 → 1110=e)
+
+Plaintext: <span class="num">cf00e</span>
+      </pre>
+
+      <h4>Part (c) — ECB Weakness + Better Mode [7 marks]</h4>
+      <p><strong>Why ECB is insecure:</strong></p>
+      <ul>
+        <li>ECB encrypts identical plaintext blocks to <strong>identical ciphertext blocks</strong> using the same key</li>
+        <li>An attacker can detect patterns — if two ciphertext blocks are identical, the corresponding plaintext blocks are identical</li>
+        <li>This leaks structural information about the message (e.g., repeated words, headers)</li>
+        <li>A famous example: the "ECB penguin" — an encrypted image in ECB mode still reveals the outline</li>
+        <li>Vulnerable to <strong>replay attacks</strong> — attacker can cut and paste ciphertext blocks</li>
+      </ul>
+      <p><strong>Better Mode: Cipher Block Chaining (CBC)</strong></p>
+      <div class="math-block">
+        $$C_i = E_K(P_i \oplus C_{i-1}) \quad \text{(encrypt)}$$
+        $$P_i = D_K(C_i) \oplus C_{i-1} \quad \text{(decrypt)}$$
+      </div>
+      <p>How CBC fixes ECB's weakness:</p>
+      <ul>
+        <li>Each plaintext block is XORed with the <em>previous ciphertext block</em> before encryption</li>
+        <li>Identical plaintext blocks produce <strong>different ciphertext</strong> (because they XOR with different previous ciphertext)</li>
+        <li>An <strong>Initialisation Vector (IV)</strong> randomises the first block, so even identical messages produce different ciphertexts</li>
+        <li>Errors propagate: a single bit error in C_i corrupts exactly P_i and P_{i+1} (limited propagation)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--yellow);font-weight:700;">Q4a (May 2025)</span> — RSA private key derivation: e=17, n=1763</div>
+    <span class="marks">10 marks</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <p>RSA encryption key is public: e=17, n=1763. Find the private key d. Show all steps.</p>
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>Full Step-by-Step Solution [10 marks]</h4>
+      <pre>
+<span class="cm">Step 1: Factor n = 1763</span>
+1763 ÷ 41 = 43  →  p = 41, q = 43
+
+<span class="cm">Step 2: Compute φ(n)</span>
+φ(1763) = (41-1)(43-1) = 40 × 42 = 1680
+
+<span class="cm">Step 3: Verify gcd(e, φ(n)) = gcd(17, 1680) = 1</span>
+1680 = 98×17 + 14
+  17 =  1×14 + 3
+  14 =  4×3  + 2
+   3 =  1×2  + 1   ← GCD = 1 ✓
+
+<span class="cm">Step 4: Find d = 17⁻¹ mod 1680 (Extended Euclidean back-substitution)</span>
+1 = 3 - 1×2
+  = 3 - 1×(14 - 4×3)   = 5×3 - 14
+  = 5×(17 - 14) - 14   = 5×17 - 6×14
+  = 5×17 - 6×(1680 - 98×17)
+  = 593×17 - 6×1680
+
+<span class="cm">Step 5: d = 593 (coefficient of 17, taken mod 1680)</span>
+
+<span class="cm">Step 6: Verify: 17 × 593 = 10081 = 6×1680 + 1 ✓</span>
+
+<span class="num">Private key: d = 593,  n = 1763</span>
+      </pre>
+      <p><strong>Mark scheme (estimated):</strong> Factoring n [1], φ(n) [1], GCD check [1], Euclidean forward [2], Back-substitution [3], Final d [1], Verification [1]</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q4b -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--yellow);font-weight:700;">Q4b (May 2025)</span> — Brute force attack: 16-bit key, 2⁸ enc/sec</div>
+    <span class="marks">5 marks</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <p>Assuming 2⁸ encryptions/second, key size = 16 bits. How long for brute force? Give a practical and impractical scenario. What happens when key size doubles?</p>
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>Model Answer</h4>
+      <div class="math-block">
+        $$\text{Search space} = 2^{16} = 65536 \text{ keys}$$
+        $$\text{Time (worst case)} = \frac{2^{16}}{2^8} = 2^8 = 256 \text{ seconds} \approx 4 \text{ minutes}$$
+        $$\text{Time (average)} = \frac{2^{16}}{2 \times 2^8} = 128 \text{ seconds} \approx 2 \text{ minutes}$$
+      </div>
+      <p><strong>Practical scenario:</strong> Legacy system with 16-bit key (e.g., early Bluetooth pairing, old IoT device). An attacker could break this in minutes on a laptop.</p>
+      <p><strong>Impractical scenario:</strong> In a military command system or bank transaction processor with high authentication overhead, you might get only 1-2 attempts per second, but that still only extends it to days — not secure.</p>
+      <p><strong>Doubling key size (16 → 32 bits):</strong></p>
+      <div class="math-block">
+        $$\text{Search space} = 2^{32} = 4 \text{ billion keys}$$
+        $$\text{Time} = \frac{2^{32}}{2^8} = 2^{24} \approx 16.7 \text{ million seconds} \approx \mathbf{194 \text{ days}}$$
+      </div>
+      <p>Doubling key size <strong>squares the search space</strong>. Each additional bit doubles the time. Going from 16 to 32 bits makes it 2^16 = 65,536 times harder.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =========== ADDITIONAL QUESTIONS =========== -->
+<h3 style="margin-top:2rem;">Additional Exam-Style Questions</h3>
+
+<!-- AQ1 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ1</span> — RSA: Generate keys for p=11, q=13, e=7. Encrypt M=5.</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <pre>
+n = 11 × 13 = 143
+φ(143) = 10 × 12 = 120
+e = 7,  gcd(7, 120) = 1 ✓
+
+Find d: 7d ≡ 1 (mod 120)
+120 = 17×7 + 1  →  1 = 120 - 17×7
+d = -17 mod 120 = 103  (since -17 + 120 = 103)
+Verify: 7 × 103 = 721 = 6×120 + 1 ✓
+
+Public key:  (7, 143)
+Private key: (103, 143)
+
+Encrypt M = 5:
+C = 5^7 mod 143
+5^2 = 25
+5^4 = 625 mod 143 = 625 - 4×143 = 625 - 572 = 53
+5^7 = 5^4 × 5^2 × 5^1 = 53 × 25 × 5 mod 143
+    = 53 × 125 mod 143
+    = 6625 mod 143
+    = 6625 - 46×143 = 6625 - 6578 = 47
+
+C = 47
+
+Decrypt: M = 47^103 mod 143 = 5 ✓ (verify with calculator)
+      </pre>
+    </div>
+  </div>
+</div>
+
+<!-- AQ2 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ2</span> — Diffie-Hellman: q=19, α=2, X_A=5, X_B=12. Find shared key K.</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <pre>
+Public: q=19, α=2
+
+Alice: X_A = 5
+Y_A = 2^5 mod 19 = 32 mod 19 = 13
+
+Bob: X_B = 12
+Y_B = 2^12 mod 19
+  2^1=2, 2^2=4, 2^3=8, 2^4=16, 2^5=32 mod19=13
+  2^6=26 mod19=7, 2^7=14, 2^8=28 mod19=9
+  2^9=18, 2^10=36 mod19=17, 2^11=34 mod19=15, 2^12=30 mod19=11
+Y_B = 11
+
+Shared key:
+Alice: K = Y_B^X_A mod 19 = 11^5 mod 19
+  11^2=121 mod19=7, 11^4=49 mod19=11, 11^5=11×11=121 mod19=7  ← wait
+  Actually: 11^1=11, 11^2=121-6×19=121-114=7, 11^4=7^2=49-2×19=11, 11^5=11×11 mod19=121 mod19=7
+
+Bob:   K = Y_A^X_B mod 19 = 13^12 mod 19
+  13^2=169 mod19=17, 13^4=17^2=289 mod19=289-15×19=289-285=4
+  13^8=4^2=16, 13^12=13^8×13^4=16×4=64 mod19=64-3×19=64-57=7
+
+K = 7 ✓
+      </pre>
+    </div>
+  </div>
+</div>
+
+<!-- AQ3 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ3</span> — CBC error propagation: what happens if C₃ is corrupted?</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <h4>CBC Error Propagation Analysis</h4>
+      <div class="math-block">
+        $$P_i = D_K(C_i) \oplus C_{i-1}$$
+      </div>
+      <p>If C₃ is corrupted (contains an error):</p>
+      <ul>
+        <li><strong>P₃</strong> = D_K(C₃_corrupted) ⊕ C₂ → <strong>completely wrong</strong> (D_K of wrong input)</li>
+        <li><strong>P₄</strong> = D_K(C₄) ⊕ C₃_corrupted → <strong>wrong in the bits that were corrupted</strong> (XOR with corrupted C₃)</li>
+        <li><strong>P₅ and beyond</strong> → <strong>correct</strong> (C₄ onwards are uncorrupted)</li>
+      </ul>
+      <div class="highlight">
+        <strong>Key exam answer:</strong> A single corrupted ciphertext block C_i damages exactly <strong>P_i</strong> (completely) and <strong>P_{i+1}</strong> (partially, in the bits where C_i was corrupted). All subsequent blocks are correctly decrypted.
+      </div>
+      <p>Compare with ECB: a corrupted C_i in ECB damages <strong>only P_i</strong>. No propagation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- AQ4 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ4</span> — Why is public key distribution NOT trivial? How is it solved?</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <p>Even though public keys are meant to be shared, there is no guarantee that a public key you receive actually belongs to who you think it does.</p>
+      <p><strong>Problem:</strong> Without authentication, an adversary can intercept your request for Alice's public key and substitute their own key. You'd then encrypt messages for Alice using the adversary's key.</p>
+      <p><strong>Solution — Public Key Infrastructure (PKI):</strong></p>
+      <ul>
+        <li><strong>Certificate Authority (CA)</strong>: A trusted third party that digitally signs certificates binding a public key to an identity</li>
+        <li><strong>X.509 certificate</strong>: Contains subject name, public key, and CA signature</li>
+        <li>Browser has a list of trusted CAs pre-installed</li>
+        <li><strong>Chain of trust</strong>: Root CA → Intermediate CA → End-entity certificate</li>
+        <li><strong>Certificate Revocation Lists (CRL)</strong> and OCSP for revoked certificates</li>
+      </ul>
+      <p>This is why HTTPS certificates are issued by CAs — they prevent MITM attacks on public key exchange.</p>
+    </div>
+  </div>
+</div>
+
+<!-- AQ5 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ5</span> — Describe the RSA confidentiality and authentication scenarios with diagrams.</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <p><strong>Confidentiality (Secret Message):</strong></p>
+      <ul>
+        <li>Alice wants to send a message ONLY Bob can read</li>
+        <li>Alice encrypts with Bob's <em>public</em> key: C = E(K_Bob_pub, M)</li>
+        <li>Only Bob can decrypt: M = D(K_Bob_priv, C)</li>
+        <li>Anyone can encrypt for Bob, but only Bob can decrypt</li>
+      </ul>
+      <p><strong>Authentication (Digital Signature):</strong></p>
+      <ul>
+        <li>Bob wants to prove a message came from him</li>
+        <li>Bob encrypts (signs) with his <em>private</em> key: C = E(K_Bob_priv, M)</li>
+        <li>Anyone can verify using Bob's public key: M = D(K_Bob_pub, C)</li>
+        <li>If decryption succeeds → message must have come from Bob (only he has the private key)</li>
+      </ul>
+      <p><strong>Combined (Confidentiality + Authentication):</strong></p>
+      <ol>
+        <li>Bob signs with his private key: S = E(K_Bob_priv, M)</li>
+        <li>Alice encrypts for Charlie: C = E(K_Charlie_pub, S)</li>
+        <li>Charlie decrypts: S = D(K_Charlie_priv, C)</li>
+        <li>Charlie verifies Bob's signature: M = D(K_Bob_pub, S)</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- AQ6 -->
+<div class="exam-q">
+  <div class="exam-q-header" onclick="toggleExam(this)">
+    <div><span style="color:var(--cyan);font-weight:700;">AQ6</span> — Explain the Man-in-the-Middle attack on Diffie-Hellman. How does TLS prevent it?</div>
+    <span class="marks">Practice</span>
+  </div>
+  <div class="exam-q-body" style="display:none;">
+    <button class="toggle-sol" onclick="toggleSolution(this)">Show Solution</button>
+    <div class="solution" style="display:none;">
+      <p><strong>The Attack:</strong></p>
+      <ol>
+        <li>Alice sends Y_A to Bob over network</li>
+        <li>Eve intercepts Y_A and generates her own X_E, Y_E</li>
+        <li>Eve forwards Y_E to Bob (pretending to be Alice)</li>
+        <li>Bob sends Y_B to Alice; Eve intercepts and forwards her Y_E</li>
+        <li>Alice computes shared key with Eve K_AE; Bob computes K_BE</li>
+        <li>Eve can decrypt from Alice using K_AE, re-encrypt for Bob using K_BE</li>
+      </ol>
+      <p>Alice and Bob believe they have a secure channel, but Eve reads and modifies all traffic.</p>
+      <p><strong>Why DH is vulnerable:</strong> DH provides no authentication. Y_A is just a number — there is nothing that proves it came from Alice.</p>
+      <p><strong>TLS Prevention:</strong></p>
+      <ul>
+        <li>Server sends its X.509 certificate signed by a trusted CA</li>
+        <li>Certificate contains server's public key</li>
+        <li>Client verifies certificate chain up to root CA</li>
+        <li>This authenticates the server's DH public key</li>
+        <li>Result: <strong>Authenticated DH</strong> (used in TLS 1.3 as ECDHE)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ QUIZ -->
+<section id="quiz">
+<h2><span class="icon">🎯</span> 10-Question Exam Quiz</h2>
+<p style="color:var(--text2);margin-bottom:1.5rem;">Test yourself on all key concepts. Immediate feedback after each answer.</p>
+
+<div id="quiz-score" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.5rem;">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span style="color:var(--text2);">Score: <strong id="score-num" style="color:var(--green);">0</strong> / <strong id="total-num">10</strong></span>
+    <button class="secondary" onclick="resetQuiz()">Reset Quiz</button>
+  </div>
+  <div class="progress-bar" style="margin-top:.6rem;"><div class="progress-fill" id="score-bar" style="width:0%"></div></div>
+</div>
+
+<!-- Q1 -->
+<div class="quiz-q">
+  <p><strong>1.</strong> In RSA, what is used to encrypt a message for confidentiality?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q1" value="a"> The sender's private key</label>
+    <label><input type="radio" name="q1" value="b"> The recipient's public key</label>
+    <label><input type="radio" name="q1" value="c"> A shared symmetric key</label>
+    <label><input type="radio" name="q1" value="d"> The recipient's private key</label>
+  </div>
+  <button onclick="checkQ('q1','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q1-fb"></div>
+</div>
+
+<!-- Q2 -->
+<div class="quiz-q">
+  <p><strong>2.</strong> If p=11 and q=13, what is φ(n)?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q2" value="a"> 120</label>
+    <label><input type="radio" name="q2" value="b"> 143</label>
+    <label><input type="radio" name="q2" value="c"> 132</label>
+    <label><input type="radio" name="q2" value="d"> 110</label>
+  </div>
+  <button onclick="checkQ('q2','a',this)">Submit</button>
+  <div class="quiz-feedback" id="q2-fb"></div>
+</div>
+
+<!-- Q3 -->
+<div class="quiz-q">
+  <p><strong>3.</strong> In Diffie-Hellman, what is the computational hardness assumption that makes it secure?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q3" value="a"> Integer factorisation problem</label>
+    <label><input type="radio" name="q3" value="b"> Discrete logarithm problem</label>
+    <label><input type="radio" name="q3" value="c"> Subset sum problem</label>
+    <label><input type="radio" name="q3" value="d"> Hamiltonian path problem</label>
+  </div>
+  <button onclick="checkQ('q3','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q3-fb"></div>
+</div>
+
+<!-- Q4 -->
+<div class="quiz-q">
+  <p><strong>4.</strong> A 16-bit key at 2⁸ encryptions/second — how long for worst-case brute force?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q4" value="a"> 1 second</label>
+    <label><input type="radio" name="q4" value="b"> 128 seconds</label>
+    <label><input type="radio" name="q4" value="c"> 256 seconds</label>
+    <label><input type="radio" name="q4" value="d"> 65536 seconds</label>
+  </div>
+  <button onclick="checkQ('q4','c',this)">Submit</button>
+  <div class="quiz-feedback" id="q4-fb"></div>
+</div>
+
+<!-- Q5 -->
+<div class="quiz-q">
+  <p><strong>5.</strong> Why is ECB mode insecure for structured data?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q5" value="a"> It is too slow for real-time use</label>
+    <label><input type="radio" name="q5" value="b"> It requires a large IV that must be transmitted securely</label>
+    <label><input type="radio" name="q5" value="c"> Identical plaintext blocks produce identical ciphertext blocks, leaking patterns</label>
+    <label><input type="radio" name="q5" value="d"> It uses a weak round function vulnerable to linear cryptanalysis</label>
+  </div>
+  <button onclick="checkQ('q5','c',this)">Submit</button>
+  <div class="quiz-feedback" id="q5-fb"></div>
+</div>
+
+<!-- Q6 -->
+<div class="quiz-q">
+  <p><strong>6.</strong> In CBC decryption, if ciphertext block C₄ is corrupted, which plaintext blocks are affected?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q6" value="a"> Only P₄</label>
+    <label><input type="radio" name="q6" value="b"> P₄ and P₅ only</label>
+    <label><input type="radio" name="q6" value="c"> All blocks from P₄ onwards</label>
+    <label><input type="radio" name="q6" value="d"> P₃ and P₄</label>
+  </div>
+  <button onclick="checkQ('q6','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q6-fb"></div>
+</div>
+
+<!-- Q7 -->
+<div class="quiz-q">
+  <p><strong>7.</strong> In RSA authentication (digital signature), Bob signs with his ______ and receivers verify with his ______.</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q7" value="a"> Public key ... private key</label>
+    <label><input type="radio" name="q7" value="b"> Private key ... public key</label>
+    <label><input type="radio" name="q7" value="c"> Private key ... private key</label>
+    <label><input type="radio" name="q7" value="d"> Public key ... public key</label>
+  </div>
+  <button onclick="checkQ('q7','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q7-fb"></div>
+</div>
+
+<!-- Q8 -->
+<div class="quiz-q">
+  <p><strong>8.</strong> In Diffie-Hellman with q=23, α=5, X_A=6, what is Y_A?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q8" value="a"> 5</label>
+    <label><input type="radio" name="q8" value="b"> 8</label>
+    <label><input type="radio" name="q8" value="c"> 15</label>
+    <label><input type="radio" name="q8" value="d"> 19</label>
+  </div>
+  <button onclick="checkQ('q8','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q8-fb"></div>
+</div>
+
+<!-- Q9 -->
+<div class="quiz-q">
+  <p><strong>9.</strong> Why is asymmetric encryption generally NOT used for encrypting bulk data?</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q9" value="a"> It requires a shared secret to be pre-distributed</label>
+    <label><input type="radio" name="q9" value="b"> It is computationally much slower than symmetric encryption</label>
+    <label><input type="radio" name="q9" value="c"> It cannot provide confidentiality, only authentication</label>
+    <label><input type="radio" name="q9" value="d"> It is patent-protected and expensive to license</label>
+  </div>
+  <button onclick="checkQ('q9','b',this)">Submit</button>
+  <div class="quiz-feedback" id="q9-fb"></div>
+</div>
+
+<!-- Q10 -->
+<div class="quiz-q">
+  <p><strong>10.</strong> The Man-in-the-Middle attack on Diffie-Hellman succeeds because DH provides no ______.</p>
+  <div class="quiz-options">
+    <label><input type="radio" name="q10" value="a"> Confidentiality</label>
+    <label><input type="radio" name="q10" value="b"> Entropy</label>
+    <label><input type="radio" name="q10" value="c"> Authentication</label>
+    <label><input type="radio" name="q10" value="d"> Forward secrecy</label>
+  </div>
+  <button onclick="checkQ('q10','c',this)">Submit</button>
+  <div class="quiz-feedback" id="q10-fb"></div>
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:2rem;color:var(--text2);font-size:.82rem;border-top:1px solid var(--border);">
+  COMPSCI 5063 — Cyber Security Fundamentals (M) &nbsp;|&nbsp; Lec 5: Cryptography II &nbsp;|&nbsp; Dr Emma Li
+</footer>
+
+<!-- ============================================================ SCRIPTS -->
+<script>
+// ===== NAV =====
+function setActive(el) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== TABS =====
+function openTab(evt, id) {
+  const parent = evt.target.closest('section, .card');
+  parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  evt.target.classList.add('active');
+}
+
+// ===== EXAM TOGGLE =====
+function toggleExam(el) {
+  const body = el.nextElementSibling;
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+function toggleSolution(btn) {
+  const sol = btn.nextElementSibling;
+  sol.style.display = sol.style.display === 'none' ? 'block' : 'none';
+  btn.textContent = sol.style.display === 'none' ? 'Show Solution' : 'Hide Solution';
+}
+
+// ===== MODULAR EXPONENTIATION =====
+function modpow(base, exp, mod) {
+  if (mod === 1n) return 0n;
+  let result = 1n;
+  base = base % mod;
+  while (exp > 0n) {
+    if (exp % 2n === 1n) result = (result * base) % mod;
+    exp = exp / 2n;
+    base = (base * base) % mod;
+  }
+  return result;
+}
+
+// ===== GCD =====
+function gcd(a, b) {
+  while (b !== 0n) { [a, b] = [b, a % b]; }
+  return a;
+}
+
+// ===== EXTENDED EUCLIDEAN =====
+function extGcd(a, b) {
+  if (b === 0n) return [a, 1n, 0n];
+  const [g, x, y] = extGcd(b, a % b);
+  return [g, y, x - (a / b) * y];
+}
+function modInverse(e, m) {
+  const [g, x] = extGcd(e % m, m);
+  if (g !== 1n) return null;
+  return ((x % m) + m) % m;
+}
+
+// ===== PRIME CHECK =====
+function isPrime(n) {
+  if (n < 2n) return false;
+  if (n === 2n) return true;
+  if (n % 2n === 0n) return false;
+  for (let i = 3n; i * i <= n; i += 2n) {
+    if (n % i === 0n) return false;
+  }
+  return true;
+}
+
+// ===== RSA COMPUTE =====
+function computeRSA() {
+  const p = BigInt(document.getElementById('rsa-p').value);
+  const q = BigInt(document.getElementById('rsa-q').value);
+  const e = BigInt(document.getElementById('rsa-e').value);
+  const out = document.getElementById('rsa-output');
+
+  let lines = [];
+  if (!isPrime(p)) { lines.push(`⚠ p=${p} is NOT prime!`); }
+  if (!isPrime(q)) { lines.push(`⚠ q=${q} is NOT prime!`); }
+  if (lines.length > 0) { out.textContent = lines.join('\n'); return; }
+
+  const n = p * q;
+  const phi = (p - 1n) * (q - 1n);
+  const g = gcd(e, phi);
+
+  lines.push(`Step 1: n = p × q = ${p} × ${q} = ${n}`);
+  lines.push(`Step 2: φ(n) = (p-1)(q-1) = ${p-1n} × ${q-1n} = ${phi}`);
+  lines.push(`Step 3: gcd(e, φ(n)) = gcd(${e}, ${phi}) = ${g}`);
+
+  if (g !== 1n) { lines.push(`⚠ gcd ≠ 1! Choose a different e.`); out.textContent = lines.join('\n'); return; }
+
+  const d = modInverse(e, phi);
+  lines.push(`Step 4: d = e⁻¹ mod φ(n) = ${e}⁻¹ mod ${phi} = ${d}`);
+  lines.push(`Step 5: Verify: e×d mod φ(n) = ${e}×${d} mod ${phi} = ${(e*d) % phi}`);
+  lines.push(``);
+  lines.push(`✓ PUBLIC KEY:  (e, n) = (${e}, ${n})`);
+  lines.push(`✓ PRIVATE KEY: (d, n) = (${d}, ${n})`);
+
+  out.textContent = lines.join('\n');
+  // update enc/dec defaults
+  document.getElementById('rsa-e2').value = e.toString();
+  document.getElementById('rsa-d2').value = d.toString();
+  document.getElementById('rsa-n2').value = n.toString();
+}
+
+function verifyPrime() {
+  const p = BigInt(document.getElementById('rsa-p').value);
+  const q = BigInt(document.getElementById('rsa-q').value);
+  document.getElementById('rsa-output').textContent =
+    `p=${p}: ${isPrime(p) ? '✓ Prime' : '✗ NOT prime'}\nq=${q}: ${isPrime(q) ? '✓ Prime' : '✗ NOT prime'}`;
+}
+
+function rsaEncDec() {
+  const M = BigInt(document.getElementById('rsa-msg').value);
+  const e = BigInt(document.getElementById('rsa-e2').value);
+  const d = BigInt(document.getElementById('rsa-d2').value);
+  const n = BigInt(document.getElementById('rsa-n2').value);
+  const out = document.getElementById('rsa-enc-output');
+
+  if (M >= n) { out.textContent = `⚠ Message M must be < n=${n}`; return; }
+
+  const C = modpow(M, e, n);
+  const M2 = modpow(C, d, n);
+
+  out.textContent = [
+    `Encrypt: C = M^e mod n = ${M}^${e} mod ${n} = ${C}`,
+    `Decrypt: M = C^d mod n = ${C}^${d} mod ${n} = ${M2}`,
+    ``,
+    M2 === M ? `✓ Round-trip successful! M = ${M}` : `⚠ Round-trip FAILED. Check your keys.`
+  ].join('\n');
+}
+
+// ===== DH COMPUTE =====
+function computeDH() {
+  const q = BigInt(document.getElementById('dh-q').value);
+  const a = BigInt(document.getElementById('dh-alpha').value);
+  const xa = BigInt(document.getElementById('dh-xa').value);
+  const xb = BigInt(document.getElementById('dh-xb').value);
+  const out = document.getElementById('dh-output');
+
+  const ya = modpow(a, xa, q);
+  const yb = modpow(a, xb, q);
+  const ka = modpow(yb, xa, q);
+  const kb = modpow(ya, xb, q);
+
+  out.textContent = [
+    `Public parameters: q=${q}, α=${a}`,
+    ``,
+    `Alice (secret X_A=${xa}):`,
+    `  Y_A = α^X_A mod q = ${a}^${xa} mod ${q} = ${ya}`,
+    ``,
+    `Bob (secret X_B=${xb}):`,
+    `  Y_B = α^X_B mod q = ${a}^${xb} mod ${q} = ${yb}`,
+    ``,
+    `Alice computes: K = Y_B^X_A mod q = ${yb}^${xa} mod ${q} = ${ka}`,
+    `Bob   computes: K = Y_A^X_B mod q = ${ya}^${xb} mod ${q} = ${kb}`,
+    ``,
+    ka === kb ? `✓ Shared key K = ${ka}` : `⚠ Mismatch! Check inputs.`
+  ].join('\n');
+}
+
+// ===== EXTENDED EUCLIDEAN STEPS =====
+function extEuclid() {
+  const e = parseInt(document.getElementById('ext-e').value);
+  const m = parseInt(document.getElementById('ext-m').value);
+  const out = document.getElementById('ext-output');
+
+  // Forward pass
+  let lines = [`Finding d such that ${e}·d ≡ 1 (mod ${m})\n`];
+  lines.push(`--- Euclidean Algorithm ---`);
+
+  let steps = [];
+  let a = m, b = e;
+  while (b !== 0) {
+    const q = Math.floor(a/b), r = a % b;
+    steps.push({a, b, q, r});
+    lines.push(`${a} = ${q}×${b} + ${r}`);
+    [a, b] = [b, r];
+  }
+
+  if (a !== 1) { out.textContent = lines.join('\n') + `\n\ngcd = ${a} ≠ 1 → Inverse does not exist!`; return; }
+
+  // Back-sub
+  lines.push(`\n--- Back-Substitution ---`);
+  let x = 0, y = 1;
+  a = m; b = e;
+  let a2 = m, b2 = e;
+  while (b2 !== 0) {
+    const q = Math.floor(a2/b2);
+    [x, y] = [y, x - q*y];
+    [a2, b2] = [b2, a2 - q*b2];
+  }
+
+  let d = ((x % m) + m) % m;
+  lines.push(`\nd = ${d}`);
+  lines.push(`Verify: ${e} × ${d} mod ${m} = ${(e * d) % m} ${(e*d)%m === 1 ? '✓' : '✗'}`);
+
+  out.textContent = lines.join('\n');
+}
+
+// ===== PRIMITIVE ROOT CHECKER =====
+function checkPrimRoot() {
+  const a = parseInt(document.getElementById('pr-alpha').value);
+  const q = parseInt(document.getElementById('pr-q').value);
+  const out = document.getElementById('pr-output');
+
+  if (!isPrime(BigInt(q))) { out.textContent = `${q} is not prime!`; return; }
+
+  let powers = new Set();
+  let lines = [`Powers of ${a} mod ${q}:\n`];
+  let val = 1;
+  for (let i = 1; i < q; i++) {
+    val = (val * a) % q;
+    powers.add(val);
+    lines.push(`${a}^${i} mod ${q} = ${val}`);
+  }
+
+  const isPrimRoot = powers.size === q - 1;
+  lines.push(`\nUnique values: ${powers.size} / ${q-1}`);
+  lines.push(isPrimRoot ? `✓ ${a} IS a primitive root mod ${q}` : `✗ ${a} is NOT a primitive root mod ${q}`);
+
+  out.textContent = lines.join('\n');
+}
+
+// ===== QUIZ =====
+let score = 0, answered = new Set();
+
+const quizAnswers = {
+  q1: { correct: 'b', explanation: "For confidentiality, you encrypt with the recipient's PUBLIC key. Only they can decrypt with their private key." },
+  q2: { correct: 'a', explanation: "φ(n) = (p-1)(q-1) = (11-1)(13-1) = 10 × 12 = 120." },
+  q3: { correct: 'b', explanation: "DH security relies on the discrete logarithm problem: given α^x mod q, it's hard to find x." },
+  q4: { correct: 'c', explanation: "2^16 / 2^8 = 2^8 = 256 seconds worst case." },
+  q5: { correct: 'c', explanation: "ECB's fatal flaw: same plaintext block → same ciphertext block with same key, revealing patterns." },
+  q6: { correct: 'b', explanation: "In CBC: corrupted C_i damages P_i (completely) and P_{i+1} (partially). P_{i+2} onwards are fine." },
+  q7: { correct: 'b', explanation: "Sign with PRIVATE key (proves identity); verify with PUBLIC key (anyone can check)." },
+  q8: { correct: 'b', explanation: "Y_A = 5^6 mod 23 = 15625 mod 23 = 8." },
+  q9: { correct: 'b', explanation: "Asymmetric encryption is 10-1000x slower than symmetric. Used only for key exchange and signatures." },
+  q10: { correct: 'c', explanation: "DH doesn't authenticate parties. Either party could be an imposter. TLS fixes this with certificates." }
+};
+
+function checkQ(qName, correctVal, btn) {
+  if (answered.has(qName)) return;
+  const selected = document.querySelector(`input[name="${qName}"]:checked`);
+  if (!selected) { return; }
+
+  answered.add(qName);
+  const fb = document.getElementById(`${qName}-fb`);
+  const isCorrect = selected.value === correctVal;
+
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = (isCorrect ? '✓ Correct! ' : '✗ Incorrect. ') + quizAnswers[qName].explanation;
+
+  if (isCorrect) {
+    score++;
+    document.getElementById('score-num').textContent = score;
+    document.getElementById('score-bar').style.width = (score/10*100) + '%';
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Answered';
+}
+
+function resetQuiz() {
+  score = 0;
+  answered.clear();
+  document.getElementById('score-num').textContent = '0';
+  document.getElementById('score-bar').style.width = '0%';
+  document.querySelectorAll('.quiz-feedback').forEach(fb => { fb.style.display = 'none'; });
+  document.querySelectorAll('.quiz-options input').forEach(i => { i.checked = false; });
+  document.querySelectorAll('.quiz-q button').forEach(b => {
+    if (b.textContent === 'Answered') { b.disabled = false; b.textContent = 'Submit'; }
+  });
+}
+
+// ===== INTERSECTION OBSERVER for nav active =====
+const sections = document.querySelectorAll('section[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

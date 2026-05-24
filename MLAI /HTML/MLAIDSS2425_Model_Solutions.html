@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2024-2025 Model Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #16a085;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #16a085;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #e8f8f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #16a085;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #16a085;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .latest-badge {
+            background-color: #16a085;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .mark-allocation {
+            background-color: #ffe5e5;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="latest-badge">LATEST - 2024/2025</div>
+        <h1>Machine Learning & Artificial Intelligence for Data Scientists</h1>
+        <h2>Model Solutions 2024-2025</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 90 minutes (extended format)<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions<br>
+            <strong>Note:</strong> This is the most recent exam paper - study it carefully!
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Consider using regression to predict the birth rate in the US from 1909 to 2008.</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) Polynomial Regression Order 10 - Numerical Issues <span class="marks">[4 marks]</span></h3>
+            <p>Consider fitting the data with a polynomial regression of order 10. Identify the numerical issue with model fitting and propose a solution with sufficient details.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Numerical Issue Identification:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <ul>
+                <li>The value of the year could cause numerical issues when raised to order 10 <strong>[1 mark]</strong></li>
+                <li>The numerical issue is matrix inversion in the least square solution being unstable when year^10 is too large <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Example:</strong> Year 2000 raised to power 10 = 2000^10 ≈ 1.024 × 10^33, which is extremely large and causes numerical overflow and instability in matrix computations.
+            </div>
+
+            <p><strong>Solution:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <p>Propose a reasonable rescaling method as a solution. Valid approaches include:</p>
+            <ul>
+                <li><strong>Whitening (Standardization):</strong> Transform features to have mean 0 and standard deviation 1
+                    <div class="formula-box">
+                        <p>\[x_{scaled} = \frac{x - \mu}{\sigma}\]</p>
+                    </div>
+                </li>
+                <li><strong>Min-Max Normalization:</strong> Scale to range [0,1] or [-1,1]
+                    <div class="formula-box">
+                        <p>\[x_{scaled} = \frac{x - x_{min}}{x_{max} - x_{min}}\]</p>
+                    </div>
+                </li>
+                <li><strong>Logarithmic Transformation:</strong> Take the logarithm to reduce magnitude
+                    <div class="formula-box">
+                        <p>\[x_{scaled} = \log(x)\]</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(b) Polynomial Regression Order 2 - Poor Fit Regions <span class="marks">[6 marks]</span></h3>
+            <p>Consider fitting the data with a polynomial regression of order 2. Identify the two regions of most likely poorly fitted data points and explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Identifying Poorly Fitted Regions:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <p>Several options for poorly fitted data points:</p>
+            <ul>
+                <li>Region 1: x = 1945-1960, y ≈ 24 (post-war baby boom)</li>
+                <li>Region 2: x ≈ 1938-1940, y ≈ 17 (pre-war drop)</li>
+                <li>Region 3: x = 1975-1980 (data points showing decline)</li>
+            </ul>
+
+            <p><strong>Reasoning:</strong> <span class="mark-allocation">[4 marks]</span></p>
+            <ol>
+                <li>A polynomial regression model with an order of 2 is a quadratic (or convex) curve <strong>[1 mark]</strong></li>
+                <li>The global minima of the curve would be in years after 2008 <strong>[1 mark]</strong></li>
+                <li>The left tail end would be following the downward trend from 1909 to 1920 <strong>[1 mark]</strong></li>
+                <li>The curve would cut through the drop from 1920-1940 and the upward trend after the 1940s <strong>[1 mark]</strong></li>
+            </ol>
+
+            <p><strong>Optional mark [1]:</strong> The fitted curve will struggle to capture the drop in 1970-1980.</p>
+
+            <div class="note">
+                <strong>Key Insight:</strong> A quadratic model can only capture one "bend" in the data. The birth rate data has multiple inflection points (1920s drop, 1940s rise, 1970s drop), which a simple parabola cannot represent accurately.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Sigmoid Basis Function Hyperparameters <span class="marks">[4 marks]</span></h3>
+            <p>Consider fitting the data with a linear regression model using the sigmoid basis function:</p>
+            <div class="formula-box">
+                <p>\[h_{n,k} = sigmoid\left(\frac{(x_n - \mu_k)^2}{s}\right), \quad n = 1,...,N; \quad k = 1,...,K\]</p>
+            </div>
+            <p>Explain the choice of hyperparameters μ_k (mu_k) and s that could lead to a well-fitted model.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Choice of μ_k (centers):</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <ul>
+                <li>μ_k can be set as x_n (i.e., place centers at actual data points) <strong>[1 mark]</strong></li>
+                <li>Setting the center parameter to be x_n gives the model maximum flexibility to fit every data point <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Choice of s (width/scale):</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <ul>
+                <li>s is set to relatively small in relation to x_n, for example, s = 1 <strong>[1 mark]</strong></li>
+                <li>Setting s to be small allows sharp turns between data points to be fitted <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Trade-off:</strong> While this approach gives maximum flexibility, it can lead to overfitting. In practice, you would use regularization (Ridge or Lasso) to control model complexity while maintaining flexibility.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Ridge vs Lasso - Identifying Regularization Method <span class="marks">[6 marks]</span></h3>
+            <p>Two fitting strategies (ridge regression and lasso) were used and obtained different fitting models. Identify which fitting strategy is used in each figure and explain why and how the chosen fitting method could have generated the result.</p>
+            <p><strong>Figure 1.3 A:</strong> Shows a model with three flat regions</p>
+            <p><strong>Figure 1.3 B:</strong> Shows a model poorly following the trend</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Figure 1.3 A - Lasso:</strong> <span class="mark-allocation">[3 marks]</span></p>
+            <p>Figure 1.3 A is fitted with <strong>Lasso</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Reasoning:</strong></p>
+            <ul>
+                <li>The fitted model has three flat regions. This happens when basis functions covering these regions have zero coefficients <strong>[1 mark]</strong></li>
+                <li>The fitted model also suggests that the hyperparameter controlling the strength of L1 regularization is set to be too strong <strong>[1 mark, identifying L1 regularization is needed]</strong></li>
+                <li>Lasso's L1 penalty (λΣ|w_j|) forces many coefficients to exactly zero, creating sparse solutions</li>
+                <li>When λ is too large, too many basis functions are eliminated, leaving flat regions where no basis functions are active</li>
+            </ul>
+
+            <p><strong>Figure 1.3 B - Ridge:</strong> <span class="mark-allocation">[3 marks]</span></p>
+            <p>Figure 1.3 B is fitted with <strong>Ridge regression</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Reasoning:</strong></p>
+            <ul>
+                <li>The fitted model is poorly following the trend. This happens when all basis functions have very small coefficients <strong>[1 mark]</strong></li>
+                <li>The fitted model suggests that the hyperparameter controlling the strength of L2 regularization is set to be too strong <strong>[1 mark, identifying L2 regularization is needed]</strong></li>
+                <li>Ridge's L2 penalty (λΣw_j²) shrinks all coefficients toward zero but doesn't eliminate them</li>
+                <li>When λ is too large, all coefficients become very small, resulting in a nearly flat line that barely responds to the data</li>
+            </ul>
+
+            <div class="note">
+                <strong>Key Difference:</strong>
+                <ul>
+                    <li><strong>Lasso with strong λ:</strong> Creates sparse solutions (many zeros) → flat regions with no response</li>
+                    <li><strong>Ridge with strong λ:</strong> Shrinks all coefficients uniformly → smooth but overly dampened response</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Training data in 2D plane with points and classes:</p>
+            <ul>
+                <li>(2,0) → Class +1 (Red)</li>
+                <li>(0,2) → Class -1 (Blue)</li>
+                <li>(0,-2) → Class +1 (Red)</li>
+                <li>(-2,0) → Class +1 (Red)</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(a)(i) k-NN with k=1 Classification <span class="marks">[4 marks]</span></h3>
+            <p>Design a k-NN classifier with k=1 and determine the class variables C1 through C4 for the following test points:</p>
+            <ul>
+                <li>(0,1) → C1</li>
+                <li>(1.5,1) → C2</li>
+                <li>(-0.5,1) → C3</li>
+                <li>(0,0) → C4</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Calculate distances and classify:</strong></p>
+
+            <p><strong>Test point (0,1) - C1:</strong></p>
+            <ul>
+                <li>Distance to (2,0): √[(0-2)² + (1-0)²] = √5 ≈ 2.24</li>
+                <li>Distance to (0,2): √[(0-0)² + (1-2)²] = 1.0 ← Nearest</li>
+                <li>Distance to (0,-2): √[(0-0)² + (1-(-2))²] = 3.0</li>
+                <li>Distance to (-2,0): √[(0-(-2))² + (1-0)²] = √5 ≈ 2.24</li>
+            </ul>
+            <p><strong>C1 = -1 (Class -1/Blue)</strong></p>
+
+            <p><strong>Test point (1.5,1) - C2:</strong></p>
+            <ul>
+                <li>Distance to (2,0): √[(1.5-2)² + (1-0)²] = √1.25 ≈ 1.12 ← Nearest</li>
+                <li>Distance to (0,2): √[(1.5-0)² + (1-2)²] = √3.25 ≈ 1.80</li>
+            </ul>
+            <p><strong>C2 = 1 (Class +1/Red)</strong></p>
+
+            <p><strong>Test point (-0.5,1) - C3:</strong></p>
+            <ul>
+                <li>Distance to (-2,0): √[(-0.5-(-2))² + (1-0)²] = √3.25 ≈ 1.80</li>
+                <li>Distance to (0,2): √[(-0.5-0)² + (1-2)²] = √1.25 ≈ 1.12 ← Nearest</li>
+            </ul>
+            <p><strong>C3 = -1, but accept C3 = 1 if student argues for (-2,0) being closest</strong></p>
+
+            <p><strong>Test point (0,0) - C4:</strong></p>
+            <ul>
+                <li>Distance to (2,0): 2.0</li>
+                <li>Distance to (0,2): 2.0</li>
+                <li>Distance to (0,-2): 2.0</li>
+                <li>Distance to (-2,0): 2.0</li>
+            </ul>
+            <p><strong>C4 = unknown</strong> (all training points are equidistant - tie situation)</p>
+
+            <div class="note">
+                <strong>Results Summary:</strong> C1 = -1, C2 = 1, C3 = 1 (or -1 depending on calculation), C4 = unknown
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(a)(ii) k-NN with k=3 for Point (0,0) <span class="marks">[2 marks]</span></h3>
+            <p>What would be the class variable C4 if we had used k=3?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>With k=3, we consider the 3 nearest neighbors to (0,0).</p>
+            <p>Since all 4 training points are equidistant (distance = 2.0), we take any 3 of them:</p>
+            <ul>
+                <li>Possible neighbors: (2,0), (0,2), (0,-2), (-2,0)</li>
+                <li>Class distribution: 3 points are Class +1, 1 point is Class -1</li>
+                <li>Any selection of 3 points will include at least 2 from Class +1</li>
+            </ul>
+            <p><strong>C4 = 1 (Class +1) by majority vote</strong></p>
+        </div>
+
+        <div class="question">
+            <h3>(a)(iii) Decision Boundary Equations <span class="marks">[4 marks]</span></h3>
+            <p>Write down the equations that specify the decision boundary between the two classes.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Decision Boundary 1:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <div class="formula-box">
+                <p>\[X_1 - X_2 = 0 \quad \text{in} \quad X_1 > 0 \text{ and } X_2 > 0\]</p>
+            </div>
+            <p>This represents the line x₁ = x₂ in the first quadrant (where both coordinates are positive).</p>
+
+            <p><strong>Decision Boundary 2:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <div class="formula-box">
+                <p>\[X_1 + X_2 = 0 \quad \text{in} \quad X_1 > 0 \text{ and } X_2 < 0\]</p>
+            </div>
+            <p>This represents the line x₁ = -x₂ in the fourth quadrant (where x₁ is positive and x₂ is negative).</p>
+
+            <div class="note">
+                <strong>Geometric Interpretation:</strong> The decision boundaries form a "plus sign" pattern through the origin, dividing the space based on which class point is closest in each region.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b)(i) SVM Support Vectors and Predictor <span class="marks">[6 marks]</span></h3>
+            <p>Apply a linear SVM model with predictor y(X₁, X₂). Which data points are the support vectors? Write down the equation for y(X₁, X₂).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Support Vectors:</strong> <span class="mark-allocation">[3 marks]</span></p>
+            <p>The support vectors are the points closest to the decision boundary:</p>
+            <ul>
+                <li>(2, 0) - Class +1</li>
+                <li>(0, 2) - Class -1</li>
+                <li>(-2, 0) - Class +1</li>
+            </ul>
+            <p>Point (0, -2) is NOT a support vector as it lies further from the optimal decision boundary.</p>
+
+            <p><strong>SVM Predictor Equation:</strong> <span class="mark-allocation">[3 marks]</span></p>
+            <div class="formula-box">
+                <p>\[y(X_1, X_2) = -2X_2 + 1\]</p>
+            </div>
+
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>Decision boundary: -2X₂ + 1 = 0, or X₂ = 0.5</li>
+                <li>For X₂ < 0.5: y > 0 → Class +1</li>
+                <li>For X₂ > 0.5: y < 0 → Class -1</li>
+                <li>This horizontal decision boundary optimally separates the classes</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>(b)(ii) Lagrange Multipliers <span class="marks">[4 marks]</span></h3>
+            <p>Specify the Lagrange multipliers α₁, α₂, α₃, α₄ for each of the data points (2,0), (0,2), (-2,0), and (0,-2), respectively.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <div class="formula-box">
+                <p>\[\alpha_1 = 0.5 \quad \text{(support vector)}\]</p>
+                <p>\[\alpha_2 = 1.0 \quad \text{(support vector)}\]</p>
+                <p>\[\alpha_3 = 0.5 \quad \text{(support vector)}\]</p>
+                <p>\[\alpha_4 = 0 \quad \text{(not a support vector)}\]</p>
+            </div>
+
+            <div class="note">
+                <strong>Key Property:</strong> Lagrange multipliers are non-zero (α > 0) only for support vectors. Non-support vectors have α = 0 because they don't influence the decision boundary.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <p><strong>Context:</strong> Consider using K-means algorithm to cluster concentric circles data (two ring-shaped clusters).</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) K-means with Euclidean Distance on Concentric Circles <span class="marks">[3 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>K-means Behavior:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>K-means clustering aims to partition the data into K clusters by minimizing the variance within each cluster. It does this by assigning each data point to the nearest cluster center (centroid) based on Euclidean distance.</p>
+
+            <p><strong>Problem with Concentric Circles:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <ul>
+                <li>K-means assumes that clusters are spherical and equally sized, which is not the case with concentric circles</li>
+                <li>Concentric circles are non-spherical and have different radii</li>
+                <li>Euclidean distance measures straight-line distance, which doesn't work well for circular or ring-shaped clusters</li>
+                <li>Points on the inner circle are closer to the centroid of the outer circle than to the centroid of their own circle</li>
+            </ul>
+
+            <p><strong>Expected Result:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>K-means will likely split the data into arbitrary segments rather than correctly identifying the two concentric circles. For example, it might divide the data into pie-like slices or other non-intuitive shapes based on which centroid is closer in Euclidean distance.</p>
+
+            <div class="note">
+                <strong>Key Limitation:</strong> K-means with Euclidean distance cannot separate clusters that are not linearly separable or spherical. Concentric circles require non-linear separation.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means for Concentric Circles <span class="marks">[2 marks]</span></h3>
+            <p>Would kernel K-means help in this dataset and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Yes, Kernel K-means would help.</strong></p>
+
+            <p><strong>Reason 1:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Kernel K-means extends the traditional K-means algorithm by using a kernel function to transform the data into a higher-dimensional space where the clusters become more separable.</p>
+
+            <p><strong>Reason 2:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>A Radial Basis Function (RBF) kernel would allow handling the non-linear cluster boundaries. In the transformed space, the concentric circles could become linearly separable.</p>
+
+            <div class="formula-box">
+                <p><strong>RBF Kernel:</strong></p>
+                <p>\[K(x_i, x_j) = \exp\left(-\gamma \|x_i - x_j\|^2\right)\]</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Gaussian Mixture Models for Concentric Circles <span class="marks">[3 marks]</span></h3>
+            <p>Would mixture models help to better classify this dataset than K-means and why?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>GMMs have limitations for this data:</strong></p>
+
+            <p><strong>Point 1:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>GMMs assume that the data is generated from a mixture of several Gaussian distributions with unknown parameters.</p>
+
+            <p><strong>Point 2:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>GMMs assume that each cluster follows a Gaussian distribution, which is not ideal for ring-shaped data. Gaussian distributions are unimodal and radially symmetric around a center, but ring shapes are hollow with no data at the center.</p>
+
+            <p><strong>Point 3:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>With points only on the boundaries (rings), the model might place the means of the Gaussians in between the circles, leading to incorrect clustering.</p>
+
+            <div class="note">
+                <strong>Conclusion:</strong> While GMMs are more flexible than K-means for some non-spherical clusters, they still struggle with hollow ring-shaped clusters. Kernel K-means or spectral clustering would be more appropriate.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) PCA - First Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>A 2D plot shows two separate clusters. Explain how the first principal component would look if overlaid on the plot.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Direction of First PC:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>The first principal component will be across the direction of the highest variance.</p>
+
+            <p><strong>Application to Two Clusters:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>In this case, we can note that there is a large variation in the axis that connects the two clusters. The first PC will be a line running through the data along the direction that separates the two clusters (the axis connecting their centers).</p>
+
+            <div class="note">
+                <strong>Visualization:</strong> If two clusters are horizontally separated, PC1 would be a horizontal line. If diagonally separated, PC1 would be a diagonal line in that direction.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) PCA - Second Principal Component <span class="marks">[2 marks]</span></h3>
+            <p>Explain what the second principal component would look like and why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Orthogonality Property:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>PCA decomposes the data into orthogonal components.</p>
+
+            <p><strong>Direction of Second PC:</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Therefore, the second principal component will be orthogonal (perpendicular) to the first. If PC1 captures variance along the axis connecting the two clusters, PC2 captures variance within each cluster perpendicular to that axis.</p>
+
+            <div class="note">
+                <strong>Example:</strong> If PC1 is horizontal (separating clusters left-right), then PC2 is vertical (capturing variation up-down within each cluster).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(f) Cross-Validation for Kernel K-Means <span class="marks">[4 marks]</span></h3>
+            <p>Describe the four-step process to determine the number of clusters in Kernel K-Means. (Hint: Each step gets a mark.)</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>Step 1: Split the Data</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Divide the data into k folds (e.g., k=5 or k=10 for cross-validation).</p>
+
+            <p><strong>Step 2: Kernel Computation</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Compute the kernel matrix for the entire dataset. This matrix contains pairwise kernel similarities K(x_i, x_j) for all data points.</p>
+
+            <p><strong>Step 3: Cross-Validation Loop</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>For each fold, train Kernel K-means on (k-1) folds and validate on the remaining fold. Repeat this process for different numbers of clusters (e.g., K=2, 3, 4, ...).</p>
+
+            <p><strong>Step 4: Evaluate Performance</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Use a performance metric (e.g., silhouette score, Davies-Bouldin index, or within-cluster sum of squares) to evaluate the clustering quality and average the results across all folds. Select the number of clusters K that gives the best average performance.</p>
+
+            <div class="note">
+                <strong>Common Metrics:</strong>
+                <ul>
+                    <li><strong>Silhouette Score:</strong> Measures how similar a point is to its own cluster compared to other clusters (range: -1 to 1, higher is better)</li>
+                    <li><strong>Elbow Method:</strong> Plot within-cluster sum of squares vs K, look for "elbow" point</li>
+                    <li><strong>Gap Statistic:</strong> Compares within-cluster dispersion to expected dispersion under null reference distribution</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(g) Managing Curse of Dimensionality <span class="marks">[4 marks]</span></h3>
+            <p>Describe two approaches you could take to manage the curse of dimensionality in genetic data. For example, how would you overcome this if you had a high-dimensional dataset with thousands of genetic features but only hundreds of subjects?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>General Solution:</strong> <span class="mark-allocation">[2 marks]</span></p>
+            <p>Feature selection can help overcome the problem of the curse of dimensionality.</p>
+
+            <p><strong>Approach 1: Feature Selection</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Use a feature selection method that picks the most relevant features. Options include:</p>
+            <ul>
+                <li><strong>Filter methods:</strong> Statistical tests (correlation, mutual information, ANOVA)</li>
+                <li><strong>Wrapper methods:</strong> Recursive Feature Elimination (RFE), forward/backward selection</li>
+                <li><strong>Embedded methods:</strong> Lasso regression (L1 penalty automatically selects features)</li>
+                <li><strong>Domain knowledge:</strong> Select features known to be biologically relevant</li>
+            </ul>
+
+            <p><strong>Approach 2: Dimensionality Reduction</strong> <span class="mark-allocation">[1 mark]</span></p>
+            <p>Use a dimensionality reduction technique like PCA that creates new features (principal components) as linear combinations of original features. Other options include:</p>
+            <ul>
+                <li><strong>PCA:</strong> Projects data onto directions of maximum variance</li>
+                <li><strong>t-SNE or UMAP:</strong> Non-linear dimensionality reduction for visualization</li>
+                <li><strong>Autoencoders:</strong> Neural network-based dimensionality reduction</li>
+                <li><strong>Factor Analysis:</strong> Identifies latent variables explaining correlations</li>
+            </ul>
+
+            <div class="note">
+                <strong>Specific to Genetic Data:</strong>
+                <ul>
+                    <li>With thousands of genetic features and hundreds of samples, the ratio is very poor (features >> samples)</li>
+                    <li>Feature selection can reduce from thousands to tens/hundreds of most relevant genes</li>
+                    <li>PCA can reduce to first ~50-100 components capturing 80-90% of variance</li>
+                    <li>This makes subsequent analysis (clustering, classification) more reliable and computationally feasible</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Model Solutions 2024-2025</strong></p>
+            <p>This is the most current exam - use it as your primary study resource!</p>
+            <p>Total Marks: 60 | Duration: 90 minutes</p>
+        </div>
+    </div>
+</body>
+</html>

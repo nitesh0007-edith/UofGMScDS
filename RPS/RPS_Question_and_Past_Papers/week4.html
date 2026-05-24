@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4: Experimental Design & Data Collection - Interactive Study Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 3px solid #11998e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+            transform: translateY(0);
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.6s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #11998e;
+            font-size: 2.5em;
+            margin: 30px 0 25px 0;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #11998e;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: #38ef7d;
+        }
+
+        h3 {
+            color: #0f766e;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+
+        .beginner-box {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-left: 6px solid #00bcd4;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.2);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);
+            border-left: 6px solid #11998e;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.1);
+        }
+
+        .important-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border-left: 6px solid #ffc107;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 6px solid #dc3545;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 6px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 6px solid #17a2b8;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.2);
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #e8daef 0%, #d7bde2 100%);
+            border-left: 6px solid #8e44ad;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.2);
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-top: 5px solid #11998e;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.3);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-top: 6px solid #11998e;
+            transition: all 0.3s;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .comparison-card.alt {
+            border-top-color: #38ef7d;
+        }
+
+        .comparison-card.warning {
+            border-top-color: #ffc107;
+        }
+
+        .comparison-card.purple {
+            border-top-color: #8e44ad;
+        }
+
+        .comparison-card h4 {
+            color: #11998e;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .comparison-card.alt h4 {
+            color: #0f766e;
+        }
+
+        .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        ul, ol {
+            margin: 20px 0;
+            padding-left: 35px;
+        }
+
+        li {
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+
+        .variable-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 6px solid #11998e;
+            transition: all 0.3s;
+        }
+
+        .variable-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.2);
+        }
+
+        .variable-card.dependent {
+            border-left-color: #38ef7d;
+        }
+
+        .variable-card.control {
+            border-left-color: #ffc107;
+        }
+
+        .variable-card.random {
+            border-left-color: #17a2b8;
+        }
+
+        .variable-card.confounding {
+            border-left-color: #dc3545;
+        }
+
+        .variable-tag {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .variable-tag.iv { background: #11998e; color: white; }
+        .variable-tag.dv { background: #38ef7d; color: #333; }
+        .variable-tag.cv { background: #ffc107; color: #333; }
+        .variable-tag.rv { background: #17a2b8; color: white; }
+        .variable-tag.cf { background: #dc3545; color: white; }
+
+        .design-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .design-box {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .design-box.within {
+            border: 4px solid #11998e;
+        }
+
+        .design-box.between {
+            border: 4px solid #38ef7d;
+        }
+
+        .design-box h4 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .design-box.within h4 { color: #11998e; }
+        .design-box.between h4 { color: #0f766e; }
+
+        .participant-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .participant {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e0f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 3px solid #00bcd4;
+        }
+
+        .condition-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .condition-a { background: #11998e; color: white; }
+        .condition-b { background: #38ef7d; color: #333; }
+
+        .arrow {
+            font-size: 1.5em;
+            color: #11998e;
+            margin: 0 10px;
+        }
+
+        .quiz-container {
+            background: #f8f9fa;
+            padding: 35px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #11998e;
+        }
+
+        .quiz-options {
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            margin: 12px 0;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #11998e;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        .progress-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .flashcard {
+            background: white;
+            border: 3px solid #11998e;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .flashcard:hover {
+            box-shadow: 0 10px 30px rgba(17, 153, 142, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 150px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .flashcard-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .data-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .data-type-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .data-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .data-type-card.nominal { border-top: 5px solid #e74c3c; }
+        .data-type-card.ordinal { border-top: 5px solid #f39c12; }
+        .data-type-card.interval { border-top: 5px solid #3498db; }
+        .data-type-card.ratio { border-top: 5px solid #2ecc71; }
+        .data-type-card.continuous { border-top: 5px solid #9b59b6; }
+        .data-type-card.discrete { border-top: 5px solid #1abc9c; }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        footer a {
+            color: #38ef7d;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+
+            .comparison-grid, .design-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .data-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Week 4: Experimental Design</h1>
+            <p class="subtitle">A Crash Course in Experimental Design & Data Collection</p>
+            <span class="badge">📊 Interactive Study Guide | Parts 1 & 2</span>
+        </header>
+
+        <nav>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('overview')">📋 Overview</button>
+                <button class="nav-btn" onclick="showSection('variables')">🎯 Variables & Factors</button>
+                <button class="nav-btn" onclick="showSection('designs')">⚖️ Within vs Between</button>
+                <button class="nav-btn" onclick="showSection('checklist')">✅ Design Checklist</button>
+                <button class="nav-btn" onclick="showSection('datatypes')">📊 Data Types</button>
+                <button class="nav-btn" onclick="showSection('collection')">📥 Data Collection</button>
+                <button class="nav-btn" onclick="showSection('generalisability')">🌐 Generalisability</button>
+                <button class="nav-btn" onclick="showSection('quiz')">✏️ Quiz</button>
+                <button class="nav-btn" onclick="showSection('flashcards')">🎴 Flashcards</button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <div id="overview" class="section active">
+                <h2>📋 Week 4 Overview</h2>
+
+                <div class="beginner-box">
+                    <h3>🎯 What You'll Learn</h3>
+                    <p>This week focuses on <strong>experimental design</strong> - how to structure experiments that produce valid, reliable, and generalizable results. You'll learn the language scientists use to describe experiments!</p>
+                </div>
+
+                <div class="key-concept">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand and identify different types of variables (IV, DV, Control, Random, Confounding)</li>
+                        <li>Learn the difference between within-subjects and between-subjects designs</li>
+                        <li>Understand counterbalancing and Latin squares</li>
+                        <li>Know the different types of data (nominal, ordinal, interval, ratio)</li>
+                        <li>Understand data collection best practices</li>
+                        <li>Learn about generalisability of experimental results</li>
+                    </ul>
+                </div>
+
+                <div class="important-box">
+                    <h3>⚠️ Why This Matters</h3>
+                    <p><strong>This is the language of experimental design!</strong></p>
+                    <ul>
+                        <li>A methodological way of reporting your experiment</li>
+                        <li>Enables precise critiques of experimental designs</li>
+                        <li>"Why isn't X a confounding variable?" is better than "seems like X might be important"</li>
+                        <li>You need to learn the jargon of any topic you work in!</li>
+                    </ul>
+                </div>
+
+                <h3>Part 1 & Part 2 Topics</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <span class="icon">🔬</span>
+                        <h4>Part 1: Experimental Design</h4>
+                        <ul>
+                            <li>Variables and Factors</li>
+                            <li>Within/Between Subject Designs</li>
+                            <li>Counterbalancing</li>
+                            <li>Experimental Checklist</li>
+                            <li>Keyboard Example</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card alt">
+                        <span class="icon">📊</span>
+                        <h4>Part 2: Data Collection</h4>
+                        <ul>
+                            <li>Types of Data</li>
+                            <li>Quantitative vs Qualitative</li>
+                            <li>Data Collection Planning</li>
+                            <li>Data Visualization</li>
+                            <li>Generalisability</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Remember from Last Week</h3>
+                    <p>We covered hypothesis, ethics, arguments (philosophically), inductive vs deductive inference, fallacies, and possibility vs probability. This week builds on that foundation!</p>
+                </div>
+            </div>
+
+            <!-- Variables Section -->
+            <div id="variables" class="section">
+                <h2>🎯 Variables and Factors</h2>
+
+                <div class="beginner-box">
+                    <h3>Why Learn These Terms?</h3>
+                    <p>These terms are the <strong>language of experimental design</strong>. You need to know them to design, describe, and critique experiments properly!</p>
+                </div>
+
+                <h3>The Key Variables You Must Know</h3>
+
+                <div class="variable-card">
+                    <span class="variable-tag iv">Independent Variable (IV)</span>
+                    <h4>What You Deliberately Change</h4>
+                    <p>The variable that the <strong>experimenter controls</strong> and deliberately manipulates.</p>
+                    <ul>
+                        <li>Has different <strong>"levels"</strong> (e.g., configuration 1, 2, 3)</li>
+                        <li>If multiple IVs, a <strong>"condition"</strong> is a combination of IV levels</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 15px;">
+                        <strong>Example:</strong> If "Input Device" is the IV, levels might be: Mouse, Trackpad, Eye-gaze
+                    </div>
+                </div>
+
+                <div class="variable-card dependent">
+                    <span class="variable-tag dv">Dependent Variable (DV)</span>
+                    <h4>The Data You Collect</h4>
+                    <p>A variable whose value(s) <strong>depend on the independent variable</strong>.</p>
+                    <p>Any observable, measurable behaviour can be a DV:</p>
+                    <ul>
+                        <li>Task execution time</li>
+                        <li>Typing speed</li>
+                        <li>Accuracy / Error rate</li>
+                        <li>Questionnaire responses</li>
+                        <li>Comfort / Emotional response</li>
+                    </ul>
+                </div>
+
+                <div class="variable-card control">
+                    <span class="variable-tag cv">Control Variable</span>
+                    <h4>Factors That Don't Change</h4>
+                    <p>Factors that do <strong>not change</strong> to ensure a "fair" comparison.</p>
+                    <ul>
+                        <li>Not under investigation (not IVs)</li>
+                        <li>Might influence participant behaviour</li>
+                        <li>Controlled by setting up study in controlled environment</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 15px;">
+                        <strong>Example:</strong> Same room, same computer, same chair for all participants
+                    </div>
+                </div>
+
+                <div class="variable-card random">
+                    <span class="variable-tag rv">Random Variable</span>
+                    <h4>Factors You Allow to Vary</h4>
+                    <p>Factors you <strong>knowingly allow to randomly change/vary</strong>.</p>
+                    <ul>
+                        <li>Instead of controlling everything, allow some to vary randomly</li>
+                        <li>Helps generalize results</li>
+                        <li>Controlling everything is probably impossible anyway!</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 15px;">
+                        <strong>Examples:</strong> Height, finger size, hand size, prior experience
+                    </div>
+                </div>
+
+                <div class="variable-card confounding">
+                    <span class="variable-tag cf">Confounding Factor</span>
+                    <h4>⚠️ The Dangerous Variable</h4>
+                    <p>Factors that <strong>change and impact results</strong> (often only identified AFTER data collection).</p>
+                    <ul>
+                        <li>Could have influenced the relationship between IV and DV</li>
+                        <li>Prevent cause-and-effect relationships from being inferred</li>
+                        <li>Need to be controlled for - this is a central skill!</li>
+                    </ul>
+                    <div class="warning-box" style="margin-top: 15px;">
+                        <strong>Example:</strong> Practice effects, prior experience with an interface, different measurement types for IV levels
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <h3>🎯 What We Want an Experiment to Show</h3>
+                    <p style="font-size: 1.2em; text-align: center; margin: 20px 0;">
+                        <strong>A change in the IV → A change in the DV</strong>
+                    </p>
+                    <p>We want to be sure that any change in the DV is a result of the change in the IV, <strong>NOT</strong> a result of change in other factors!</p>
+                </div>
+
+                <h3>Human Characteristics in User Studies</h3>
+
+                <div class="tip-box">
+                    <p>For user studies, differences in human characteristics are important factors:</p>
+                    <ul>
+                        <li>Age, gender, height, weight</li>
+                        <li>Left/right-handed</li>
+                        <li>Personality traits, political viewpoints</li>
+                        <li>Ethnicity, cultural background</li>
+                        <li>First language</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>How to handle:</strong></p>
+                    <ul>
+                        <li>Analyse data separately for different characteristics</li>
+                        <li>Specify as random variables with acknowledged limitations</li>
+                        <li>Adjust questions for participants (e.g., age-appropriate for children)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Within vs Between Section -->
+            <div id="designs" class="section">
+                <h2>⚖️ Within vs Between Subject Designs</h2>
+
+                <div class="beginner-box">
+                    <h3>Why Do We Need Different Designs?</h3>
+                    <p>We need to structurally control how we conduct experiments to ensure a <strong>fair comparison</strong>. This helps mitigate things like ordering effects and learning!</p>
+                </div>
+
+                <div class="design-comparison">
+                    <div class="design-box within">
+                        <h4>🔄 Within-Subjects Design</h4>
+                        <p style="margin-bottom: 20px;">Same participants experience <strong>ALL conditions</strong></p>
+                        <div class="participant-row">
+                            <div class="participant">P1</div>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-a">Condition A</span>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-b">Condition B</span>
+                        </div>
+                        <div class="participant-row">
+                            <div class="participant">P2</div>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-a">Condition A</span>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-b">Condition B</span>
+                        </div>
+                        <ul style="text-align: left; margin-top: 20px;">
+                            <li>✅ Fewer participants needed</li>
+                            <li>✅ Controls individual differences</li>
+                            <li>⚠️ Risk of order effects</li>
+                            <li>⚠️ Learning/fatigue effects</li>
+                        </ul>
+                    </div>
+                    <div class="design-box between">
+                        <h4>👥 Between-Subjects Design</h4>
+                        <p style="margin-bottom: 20px;">Different participants for <strong>EACH condition</strong></p>
+                        <div class="participant-row">
+                            <div class="participant">P1</div>
+                            <div class="participant">P2</div>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-a">Condition A</span>
+                        </div>
+                        <div class="participant-row">
+                            <div class="participant">P3</div>
+                            <div class="participant">P4</div>
+                            <span class="arrow">→</span>
+                            <span class="condition-badge condition-b">Condition B</span>
+                        </div>
+                        <ul style="text-align: left; margin-top: 20px;">
+                            <li>✅ No order effects</li>
+                            <li>✅ No learning effects</li>
+                            <li>⚠️ More participants needed</li>
+                            <li>⚠️ Individual differences affect results</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>⚠️ Order Effects in Within-Subjects</h3>
+
+                <div class="warning-box">
+                    <h4>The Problem</h4>
+                    <p>In within-subjects designs, the order participants experience conditions can affect results:</p>
+                    <ul>
+                        <li><strong>Learning effect:</strong> Performance improves with practice</li>
+                        <li><strong>Fatigue effect:</strong> Performance decreases due to tiredness</li>
+                        <li><strong>Carryover effect:</strong> One condition affects the next</li>
+                    </ul>
+                </div>
+
+                <h3>Solutions: Counterbalancing</h3>
+
+                <div class="tip-box">
+                    <h4>🎲 Randomisation</h4>
+                    <p>Randomly assign the order of conditions for each participant.</p>
+                    <p>Helps "average out" order effects across all participants.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>🔢 Latin Squares</h4>
+                    <p>A systematic way to counterbalance conditions so each condition appears in each position equally.</p>
+                    
+                    <table style="margin-top: 20px; max-width: 400px;">
+                        <tr>
+                            <th>Participant</th>
+                            <th>Order 1</th>
+                            <th>Order 2</th>
+                            <th>Order 3</th>
+                            <th>Order 4</th>
+                        </tr>
+                        <tr>
+                            <td>P1</td>
+                            <td style="background: #11998e; color: white;">A</td>
+                            <td style="background: #38ef7d;">B</td>
+                            <td style="background: #ffc107;">C</td>
+                            <td style="background: #17a2b8; color: white;">D</td>
+                        </tr>
+                        <tr>
+                            <td>P2</td>
+                            <td style="background: #38ef7d;">B</td>
+                            <td style="background: #ffc107;">C</td>
+                            <td style="background: #17a2b8; color: white;">D</td>
+                            <td style="background: #11998e; color: white;">A</td>
+                        </tr>
+                        <tr>
+                            <td>P3</td>
+                            <td style="background: #ffc107;">C</td>
+                            <td style="background: #17a2b8; color: white;">D</td>
+                            <td style="background: #11998e; color: white;">A</td>
+                            <td style="background: #38ef7d;">B</td>
+                        </tr>
+                        <tr>
+                            <td>P4</td>
+                            <td style="background: #17a2b8; color: white;">D</td>
+                            <td style="background: #11998e; color: white;">A</td>
+                            <td style="background: #38ef7d;">B</td>
+                            <td style="background: #ffc107;">C</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 15px;">Each condition (A, B, C, D) appears exactly once in each position!</p>
+                </div>
+            </div>
+
+            <!-- Checklist Section -->
+            <div id="checklist" class="section">
+                <h2>✅ Experimental Design Checklist</h2>
+
+                <div class="beginner-box">
+                    <h3>The Complete Checklist</h3>
+                    <p>When designing an experiment, you need to think about ALL of these aspects:</p>
+                </div>
+
+                <div class="key-concept">
+                    <h3>📋 The Experimental Factors Checklist</h3>
+                    <ul>
+                        <li>☐ <strong>Research Question / Hypothesis</strong></li>
+                        <li>☐ <strong>Criteria</strong> (what does "better" mean?)</li>
+                        <li>☐ <strong>Independent Variables</strong></li>
+                        <li>☐ <strong>Dependent Variables</strong></li>
+                        <li>☐ <strong>Conditions</strong></li>
+                        <li>☐ <strong>Tasks / Processes</strong></li>
+                        <li>☐ <strong>Experimental Objects</strong></li>
+                        <li>☐ <strong>Control Variables</strong></li>
+                        <li>☐ <strong>Random Variables</strong></li>
+                        <li>☐ <strong>Possible Confounding Factors</strong></li>
+                        <li>☐ <strong>Participants</strong></li>
+                        <li>☐ <strong>Within/Between Subject Design</strong></li>
+                    </ul>
+                </div>
+
+                <h3>🎹 Worked Example: Keyboard Comparison</h3>
+
+                <div class="example-box">
+                    <h4>Problem Statement</h4>
+                    <p><em>"Propose an experiment to determine which of two new keyboards is better"</em></p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Define "Better"</h4>
+                        <p>"Better" could mean many things:</p>
+                        <ul>
+                            <li>Latency of input</li>
+                            <li>Speed of typing</li>
+                            <li>Accuracy while typing</li>
+                            <li>User experience</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Choice:</strong> "User experience using the device"</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Research Questions</h4>
+                        <div class="key-concept" style="margin-top: 15px;">
+                            <p><strong>RQ1:</strong> Are there any significant differences in user comfort whilst using either keyboard over a long period of time (e.g., 1 week)?</p>
+                            <p style="margin-top: 10px;"><strong>RQ2:</strong> Are there any significant differences between the user workloads whilst using either keyboard?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Define Variables</h4>
+                        <table style="margin-top: 15px;">
+                            <tr>
+                                <th>Variable Type</th>
+                                <th>Definition</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Dependent Variables</strong></td>
+                                <td>
+                                    • Comfort (5-point Likert scale / qualitative feedback)<br>
+                                    • Workload (NASA TLX questionnaire)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Independent Variable</strong></td>
+                                <td>The two keyboards</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conditions</strong></td>
+                                <td>Keyboard 1, Keyboard 2</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Task</strong></td>
+                                <td>Recreation of office work (50 min): emails, Slack, web searching, report writing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Experimental Objects</strong></td>
+                                <td>Human participants</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Control Variables</strong></td>
+                                <td>Same task, same room, same monitor/chair for all participants</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Random Variables</strong></td>
+                                <td>Human characteristics (e.g., prior tech experience)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Confounding Factors</strong></td>
+                                <td>Prior typing experience (touch typists vs single-finger typers)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="important-box">
+                    <h4>📝 Don't Forget!</h4>
+                    <ul>
+                        <li>How you intend to <strong>analyse your data</strong></li>
+                        <li>The <strong>ethics</strong> of running the experiment (especially with human participants)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Data Types Section -->
+            <div id="datatypes" class="section">
+                <h2>📊 Types of Data</h2>
+
+                <div class="beginner-box">
+                    <h3>Why Data Types Matter</h3>
+                    <p>Different types of data require different analysis methods. Knowing what type of data you're collecting helps you choose the right statistical tests!</p>
+                </div>
+
+                <h3>Quantitative vs Qualitative</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <span class="icon">🔢</span>
+                        <h4>Quantitative Data</h4>
+                        <p>Data that expresses a <strong>numerical quantity</strong></p>
+                        <ul>
+                            <li>Compilation time</li>
+                            <li>Classification accuracy (%)</li>
+                            <li>Number of errors</li>
+                            <li>Reaction time</li>
+                            <li>Task success (Y/N)</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card alt">
+                        <span class="icon">📝</span>
+                        <h4>Qualitative Data</h4>
+                        <p>Data that is <strong>non-numerical</strong></p>
+                        <ul>
+                            <li>Interview transcripts</li>
+                            <li>Observation notes</li>
+                            <li>Ethnographic diaries</li>
+                            <li>Documents</li>
+                            <li>Videos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Continuous vs Discrete</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <span class="icon">〰️</span>
+                        <h4>Continuous Data</h4>
+                        <p>Values can be <strong>anywhere in a range</strong>, including fractional values</p>
+                        <div class="example-box" style="margin-top: 15px;">
+                            <strong>Examples:</strong> Time taken (2.5 seconds), height (175.3 cm), temperature
+                        </div>
+                    </div>
+                    <div class="comparison-card alt">
+                        <span class="icon">🔵</span>
+                        <h4>Discrete Data</h4>
+                        <p>Values are at <strong>specific points</strong> rather than anywhere along a range</p>
+                        <div class="example-box" style="margin-top: 15px;">
+                            <strong>Examples:</strong> Number of errors (12 or 13, never 12.5), number of clicks
+                        </div>
+                    </div>
+                </div>
+
+                <h3>The Data Hierarchy (NOIR)</h3>
+
+                <div class="data-type-grid">
+                    <div class="data-type-card nominal">
+                        <span class="icon">🏷️</span>
+                        <h4>Nominal</h4>
+                        <p><strong>Categories with no order</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Only members vs non-members - nothing more!</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Examples:</strong><br>
+                            Gender, Hair colour, Eye colour
+                        </div>
+                    </div>
+                    <div class="data-type-card ordinal">
+                        <span class="icon">📊</span>
+                        <h4>Ordinal</h4>
+                        <p><strong>Categories WITH natural order/rank</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Has ranking but intervals not equal</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Example:</strong><br>
+                            "Very unsatisfied → Unsatisfied → Neutral → Satisfied → Very satisfied"
+                        </div>
+                    </div>
+                    <div class="data-type-card interval">
+                        <span class="icon">🌡️</span>
+                        <h4>Interval</h4>
+                        <p><strong>Equal intervals, NO true zero</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Shows order AND difference between values</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Example:</strong><br>
+                            Temperature in Celsius (0°C is still a temperature, not "no heat")
+                        </div>
+                    </div>
+                    <div class="data-type-card ratio">
+                        <span class="icon">📏</span>
+                        <h4>Ratio</h4>
+                        <p><strong>Equal intervals WITH true zero</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Zero means absence of the thing</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Examples:</strong><br>
+                            Height, Weight, Time (0 = no time)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <h3>📊 Data Types Summary</h3>
+                    <table>
+                        <tr>
+                            <th>Type</th>
+                            <th>Categories</th>
+                            <th>Ordered</th>
+                            <th>Equal Intervals</th>
+                            <th>True Zero</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Nominal</strong></td>
+                            <td>✅</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ordinal</strong></td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Interval</strong></td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ratio</strong></td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>✅</td>
+                            <td>✅</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Data Collection Section -->
+            <div id="collection" class="section">
+                <h2>📥 Data Collection & Management</h2>
+
+                <div class="beginner-box">
+                    <h3>Plan Your Data Collection!</h3>
+                    <p>We don't want data collection to be random. We don't want to finish an experiment only to discover problems!</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Common Mistakes to Avoid</h3>
+                    <ul>
+                        <li>Collected the <strong>wrong data</strong></li>
+                        <li>Didn't collect data to <strong>sufficient accuracy</strong> (e.g., seconds vs milliseconds)</li>
+                        <li>Collected data format is <strong>unusable</strong></li>
+                        <li>Broke <strong>data collection protocols</strong> at your employment</li>
+                        <li>Didn't collect data <strong>ethically</strong></li>
+                        <li>Designed experiments that don't yield <strong>useful data</strong></li>
+                        <li>Too many IVs making it <strong>difficult to isolate effects</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Best Practices</h3>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Prepare Analysis Scripts Early</h4>
+                        <p>Before running an experiment, set up your data analysis scripts!</p>
+                        <ul>
+                            <li>Helps you know what data you need to capture</li>
+                            <li>Select data analysis methods in advance</li>
+                            <li><strong>Generate fake data</strong> to test your scripts</li>
+                        </ul>
+                        <div class="tip-box" style="margin-top: 15px;">
+                            <strong>Benefits:</strong> Saves time post-experiment and highlights shortcomings of your approach!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Run a Pilot Test</h4>
+                        <p>Test the experiment setup and data collection method:</p>
+                        <ul>
+                            <li><strong>With target participants:</strong> Early insight into actual data you might collect</li>
+                            <li><strong>With knowledgeable colleagues:</strong> Can critique experimental design, setup, and data collection</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Data Visualisation & Exploration</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <span class="icon">🔍</span>
+                        <h4>During Analysis</h4>
+                        <p>Visualise and explore your data as you analyse it</p>
+                        <ul>
+                            <li>Spot patterns and anomalies</li>
+                            <li>Check data quality</li>
+                            <li>Guide hypothesis formation</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card alt">
+                        <span class="icon">📊</span>
+                        <h4>When Presenting</h4>
+                        <p>Visualise data in reports and publications</p>
+                        <ul>
+                            <li>Communicate findings clearly</li>
+                            <li>Support your conclusions</li>
+                            <li>Make data accessible</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="important-box">
+                    <h3>📖 "A Hypothesis is a Liability" — Yanai & Lercher</h3>
+                    <p>Interesting research showing how focusing too much on a specific hypothesis can prevent discoveries!</p>
+                    
+                    <div class="comparison-grid" style="margin-top: 20px;">
+                        <div class="comparison-card">
+                            <h4>☀️ Day Science</h4>
+                            <p>Structured testing of predefined hypotheses</p>
+                            <p>We falsify hypotheses and observe which are left standing</p>
+                        </div>
+                        <div class="comparison-card alt">
+                            <h4>🌙 Night Science</h4>
+                            <p>Exploring unstructured realm of possible hypotheses</p>
+                            <p>We create hypotheses through exploration</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px;"><strong>Key insight:</strong> Both are complementary — the shortcomings of one are corrected by the other!</p>
+                </div>
+            </div>
+
+            <!-- Generalisability Section -->
+            <div id="generalisability" class="section">
+                <h2>🌐 Generalisability of Results</h2>
+
+                <div class="beginner-box">
+                    <h3>What is Generalisability?</h3>
+                    <p>The extent to which your results can be applied beyond your specific experiment. Can you claim your findings apply to other contexts?</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Don't Overclaim!</h3>
+                    <p><strong>Overclaiming</strong> is when you claim you prove/show more than your results actually do.</p>
+                    <p style="margin-top: 10px;">A large part of what you do as a researcher is convince peers your results are correct/valid. Overclaiming damages credibility!</p>
+                </div>
+
+                <div class="key-concept">
+                    <h3>The Control-Generalisability Trade-off</h3>
+                    <p style="font-size: 1.2em; text-align: center; margin: 20px 0;">
+                        <strong>More Control = Less Generalisability</strong>
+                    </p>
+                    <p>When we tightly control variables, our results only apply to those fixed control values!</p>
+                </div>
+
+                <h3>Example: Graph Layout Algorithms</h3>
+
+                <div class="example-box">
+                    <p>Imagine an experiment testing graph layout algorithms with:</p>
+                    <ul>
+                        <li>One specific graph</li>
+                        <li>One specific task (find shortest path)</li>
+                        <li>Fixed node pairs</li>
+                        <li>Fixed graph orientation</li>
+                    </ul>
+                    <div class="warning-box" style="margin-top: 15px;">
+                        <p><strong>Result:</strong> "Algorithm A is better than Algorithm B for finding shortest paths between nodes X and Y in this specific graph with this orientation..."</p>
+                        <p style="margin-top: 10px;">This isn't very generalisable — too many "if X and if Y and if Z..."!</p>
+                    </div>
+                </div>
+
+                <h3>How to Improve Generalisability</h3>
+
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Increase Variability in Control Variables</h4>
+                        <ul>
+                            <li>Use more than one graph</li>
+                            <li>Use more than one task</li>
+                            <li>Test across different contexts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Post-Experiment Analysis</h4>
+                        <p>Don't control, but analyse data with respect to other factors:</p>
+                        <ul>
+                            <li>If graph density might be confounding → analyse by density (high/medium/low)</li>
+                            <li>If gender might have an effect → analyse separately</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <h4>Randomisation</h4>
+                        <p>Mitigate possible confounding factors through randomisation:</p>
+                        <ul>
+                            <li>Randomly choose different node pairs for each task</li>
+                            <li>Choose random orientation for each graph</li>
+                            <li>"Average out" the effects of other potential causes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h3>💡 Three Ways to Ensure IV Caused DV Changes</h3>
+                    <ol>
+                        <li><strong>Control Variables:</strong> Explicitly set all other potential variables</li>
+                        <li><strong>Post-Experiment Analysis:</strong> Analyse data with respect to other factors</li>
+                        <li><strong>Randomisation:</strong> Average out effects through random assignment</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div id="quiz" class="section">
+                <h2>✏️ Test Your Knowledge</h2>
+
+                <div class="quiz-container">
+                    <h3 style="text-align: center; margin-bottom: 30px;">Answer these questions to check your understanding!</h3>
+
+                    <div class="quiz-question" id="q1">
+                        <h4>Question 1: Independent Variables</h4>
+                        <p>What is an Independent Variable (IV)?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q1', 'a')">A) The data you collect</div>
+                            <div class="quiz-option" onclick="checkAnswer('q1', 'b')">B) The variable you deliberately change/manipulate</div>
+                            <div class="quiz-option" onclick="checkAnswer('q1', 'c')">C) A factor that stays constant</div>
+                            <div class="quiz-option" onclick="checkAnswer('q1', 'd')">D) An unexpected variable that affects results</div>
+                        </div>
+                        <div class="feedback" id="feedback-q1"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q2">
+                        <h4>Question 2: Dependent Variables</h4>
+                        <p>Which of these is most likely a Dependent Variable?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q2', 'a')">A) The type of keyboard being tested</div>
+                            <div class="quiz-option" onclick="checkAnswer('q2', 'b')">B) Task completion time</div>
+                            <div class="quiz-option" onclick="checkAnswer('q2', 'c')">C) The room temperature</div>
+                            <div class="quiz-option" onclick="checkAnswer('q2', 'd')">D) The participant's height</div>
+                        </div>
+                        <div class="feedback" id="feedback-q2"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q3">
+                        <h4>Question 3: Confounding Factors</h4>
+                        <p>What is a confounding factor?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q3', 'a')">A) A factor you deliberately change</div>
+                            <div class="quiz-option" onclick="checkAnswer('q3', 'b')">B) A factor that changes and impacts results, preventing cause-effect inference</div>
+                            <div class="quiz-option" onclick="checkAnswer('q3', 'c')">C) The main outcome of the experiment</div>
+                            <div class="quiz-option" onclick="checkAnswer('q3', 'd')">D) A factor you keep constant</div>
+                        </div>
+                        <div class="feedback" id="feedback-q3"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q4">
+                        <h4>Question 4: Within-Subjects Design</h4>
+                        <p>In a within-subjects design:</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q4', 'a')">A) Different participants are used for each condition</div>
+                            <div class="quiz-option" onclick="checkAnswer('q4', 'b')">B) The same participants experience all conditions</div>
+                            <div class="quiz-option" onclick="checkAnswer('q4', 'c')">C) No conditions are used</div>
+                            <div class="quiz-option" onclick="checkAnswer('q4', 'd')">D) Only one participant is needed</div>
+                        </div>
+                        <div class="feedback" id="feedback-q4"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q5">
+                        <h4>Question 5: Latin Squares</h4>
+                        <p>What is the purpose of Latin squares in experimental design?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q5', 'a')">A) To increase the number of participants</div>
+                            <div class="quiz-option" onclick="checkAnswer('q5', 'b')">B) To counterbalance order effects systematically</div>
+                            <div class="quiz-option" onclick="checkAnswer('q5', 'c')">C) To reduce data collection time</div>
+                            <div class="quiz-option" onclick="checkAnswer('q5', 'd')">D) To analyse qualitative data</div>
+                        </div>
+                        <div class="feedback" id="feedback-q5"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q6">
+                        <h4>Question 6: Ordinal Data</h4>
+                        <p>Which is an example of ordinal data?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q6', 'a')">A) Hair colour</div>
+                            <div class="quiz-option" onclick="checkAnswer('q6', 'b')">B) Satisfaction rating (Very Unsatisfied → Very Satisfied)</div>
+                            <div class="quiz-option" onclick="checkAnswer('q6', 'c')">C) Height in centimetres</div>
+                            <div class="quiz-option" onclick="checkAnswer('q6', 'd')">D) Time in seconds</div>
+                        </div>
+                        <div class="feedback" id="feedback-q6"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q7">
+                        <h4>Question 7: Interval vs Ratio Data</h4>
+                        <p>What distinguishes ratio data from interval data?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q7', 'a')">A) Ratio data has categories</div>
+                            <div class="quiz-option" onclick="checkAnswer('q7', 'b')">B) Ratio data has a true zero point</div>
+                            <div class="quiz-option" onclick="checkAnswer('q7', 'c')">C) Ratio data is non-numerical</div>
+                            <div class="quiz-option" onclick="checkAnswer('q7', 'd')">D) Ratio data has unequal intervals</div>
+                        </div>
+                        <div class="feedback" id="feedback-q7"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q8">
+                        <h4>Question 8: Generalisability</h4>
+                        <p>What happens when you have MORE control in an experiment?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q8', 'a')">A) Results become more generalisable</div>
+                            <div class="quiz-option" onclick="checkAnswer('q8', 'b')">B) Results become less generalisable</div>
+                            <div class="quiz-option" onclick="checkAnswer('q8', 'c')">C) Generalisability is not affected</div>
+                            <div class="quiz-option" onclick="checkAnswer('q8', 'd')">D) The experiment becomes invalid</div>
+                        </div>
+                        <div class="feedback" id="feedback-q8"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q9">
+                        <h4>Question 9: Pilot Testing</h4>
+                        <p>Why should you run a pilot test before your main experiment?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q9', 'a')">A) To publish preliminary results</div>
+                            <div class="quiz-option" onclick="checkAnswer('q9', 'b')">B) To test setup and data collection methods</div>
+                            <div class="quiz-option" onclick="checkAnswer('q9', 'c')">C) It's not actually necessary</div>
+                            <div class="quiz-option" onclick="checkAnswer('q9', 'd')">D) To train the participants</div>
+                        </div>
+                        <div class="feedback" id="feedback-q9"></div>
+                    </div>
+
+                    <div class="quiz-question" id="q10">
+                        <h4>Question 10: Order Effects</h4>
+                        <p>Order effects are a concern in which type of design?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer('q10', 'a')">A) Between-subjects design</div>
+                            <div class="quiz-option" onclick="checkAnswer('q10', 'b')">B) Within-subjects design</div>
+                            <div class="quiz-option" onclick="checkAnswer('q10', 'c')">C) Both equally</div>
+                            <div class="quiz-option" onclick="checkAnswer('q10', 'd')">D) Neither</div>
+                        </div>
+                        <div class="feedback" id="feedback-q10"></div>
+                    </div>
+                </div>
+
+                <div class="progress-tracker">
+                    <h3>Quiz Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress" style="width: 0%">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flashcards Section -->
+            <div id="flashcards" class="section">
+                <h2>🎴 Study Flashcards</h2>
+                <p style="text-align: center; margin-bottom: 30px; font-size: 1.1em;"><em>Click on cards to flip them!</em></p>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What is an Independent Variable (IV)?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>The variable that the <strong>experimenter deliberately controls/changes</strong></p>
+                            <p style="margin-top: 15px;">Has different "levels" (e.g., mouse vs trackpad)</p>
+                            <p style="margin-top: 10px;">A "condition" is a combination of IV levels</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What is a Dependent Variable (DV)?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>The <strong>data you collect</strong> - values that depend on the IV</p>
+                            <p style="margin-top: 15px;"><strong>Examples:</strong></p>
+                            <p>Task time, accuracy, error rate, questionnaire responses</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What is a Confounding Factor?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>A factor that <strong>changes and impacts results</strong></p>
+                            <p style="margin-top: 15px;">Often identified AFTER data collection!</p>
+                            <p style="margin-top: 10px;">Prevents cause-effect inference - must be controlled for</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>Within-Subjects vs Between-Subjects?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p><strong>Within:</strong> Same participants do ALL conditions</p>
+                            <p>✅ Fewer participants | ⚠️ Order effects</p>
+                            <p style="margin-top: 15px;"><strong>Between:</strong> Different participants for EACH condition</p>
+                            <p>✅ No order effects | ⚠️ More participants needed</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What are Latin Squares used for?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p><strong>Counterbalancing</strong> in within-subjects designs</p>
+                            <p style="margin-top: 15px;">Ensures each condition appears in each position equally</p>
+                            <p style="margin-top: 10px;">Helps control for order effects systematically</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>NOIR: The 4 Data Types</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p><strong>N</strong>ominal: Categories, no order (hair colour)</p>
+                            <p><strong>O</strong>rdinal: Categories with order (satisfaction rating)</p>
+                            <p><strong>I</strong>nterval: Equal intervals, no true zero (temperature °C)</p>
+                            <p><strong>R</strong>atio: Equal intervals + true zero (height, time)</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What's the Control-Generalisability trade-off?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p><strong>More Control = Less Generalisability</strong></p>
+                            <p style="margin-top: 15px;">Tightly controlled experiments only apply to specific conditions</p>
+                            <p style="margin-top: 10px;">Balance control with randomisation for broader applicability</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>Continuous vs Discrete Data?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p><strong>Continuous:</strong> Any value in a range (2.5 seconds, 175.3 cm)</p>
+                            <p style="margin-top: 15px;"><strong>Discrete:</strong> Specific points only (12 errors, not 12.5)</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>Why prepare analysis scripts early?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Helps you know what data to capture</p>
+                            <p style="margin-top: 15px;">Generate fake data to test scripts</p>
+                            <p style="margin-top: 10px;"><strong>Benefits:</strong> Saves time and highlights problems before you collect real data!</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What are Control Variables?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Factors that <strong>do not change</strong> to ensure fair comparison</p>
+                            <p style="margin-top: 15px;">Not under investigation but might influence behaviour</p>
+                            <p style="margin-top: 10px;"><strong>Example:</strong> Same room, computer, chair for all participants</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>What is "Overclaiming"?</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>Claiming you prove/show <strong>more than your results actually do</strong></p>
+                            <p style="margin-top: 15px;">Damages credibility!</p>
+                            <p style="margin-top: 10px;">Always be careful about the scope of your claims</p>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+
+                <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <h3>The Experimental Design Checklist</h3>
+                        </div>
+                        <div class="flashcard-back">
+                            <ol style="text-align: left; font-size: 0.9em;">
+                                <li>Research Question / Hypothesis</li>
+                                <li>Independent Variables</li>
+                                <li>Dependent Variables</li>
+                                <li>Conditions</li>
+                                <li>Control Variables</li>
+                                <li>Random Variables</li>
+                                <li>Confounding Factors</li>
+                                <li>Within/Between Design</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <span class="flashcard-hint">Click to flip</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Research and Professional Skills | Week 4 Study Guide</strong></p>
+            <p>University of Glasgow - School of Computing Science</p>
+            <p style="margin-top: 15px;">COMPSCI5092 | Based on Lecture 4 Parts 1 & 2 by Ilyena Hirskyj-Douglas</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">🔬 Design experiments like a pro! 📊</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Quiz System
+        const answers = {
+            'q1': 'b',
+            'q2': 'b',
+            'q3': 'b',
+            'q4': 'b',
+            'q5': 'b',
+            'q6': 'b',
+            'q7': 'b',
+            'q8': 'b',
+            'q9': 'b',
+            'q10': 'b'
+        };
+
+        const explanations = {
+            'q1': 'The Independent Variable (IV) is what the experimenter deliberately controls and manipulates. It has different "levels" that you test.',
+            'q2': 'Task completion time is data you COLLECT - it depends on the conditions. The keyboard type would be the IV, room temperature a control variable, and height a random variable.',
+            'q3': 'Confounding factors are variables that change and impact results, often identified after data collection. They prevent us from inferring cause-and-effect relationships.',
+            'q4': 'In within-subjects design, the SAME participants experience ALL conditions. This reduces participant numbers but introduces order effects.',
+            'q5': 'Latin squares systematically counterbalance the order of conditions so each condition appears in each position equally, helping control for order effects.',
+            'q6': 'Satisfaction ratings have a natural ORDER (Very Unsatisfied < Unsatisfied < Neutral < Satisfied < Very Satisfied) but intervals aren\'t necessarily equal.',
+            'q7': 'Ratio data has a TRUE ZERO point (0 = absence of the quantity). Temperature in Celsius is interval (0°C isn\'t "no temperature"), but height/time are ratio.',
+            'q8': 'More control means LESS generalisability. Tightly controlled experiments only apply to those specific fixed conditions.',
+            'q9': 'Pilot tests help test your experimental setup and data collection methods BEFORE the main study, catching problems early.',
+            'q10': 'Order effects (learning, fatigue, carryover) are a concern in WITHIN-subjects designs because the same participants do all conditions in sequence.'
+        };
+
+        let answeredQuestions = new Set();
+        let correctAnswers = 0;
+        const totalQuestions = 10;
+
+        function checkAnswer(questionId, selectedAnswer) {
+            if (answeredQuestions.has(questionId)) return;
+
+            const correctAnswer = answers[questionId];
+            const options = document.querySelectorAll(`#${questionId} .quiz-option`);
+            const feedback = document.getElementById(`feedback-${questionId}`);
+
+            answeredQuestions.add(questionId);
+
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+
+            options.forEach((opt, index) => {
+                const optionLetter = String.fromCharCode(97 + index);
+                if (optionLetter === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selectedAnswer !== correctAnswer) {
+                event.target.classList.add('incorrect');
+            } else {
+                correctAnswers++;
+            }
+
+            if (selectedAnswer === correctAnswer) {
+                feedback.innerHTML = `<div style="background: #d4edda; padding: 20px; border-radius: 10px; color: #155724; border-left: 5px solid #28a745;">
+                    <strong>✓ Correct!</strong><br><br>${explanations[questionId]}
+                </div>`;
+            } else {
+                feedback.innerHTML = `<div style="background: #f8d7da; padding: 20px; border-radius: 10px; color: #721c24; border-left: 5px solid #dc3545;">
+                    <strong>✗ Incorrect.</strong><br><br>${explanations[questionId]}
+                </div>`;
+            }
+            feedback.classList.add('show');
+
+            updateQuizProgress();
+        }
+
+        function updateQuizProgress() {
+            const percentage = (correctAnswers / totalQuestions) * 100;
+            const progressFill = document.getElementById('quiz-progress');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = Math.round(percentage) + '%';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Week 4 Experimental Design Tutorial Loaded Successfully! 🔬');
+        });
+    </script>
+</body>
+</html>

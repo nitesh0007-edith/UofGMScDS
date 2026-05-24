@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: Residual Networks | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 11</span></div>
+            <h1>Residual <span class="gradient-text">Networks</span></h1>
+            <p class="chapter-description">The breakthrough that enabled training networks with hundreds of layers—skip connections and the elegant residual learning framework.</p>
+            <div class="chapter-nav">
+                <a href="chapter10.html" class="nav-btn">← Previous</a>
+                <a href="chapter12.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="degradation" class="content-section">
+                <h2>The Degradation Problem</h2>
+                <p>Surprisingly, deeper networks can perform <em>worse</em> than shallow ones—not from overfitting, but from optimization difficulty.</p>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ The Paradox</div>
+                    <p>A 56-layer network has higher training error than a 20-layer network. If deeper could at least copy the shallow solution, this shouldn't happen. Something makes optimization hard.</p>
+                </div>
+            </section>
+            
+            <section id="skip-connections" class="content-section">
+                <h2>Skip Connections</h2>
+                <p>The revolutionary idea: add the input directly to the output of a block.</p>
+                
+                <div class="math-block"><div class="equation">y = F(x) + x</div></div>
+                
+                <p>Instead of learning y = H(x), learn the <strong>residual</strong> F(x) = H(x) - x.</p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Why It Works</div>
+                    <p>
+                        <strong>Easy identity:</strong> If F(x) = 0 is optimal, just push weights to zero<br>
+                        <strong>Gradient flow:</strong> Skip connection provides direct path for gradients<br>
+                        <strong>Ensemble effect:</strong> Network behaves like ensemble of shallower networks
+                    </p>
+                </div>
+            </section>
+            
+            <section id="resnet-block" class="content-section">
+                <h2>ResNet Building Block</h2>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Basic Block</div>
+                    <p>
+                        x → Conv → BN → ReLU → Conv → BN → (+x) → ReLU<br><br>
+                        The input x is added before the final ReLU.
+                    </p>
+                </div>
+                
+                <h3>Bottleneck Block</h3>
+                <p>For deeper networks (ResNet-50+), use 1×1 convolutions to reduce computation:</p>
+                <p>x → 1×1 Conv (reduce) → 3×3 Conv → 1×1 Conv (expand) → (+x)</p>
+            </section>
+            
+            <section id="architectures" class="content-section">
+                <h2>ResNet Variants</h2>
+                <ul>
+                    <li><strong>ResNet-18/34:</strong> Basic blocks, good for smaller datasets</li>
+                    <li><strong>ResNet-50/101/152:</strong> Bottleneck blocks, ImageNet standard</li>
+                    <li><strong>ResNeXt:</strong> Grouped convolutions for efficiency</li>
+                    <li><strong>Wide ResNet:</strong> Fewer layers, more channels</li>
+                </ul>
+            </section>
+            
+            <section id="impact" class="content-section">
+                <h2>Impact and Legacy</h2>
+                <p>ResNets fundamentally changed deep learning:</p>
+                <ul>
+                    <li>Enabled training 100+ layer networks reliably</li>
+                    <li>Won ImageNet 2015 with 3.57% error (human ~5%)</li>
+                    <li>Skip connections now standard in most architectures</li>
+                    <li>Inspired Transformers, U-Nets, and more</li>
+                </ul>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Deep networks suffer degradation, not just overfitting</li>
+                        <li>Skip connections: y = F(x) + x (learn residuals)</li>
+                        <li>Enables gradient flow through hundreds of layers</li>
+                        <li>ResNet-50 is a common baseline for vision tasks</li>
+                        <li>Skip connections now ubiquitous in modern architectures</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter10.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Convolutional Networks</span></a>
+                <a href="chapter12.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Transformers →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#degradation">Degradation Problem</a></li>
+                    <li><a href="#skip-connections">Skip Connections</a></li>
+                    <li><a href="#resnet-block">ResNet Block</a></li>
+                    <li><a href="#architectures">Variants</a></li>
+                    <li><a href="#impact">Impact</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Latency Experiment - Complete Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 15px 0 10px 0;
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .answer-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 6px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .problem-box {
+            background: #f8d7da;
+            border-left: 6px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .solution-box {
+            background: #d1ecf1;
+            border-left: 6px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .marks-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .critique-item {
+            background: white;
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .critique-header {
+            color: #dc3545;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .impact {
+            background: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .fix {
+            background: #d4edda;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .comparison-card.bad {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid #dc3545;
+        }
+
+        .comparison-card.good {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Keyboard Latency Experiment Analysis</h1>
+            <p>Complete Critique with Variables, Design Flaws, and Solutions</p>
+        </header>
+
+        <div class="content">
+            <!-- EXPERIMENTAL SCENARIO -->
+            <div class="question-box">
+                <h3>📋 Experimental Scenario</h3>
+                <p><strong>Research Goal:</strong> Evaluate the impact of latency on keyboard usability</p>
+
+                <h4>Conditions:</h4>
+                <ul>
+                    <li><strong>Condition 1:</strong> 5ms added latency</li>
+                    <li><strong>Condition 2:</strong> 25ms added latency</li>
+                    <li><strong>Condition 3:</strong> 50ms added latency</li>
+                </ul>
+
+                <h4>Procedure:</h4>
+                <ul>
+                    <li>Participants experience all three conditions <strong>sequentially</strong></li>
+                    <li>Order: <strong>ALL participants</strong> do Condition 1 → 2 → 3</li>
+                    <li>Same sentences typed in same order for each condition</li>
+                    <li>Measure: Typing speed and error count</li>
+                </ul>
+
+                <h4>Planned Analysis:</h4>
+                <ul>
+                    <li>Calculate <strong>total number of errors</strong> for each condition</li>
+                    <li>Conclude: Condition with lowest errors = best performance</li>
+                </ul>
+            </div>
+
+            <!-- PART A: VARIABLES -->
+            <h2>(a) Independent and Dependent Variables <span class="marks-badge">[3 marks]</span></h2>
+
+            <div class="answer-section">
+                <h3>✓ Model Answer</h3>
+
+                <h4>Independent Variable (IV) [1 mark]:</h4>
+                <div class="info-box">
+                    <p><strong>Keyboard latency</strong> (amount of added delay)</p>
+                    <p><strong>Levels:</strong> 3 levels</p>
+                    <ul>
+                        <li>5 milliseconds</li>
+                        <li>25 milliseconds</li>
+                        <li>50 milliseconds</li>
+                    </ul>
+                </div>
+
+                <h4>Dependent Variables (DVs) [2 marks - 1 mark each]:</h4>
+                <div class="info-box">
+                    <p><strong>1. Typing speed</strong> (measured in words per minute or characters per minute)</p>
+                    <p><strong>2. Number of errors</strong> (count of typing mistakes per condition)</p>
+                </div>
+
+                <h4>💡 Explanation:</h4>
+                <ul>
+                    <li>The <strong>IV</strong> is what the researcher deliberately manipulates (the latency level)</li>
+                    <li>The <strong>DVs</strong> are what the researcher measures to see the effect (speed and errors)</li>
+                    <li>The hypothesis is that latency (IV) will affect typing performance (DVs)</li>
+                </ul>
+            </div>
+
+            <!-- PART B: CRITIQUE -->
+            <h2>(b) Critique and Improvements <span class="marks-badge">[15 marks]</span></h2>
+
+            <div class="answer-section">
+                <h3>⚠️ Major Problems Identified</h3>
+                <p>This experimental design has <strong>SEVEN critical flaws</strong> that severely compromise the validity of the results:</p>
+            </div>
+
+            <!-- PROBLEM 1: NO COUNTERBALANCING -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 1: No Counterbalancing (CRITICAL FLAW)</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>All participants experience conditions in the <strong>same fixed order</strong> (1→2→3). This creates severe order effects and confounding.</p>
+
+                <div class="impact">
+                    <h4>📉 Impact on Validity:</h4>
+                    <ul>
+                        <li><strong>Practice Effects:</strong> Participants improve with practice as they progress through conditions. Condition 3 appears better simply because participants have practiced more, NOT because 50ms latency is actually better.</li>
+                        <li><strong>Fatigue Effects:</strong> Participants get tired. Condition 3 might appear worse due to fatigue, not latency.</li>
+                        <li><strong>Learning Effects:</strong> Participants learn the sentences. Later conditions benefit from memory.</li>
+                        <li><strong>Confounding:</strong> Cannot separate latency effects from order effects - results are completely invalid!</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Implement Counterbalancing</h4>
+                    <p><strong>Method:</strong> Use a <strong>Latin Square design</strong> to balance order effects across participants.</p>
+
+                    <table>
+                        <tr>
+                            <th>Participant Group</th>
+                            <th>First</th>
+                            <th>Second</th>
+                            <th>Third</th>
+                        </tr>
+                        <tr>
+                            <td>Group 1 (n=10)</td>
+                            <td>Condition 1 (5ms)</td>
+                            <td>Condition 2 (25ms)</td>
+                            <td>Condition 3 (50ms)</td>
+                        </tr>
+                        <tr>
+                            <td>Group 2 (n=10)</td>
+                            <td>Condition 2 (25ms)</td>
+                            <td>Condition 3 (50ms)</td>
+                            <td>Condition 1 (5ms)</td>
+                        </tr>
+                        <tr>
+                            <td>Group 3 (n=10)</td>
+                            <td>Condition 3 (50ms)</td>
+                            <td>Condition 1 (5ms)</td>
+                            <td>Condition 2 (25ms)</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Benefit:</strong> Order effects are distributed equally across all conditions. Practice and fatigue effects average out.</p>
+                </div>
+            </div>
+
+            <!-- PROBLEM 2: SAME SENTENCES -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 2: Same Sentences in Same Order</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>Participants type the <strong>exact same sentences</strong> for each condition, creating massive learning effects.</p>
+
+                <div class="impact">
+                    <h4>📉 Impact on Validity:</h4>
+                    <ul>
+                        <li><strong>Memorization:</strong> By Condition 2 and 3, participants have memorized the sentences</li>
+                        <li><strong>Muscle Memory:</strong> Finger movements become automatic</li>
+                        <li><strong>Unfair Comparison:</strong> Later conditions benefit from familiarity with the content</li>
+                        <li><strong>Reduced Sensitivity:</strong> Can't detect true latency effects because memorization masks the impact</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Use Different Equivalent Sentences</h4>
+                    <ul>
+                        <li><strong>Create 3 sets of sentences</strong> that are equivalent in:
+                            <ul>
+                                <li>Length (same word count)</li>
+                                <li>Complexity (similar vocabulary difficulty)</li>
+                                <li>Character distribution (similar letter frequencies)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Randomly assign</strong> sentence sets to conditions for each participant</li>
+                        <li><strong>Example:</strong>
+                            <ul>
+                                <li>Set A: "The quick brown fox jumps over the lazy dog near the old barn"</li>
+                                <li>Set B: "A small grey cat walks under the wide gate by the new house"</li>
+                                <li>Set C: "The tall blue bird flies above the soft cloud through the warm air"</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Benefit:</strong> Eliminates memorization effects while maintaining comparable difficulty.</p>
+                </div>
+            </div>
+
+            <!-- PROBLEM 3: NO BASELINE -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 3: No Control/Baseline Condition</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>No <strong>0ms latency condition</strong> (normal keyboard with no added delay).</p>
+
+                <div class="impact">
+                    <h4>📉 Impact on Validity:</h4>
+                    <ul>
+                        <li><strong>No Reference Point:</strong> Cannot determine if 5ms is already affecting performance or if it's acceptable</li>
+                        <li><strong>Limited Interpretation:</strong> Can only say which of the bad conditions is "least bad," not whether any are actually usable</li>
+                        <li><strong>Incomplete Story:</strong> Don't know baseline performance to compare against</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Add Baseline Condition</h4>
+                    <ul>
+                        <li><strong>Condition 0:</strong> Normal keyboard with 0ms added latency (baseline)</li>
+                        <li><strong>Condition 1:</strong> 5ms added latency</li>
+                        <li><strong>Condition 2:</strong> 25ms added latency</li>
+                        <li><strong>Condition 3:</strong> 50ms added latency</li>
+                    </ul>
+                    <p><strong>Benefit:</strong> Can determine:</p>
+                    <ul>
+                        <li>Whether 5ms is already degrading performance</li>
+                        <li>At what latency level performance starts to degrade</li>
+                        <li>Magnitude of degradation compared to optimal performance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PROBLEM 4: FLAWED ANALYSIS -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 4: Fundamentally Flawed Analysis Methodology</div>
+
+                <h4>🔴 Issue 4a: Using Total Errors Instead of Average</h4>
+                <p>Planning to use <strong>"total number of errors"</strong> across all participants.</p>
+
+                <div class="impact">
+                    <h4>📉 Why This is Wrong:</h4>
+                    <ul>
+                        <li><strong>Sample Size Sensitivity:</strong> If one condition has more/fewer participants (e.g., dropouts), totals are meaningless</li>
+                        <li><strong>No Individual Differences:</strong> Doesn't account for within-subject variance</li>
+                        <li><strong>Misleading:</strong> One very error-prone participant could skew entire condition's total</li>
+                    </ul>
+                </div>
+
+                <h4>🔴 Issue 4b: Ignoring Typing Speed</h4>
+                <p>Only considering errors, completely <strong>ignoring typing speed</strong> DV.</p>
+
+                <div class="impact">
+                    <h4>📉 Why This is Wrong:</h4>
+                    <ul>
+                        <li><strong>Incomplete Picture:</strong> Participants might type slower to avoid errors - high latency could cause both slow typing AND errors</li>
+                        <li><strong>Speed-Accuracy Tradeoff:</strong> Cannot understand if participants sacrificed speed for accuracy</li>
+                        <li><strong>Missing Critical Data:</strong> Speed is often MORE sensitive to latency than errors</li>
+                    </ul>
+                </div>
+
+                <h4>🔴 Issue 4c: No Statistical Testing</h4>
+                <p>Planning to just <strong>"conclude lowest = best"</strong> without statistical tests.</p>
+
+                <div class="impact">
+                    <h4>📉 Why This is Wrong:</h4>
+                    <ul>
+                        <li><strong>No Significance Testing:</strong> Differences could be due to random chance</li>
+                        <li><strong>No Confidence Intervals:</strong> Don't know reliability of results</li>
+                        <li><strong>Unreplicable:</strong> Cannot determine if findings are real or noise</li>
+                        <li><strong>Unpublishable:</strong> Any journal would reject this analysis</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Proper Statistical Analysis</h4>
+
+                    <p><strong>1. Use Appropriate Descriptive Statistics:</strong></p>
+                    <ul>
+                        <li>Calculate <strong>mean (average) errors per participant</strong> for each condition</li>
+                        <li>Calculate <strong>mean typing speed</strong> for each condition</li>
+                        <li>Calculate <strong>standard deviations</strong> to show variability</li>
+                        <li>Create graphs showing means with error bars (95% confidence intervals)</li>
+                    </ul>
+
+                    <p><strong>2. Use Appropriate Inferential Statistics:</strong></p>
+                    <div class="code-block">
+                        <strong>Statistical Test: Repeated-Measures ANOVA (or Friedman if non-normal)</strong>
+                        <br><br>
+                        <strong>Why:</strong> Within-subjects design with 3+ conditions
+                        <br><br>
+                        <strong>Hypotheses:</strong><br>
+                        • H₀: No difference in errors across latency conditions<br>
+                        • H₁: At least one latency condition differs in error rate<br>
+                        <br>
+                        <strong>Significance Level:</strong> α = 0.05<br>
+                        <br>
+                        <strong>Post-hoc Tests:</strong> If ANOVA significant, use Bonferroni-corrected pairwise comparisons to determine which conditions differ
+                    </div>
+
+                    <p><strong>3. Analyze BOTH Dependent Variables:</strong></p>
+                    <ul>
+                        <li>Run separate repeated-measures ANOVA for <strong>errors</strong></li>
+                        <li>Run separate repeated-measures ANOVA for <strong>typing speed</strong></li>
+                        <li>Consider creating a <strong>composite measure</strong> (e.g., errors per word typed) to capture speed-accuracy tradeoff</li>
+                    </ul>
+
+                    <p><strong>4. Report Effect Sizes:</strong></p>
+                    <ul>
+                        <li>Calculate <strong>partial η² (eta-squared)</strong> to show practical significance</li>
+                        <li>Small effect: η² = 0.01</li>
+                        <li>Medium effect: η² = 0.06</li>
+                        <li>Large effect: η² = 0.14</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PROBLEM 5: DESIGN TYPE ISSUES -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 5: Within-Subjects Design May Not Be Optimal</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>While within-subjects design has benefits, in this context it creates problems.</p>
+
+                <div class="impact">
+                    <h4>📉 Concerns:</h4>
+                    <ul>
+                        <li><strong>Carryover Effects:</strong> Experience with one latency level affects perception of next</li>
+                        <li><strong>Contrast Effects:</strong> 50ms might seem worse after experiencing 5ms</li>
+                        <li><strong>Fatigue:</strong> Typing multiple conditions is tiring</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Alternative: Consider Between-Subjects Design</h4>
+                    <p><strong>Design:</strong> Different participants for each condition</p>
+
+                    <table>
+                        <tr>
+                            <th>Group</th>
+                            <th>Condition</th>
+                            <th>Sample Size</th>
+                        </tr>
+                        <tr>
+                            <td>Group 1</td>
+                            <td>5ms latency</td>
+                            <td>30 participants</td>
+                        </tr>
+                        <tr>
+                            <td>Group 2</td>
+                            <td>25ms latency</td>
+                            <td>30 participants</td>
+                        </tr>
+                        <tr>
+                            <td>Group 3</td>
+                            <td>50ms latency</td>
+                            <td>30 participants</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Advantages:</strong></p>
+                    <ul>
+                        <li>No order effects</li>
+                        <li>No learning/practice effects</li>
+                        <li>No fatigue issues</li>
+                        <li>Each participant fresh for their condition</li>
+                    </ul>
+
+                    <p><strong>Disadvantages:</strong></p>
+                    <ul>
+                        <li>Requires more participants (~90 vs ~30)</li>
+                        <li>Individual differences between groups could affect results</li>
+                        <li>Need random assignment to balance participant characteristics</li>
+                    </ul>
+
+                    <p><strong>Analysis:</strong> Use one-way ANOVA (or Kruskal-Wallis) for between-subjects comparison</p>
+                </div>
+            </div>
+
+            <!-- PROBLEM 6: MISSING CONTROL VARIABLES -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 6: No Mention of Control Variables</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>No specification of what will be kept constant across conditions.</p>
+
+                <div class="impact">
+                    <h4>📉 Potential Confounds:</h4>
+                    <ul>
+                        <li>Different keyboards used</li>
+                        <li>Different times of day</li>
+                        <li>Different environments (noise, lighting)</li>
+                        <li>Different keyboards layouts/types</li>
+                        <li>Different software implementations</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Specify Control Variables</h4>
+                    <p><strong>Must Keep Constant:</strong></p>
+                    <ul>
+                        <li><strong>Hardware:</strong> Same physical keyboard for all conditions (only latency changes via software)</li>
+                        <li><strong>Software:</strong> Same text entry application</li>
+                        <li><strong>Environment:</strong> Same quiet, well-lit testing room</li>
+                        <li><strong>Time Limits:</strong> Same duration for each typing task</li>
+                        <li><strong>Instructions:</strong> Standardized instructions for all participants</li>
+                        <li><strong>Seating:</strong> Same desk height, chair, screen distance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PROBLEM 7: NO SAMPLE SIZE -->
+            <div class="critique-item">
+                <div class="critique-header">❌ Problem 7: No Sample Size Specified</div>
+
+                <h4>🔴 Issue:</h4>
+                <p>No mention of how many participants will be recruited.</p>
+
+                <div class="impact">
+                    <h4>📉 Concerns:</h4>
+                    <ul>
+                        <li><strong>Underpowered:</strong> Too few participants = cannot detect real effects</li>
+                        <li><strong>Unreliable:</strong> Results may not replicate</li>
+                        <li><strong>Waste of Resources:</strong> If too small, study is pointless</li>
+                    </ul>
+                </div>
+
+                <div class="fix">
+                    <h4>✅ Solution: Conduct Power Analysis</h4>
+                    <p><strong>Recommended Approach:</strong></p>
+                    <ul>
+                        <li>Conduct <strong>a priori power analysis</strong> to determine required sample size</li>
+                        <li><strong>Assumptions:</strong>
+                            <ul>
+                                <li>Power (1-β) = 0.80 (80% chance of detecting real effect)</li>
+                                <li>Significance level (α) = 0.05</li>
+                                <li>Expected effect size = medium (f = 0.25) based on literature</li>
+                            </ul>
+                        </li>
+                        <li><strong>Result:</strong> Approximately <strong>30 participants</strong> needed for within-subjects design</li>
+                        <li><strong>With dropout buffer:</strong> Recruit <strong>35 participants</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- IMPROVED DESIGN SUMMARY -->
+            <div class="solution-box">
+                <h3>✅ COMPLETE IMPROVED EXPERIMENTAL DESIGN</h3>
+
+                <h4>Research Design:</h4>
+                <ul>
+                    <li><strong>Type:</strong> Within-subjects repeated-measures design with counterbalancing</li>
+                    <li><strong>Participants:</strong> 30 participants (recruit 35 for dropout)</li>
+                    <li><strong>Selection:</strong> University students, aged 18-30, regular computer users, no motor impairments</li>
+                </ul>
+
+                <h4>Conditions (4 total):</h4>
+                <table>
+                    <tr>
+                        <th>Condition</th>
+                        <th>Latency</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td>0 (Baseline)</td>
+                        <td>0ms</td>
+                        <td>Control - normal performance</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>5ms</td>
+                        <td>Low latency</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>25ms</td>
+                        <td>Medium latency</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>50ms</td>
+                        <td>High latency</td>
+                    </tr>
+                </table>
+
+                <h4>Counterbalancing:</h4>
+                <ul>
+                    <li>Use Latin Square design to vary condition order</li>
+                    <li>6 participants per ordering (5 possible orderings for 4 conditions)</li>
+                </ul>
+
+                <h4>Materials:</h4>
+                <ul>
+                    <li><strong>Sentences:</strong> 4 equivalent sets of 10 sentences each (same length, complexity)</li>
+                    <li><strong>Keyboard:</strong> Standard QWERTY keyboard with software-induced latency</li>
+                    <li><strong>Software:</strong> Custom text entry application with latency control and automatic logging</li>
+                </ul>
+
+                <h4>Procedure:</h4>
+                <ol>
+                    <li><strong>Consent & Briefing:</strong> Obtain informed consent, explain study (5 min)</li>
+                    <li><strong>Practice Session:</strong> 2 minutes to familiarize with typing task (0ms latency) (5 min)</li>
+                    <li><strong>For Each Condition (order counterbalanced):</strong>
+                        <ul>
+                            <li>Set latency level (participant unaware of specific value)</li>
+                            <li>Present sentence set (randomly assigned)</li>
+                            <li>Participant types 10 sentences</li>
+                            <li>5-minute break between conditions</li>
+                        </ul>
+                    </li>
+                    <li><strong>Post-Task Questionnaire:</strong> Subjective ratings of difficulty, frustration, perceived delay (5 min)</li>
+                    <li><strong>Debriefing:</strong> Explain latency manipulation (5 min)</li>
+                </ol>
+
+                <h4>Dependent Variables:</h4>
+                <ul>
+                    <li><strong>Typing Speed:</strong> Words per minute (WPM)</li>
+                    <li><strong>Error Rate:</strong> Number of errors per sentence</li>
+                    <li><strong>Error Types:</strong> Categorize as insertion, deletion, substitution, transposition</li>
+                    <li><strong>Subjective Measures:</strong> Perceived difficulty (1-7 Likert scale)</li>
+                </ul>
+
+                <h4>Control Variables:</h4>
+                <ul>
+                    <li>Same keyboard hardware</li>
+                    <li>Same quiet testing room</li>
+                    <li>Same lighting conditions</li>
+                    <li>Same text entry software</li>
+                    <li>Same instructions</li>
+                    <li>Same time limits per condition</li>
+                </ul>
+
+                <h4>Analysis Plan:</h4>
+                <ol>
+                    <li><strong>Descriptive Statistics:</strong> Calculate means and SDs for each DV per condition</li>
+                    <li><strong>Check Assumptions:</strong> Test normality (Shapiro-Wilk) and sphericity (Mauchly's)</li>
+                    <li><strong>Inferential Tests:</strong>
+                        <ul>
+                            <li>Repeated-measures ANOVA for typing speed</li>
+                            <li>Repeated-measures ANOVA for error rate</li>
+                            <li>If sphericity violated, use Greenhouse-Geisser correction</li>
+                        </ul>
+                    </li>
+                    <li><strong>Post-hoc:</strong> Bonferroni-corrected pairwise comparisons if main effect significant</li>
+                    <li><strong>Effect Sizes:</strong> Calculate partial η² for practical significance</li>
+                    <li><strong>Visualization:</strong> Line graphs showing performance across latency levels with error bars</li>
+                </ol>
+
+                <h4>Hypotheses:</h4>
+                <ul>
+                    <li><strong>H₀:</strong> Keyboard latency has no effect on typing speed or error rate</li>
+                    <li><strong>H₁:</strong> Increased keyboard latency will decrease typing speed and/or increase error rate</li>
+                    <li><strong>Prediction:</strong> Performance will degrade progressively as latency increases from 0→5→25→50ms</li>
+                </ul>
+            </div>
+
+            <!-- PART C: INDUCTIVE VS DEDUCTIVE -->
+            <h2>(c) Inductive vs Deductive Inference <span class="marks-badge">[4 marks likely]</span></h2>
+
+            <div class="answer-section">
+                <h3>📚 Background: Understanding Inference Types</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card good">
+                        <h4>Deductive Inference</h4>
+                        <p><strong>Direction:</strong> General → Specific</p>
+                        <p><strong>Logic:</strong> If premises are true, conclusion MUST be true</p>
+                        <p><strong>Example:</strong></p>
+                        <ul>
+                            <li>All keyboards with latency reduce typing speed (general rule)</li>
+                            <li>This keyboard has latency (specific case)</li>
+                            <li>Therefore, this keyboard reduces typing speed (certain conclusion)</li>
+                        </ul>
+                        <p><strong>Certainty:</strong> Absolute (if premises true)</p>
+                    </div>
+
+                    <div class="comparison-card bad">
+                        <h4>Inductive Inference</h4>
+                        <p><strong>Direction:</strong> Specific → General</p>
+                        <p><strong>Logic:</strong> Conclusion is probable based on evidence</p>
+                        <p><strong>Example:</strong></p>
+                        <ul>
+                            <li>Observed 30 participants type slower with latency (specific observations)</li>
+                            <li>Therefore, latency probably reduces typing speed for all people (general conclusion)</li>
+                        </ul>
+                        <p><strong>Certainty:</strong> Probabilistic (based on sample)</p>
+                    </div>
+                </div>
+
+                <h3>✓ Two Reasons Why Inductive Inference is Used</h3>
+
+                <div class="info-box">
+                    <h4>Reason 1: Cannot Test Entire Population [2 marks]</h4>
+                    <p><strong>Explanation:</strong></p>
+                    <ul>
+                        <li>We cannot test <strong>every human being</strong> who uses keyboards - this would be impossible (billions of people, impractical, too expensive, takes too long)</li>
+                        <li>Instead, we test a <strong>sample</strong> (e.g., 30 university students) and use <strong>inductive inference</strong> to generalize findings to the broader population</li>
+                        <li>We inductively infer: "If latency affects typing in our sample, it probably affects typing in the general population"</li>
+                        <li>This is fundamentally <strong>probabilistic</strong> - we can never be 100% certain our sample perfectly represents everyone</li>
+                    </ul>
+
+                    <p><strong>Why not deductive?</strong></p>
+                    <ul>
+                        <li>Deductive inference requires testing ALL cases or having a universal law</li>
+                        <li>We don't have a universal law stating "latency ALWAYS affects ALL people equally"</li>
+                        <li>We're building knowledge from observations (bottom-up), not applying existing laws (top-down)</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>Reason 2: Natural Variability in Human Performance [2 marks]</h4>
+                    <p><strong>Explanation:</strong></p>
+                    <ul>
+                        <li>Human behavior has <strong>inherent variability</strong> - people differ in typing ability, experience, adaptation, motor control, etc.</li>
+                        <li>Even the <strong>same person</strong> shows variability across trials (fatigue, motivation, attention)</li>
+                        <li>Because of this <strong>uncertainty</strong>, we cannot make absolute deductive statements like "Person X typing on 50ms latency keyboard WILL make exactly Y errors"</li>
+                        <li>We must use <strong>statistical inference</strong> (a form of inductive reasoning) to determine:
+                            <ul>
+                                <li>Whether observed differences are real or due to random variation</li>
+                                <li>What the likely range of effects is (confidence intervals)</li>
+                                <li>How confident we can be in our conclusions (p-values)</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <p><strong>Why not deductive?</strong></p>
+                    <ul>
+                        <li>Deductive inference assumes certainty and deterministic relationships</li>
+                        <li>Human performance is <strong>probabilistic</strong>, not deterministic</li>
+                        <li>We need to account for measurement error, individual differences, and random noise</li>
+                        <li>Inductive statistical methods (t-tests, ANOVA, regression) handle this uncertainty</li>
+                    </ul>
+                </div>
+
+                <h3>💡 Summary</h3>
+                <table>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Why Inductive Inference is Necessary</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Population vs Sample</strong></td>
+                        <td>We sample a subset and inductively generalize to the whole population</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Uncertainty</strong></td>
+                        <td>Human variability means we can only make probabilistic claims, not certain deductions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Direction of Reasoning</strong></td>
+                        <td>We go from specific observations → general conclusions (inductive), not from general laws → specific predictions (deductive)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Statistical Methods</strong></td>
+                        <td>Statistical inference (hypothesis testing, confidence intervals) is fundamentally inductive</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="info-box" style="margin-top: 40px;">
+                <h2>📋 Complete Answer Summary</h2>
+
+                <h3>Part (a): Variables [3 marks]</h3>
+                <ul>
+                    <li><strong>IV:</strong> Keyboard latency (3 levels: 5ms, 25ms, 50ms)</li>
+                    <li><strong>DVs:</strong> (1) Typing speed, (2) Number of errors</li>
+                </ul>
+
+                <h3>Part (b): Critique [15 marks]</h3>
+                <p><strong>7 Major Problems Identified:</strong></p>
+                <ol>
+                    <li>No counterbalancing → Order effects confound results</li>
+                    <li>Same sentences → Learning/memorization effects</li>
+                    <li>No baseline condition → Cannot assess actual impact</li>
+                    <li>Flawed analysis:
+                        <ul>
+                            <li>Total vs average errors</li>
+                            <li>Ignoring typing speed</li>
+                            <li>No statistical testing</li>
+                        </ul>
+                    </li>
+                    <li>Within-subjects design issues (carryover, fatigue)</li>
+                    <li>No control variables specified</li>
+                    <li>No sample size specified</li>
+                </ol>
+
+                <h3>Part (c): Inductive vs Deductive [~4 marks]</h3>
+                <p><strong>Two Reasons for Inductive Inference:</strong></p>
+                <ol>
+                    <li><strong>Sample vs Population:</strong> Cannot test everyone, must generalize from sample</li>
+                    <li><strong>Variability & Uncertainty:</strong> Human performance is probabilistic, requires statistical inference</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

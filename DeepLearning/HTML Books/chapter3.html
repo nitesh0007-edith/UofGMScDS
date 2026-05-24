@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Shallow Neural Networks | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    
+    <nav class="main-nav">
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">DL Tutorial</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#chapters" class="nav-link">All Chapters</a>
+            <a href="https://udlbook.github.io/udlbook/" target="_blank" class="nav-link external">Original Book ↗</a>
+        </div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta">
+                <span class="chapter-badge">Chapter 3</span>
+                <span class="part-label">Part II: Supervised Learning</span>
+            </div>
+            <h1>Shallow <span class="gradient-text">Neural Networks</span></h1>
+            <p class="chapter-description">
+                Discover how adding just one hidden layer with nonlinear activation functions creates networks that can approximate any continuous function.
+            </p>
+            <div class="chapter-nav">
+                <a href="chapter2.html" class="nav-btn">← Previous: Supervised Learning</a>
+                <a href="chapter4.html" class="nav-btn">Next: Deep Neural Networks →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            
+            <section id="intro" class="content-section">
+                <h2>From Linear to Neural</h2>
+                
+                <p>
+                    Linear models are powerful but limited—they can only represent linear relationships. Real-world patterns are complex and nonlinear. Neural networks solve this by combining linear transformations with <strong>nonlinear activation functions</strong>.
+                </p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Definition</div>
+                    <p>
+                        <strong>Shallow Neural Network:</strong> A neural network with one hidden layer between input and output. Despite being "shallow," these networks are universal function approximators—they can approximate any continuous function to arbitrary accuracy.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="architecture" class="content-section">
+                <h2>Network Architecture</h2>
+                
+                <p>A shallow neural network has three layers:</p>
+                
+                <ol>
+                    <li><strong>Input Layer:</strong> Receives the raw input features x</li>
+                    <li><strong>Hidden Layer:</strong> Transforms inputs using weights, biases, and activation functions</li>
+                    <li><strong>Output Layer:</strong> Produces the final prediction</li>
+                </ol>
+                
+                <div class="diagram-container">
+                    <div class="diagram-title">Shallow Neural Network Structure</div>
+                    <div id="neural-network-diagram" style="width: 100%; height: 300px;"></div>
+                </div>
+                
+                <h3>Mathematical Formulation</h3>
+                
+                <p>For an input x, the shallow network computes:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        h = a(W₁x + b₁)  &nbsp;&nbsp;&nbsp; [Hidden layer]<br><br>
+                        y = W₂h + b₂  &nbsp;&nbsp;&nbsp; [Output layer]
+                    </div>
+                </div>
+                
+                <p>where:</p>
+                <ul>
+                    <li><strong>W₁, b₁</strong> are the weights and biases for the hidden layer</li>
+                    <li><strong>a(·)</strong> is the activation function (applied element-wise)</li>
+                    <li><strong>W₂, b₂</strong> are the weights and biases for the output layer</li>
+                </ul>
+            </section>
+            
+            <section id="activations" class="content-section">
+                <h2>Activation Functions</h2>
+                
+                <p>
+                    The activation function introduces nonlinearity. Without it, stacking multiple linear layers would just produce another linear function.
+                </p>
+                
+                <h3>ReLU (Rectified Linear Unit)</h3>
+                
+                <p>The most popular activation function in modern deep learning:</p>
+                
+                <div class="math-block">
+                    <div class="equation">ReLU(z) = max(0, z)</div>
+                </div>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Why ReLU is Popular</div>
+                    <p>
+                        • <strong>Simple:</strong> Easy to compute and implement<br>
+                        • <strong>Sparse activation:</strong> Many neurons output zero, creating efficient representations<br>
+                        • <strong>No vanishing gradient:</strong> Gradient is 1 for positive inputs (unlike sigmoid/tanh)<br>
+                        • <strong>Biological plausibility:</strong> Similar to how real neurons fire
+                    </p>
+                </div>
+                
+                <h3>Other Common Activations</h3>
+                
+                <p><strong>Sigmoid:</strong></p>
+                <div class="math-block">
+                    <div class="equation">σ(z) = 1 / (1 + e^(-z))</div>
+                </div>
+                <p>Squashes output to (0, 1). Used for binary classification outputs.</p>
+                
+                <p><strong>Tanh:</strong></p>
+                <div class="math-block">
+                    <div class="equation">tanh(z) = (e^z - e^(-z)) / (e^z + e^(-z))</div>
+                </div>
+                <p>Squashes output to (-1, 1). Zero-centered, which can help training.</p>
+                
+                <p><strong>Leaky ReLU:</strong></p>
+                <div class="math-block">
+                    <div class="equation">LeakyReLU(z) = max(αz, z), where α ≈ 0.01</div>
+                </div>
+                <p>Allows small gradient for negative inputs, addressing "dying ReLU" problem.</p>
+            </section>
+            
+            <section id="universal-approximation" class="content-section">
+                <h2>Universal Approximation Theorem</h2>
+                
+                <p>
+                    One of the most important theoretical results in neural network research:
+                </p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Universal Approximation Theorem</div>
+                    <p>
+                        A feedforward neural network with a single hidden layer containing a finite number of neurons can approximate any continuous function on a compact subset of ℝⁿ, given appropriate activation functions and sufficient neurons.
+                    </p>
+                </div>
+                
+                <p>
+                    This means shallow networks are theoretically capable of learning any reasonable function. However, "can approximate" doesn't mean "easy to train" or "will generalize well."
+                </p>
+                
+                <h3>Limitations in Practice</h3>
+                
+                <p>Despite the universal approximation theorem:</p>
+                
+                <ul>
+                    <li>The required number of hidden neurons may be exponentially large</li>
+                    <li>Training may be difficult due to optimization challenges</li>
+                    <li>The network may overfit without proper regularization</li>
+                    <li>Deep networks often achieve the same results more efficiently</li>
+                </ul>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Intuition: Why It Works</div>
+                    <p>
+                        Think of each hidden neuron as creating a "bump" function—it's active for certain inputs and inactive for others. By combining many such bumps with different positions and heights (determined by the output layer weights), we can sculpt any shape we want.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="visualization" class="content-section">
+                <h2>Visualizing Network Behavior</h2>
+                
+                <p>
+                    Let's understand how a shallow network with ReLU creates complex functions:
+                </p>
+                
+                <h3>Single Hidden Neuron</h3>
+                <p>
+                    With one ReLU neuron, the network creates a "hinge" function—linear with a kink at some point. The position of the kink is determined by the bias.
+                </p>
+                
+                <h3>Multiple Hidden Neurons</h3>
+                <p>
+                    Each additional neuron adds another potential kink. With N neurons, we can create a piecewise linear function with up to N+1 linear pieces.
+                </p>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Insight</div>
+                    <p>
+                        A shallow ReLU network computes a <strong>piecewise linear function</strong>. More hidden neurons = more linear pieces = ability to approximate more complex curves. In higher dimensions, these become piecewise linear surfaces.
+                    </p>
+                </div>
+                
+                <h3>Effect of Network Width</h3>
+                
+                <p>
+                    The number of hidden neurons (network <strong>width</strong>) controls the model's capacity:
+                </p>
+                
+                <ul>
+                    <li><strong>Too few neurons:</strong> Underfitting—can't capture the pattern</li>
+                    <li><strong>Too many neurons:</strong> Overfitting risk—can memorize training data</li>
+                    <li><strong>Just right:</strong> Good generalization to new data</li>
+                </ul>
+            </section>
+            
+            <section id="parameters" class="content-section">
+                <h2>Counting Parameters</h2>
+                
+                <p>
+                    Understanding parameter count is crucial for assessing model complexity:
+                </p>
+                
+                <p>For a network with:</p>
+                <ul>
+                    <li>D input dimensions</li>
+                    <li>H hidden neurons</li>
+                    <li>K output dimensions</li>
+                </ul>
+                
+                <h3>Parameter Count:</h3>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        Hidden layer: D × H weights + H biases<br>
+                        Output layer: H × K weights + K biases<br><br>
+                        Total: D×H + H + H×K + K = H(D + K + 1) + K
+                    </div>
+                </div>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Example Calculation</div>
+                    <p>
+                        For D=784 (MNIST images), H=256, K=10 (digit classes):<br><br>
+                        Hidden: 784 × 256 + 256 = 200,960<br>
+                        Output: 256 × 10 + 10 = 2,570<br><br>
+                        <strong>Total: 203,530 parameters</strong>
+                    </p>
+                </div>
+            </section>
+            
+            <section id="training-preview" class="content-section">
+                <h2>Training Preview</h2>
+                
+                <p>
+                    Training a neural network means finding the optimal values for all parameters (weights and biases). The process involves:
+                </p>
+                
+                <ol>
+                    <li><strong>Initialize</strong> parameters randomly</li>
+                    <li><strong>Forward pass:</strong> Compute predictions for training inputs</li>
+                    <li><strong>Loss calculation:</strong> Measure how wrong predictions are</li>
+                    <li><strong>Backward pass:</strong> Compute gradients of loss w.r.t. parameters</li>
+                    <li><strong>Update:</strong> Adjust parameters to reduce loss</li>
+                    <li><strong>Repeat</strong> until convergence</li>
+                </ol>
+                
+                <p>
+                    Chapters 5-7 will cover loss functions, training algorithms, and backpropagation in detail.
+                </p>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="key-points">
+                    <div class="key-points-title">Summary</div>
+                    <ul>
+                        <li>Shallow neural networks have one hidden layer between input and output</li>
+                        <li>Activation functions introduce essential nonlinearity</li>
+                        <li>ReLU is the most popular activation: ReLU(z) = max(0, z)</li>
+                        <li>Universal approximation: shallow networks can approximate any continuous function</li>
+                        <li>In practice, more neurons = more capacity, but also more overfitting risk</li>
+                        <li>With ReLU, networks compute piecewise linear functions</li>
+                        <li>Parameter count scales with input dimension × hidden size × output dimension</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter2.html" class="chapter-footer-link">
+                    <span class="footer-link-label">Previous Chapter</span>
+                    <span class="footer-link-title">← Supervised Learning</span>
+                </a>
+                <a href="chapter4.html" class="chapter-footer-link next">
+                    <span class="footer-link-label">Next Chapter</span>
+                    <span class="footer-link-title">Deep Neural Networks →</span>
+                </a>
+            </footer>
+        </main>
+        
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#intro">From Linear to Neural</a></li>
+                    <li><a href="#architecture">Network Architecture</a></li>
+                    <li><a href="#activations">Activation Functions</a></li>
+                    <li><a href="#universal-approximation">Universal Approximation</a></li>
+                    <li><a href="#visualization">Visualizing Behavior</a></li>
+                    <li><a href="#parameters">Counting Parameters</a></li>
+                    <li><a href="#training-preview">Training Preview</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">◈</span>
+                    <span>Understanding Deep Learning Tutorial</span>
+                </div>
+                <p class="footer-note">
+                    Based on the textbook by Simon J.D. Prince.
+                    <a href="https://udlbook.github.io/udlbook/" target="_blank">View original book →</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

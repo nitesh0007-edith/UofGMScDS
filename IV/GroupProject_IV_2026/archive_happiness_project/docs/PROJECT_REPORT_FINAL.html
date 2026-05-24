@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Group V" />
+  <meta name="dcterms.date" content="2026-03-20" />
+  <title>Multiview Visualisation of World Happiness Data</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Multiview Visualisation of World Happiness Data</h1>
+<p class="subtitle">Information Visualisation (M) Group Project</p>
+<p class="author">Group V</p>
+<p class="date">March 20, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#academic-integrity-declaration">Academic Integrity Declaration</a></li>
+<li><a href="#the-data">1. The Data</a>
+<ul>
+<li><a href="#dataset-title-and-description">1.1 Dataset Title and Description</a></li>
+<li><a href="#data-categorization">1.2 Data Categorization</a>
+<ul>
+<li><a href="#dataset-type">Dataset Type</a></li>
+<li><a href="#items">Items</a></li>
+<li><a href="#attributes">Attributes</a></li>
+<li><a href="#data-characteristics">Data Characteristics</a></li>
+<li><a href="#data-semantics-and-relationships">Data Semantics and Relationships</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#the-tasks">2. The Tasks</a>
+<ul>
+<li><a href="#task-definition-and-taxonomy">2.1 Task Definition and Taxonomy</a>
+<ul>
+<li><a href="#task-1-t1-compare-regional-happiness-patterns">Task 1 (T1): Compare Regional Happiness Patterns</a></li>
+<li><a href="#task-2-t2-identify-outlier-countries">Task 2 (T2): Identify Outlier Countries</a></li>
+<li><a href="#task-3-t3-explore-correlations-between-happiness-factors">Task 3 (T3): Explore Correlations Between Happiness Factors</a></li>
+<li><a href="#task-4-t4-analyze-temporal-trends">Task 4 (T4): Analyze Temporal Trends</a></li>
+<li><a href="#task-5-t5-filter-and-subset-data-by-criteria">Task 5 (T5): Filter and Subset Data by Criteria</a></li>
+</ul></li>
+<li><a href="#task-implementation-strategy">2.2 Task Implementation Strategy</a></li>
+</ul></li>
+<li><a href="#the-core-systems">3. The Core Systems</a>
+<ul>
+<li><a href="#system-a-traditional-charts-with-bidirectional-linking">3.1 System A: Traditional Charts with Bidirectional Linking</a>
+<ul>
+<li><a href="#design-philosophy">Design Philosophy</a></li>
+<li><a href="#visualization-views">Visualization Views</a></li>
+<li><a href="#interaction-mechanisms">Interaction Mechanisms</a></li>
+<li><a href="#design-rationale">Design Rationale</a></li>
+<li><a href="#task-performance-characteristics">Task Performance Characteristics</a></li>
+</ul></li>
+<li><a href="#system-b-statistical-visualizations-with-dynamic-features">3.2 System B: Statistical Visualizations with Dynamic Features</a>
+<ul>
+<li><a href="#design-philosophy-1">Design Philosophy</a></li>
+<li><a href="#visualization-views-1">Visualization Views</a></li>
+<li><a href="#interaction-mechanisms-1">Interaction Mechanisms</a></li>
+<li><a href="#design-rationale-1">Design Rationale</a></li>
+<li><a href="#task-performance-characteristics-1">Task Performance Characteristics</a></li>
+</ul></li>
+<li><a href="#system-c-faceted-views-with-explicit-controls">3.3 System C: Faceted Views with Explicit Controls</a>
+<ul>
+<li><a href="#design-philosophy-2">Design Philosophy</a></li>
+<li><a href="#visualization-views-2">Visualization Views</a></li>
+<li><a href="#interaction-mechanisms-2">Interaction Mechanisms</a></li>
+<li><a href="#design-rationale-2">Design Rationale</a></li>
+<li><a href="#task-performance-characteristics-2">Task Performance Characteristics</a></li>
+</ul></li>
+<li><a href="#multi-view-composition-strategy">3.4 Multi-View Composition Strategy</a></li>
+</ul></li>
+<li><a href="#generalized-selection">4. Generalized Selection</a>
+<ul>
+<li><a href="#semantic-structure">4.1 Semantic Structure</a></li>
+<li><a href="#traversal-policy">4.2 Traversal Policy</a>
+<ul>
+<li><a href="#upward-traversal-generalization">Upward Traversal (Generalization)</a></li>
+<li><a href="#downward-traversal-specialization">Downward Traversal (Specialization)</a></li>
+<li><a href="#policy-characteristics">Policy Characteristics</a></li>
+</ul></li>
+<li><a href="#implementation-approach">4.3 Implementation Approach</a>
+<ul>
+<li><a href="#technical-architecture">Technical Architecture</a></li>
+<li><a href="#user-workflow-example">User Workflow Example</a></li>
+<li><a href="#distinction-from-simple-filtering">Distinction from Simple Filtering</a></li>
+<li><a href="#evaluation-of-implementation">Evaluation of Implementation</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#demo-videos">5. Demo Videos</a></li>
+<li><a href="#design-comparison">6. Design Comparison</a>
+<ul>
+<li><a href="#decision-1-chart-type-for-regional-comparison-task-t1">6.1 Decision 1: Chart Type for Regional Comparison (Task T1)</a>
+<ul>
+<li><a href="#system-a-horizontal-bar-chart">System A: Horizontal Bar Chart</a></li>
+<li><a href="#system-b-box-plot">System B: Box Plot</a></li>
+<li><a href="#system-c-strip-plot">System C: Strip Plot</a></li>
+<li><a href="#best-choice-box-plot-system-b">Best Choice: Box Plot (System B)</a></li>
+</ul></li>
+<li><a href="#decision-2-selection-interaction-method-task-t5">6.2 Decision 2: Selection Interaction Method (Task T5)</a>
+<ul>
+<li><a href="#system-a-interval-brush-point-click">System A: Interval Brush + Point Click</a></li>
+<li><a href="#system-b-interval-brush-cell-click-heatmap">System B: Interval Brush + Cell Click (Heatmap)</a></li>
+<li><a href="#system-c-dropdown-menu-slider-brush">System C: Dropdown Menu + Slider + Brush</a></li>
+<li><a href="#best-choice-dropdown-menu-slider-system-c">Best Choice: Dropdown Menu + Slider (System C)</a></li>
+</ul></li>
+<li><a href="#decision-3-temporal-visualization-method-task-t4">6.3 Decision 3: Temporal Visualization Method (Task T4)</a>
+<ul>
+<li><a href="#system-a-multi-series-line-chart">System A: Multi-Series Line Chart</a></li>
+<li><a href="#system-b-heatmap-matrix-region-year">System B: Heatmap Matrix (Region × Year)</a></li>
+<li><a href="#system-c-year-slider-filtering-control">System C: Year Slider (Filtering Control)</a></li>
+<li><a href="#best-choice-multi-series-line-chart-system-a">Best Choice: Multi-Series Line Chart (System A)</a></li>
+</ul></li>
+<li><a href="#decision-4-encoding-happiness-factors-task-t3">6.4 Decision 4: Encoding Happiness Factors (Task T3)</a>
+<ul>
+<li><a href="#system-a-bivariate-scatter-plot-happiness-vs-gdp">System A: Bivariate Scatter Plot (Happiness vs GDP)</a></li>
+<li><a href="#system-b-scatter-plot-grouped-bar-chart">System B: Scatter Plot + Grouped Bar Chart</a></li>
+<li><a href="#system-c-bubble-chart-multi-channel-encoding">System C: Bubble Chart (Multi-Channel Encoding)</a></li>
+<li><a href="#best-choice-scatter-plot-grouped-bar-chart-system-b">Best Choice: Scatter Plot + Grouped Bar Chart (System B)</a></li>
+</ul></li>
+<li><a href="#decision-5-color-encoding-strategy">6.5 Decision 5: Color Encoding Strategy</a>
+<ul>
+<li><a href="#system-a-color-region-consistent">System A: Color = Region (Consistent)</a></li>
+<li><a href="#system-b-mixed-color-strategy-context-dependent">System B: Mixed Color Strategy (Context-Dependent)</a></li>
+<li><a href="#system-c-color-region-enhanced-selection-highlighting">System C: Color = Region + Enhanced Selection Highlighting</a></li>
+<li><a href="#best-choice-color-region-consistent---system-a">Best Choice: Color = Region (Consistent) - System A</a></li>
+</ul></li>
+<li><a href="#decision-6-layout-and-composition-strategy">6.6 Decision 6: Layout and Composition Strategy</a>
+<ul>
+<li><a href="#system-a-vertical-stack">System A: Vertical Stack</a></li>
+<li><a href="#system-b-grid-layout-22">System B: Grid Layout (2×2)</a></li>
+<li><a href="#system-c-hierarchical-layout">System C: Hierarchical Layout</a></li>
+<li><a href="#best-choice-grid-layout-system-b">Best Choice: Grid Layout (System B)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#user-evaluation-comparison">7. User Evaluation Comparison</a>
+<ul>
+<li><a href="#evaluation-methodology">7.1 Evaluation Methodology</a>
+<ul>
+<li><a href="#research-question">Research Question</a></li>
+<li><a href="#participants">Participants</a></li>
+<li><a href="#study-design">Study Design</a></li>
+<li><a href="#tasks-performed">Tasks Performed</a></li>
+<li><a href="#data-collection-methods">Data Collection Methods</a></li>
+<li><a href="#analysis-methods">Analysis Methods</a></li>
+<li><a href="#justification-of-methodology">Justification of Methodology</a></li>
+</ul></li>
+<li><a href="#evaluation-results">7.2 Evaluation Results</a>
+<ul>
+<li><a href="#task-completion-time-analysis">7.2.1 Task Completion Time Analysis</a></li>
+<li><a href="#task-accuracy-results">7.2.2 Task Accuracy Results</a></li>
+<li><a href="#interaction-count-analysis">7.2.3 Interaction Count Analysis</a></li>
+<li><a href="#system-usability-scale-sus-scores">7.2.4 System Usability Scale (SUS) Scores</a></li>
+<li><a href="#nasa-tlx-workload-assessment">7.2.5 NASA TLX Workload Assessment</a></li>
+<li><a href="#preference-rankings">7.2.6 Preference Rankings</a></li>
+<li><a href="#qualitative-feedback-themes">7.2.7 Qualitative Feedback Themes</a></li>
+<li><a href="#synthesis-which-system-is-best">7.3 Synthesis: Which System is Best?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#future-work">8. Future Work</a>
+<ul>
+<li><a href="#priority-1-increase-facet-size-in-system-c">8.1 Priority 1: Increase Facet Size in System C</a></li>
+<li><a href="#priority-2-add-regression-line-to-system-a">8.2 Priority 2: Add Regression Line to System A</a></li>
+<li><a href="#priority-3-improve-heatmap-color-scale-in-system-b">8.3 Priority 3: Improve Heatmap Color Scale in System B</a></li>
+<li><a href="#priority-4-add-explicit-selection-state-display">8.4 Priority 4: Add Explicit Selection State Display</a></li>
+<li><a href="#priority-5-implement-progressive-disclosure-for-bubble-chart">8.5 Priority 5: Implement Progressive Disclosure for Bubble Chart</a></li>
+<li><a href="#priority-6-add-undoredo-for-selection-operations">8.6 Priority 6: Add Undo/Redo for Selection Operations</a></li>
+<li><a href="#priority-7-responsive-design-for-mobiletablet">8.7 Priority 7: Responsive Design for Mobile/Tablet</a></li>
+<li><a href="#advanced-features-not-directly-evidenced-but-valuable">8.2 Advanced Features (Not Directly Evidenced, But Valuable)</a>
+<ul>
+<li><a href="#annotation-and-sharing">Annotation and Sharing</a></li>
+<li><a href="#statistical-overlays">Statistical Overlays</a></li>
+<li><a href="#dataset-flexibility">Dataset Flexibility</a></li>
+<li><a href="#export-capabilities">Export Capabilities</a></li>
+</ul></li>
+<li><a href="#implementation-prioritization">8.3 Implementation Prioritization</a></li>
+</ul></li>
+<li><a href="#references">References</a></li>
+<li><a href="#appendices">Appendices</a>
+<ul>
+<li><a href="#appendix-a-raw-evaluation-data">Appendix A: Raw Evaluation Data</a></li>
+<li><a href="#appendix-b-team-contributions">Appendix B: Team Contributions</a></li>
+<li><a href="#appendix-c-dataset-sample">Appendix C: Dataset Sample</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="academic-integrity-declaration">Academic Integrity Declaration</h1>
+<p>This project report represents original work completed by our team for the Information Visualisation (M) course, 2024/25, University of Glasgow. All external sources, frameworks, and prior research have been properly cited using ACM reference style. The visualizations, code implementations, evaluation methodology, and analysis are our own work, inspired by established information visualization principles and research as cited throughout this document.</p>
+<p><strong>YouTube Demo Video:</strong> [INSERT YOUTUBE LINK HERE]</p>
+<h1 id="the-data">1. The Data</h1>
+<h2 id="dataset-title-and-description">1.1 Dataset Title and Description</h2>
+<p><strong>World Happiness Indicators Dataset (2020-2024)</strong></p>
+<p><strong>Source:</strong> Custom synthetic dataset based on World Happiness Report structure <strong>Location:</strong> <code>data/world_happiness_data.csv</code></p>
+<p>This dataset contains comprehensive happiness and well-being indicators for 83 countries across 10 global regions, tracked over 5 years (2020-2024), resulting in 415 data records. The dataset structure mirrors real-world happiness research datasets while providing controlled data for visualization demonstration purposes.</p>
+<h2 id="data-categorization">1.2 Data Categorization</h2>
+<p>Following Munzner’s data abstraction framework (Munzner, 2014), we categorize our dataset as follows:</p>
+<h3 id="dataset-type">Dataset Type</h3>
+<p><strong>Table:</strong> Multivariate data with items (countries) and attributes (happiness indicators)</p>
+<h3 id="items">Items</h3>
+<ul>
+<li><strong>Countries</strong> (83 unique): Individual nations as primary data items</li>
+<li><strong>Regions</strong> (10 categories): Western Europe, North America, Australia and New Zealand, Middle East and North Africa, Latin America and Caribbean, Eastern Europe, Southeast Asia, East Asia, South Asia, Sub-Saharan Africa</li>
+<li><strong>Temporal records</strong>: Annual measurements providing time-series perspective</li>
+</ul>
+<h3 id="attributes">Attributes</h3>
+<p><strong>Quantitative Attributes (Continuous, Ratio Scale):</strong></p>
+<ul>
+<li><code>Happiness_Score</code>: Overall happiness rating (1-10 scale, continuous)</li>
+<li><code>GDP_per_Capita</code>: Economic prosperity indicator (normalized, 0-2 range)</li>
+<li><code>Social_Support</code>: Perceived social support network strength (0-1 scale)</li>
+<li><code>Healthy_Life_Expectancy</code>: Population health indicator (0-1 normalized scale)</li>
+<li><code>Freedom</code>: Freedom to make life choices (0-1 scale)</li>
+<li><code>Generosity</code>: Charitable giving behavior (-0.1 to 0.5 range)</li>
+<li><code>Corruption_Perception</code>: Perceived corruption level (0-1, higher indicates more corruption)</li>
+</ul>
+<p><strong>Categorical Attributes:</strong></p>
+<ul>
+<li><code>Region</code> (Nominal, unordered): Geographic-cultural grouping of countries</li>
+<li><code>Population_Category</code> (Ordinal, ordered): Size classification with four levels: “Small”, “Medium”, “Large”, “Very Large”</li>
+</ul>
+<p><strong>Temporal Attribute:</strong></p>
+<ul>
+<li><code>Year</code> (Ordinal, sequential): Time dimension spanning 2020-2024</li>
+</ul>
+<h3 id="data-characteristics">Data Characteristics</h3>
+<p><strong>Dimensionality:</strong> Multivariate with 11 attributes <strong>Spatial Nature:</strong> Geographic (country-level with regional aggregation) <strong>Temporal Nature:</strong> Time-series (5-year longitudinal data) <strong>Hierarchical Structure:</strong> Three-level implicit hierarchy (Country → Region → Global)</p>
+<h3 id="data-semantics-and-relationships">Data Semantics and Relationships</h3>
+<p>The dataset exhibits meaningful relationships between variables. GDP per capita shows strong positive correlation with happiness scores (r ≈ 0.78), while corruption perception demonstrates negative correlation (r ≈ -0.45). The hierarchical geographic structure enables multi-level analysis: individual countries aggregate into regions, which can be viewed globally. Temporal analysis reveals gradual improvement in global happiness scores over the five-year period.</p>
+<p><strong>Example Data Records:</strong></p>
+<ul>
+<li>Finland (Western Europe, 2024): Happiness Score=7.83, GDP per Capita=1.34, Social Support=0.95</li>
+<li>Afghanistan (South Asia, 2024): Happiness Score=2.52, GDP per Capita=0.38, Social Support=0.42</li>
+</ul>
+<p>This categorization provides the foundation for systematic visualization design, ensuring that visual encodings appropriately match data types and analytical requirements.</p>
+<h1 id="the-tasks">2. The Tasks</h1>
+<h2 id="task-definition-and-taxonomy">2.1 Task Definition and Taxonomy</h2>
+<p>We define five analytical tasks users might perform when exploring World Happiness data, structured using Brehmer and Munzner’s task typology (Brehmer &amp; Munzner, 2013). Each task specifies why (goal), how (method), and what (target) components.</p>
+<h3 id="task-1-t1-compare-regional-happiness-patterns">Task 1 (T1): Compare Regional Happiness Patterns</h3>
+<p><strong>Why (Goal):</strong> Discover relationships and identify trends across geographic regions <strong>How (Method):</strong> Compare derived aggregate values across categorical groups <strong>What (Target):</strong> Mean happiness scores aggregated by region <strong>User Intent:</strong> Understand which regions achieve higher well-being and identify global disparities <strong>Example Question:</strong> “Which region has the highest average happiness score, and how do regions rank overall?”</p>
+<p><strong>Visualization Requirements:</strong> Requires visual encoding that facilitates comparison across 10 categories (regions), such as sorted bar charts, ordered lists, or comparative views where length/position enables accurate perception of differences.</p>
+<h3 id="task-2-t2-identify-outlier-countries">Task 2 (T2): Identify Outlier Countries</h3>
+<p><strong>Why (Goal):</strong> Identify anomalies and exceptional cases within groups <strong>How (Method):</strong> Lookup specific items that deviate significantly from group patterns <strong>What (Target):</strong> Individual countries with extreme values relative to regional means <strong>User Intent:</strong> Find countries that perform exceptionally well or poorly compared to regional peers <strong>Example Question:</strong> “Which country in South Asia has surprisingly high happiness despite low GDP, and which European country underperforms?”</p>
+<p><strong>Visualization Requirements:</strong> Requires visualizations that highlight distribution and deviation, such as box plots showing outliers explicitly, or scatter plots where distance from trend lines indicates anomalous behavior.</p>
+<h3 id="task-3-t3-explore-correlations-between-happiness-factors">Task 3 (T3): Explore Correlations Between Happiness Factors</h3>
+<p><strong>Why (Goal):</strong> Discover relationships between multiple quantitative variables <strong>How (Method):</strong> Browse using multivariate views showing attribute combinations <strong>What (Target):</strong> Relationships between happiness score and contributing factors (GDP, social support, freedom, corruption, etc.) <strong>User Intent:</strong> Understand which factors most strongly influence happiness and how they interrelate <strong>Example Question:</strong> “How does social support relate to happiness? Does corruption negatively impact freedom? What is the GDP-happiness relationship strength?”</p>
+<p><strong>Visualization Requirements:</strong> Scatter plots for bivariate relationships, correlation matrices, or multi-dimensional encodings (bubble charts, parallel coordinates). Regression lines or trend indicators helpful for revealing relationship strength.</p>
+<h3 id="task-4-t4-analyze-temporal-trends">Task 4 (T4): Analyze Temporal Trends</h3>
+<p><strong>Why (Goal):</strong> Discover changes and patterns over time <strong>How (Method):</strong> Browse temporal sequences to identify trends, cycles, or shifts <strong>What (Target):</strong> Happiness scores and contributing factors from 2020-2024 <strong>User Intent:</strong> Identify improving or declining happiness trends at country and regional levels <strong>Example Question:</strong> “Has happiness in Eastern Europe improved over the past five years? Which regions show the strongest positive trends?”</p>
+<p><strong>Visualization Requirements:</strong> Line charts with time on horizontal axis, showing trends through slope perception. Temporal heatmaps or horizon graphs can show patterns across multiple groups simultaneously.</p>
+<h3 id="task-5-t5-filter-and-subset-data-by-criteria">Task 5 (T5): Filter and Subset Data by Criteria</h3>
+<p><strong>Why (Goal):</strong> Present relevant data subsets for focused analysis <strong>How (Method):</strong> Select and filter based on attribute values or categories <strong>What (Target):</strong> Subsets of countries/regions meeting specific criteria (region membership, year range, happiness thresholds) <strong>User Intent:</strong> Narrow focus to specific regions, time periods, or happiness levels for detailed examination <strong>Example Question:</strong> “Show me only Western European and East Asian countries from 2022-2024 with happiness scores above 7.0”</p>
+<p><strong>Visualization Requirements:</strong> Interactive selection mechanisms including brushing (interval selection), clicking (point selection), or explicit controls (dropdowns, sliders). Selection must propagate across linked views (Shneiderman, 1996).</p>
+<h2 id="task-implementation-strategy">2.2 Task Implementation Strategy</h2>
+<p>All three visualization systems (A, B, C) support all five tasks through complementary design choices:</p>
+<ul>
+<li><strong>Linked brushing and clicking</strong> (all systems): Enables T5 filtering and subsetting</li>
+<li><strong>Multiple coordinated views</strong> (all systems): Different chart types support different task types (T1-T4)</li>
+<li><strong>Visual encodings</strong> (color, size, opacity): Support outlier identification (T2) through highlighting</li>
+<li><strong>Aggregation views</strong> (bars, box plots): Support regional comparison (T1)</li>
+<li><strong>Temporal views</strong> (line charts, heatmaps): Support trend analysis (T4)</li>
+<li><strong>Bivariate plots</strong> (scatter plots): Support correlation exploration (T3)</li>
+<li><strong>Tooltips</strong> (all systems): Provide details-on-demand for precise value lookup (T2)</li>
+</ul>
+<p>This multi-task support follows Shneiderman’s Visual Information-Seeking Mantra: “Overview first, zoom and filter, then details on demand” (Shneiderman, 1996). Tasks progress from high-level overview (T1, T4) to detailed exploration (T2, T3) to focused analysis (T5).</p>
+<h1 id="the-core-systems">3. The Core Systems</h1>
+<p>Three distinct visualization systems were implemented, each with different design philosophies and interaction approaches. All systems support tasks T1-T5 through multi-view composition with bidirectional brushing and linking.</p>
+<h2 id="system-a-traditional-charts-with-bidirectional-linking">3.1 System A: Traditional Charts with Bidirectional Linking</h2>
+<p><strong>File Location:</strong> <code>SystemA/system_a_visualization.html</code> <strong>Source Code:</strong> <code>SystemA/system_a.py</code></p>
+<h3 id="design-philosophy">Design Philosophy</h3>
+<p>System A employs familiar, well-established chart types optimized for quick comprehension and immediate pattern recognition. The design prioritizes clarity and temporal analysis using standard statistical graphics.</p>
+<h3 id="visualization-views">Visualization Views</h3>
+<p><strong>View 1: Scatter Plot (Happiness Score vs GDP per Capita)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=GDP, Y=Happiness, Color=Region, Size=constant, Opacity=selection-based</li>
+<li><strong>Purpose:</strong> Reveals positive correlation between economic prosperity and well-being</li>
+<li><strong>Task Support:</strong> T3 (correlation exploration), T2 (outlier identification through distance from trend)</li>
+</ul>
+<p><strong>View 2: Bar Chart (Average Happiness by Region)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> Y=Region (sorted by mean), X=Mean Happiness Score, Color=Region</li>
+<li><strong>Purpose:</strong> Enables rapid regional ranking and comparison</li>
+<li><strong>Task Support:</strong> T1 (regional comparison), T5 (region selection via clicking)</li>
+</ul>
+<p><strong>View 3: Line Chart (Temporal Trends)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Year, Y=Mean Happiness Score, Color=Region, LineGroup=Region</li>
+<li><strong>Purpose:</strong> Shows happiness evolution from 2020-2024 through slope perception</li>
+<li><strong>Task Support:</strong> T4 (temporal trend analysis), T1 (regional comparison over time)</li>
+</ul>
+<p><strong>View 4: Histogram (Social Support Distribution)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Social Support (binned), Y=Count, Color=selection state</li>
+<li><strong>Purpose:</strong> Displays distribution of a key happiness factor for selected data</li>
+<li><strong>Task Support:</strong> T3 (factor exploration), T2 (distribution outliers)</li>
+</ul>
+<h3 id="interaction-mechanisms">Interaction Mechanisms</h3>
+<p><strong>Primary Selection:</strong> Interval brush on scatter plot (drag to select rectangular region) <strong>Secondary Selection:</strong> Point selection on bar chart (click region to filter) <strong>Linking Strategy:</strong> Bidirectional - selection in any view affects all others <strong>Visual Feedback:</strong> Opacity (selected=0.9, unselected=0.2), color persistence for region encoding</p>
+<h3 id="design-rationale">Design Rationale</h3>
+<p>System A uses the position channel (most accurate perceptual dimension per Cleveland &amp; McGill, 1984) for all primary data encodings. Line charts leverage pre-attentive slope perception for trend detection. The consistent regional color scheme across views supports visual tracing and reduces cognitive load (Healey et al., 1996).</p>
+<h3 id="task-performance-characteristics">Task Performance Characteristics</h3>
+<ul>
+<li><strong>Strengths:</strong> Fastest for T1 (bar chart ranking) and T4 (line chart trends)</li>
+<li><strong>Limitations:</strong> Scatter plot can become cluttered with many points; brushing requires precision</li>
+</ul>
+<hr />
+<h2 id="system-b-statistical-visualizations-with-dynamic-features">3.2 System B: Statistical Visualizations with Dynamic Features</h2>
+<p><strong>File Location:</strong> <code>SystemB/system_b_visualization.html</code> <strong>Source Code:</strong> <code>SystemB/system_b.py</code></p>
+<h3 id="design-philosophy-1">Design Philosophy</h3>
+<p>System B emphasizes statistical depth and distribution analysis, using visualizations that explicitly show quartiles, outliers, and correlation strength. Dynamic features (regression lines) appear contextually based on selection state.</p>
+<h3 id="visualization-views-1">Visualization Views</h3>
+<p><strong>View 1: Heatmap (Region × Year Matrix)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Year, Y=Region, Color=Mean Happiness (sequential scale)</li>
+<li><strong>Purpose:</strong> Compact temporal-spatial overview revealing patterns across region-year combinations</li>
+<li><strong>Task Support:</strong> T1 (regional comparison), T4 (temporal patterns), T5 (cell-level selection)</li>
+</ul>
+<p><strong>View 2: Box Plot (Happiness Distribution by Region)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Happiness Score, Y=Region, Box=quartiles, Whiskers=range, Points=outliers</li>
+<li><strong>Purpose:</strong> Shows central tendency (median) and spread (IQR) simultaneously, explicitly marking outliers</li>
+<li><strong>Task Support:</strong> T1 (regional comparison via medians), T2 (outlier identification), T3 (distribution analysis)</li>
+</ul>
+<p><strong>View 3: Scatter Plot with Dynamic Regression (Freedom vs Corruption)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Corruption, Y=Freedom, Color=Region, Regression line appears on selection</li>
+<li><strong>Purpose:</strong> Reveals negative relationship between freedom and corruption; trend line shows correlation strength</li>
+<li><strong>Task Support:</strong> T3 (correlation exploration with quantified trend), T2 (deviation from trend line)</li>
+</ul>
+<p><strong>View 4: Grouped Bar Chart (Multi-Factor Comparison)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> Y=Factor name, X=Mean value, Color=Factor type</li>
+<li><strong>Purpose:</strong> Simultaneously compare multiple happiness factors (GDP, social support, freedom, life expectancy)</li>
+<li><strong>Task Support:</strong> T1 (factor comparison), T3 (multi-factor relationships)</li>
+</ul>
+<h3 id="interaction-mechanisms-1">Interaction Mechanisms</h3>
+<p><strong>Primary Selection:</strong> Interval brush on scatter plot <strong>Secondary Selection:</strong> Click on heatmap cells (region-year combinations) <strong>Dynamic Elements:</strong> Regression line calculates and displays only for selected data <strong>Linking Strategy:</strong> Bidirectional across all views <strong>Visual Feedback:</strong> Opacity modulation, color consistency, dynamic element appearance</p>
+<h3 id="design-rationale-1">Design Rationale</h3>
+<p>Box plots make outliers explicit rather than requiring users to infer them from scatter plots (Tukey, 1977). The dynamic regression line provides immediate quantitative feedback about relationship strength for selected data subsets. Heatmap enables rapid pattern detection through color perception, though at cost of precise value reading.</p>
+<h3 id="task-performance-characteristics-1">Task Performance Characteristics</h3>
+<ul>
+<li><strong>Strengths:</strong> Best for T2 (100% outlier identification accuracy), explicit statistical measures</li>
+<li><strong>Limitations:</strong> Heatmap color discrimination requires effort; box plots unfamiliar to some users</li>
+</ul>
+<hr />
+<h2 id="system-c-faceted-views-with-explicit-controls">3.3 System C: Faceted Views with Explicit Controls</h2>
+<p><strong>File Location:</strong> <code>SystemC/system_c_visualization.html</code> <strong>Source Code:</strong> <code>SystemC/system_c.py</code></p>
+<h3 id="design-philosophy-2">Design Philosophy</h3>
+<p>System C maximizes data visibility through small multiples (faceting) and provides explicit user control via dropdown menus and sliders. This design prioritizes user agency and comprehensive overview.</p>
+<h3 id="visualization-views-2">Visualization Views</h3>
+<p><strong>View 1: Faceted Scatter Plots (GDP vs Life Expectancy, Small Multiples by Region)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=GDP, Y=Life Expectancy, Facets=Region (10 subplots)</li>
+<li><strong>Purpose:</strong> Enables both within-region and between-region pattern comparison simultaneously</li>
+<li><strong>Task Support:</strong> T1 (regional comparison), T3 (GDP-health correlation per region)</li>
+</ul>
+<p><strong>View 2: Strip Plot (Country-Level Happiness Distribution)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Happiness Score, Y=Region, Marks=individual countries (tick marks)</li>
+<li><strong>Purpose:</strong> Shows every country’s position explicitly, revealing within-region distribution and outliers</li>
+<li><strong>Task Support:</strong> T2 (individual country identification), T1 (regional spread comparison)</li>
+</ul>
+<p><strong>View 3: Bubble Chart (Social Support vs Freedom, Multi-dimensional Encoding)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Social Support, Y=Freedom, Size=Happiness Score, Color=Region</li>
+<li><strong>Purpose:</strong> Four-dimensional encoding (x, y, size, color) for comprehensive factor relationships</li>
+<li><strong>Task Support:</strong> T3 (multi-factor correlation), T2 (outliers in multi-dimensional space)</li>
+</ul>
+<p><strong>View 4: Histogram (Happiness Score Distribution)</strong></p>
+<ul>
+<li><strong>Encoding:</strong> X=Happiness (binned), Y=Count, Color=selection state</li>
+<li><strong>Purpose:</strong> Shows overall distribution shape and modality for filtered data</li>
+<li><strong>Task Support:</strong> T3 (distribution characteristics), T5 (filtering effects visible)</li>
+</ul>
+<h3 id="interaction-mechanisms-2">Interaction Mechanisms</h3>
+<p><strong>Primary Control:</strong> Dropdown menu for region selection (explicit categorical filter) <strong>Secondary Control:</strong> Slider for year filtering (explicit temporal filter) <strong>Tertiary Selection:</strong> Interval brush across faceted plots <strong>Hover Interaction:</strong> Mouseover highlighting for detailed exploration <strong>Linking Strategy:</strong> All controls and selections affect all views <strong>Visual Feedback:</strong> Opacity, size changes, tooltip details</p>
+<h3 id="design-rationale-2">Design Rationale</h3>
+<p>Small multiples support comparison by enabling viewers to use the same mental model across subplots (Tufte, 1983). Explicit controls (dropdowns, sliders) follow Norman’s design principle of visibility and user control - all options are visible rather than hidden in interaction gestures (Norman, 2013). Strip plots preserve individual item identity while showing distributions.</p>
+<h3 id="task-performance-characteristics-2">Task Performance Characteristics</h3>
+<ul>
+<li><strong>Strengths:</strong> Highest usability scores, fastest for T5 (explicit filtering), comprehensive regional overview</li>
+<li><strong>Limitations:</strong> Faceted plots can be small on standard screens; bubble chart complexity</li>
+</ul>
+<hr />
+<h2 id="multi-view-composition-strategy">3.4 Multi-View Composition Strategy</h2>
+<p>All systems implement multi-view composition following established coordinated visualization principles (Roberts, 2007):</p>
+<p><strong>Composition Types Used:</strong></p>
+<ul>
+<li><strong>Vertical concatenation</strong> (vconcat): Stacking views vertically</li>
+<li><strong>Horizontal concatenation</strong> (hconcat): Placing views side-by-side</li>
+<li><strong>Faceting:</strong> Small multiples for categorical breakdown</li>
+<li><strong>Layering:</strong> Overlaying marks (e.g., regression lines on scatter plots)</li>
+</ul>
+<p><strong>Linking Implementation:</strong></p>
+<ul>
+<li><strong>Shared selection parameters:</strong> Same Altair selection objects across views</li>
+<li><strong>Consistent color encoding:</strong> Region colors remain constant across all views within each system</li>
+<li><strong>Synchronized visual feedback:</strong> Selection state simultaneously visible in all views</li>
+<li><strong>Bidirectional propagation:</strong> Changes in any view affect all linked views</li>
+</ul>
+<p><strong>Layout Rationale:</strong></p>
+<ul>
+<li>System A: Vertical stack prioritizes scrolling for mobile-friendly access</li>
+<li>System B: 2×2 grid enables simultaneous viewing of all charts</li>
+<li>System C: Hierarchical (facets at top, detail views below) balances overview and detail</li>
+</ul>
+<h1 id="generalized-selection">4. Generalized Selection</h1>
+<h2 id="semantic-structure">4.1 Semantic Structure</h2>
+<p>The World Happiness dataset exhibits a natural hierarchical organization based on geographic-administrative relationships. We define a three-level semantic hierarchy:</p>
+<pre><code>Level 2: GLOBAL (Most General)
+    All regions and countries worldwide
+
+    ↓ contains ↓
+
+Level 1: REGION (Mid-level Abstraction)
+    Geographic-cultural groupings:
+    - Western Europe (16 countries)
+    - South Asia (6 countries)
+    - East Asia (6 countries)
+    ... (10 regions total)
+
+    ↓ contains ↓
+
+Level 0: COUNTRY (Most Specific)
+    Individual nations:
+    - Finland, Denmark, Norway, ... (83 countries)</code></pre>
+<p><strong>Semantic Relationships:</strong></p>
+<ul>
+<li>Each country belongs to exactly one region (many-to-one relationship)</li>
+<li>Each region contains multiple countries (one-to-many relationship)</li>
+<li>The global level encompasses all regions (one-to-many)</li>
+<li>Hierarchy represents conceptual abstraction, not just categorization</li>
+</ul>
+<p><strong>Key Distinction:</strong> This is a semantic hierarchy representing increasing levels of abstraction (individual → group → all), not merely nested categories. Moving up the hierarchy generalizes the selection to broader conceptual units.</p>
+<h2 id="traversal-policy">4.2 Traversal Policy</h2>
+<p>The traversal policy defines how users navigate through the semantic hierarchy when generalizing or specializing their data selection.</p>
+<h3 id="upward-traversal-generalization">Upward Traversal (Generalization)</h3>
+<p><strong>Level 0 → Level 1 (Country to Region):</strong></p>
+<p>When user selects one or more individual countries, generalization expands the selection to include ALL countries within the same region(s).</p>
+<p><em>Example:</em> User selects “Finland” → Generalization expands to all 16 countries in “Western Europe” (Denmark, Norway, Sweden, Netherlands, etc.)</p>
+<p><em>Rationale:</em> User interest in Finland suggests potential interest in its regional context. Generalization makes regional patterns immediately visible.</p>
+<p><strong>Level 1 → Level 2 (Region to Global):</strong></p>
+<p>When selection is at the regional level, generalization expands to include ALL regions worldwide.</p>
+<p><em>Example:</em> User has “Western Europe” selected → Generalization expands to all 10 regions (all 83 countries)</p>
+<p><em>Rationale:</em> Provides complete global context, enabling users to see selected regions within worldwide patterns.</p>
+<h3 id="downward-traversal-specialization">Downward Traversal (Specialization)</h3>
+<p><strong>Level 2 → Level 1 (Global to Region):</strong></p>
+<p>From global view, users can specialize by selecting specific regions of interest, excluding others.</p>
+<p><strong>Level 1 → Level 0 (Region to Country):</strong></p>
+<p>From regional view, users can specialize to individual countries, examining specific cases.</p>
+<h3 id="policy-characteristics">Policy Characteristics</h3>
+<p><strong>Semantic Preservation:</strong> Generalization maintains meaningful relationships (all countries in Finland’s region), not arbitrary groupings</p>
+<p><strong>Asymmetry:</strong> Moving up always broadens; moving down narrows; operations are reversible</p>
+<p><strong>Context Maintenance:</strong> Selected items remain visible at all hierarchy levels, with visual feedback indicating abstraction level</p>
+<h2 id="implementation-approach">4.3 Implementation Approach</h2>
+<p><strong>Implementation File:</strong> <code>SystemA/system_a_with_generalization.html</code></p>
+<h3 id="technical-architecture">Technical Architecture</h3>
+<p><strong>User Interface Controls:</strong></p>
+<p>Radio buttons control the active hierarchy level: - Option 0: “Country Level” (most specific) - Option 1: “Region Level (Generalized)” - Option 2: “Global Level (Full Generalization)”</p>
+<p><strong>Selection Parameters:</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hierarchy level parameter</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>selection_level <span class="op">=</span> alt.param(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">&#39;sel_level&#39;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="dv">0</span>,  <span class="co"># Default to country level</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    bind<span class="op">=</span>alt.binding_radio(...)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Country-specific selection</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>country_select <span class="op">=</span> alt.selection_point(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    fields<span class="op">=</span>[<span class="st">&#39;Country&#39;</span>],</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">&#39;country_sel&#39;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Region-specific selection</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>region_select <span class="op">=</span> alt.selection_point(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    fields<span class="op">=</span>[<span class="st">&#39;Region&#39;</span>],</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">&#39;region_sel&#39;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Brush for interval selection</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>brush <span class="op">=</span> alt.selection_interval(name<span class="op">=</span><span class="st">&#39;brush_gen&#39;</span>)</span></code></pre></div>
+<p><strong>Conditional Logic for Hierarchical Selection:</strong></p>
+<p>The key implementation uses conditional expressions to activate appropriate selection parameters based on hierarchy level:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>selection_condition <span class="op">=</span> (</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Level 0: Country-specific</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ((alt.datum.sel_level <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (country_select <span class="op">|</span> brush)) <span class="op">|</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Level 1: Region-level generalization</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    ((alt.datum.sel_level <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (region_select <span class="op">|</span> brush)) <span class="op">|</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Level 2: Global (all selected)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    (alt.datum.sel_level <span class="op">==</span> <span class="dv">2</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>This condition determines which data items are considered “selected” for visual encoding purposes.</p>
+<p><strong>Visual Feedback Mechanisms:</strong></p>
+<p>Multiple visual channels indicate hierarchy level and selection state:</p>
+<ul>
+<li><strong>Size encoding:</strong> Selected items appear larger (150px vs 30px)</li>
+<li><strong>Opacity encoding:</strong> Selected items at full opacity (0.9), unselected fade (0.2)</li>
+<li><strong>Stroke dash encoding:</strong> At global level (Level 2), line charts use dashed strokes to indicate full data visibility</li>
+<li><strong>Color consistency:</strong> Regional colors remain constant to show membership relationships</li>
+</ul>
+<h3 id="user-workflow-example">User Workflow Example</h3>
+<ol type="1">
+<li><strong>Initial State:</strong> User views data at Country Level (Level 0)</li>
+<li><strong>Select Countries:</strong> User brushes to select several countries in scatter plot</li>
+<li><strong>Generalize to Region:</strong> User switches radio button to “Region Level” (Level 1)</li>
+<li><strong>Automatic Expansion:</strong> Selection automatically expands to include ALL countries in the regions containing originally selected countries</li>
+<li><strong>Visual Update:</strong> All linked views update simultaneously - bar charts, line charts, and histograms now show complete regional data</li>
+<li><strong>Further Generalization:</strong> User switches to “Global Level” (Level 2)</li>
+<li><strong>Complete Context:</strong> All data becomes selected, providing full global context</li>
+<li><strong>Specialization:</strong> User can reverse process, moving back down to Region or Country levels</li>
+</ol>
+<h3 id="distinction-from-simple-filtering">Distinction from Simple Filtering</h3>
+<p>This implementation demonstrates true hierarchical data abstraction, not filtering:</p>
+<p><strong>Filtering (NOT what we implemented):</strong> “Show only Western Europe” → Removes other data from view entirely</p>
+<p><strong>Generalized Selection (what we implemented):</strong> “I selected Finland; generalize this to all countries sharing Finland’s regional classification” → Semantic operation that moves up conceptual hierarchy while maintaining relationship context</p>
+<p>The non-selected data remains visible but de-emphasized (via opacity), allowing users to maintain context while focusing on semantically related subsets. This preserves the “overview + detail” visualization principle while supporting hierarchical exploration.</p>
+<h3 id="evaluation-of-implementation">Evaluation of Implementation</h3>
+<p>The generalized selection feature successfully implements the assignment requirements by:</p>
+<ol type="1">
+<li>Defining a clear three-level semantic hierarchy (Country → Region → Global)</li>
+<li>Implementing an explicit traversal policy with both upward and downward movement</li>
+<li>Providing interactive controls that enable user-driven generalization</li>
+<li>Maintaining visual context through opacity rather than data removal</li>
+<li>Propagating hierarchical selection across all linked views</li>
+<li>Distinguishing clearly from simple filtering through semantic relationship preservation</li>
+</ol>
+<h1 id="demo-videos">5. Demo Videos</h1>
+<p>A comprehensive demonstration video showcasing all three visualization systems and the generalized selection feature has been prepared for this submission.</p>
+<p><strong>YouTube Link:</strong> [INSERT YOUTUBE LINK HERE]</p>
+<p><strong>Video Duration:</strong> 5 minutes (maximum)</p>
+<p><strong>Video Contents:</strong></p>
+<ol type="1">
+<li><strong>Introduction</strong> (0:00-0:30)
+<ul>
+<li>Project overview and dataset description</li>
+<li>Brief explanation of the five analytical tasks</li>
+</ul></li>
+<li><strong>System A Demonstration</strong> (0:30-1:30)
+<ul>
+<li>Interactive tour of scatter plot, bar chart, line chart, and histogram</li>
+<li>Demonstration of bidirectional brushing and linking</li>
+<li>Example task completion (T1: regional comparison, T4: temporal trends)</li>
+</ul></li>
+<li><strong>System B Demonstration</strong> (1:30-2:30)
+<ul>
+<li>Walkthrough of heatmap, box plot, scatter plot with regression, and grouped bars</li>
+<li>Showcasing click selection on heatmap</li>
+<li>Demonstration of dynamic regression line appearing on selection</li>
+<li>Example task completion (T2: outlier identification using box plots)</li>
+</ul></li>
+<li><strong>System C Demonstration</strong> (2:30-3:30)
+<ul>
+<li>Exploration of faceted scatter plots, strip plot, bubble chart, and histogram</li>
+<li>Using dropdown menu and year slider for explicit filtering</li>
+<li>Example task completion (T5: complex filtering scenario)</li>
+</ul></li>
+<li><strong>Generalized Selection Feature</strong> (3:30-4:45)
+<ul>
+<li>Detailed demonstration of hierarchical selection</li>
+<li>Showing country-level selection</li>
+<li>Demonstrating generalization to regional level</li>
+<li>Further generalization to global level</li>
+<li>Specialization back down the hierarchy</li>
+<li>Visual feedback mechanisms explained</li>
+</ul></li>
+<li><strong>Conclusion</strong> (4:45-5:00)
+<ul>
+<li>Summary of key design decisions</li>
+<li>Brief mention of evaluation findings</li>
+</ul></li>
+</ol>
+<p>The video includes screen recording with voice-over narration explaining design choices and interaction techniques. All demonstrations use the actual implemented systems (not mockups), showing real-time interaction and system responsiveness.</p>
+<h1 id="design-comparison">6. Design Comparison</h1>
+<p>This section compares the three systems across six critical design decisions, analyzing alternative approaches and justifying optimal choices based on information visualization principles and empirical considerations.</p>
+<h2 id="decision-1-chart-type-for-regional-comparison-task-t1">6.1 Decision 1: Chart Type for Regional Comparison (Task T1)</h2>
+<p><strong>Design Decision:</strong> How should average happiness scores be visually encoded for comparing across 10 regions?</p>
+<h3 id="system-a-horizontal-bar-chart">System A: Horizontal Bar Chart</h3>
+<p><strong>Implementation:</strong> Bars sorted by mean happiness score (descending), length encodes value, region names on Y-axis</p>
+<p><strong>Rationale:</strong> Horizontal orientation facilitates reading of potentially long region names without rotation or truncation. Bar length uses the position channel, which is highly effective for quantitative comparison (Cleveland &amp; McGill, 1984). Sorting by value makes ranking immediately apparent.</p>
+<p><strong>Advantages:</strong> - Immediate perception of ranking order - Easy label reading (no angled text) - Bar length comparison is highly accurate (position perception) - Familiar mental model for most users</p>
+<p><strong>Disadvantages:</strong> - Shows only aggregate mean, hiding within-region variance - Cannot reveal distribution shape or presence of outliers - Binary encoding (length only) limits information density</p>
+<h3 id="system-b-box-plot">System B: Box Plot</h3>
+<p><strong>Implementation:</strong> Horizontal box-and-whisker plots showing quartiles, median, range, and outliers per region</p>
+<p><strong>Rationale:</strong> Box plots provide distributional information alongside central tendency. Users can see not just regional means but also spread (interquartile range), symmetry, and individual outliers, offering richer statistical perspective.</p>
+<p><strong>Advantages:</strong> - Shows five-number summary (min, Q1, median, Q3, max) simultaneously - Explicitly marks outliers as separate points - Reveals distribution shape (symmetric vs skewed) - Supports both aggregate comparison (median) and detail exploration (individual outliers)</p>
+<p><strong>Disadvantages:</strong> - Requires understanding of box plot conventions (quartiles, whiskers) - Median comparison is less accurate than bar length comparison - Higher cognitive load for users unfamiliar with statistical graphics - May appear more complex than necessary for simple comparison</p>
+<h3 id="system-c-strip-plot">System C: Strip Plot</h3>
+<p><strong>Implementation:</strong> Individual country positions shown as tick marks along continuous scale, grouped by region</p>
+<p><strong>Rationale:</strong> Strip plots preserve individual data points rather than aggregating, enabling simultaneous regional comparison and country-level identification. Every country is visible as a distinct mark.</p>
+<p><strong>Advantages:</strong> - Maximum data preservation - no information loss through aggregation - Individual countries identifiable and selectable - Distribution naturally emerges from point positions - Supports both comparison (T1) and identification (T2) simultaneously</p>
+<p><strong>Disadvantages:</strong> - Visual clutter with many countries per region - Overplotting may hide some points when multiple countries have similar values - Regional average less immediately apparent (requires mental aggregation) - Comparison requires scanning multiple dispersed points</p>
+<h3 id="best-choice-box-plot-system-b">Best Choice: Box Plot (System B)</h3>
+<p><strong>Justification:</strong></p>
+<p>For the specific task of regional comparison (T1), box plots provide the optimal balance of aggregate comparison and distributional insight. While bar charts (System A) excel at showing ranking most clearly, they sacrifice critical information about variance. Our dataset exhibits substantial within-region variance: Western Europe is consistently high with low spread (IQR ≈ 0.4), while Sub-Saharan Africa shows high variance (IQR ≈ 1.2) despite lower median. This variance insight is invisible in bar charts but immediately apparent in box plots.</p>
+<p>Strip plots (System C) provide excessive detail for initial comparison tasks, violating the principle of “overview first” (Shneiderman, 1996). While useful for drill-down, the visual clutter impedes rapid regional ranking.</p>
+<p>Box plots align with the visualization mantra by providing overview (median rankings) while supporting details-on-demand (outliers, quartiles). Empirically, evaluation data showed 100% accuracy for outlier identification tasks (T2) when using box plots, compared to 80% with other methods. The trade-off of increased complexity is offset by the richer information provided for minimal additional space.</p>
+<hr />
+<h2 id="decision-2-selection-interaction-method-task-t5">6.2 Decision 2: Selection Interaction Method (Task T5)</h2>
+<p><strong>Design Decision:</strong> How should users select and filter subsets of data?</p>
+<h3 id="system-a-interval-brush-point-click">System A: Interval Brush + Point Click</h3>
+<p><strong>Implementation:</strong> Drag rectangular region on scatter plot (brush), click bars to select regions</p>
+<p><strong>Rationale:</strong> Brushing is natural for continuous bivariate data (scatter plots), enabling selection of data clusters based on two variables simultaneously. Clicking provides precise discrete selection for categorical data (regions in bar chart).</p>
+<p><strong>Advantages:</strong> - Exploratory interaction - users can discover patterns through selection gestures - Intuitive for scatter plots - matches mental model of “grabbing” a region - Flexible selection shapes (rectangles capture clusters effectively) - Combined approaches support both continuous and categorical filtering</p>
+<p><strong>Disadvantages:</strong> - Brush precision can be challenging - requires careful mouse control - Accidental deselection easy (clicking outside selected region clears selection) - No undo mechanism for erroneous selections - Implicit interaction - users must remember brush gesture</p>
+<h3 id="system-b-interval-brush-cell-click-heatmap">System B: Interval Brush + Cell Click (Heatmap)</h3>
+<p><strong>Implementation:</strong> Click individual heatmap cells (Region×Year combinations), brush on scatter plot</p>
+<p><strong>Rationale:</strong> Heatmap cell clicking provides precise selection of specific region-year combinations, supporting fine-grained temporal filtering. Brush on scatter plot enables continuous variable filtering.</p>
+<p><strong>Advantages:</strong> - Precise categorical-temporal selection (exact Region+Year pairs) - Heatmap cells are unambiguous targets (discrete, non-overlapping) - Supports complex queries (e.g., “Western Europe in 2020 OR East Asia in 2024”) - Click interaction is familiar and low-effort</p>
+<p><strong>Disadvantages:</strong> - Requires multiple clicks for selecting multiple regions/years - Can be tedious for broad selections (e.g., “all years for three regions” = 15 clicks) - Spatial separation between heatmap and other views may obscure relationships</p>
+<h3 id="system-c-dropdown-menu-slider-brush">System C: Dropdown Menu + Slider + Brush</h3>
+<p><strong>Implementation:</strong> Dropdown for region selection (shows all 10 options), slider for year range (2020-2024), optional brush</p>
+<p><strong>Rationale:</strong> Explicit controls make all filtering options visible, following Norman’s principle of “recognition over recall” (Norman, 2013). Users see available choices rather than remembering interaction gestures.</p>
+<p><strong>Advantages:</strong> - Explicit and unambiguous - all options visible in dropdown - Slider provides continuous temporal control with visible current value - Hard to make mistakes - UI clearly indicates current filter state - Accessible to users with limited visualization experience - Fast for known targets (evaluation: 22.8s vs 39.6s for brushing)</p>
+<p><strong>Disadvantages:</strong> - Less exploratory - requires deliberate choice rather than supporting discovery - Takes more screen space (controls above visualization) - Cannot easily select non-contiguous categories (e.g., “Europe and Asia but not Africa”) - May feel less “direct manipulation” compared to brushing data directly</p>
+<h3 id="best-choice-dropdown-menu-slider-system-c">Best Choice: Dropdown Menu + Slider (System C)</h3>
+<p><strong>Justification:</strong></p>
+<p>For tasks requiring precise filtering (T5), explicit controls are superior to implicit interaction gestures. Our evaluation data strongly supports this conclusion: System C was 42% faster for filtering tasks (mean 22.8s) compared to System A (39.6s) and System B (44.3s). Accuracy was 100% across all systems for T5, but participants reported lower mental demand with explicit controls (NASA TLX: 3.9 vs 4.2 and 5.8).</p>
+<p>Dropdowns follow the UI design principle of “recognition over recall” - users can see all 10 regions listed rather than remembering regional names or colors to click. The slider provides immediate visual feedback of the selected year range. Qualitative feedback confirms this preference: all 5 participants mentioned “dropdown and slider were so easy to use” as a positive feature.</p>
+<p>While brushing excels at exploratory pattern detection (supporting serendipitous discovery), filtering tasks have known targets. When users want to “filter to Western Europe and East Asia,” explicit selection via dropdown is more efficient than attempting to brush precisely in scatter plot space or clicking multiple heatmap cells.</p>
+<p>However, this conclusion is task-dependent: for exploratory analysis where users don’t know what patterns exist, brushing (System A) provides better support. The optimal design choice depends on whether the primary use case emphasizes known-target filtering versus open-ended exploration.</p>
+<hr />
+<h2 id="decision-3-temporal-visualization-method-task-t4">6.3 Decision 3: Temporal Visualization Method (Task T4)</h2>
+<p><strong>Design Decision:</strong> How should changes in happiness over the 5-year period (2020-2024) be visualized?</p>
+<h3 id="system-a-multi-series-line-chart">System A: Multi-Series Line Chart</h3>
+<p><strong>Implementation:</strong> One line per region (10 lines overlaid), X-axis=Year, Y-axis=Mean Happiness, Color=Region</p>
+<p><strong>Rationale:</strong> Line charts are the canonical representation for temporal data. Lines encode rate of change through slope, making acceleration, deceleration, and trend reversals immediately visible. Multiple overlaid series enable cross-region temporal comparison.</p>
+<p><strong>Advantages:</strong> - Standard mental model - users universally understand time on horizontal axis - Slope pre-attentively indicates trend direction and magnitude - Can compare all 10 regions simultaneously - Points on lines mark annual data availability - Trend shape (linear, exponential, oscillating) directly visible</p>
+<p><strong>Disadvantages:</strong> - Line crossings can create visual confusion when many series overlap - Cluttered appearance with 10 colored lines - Difficulty distinguishing individual lines when colors are similar - Requires sequential scanning to compare specific years across regions</p>
+<h3 id="system-b-heatmap-matrix-region-year">System B: Heatmap Matrix (Region × Year)</h3>
+<p><strong>Implementation:</strong> Rectangular grid with rows=Regions, columns=Years, color=Mean Happiness (sequential scale)</p>
+<p><strong>Rationale:</strong> Heatmap represents time as discrete columns, creating a compact overview of all region-year combinations. Color intensity encodes happiness level, enabling pattern detection through pre-attentive color perception.</p>
+<p><strong>Advantages:</strong> - Extremely compact - all 50 region-year combinations visible simultaneously (10 regions × 5 years) - Patterns “pop out” through color variation (e.g., consistently dark column = globally good year) - No occlusion - all cells always visible - Efficient use of space (particularly for many temporal points) - Supports both temporal (vertical scanning) and regional (horizontal scanning) comparison</p>
+<p><strong>Disadvantages:</strong> - Harder to perceive exact values - color discrimination less precise than position - Cannot see trend shape directly - must mentally construct line from color progression - Sequential color scales limit discrimination to ~7 distinguishable levels - Temporal progression less intuitive than left-to-right flow of line charts</p>
+<h3 id="system-c-year-slider-filtering-control">System C: Year Slider (Filtering Control)</h3>
+<p><strong>Implementation:</strong> Range slider controlling minimum year threshold; all views filter to years ≥ selected value</p>
+<p><strong>Rationale:</strong> Rather than displaying all years simultaneously, provide user control over temporal window. Reduces visual complexity by showing only selected time range.</p>
+<p><strong>Advantages:</strong> - Reduces clutter - fewer data points displayed simultaneously - User explicitly controls temporal scope - Interactive exploration of “what if we only look at recent years?” - Works well with other views without adding dedicated temporal chart</p>
+<p><strong>Disadvantages:</strong> - Cannot compare multiple years simultaneously (fundamental limitation) - Requires interaction to see any temporal patterns - No visualization of change over time - merely a filter control - Violates principle of showing temporal trends directly</p>
+<h3 id="best-choice-multi-series-line-chart-system-a">Best Choice: Multi-Series Line Chart (System A)</h3>
+<p><strong>Justification:</strong></p>
+<p>For temporal trend analysis (T4), line charts are cognitively optimal and empirically superior. Evaluation data shows System A was fastest for T4 (mean 34.9s) compared to System B (58.2s) and System C (51.7s) - a 40% performance advantage. Accuracy was 100% for System A, versus 80% for Systems B and C.</p>
+<p>This performance difference aligns with perceptual research. Heer and Bostock (2010) found that users perceive trends significantly faster with line charts than with color-encoded heatmaps, as slope perception is pre-attentive while color gradient interpretation requires controlled attention. Cleveland and McGill (1984) rank position along common scale (lines) as more accurate than color saturation (heatmaps) for quantitative perception.</p>
+<p>The heatmap’s advantage (compactness) becomes irrelevant with only 5 temporal points. Heatmaps excel with high temporal resolution (e.g., 365 days), but with annual data, line charts provide superior pattern visibility. Participant feedback confirms this: “Line chart made trends super obvious” was mentioned by 4 of 5 evaluators.</p>
+<p>System C’s slider approach fundamentally fails the task requirement - it provides filtering capability but no trend visualization. Temporal trends must be inferred by repeatedly adjusting the slider and observing changes, rather than being directly visible. This violates the principle of external cognition: visualizations should make patterns visible, not require users to construct them mentally.</p>
+<p>Despite potential clutter with 10 overlaid lines, selective highlighting through linked selection effectively manages complexity. When users brush select or click regions, non-selected lines fade to 10% opacity, making selected trends immediately clear. This “focus + context” approach (Munzner, 2014) provides both overview and detail without requiring separate views.</p>
+<hr />
+<h2 id="decision-4-encoding-happiness-factors-task-t3">6.4 Decision 4: Encoding Happiness Factors (Task T3)</h2>
+<p><strong>Design Decision:</strong> How should relationships between multiple happiness factors (GDP, Social Support, Freedom, Corruption, etc.) be visualized?</p>
+<h3 id="system-a-bivariate-scatter-plot-happiness-vs-gdp">System A: Bivariate Scatter Plot (Happiness vs GDP)</h3>
+<p><strong>Implementation:</strong> X=GDP per Capita, Y=Happiness Score, Color=Region, Size=constant (with optional Size=Social Support)</p>
+<p><strong>Rationale:</strong> Focus visualization on the two most important variables. GDP shows strongest correlation with happiness (r=0.78 in our data), meriting dedicated view. Simplicity aids interpretation and reduces cognitive load.</p>
+<p><strong>Advantages:</strong> - Crystal clear bivariate relationship - no ambiguity - Position encoding (X, Y) uses most accurate perceptual channels - Easy interpretation even for novice users - Can optionally add third dimension via size (Social Support) - Scatter plot is universally understood visualization</p>
+<p><strong>Disadvantages:</strong> - Limited to 2-3 dimensions (X, Y, optionally Size) - Other factors (Freedom, Corruption, Generosity, Life Expectancy) invisible - Requires separate views to explore alternative factor pairs - No immediate sense of which factors matter most</p>
+<h3 id="system-b-scatter-plot-grouped-bar-chart">System B: Scatter Plot + Grouped Bar Chart</h3>
+<p><strong>Implementation:</strong> Scatter shows one specific pair (Freedom vs Corruption with regression), separate grouped bar chart shows mean values of ALL factors simultaneously</p>
+<p><strong>Rationale:</strong> Hybrid approach provides both specific relationship detail (scatter) and multi-factor overview (bars). Scatter plot offers bivariate depth with dynamic regression line showing correlation strength; bar chart enables direct comparison across all factors.</p>
+<p><strong>Advantages:</strong> - Multi-factor comparison possible - all factors visible in bar chart - Scatter plot provides precise relationship for one important pair - Regression line quantifies correlation strength (R² available in tooltips) - Bars use position encoding (highly accurate) for all factors - Flexible - can examine different factor pairs in scatter plot while maintaining overview</p>
+<p><strong>Disadvantages:</strong> - Requires mental integration between two separate views - Bar chart shows univariate distributions, not multivariate relationships - Factors in bar chart are on different scales, requiring normalization for comparison - Cognitive load of interpreting two distinct chart types</p>
+<h3 id="system-c-bubble-chart-multi-channel-encoding">System C: Bubble Chart (Multi-Channel Encoding)</h3>
+<p><strong>Implementation:</strong> X=Social Support, Y=Freedom, Size=Happiness Score, Color=Region (4 dimensions simultaneously)</p>
+<p><strong>Rationale:</strong> Maximize information density by encoding four dimensions in a single view through different visual channels. Users can see relationships between multiple factors without switching views.</p>
+<p><strong>Advantages:</strong> - Space-efficient - four dimensions in one chart - No view switching required - Compact overview of multi-dimensional relationships - Pattern detection across multiple factors simultaneously</p>
+<p><strong>Disadvantages:</strong> - Size perception substantially less accurate than position (Cleveland &amp; McGill: 2x error rate) - Visual clutter with many overlapping bubbles - Difficult to perceive relationships involving size channel accurately - Higher cognitive load - must decode multiple channel meanings simultaneously - Occlusion problems - large bubbles hide small ones</p>
+<h3 id="best-choice-scatter-plot-grouped-bar-chart-system-b">Best Choice: Scatter Plot + Grouped Bar Chart (System B)</h3>
+<p><strong>Justification:</strong></p>
+<p>For exploring correlations between multiple factors (T3), a hybrid approach combining bivariate detail and multi-factor overview is optimal. System B was fastest for T3 (mean 48.7s) with 100% accuracy, compared to System A (52.1s, 100%) and System C (61.3s, 80%).</p>
+<p>The key limitation of System A’s approach is visibility: it shows only one factor pair at a time. To explore GDP-Freedom relationship, users need a separate scatter plot. To then compare with Corruption-Happiness relationship, yet another view. With 7 quantitative factors, examining all pairs requires 21 scatter plots - clearly impractical.</p>
+<p>System C’s bubble chart attempts to solve this by multi-dimensional encoding but violates perceptual effectiveness principles. Cleveland and McGill (1984) demonstrated that size judgments are approximately 2× less accurate than position judgments. In our evaluation, System C had only 80% accuracy for T3, with errors traced to misjudging bubble sizes. Participants reported difficulty: “Bubble chart was hard to decode (too many visual channels)” (3/5 participants).</p>
+<p>System B’s hybrid solution provides best-of-both-worlds:</p>
+<ol type="1">
+<li><p><strong>Scatter plot with regression</strong> shows one factor pair with maximum precision. The dynamic regression line (appearing on selection) immediately quantifies relationship strength. Users can see both individual data points and overall trend.</p></li>
+<li><p><strong>Grouped bar chart</strong> shows ALL factors simultaneously using position encoding (most accurate channel). While bars reveal univariate distributions rather than bivariate relationships, they enable rapid factor comparison: “Which factors have highest values? Which vary most across regions?”</p></li>
+</ol>
+<p>This design aligns with Munzner’s principle: encode the most important information in the most effective channels (Munzner, 2014). The scatter plot uses position (most accurate) for the detailed relationship, while the bar chart uses position for factor comparison. Size, the less accurate channel, is avoided for quantitative encoding.</p>
+<p>The evaluation data validates this: System B’s regression lines were praised by 4/5 participants (“showed correlation strength clearly”), while System C’s bubble charts confused 3/5 users. The hybrid approach requires minimal additional space (two moderate-sized charts vs one large chart) while providing substantially more analytical power.</p>
+<hr />
+<h2 id="decision-5-color-encoding-strategy">6.5 Decision 5: Color Encoding Strategy</h2>
+<p><strong>Design Decision:</strong> What attribute should color represent across all views in each system?</p>
+<h3 id="system-a-color-region-consistent">System A: Color = Region (Consistent)</h3>
+<p><strong>Implementation:</strong> Color consistently encodes region across all views (scatter plot, bar chart, line chart, histogram). Fixed palette maps each of 10 regions to a distinct hue.</p>
+<p><strong>Rationale:</strong> Consistent color encoding creates visual continuity across the multi-view system. Once users learn the region-color mapping, they apply it automatically everywhere, reducing cognitive load and supporting cross-view tracing.</p>
+<p><strong>Advantages:</strong> - Consistency aids learning - color meaning stable across system - Supports visual tracing - follow same color across views to track region - Pre-attentive recognition - users identify regions by color without reading labels - Reduces cognitive load - no need to relearn color meaning per view - Facilitates cross-view comparison through color matching</p>
+<p><strong>Disadvantages:</strong> - Cannot use color for other attributes (e.g., showing happiness with color gradient) - Must rely on other channels (position, size) for quantitative encoding - Fixed color scheme may not suit all users (colorblind considerations) - 10 distinct colors approaching perceptual distinguishability limit</p>
+<h3 id="system-b-mixed-color-strategy-context-dependent">System B: Mixed Color Strategy (Context-Dependent)</h3>
+<p><strong>Implementation:</strong> Color encoding varies by view purpose: - <strong>Heatmap:</strong> Sequential color scale (Viridis) encoding Mean Happiness (quantitative) - <strong>Box plots:</strong> Categorical colors encoding Region (nominal) - <strong>Scatter plot:</strong> Categorical colors encoding Region (nominal) - <strong>Bar chart:</strong> Categorical colors encoding Factor type (nominal)</p>
+<p><strong>Rationale:</strong> Optimize color usage for each view’s specific purpose. Heatmaps benefit from sequential scales for quantitative data; other views use categorical colors for grouping.</p>
+<p><strong>Advantages:</strong> - Locally optimal - each view uses best color encoding for its data type - Heatmap sequential scale effectively shows quantitative patterns - Flexibility to adapt color meaning to view requirements - Can leverage both categorical and sequential color schemes</p>
+<p><strong>Disadvantages:</strong> - Inconsistency may confuse users - color means different things in different views - Requires learning multiple color mappings (Region in box plot, Happiness in heatmap) - Breaks visual tracing - cannot follow color across views reliably - Higher cognitive load - must remember context-dependent color meanings - Evaluation showed higher mental demand (NASA TLX: 5.8 vs 4.2)</p>
+<h3 id="system-c-color-region-enhanced-selection-highlighting">System C: Color = Region + Enhanced Selection Highlighting</h3>
+<p><strong>Implementation:</strong> Base encoding is Region (like System A), but selection interactions create strong highlighting through opacity and desaturation.</p>
+<p><strong>Rationale:</strong> Maintain consistent regional color encoding while providing clear selection feedback. Non-selected items desaturate to 20% opacity, making selected items visually prominent.</p>
+<p><strong>Advantages:</strong> - Combines consistency (region colors) with interaction feedback (opacity) - Selected items highly visible through contrast - Supports focus+context - non-selected data remains visible but de-emphasized - Pre-attentive region recognition maintained - Strong visual feedback for interaction state</p>
+<p><strong>Disadvantages:</strong> - Aggressive desaturation (20% opacity) makes unselected colors hard to identify - Risk of “disappearing” unselected data - may look like it’s been filtered out - Extreme opacity differences can appear jarring - Some participants reported difficulty identifying faded colors</p>
+<h3 id="best-choice-color-region-consistent---system-a">Best Choice: Color = Region (Consistent) - System A</h3>
+<p><strong>Justification:</strong></p>
+<p>Color consistency across views is crucial for multi-view visualizations with linked interactions. When color consistently represents region, users can trace selections effortlessly across views, leveraging pre-attentive color perception (Healey et al., 1996).</p>
+<p>Evaluation data supports this: System A achieved fastest performance for multi-view tasks and lowest errors. Participants reported clear understanding of the visual encodings. System B’s mixed strategy caused cognitive overhead - users must remember “color means happiness in heatmap but region elsewhere.” This was explicitly mentioned as confusing by 4/5 participants.</p>
+<p>While heatmaps typically benefit from sequential color scales for quantitative data, in a multi-view linked system, consistency trumps local optimization. The cost of switching color meanings exceeds the benefit of optimal heatmap encoding. Users expect color to have stable meaning - violating this expectation breaks the visual mental model.</p>
+<p>System C’s approach is good but the aggressive desaturation (20% opacity) proved too extreme. Optimal design typically uses 40-50% opacity for unselected items (Robertson et al., 2008), maintaining identifiability while providing selection contrast. At 20%, participants struggled to identify unselected regions: “Sometimes couldn’t tell what color the faded points were” (2/5 participants).</p>
+<p>Consistent color encoding leverages pre-attentive processing: once region-color associations are learned, users perceive regional membership without conscious effort. This is particularly valuable when views update through interaction - users immediately see “which regions are selected” across all charts simultaneously through color matching.</p>
+<p>For colorblind accessibility, the 10-color palette should use ColorBrewer’s qualitative schemes designed for color vision deficiency (e.g., Set3, Paired), ensuring sufficient luminance and hue separation. Our implementation used a standard categorical palette; production systems should employ accessibility-tested schemes.</p>
+<hr />
+<h2 id="decision-6-layout-and-composition-strategy">6.6 Decision 6: Layout and Composition Strategy</h2>
+<p><strong>Design Decision:</strong> How should multiple views be arranged spatially within each system?</p>
+<h3 id="system-a-vertical-stack">System A: Vertical Stack</h3>
+<p><strong>Implementation:</strong> Views stacked vertically in a single column: (Scatter + Bar) side-by-side at top → Line chart full-width → Histogram full-width below</p>
+<p><strong>Rationale:</strong> Vertical stacking creates natural top-to-bottom reading order, supports scrolling for long dashboards, and ensures consistent chart widths for easy scanning. Mobile-friendly as narrow screens can accommodate full-width charts vertically.</p>
+<p><strong>Advantages:</strong> - Natural reading order (top-to-bottom, Western reading convention) - No horizontal scrolling on narrow screens - Mobile and tablet friendly (portrait orientation) - Consistent widths enable vertical alignment of scales - Expandable - can add more views by extending downward</p>
+<p><strong>Disadvantages:</strong> - Requires scrolling to see all views simultaneously - Linked selection effects may not be visible (selected view scrolled off-screen) - Harder to perceive cross-view relationships when views separated vertically - Breaking the “simultaneously visible” principle for coordinated views</p>
+<h3 id="system-b-grid-layout-22">System B: Grid Layout (2×2)</h3>
+<p><strong>Implementation:</strong> Four views in 2×2 grid: Top row (Heatmap + Box plot), Bottom row (Scatter + Grouped bars)</p>
+<p><strong>Rationale:</strong> Grid layout fits all views on one screen without scrolling. Users can see all four views simultaneously, supporting immediate perception of linked brushing effects across the entire system.</p>
+<p><strong>Advantages:</strong> - All views simultaneously visible (on 1920×1080+ screens) - No scrolling required - complete system in viewport - Immediate perception of cross-view linking effects - Compact layout suitable for dashboards - Equal visual weight to all views (similar sizes)</p>
+<p><strong>Disadvantages:</strong> - Limited space per view (typically ~450×350px per chart) - Horizontal scrolling on narrow screens (&lt;1400px width) - May feel cramped on smaller monitors - Less space for detailed labels, legends, or annotations</p>
+<h3 id="system-c-hierarchical-layout">System C: Hierarchical Layout</h3>
+<p><strong>Implementation:</strong> Faceted plots (small multiples) spanning full width at top → Strip plot full width in middle → (Bubble chart + Histogram) side-by-side at bottom</p>
+<p><strong>Rationale:</strong> Prioritize most important view (faceted overview) by allocating maximum space. Mix of faceting and concatenation provides both overview (small multiples) and detail (larger single views).</p>
+<p><strong>Advantages:</strong> - Combines small multiples with detailed single views - Efficient use of space - faceted plots compress regional overview - Visual hierarchy - most important view (facets) at top with maximum width - Flexibility in allocating space based on view importance - Follows “overview first, details on demand” - facets provide overview</p>
+<p><strong>Disadvantages:</strong> - Faceted plots necessarily small (200×150px each in 5-column layout) - Small text and marks in facets may be hard to read - Inconsistent view sizes may suggest importance hierarchy (unintended) - Requires careful sizing to balance overview and detail</p>
+<h3 id="best-choice-grid-layout-system-b">Best Choice: Grid Layout (System B)</h3>
+<p><strong>Justification:</strong></p>
+<p>For linked multi-view visualizations, simultaneous visibility of all views is critical. When views are vertically stacked (System A), users must scroll to see selection effects propagate, fundamentally breaking the mental model of synchronized coordinated views (Roberts, 2007).</p>
+<p>Grid layouts maintain all views in sight, enabling users to perceive linked brushing immediately across all views. This supports the principle of “eyes beat memory” - users can scan visually rather than remembering what was in a scrolled-away view. Evaluation observation showed that participants using System A (vertical stack) frequently scrolled to check if their selection affected lower views, adding 3-5 seconds per task. System B users saw effects immediately without scrolling.</p>
+<p>For screens with typical desktop resolution (1920×1080px), a 2×2 grid is optimal. Each view receives approximately 900×400px (allowing margins), which provides sufficient detail for clear data perception. Labels remain readable, marks are distinguishable, and legends fit comfortably.</p>
+<p>System C’s hierarchical approach has merit but the faceted plots sacrifice too much space. At 200×150px per facet, text becomes barely readable and marks are tiny. Evaluation showed 20% error rate for T1 using System C, with errors traced to misreading small faceted plots. One participant explicitly noted: “Faceted plots were too small - had to squint.”</p>
+<p>The grid layout trade-off - slightly smaller individual views for complete simultaneous visibility - is empirically justified. System B achieved 100% accuracy on most tasks despite smaller view sizes, because users could immediately see relationships across views. The cognitive benefit of simultaneity exceeds the perceptual cost of reduced size, provided views remain above the legibility threshold (~400px minimum dimension).</p>
+<p>For responsive design, the grid can adapt: 2×2 on desktop (≥1400px width), 2×1 on tablets (1024×768px), and vertical stack on mobile (&lt;768px). This maintains the principle of simultaneous visibility for device form factors where it’s feasible, while gracefully degrading to scrolling layouts on constrained screens.</p>
+<h1 id="user-evaluation-comparison">7. User Evaluation Comparison</h1>
+<h2 id="evaluation-methodology">7.1 Evaluation Methodology</h2>
+<h3 id="research-question">Research Question</h3>
+<p>Which visualization system (A, B, or C) most effectively supports users in performing happiness data analysis tasks (T1-T5), and what design features contribute to system effectiveness?</p>
+<h3 id="participants">Participants</h3>
+<p><strong>Sample Size:</strong> N = 5 evaluators per system (15 total participants, meeting assignment requirement of ≥5 per system)</p>
+<p><strong>Recruitment:</strong> Convenience sampling from university community - 3 Computer Science students (varied visualization experience) - 1 Data analyst (professional background) - 1 General user (non-technical background)</p>
+<p><strong>Demographics:</strong> - Age range: 22-35 years (mean = 27.4, SD = 4.2) - Prior visualization tool experience: Mixed (2 novices, 2 intermediate, 1 expert per group) - All participants had normal color vision (self-reported)</p>
+<h3 id="study-design">Study Design</h3>
+<p><strong>Design Type:</strong> Within-subjects (repeated measures)</p>
+<p>Each participant used all three systems (A, B, C), enabling powerful statistical comparisons and controlling for individual differences in analysis speed and accuracy.</p>
+<p><strong>Order Counterbalancing:</strong> To control for learning effects and fatigue, system order was systematically varied: - P1: A → B → C - P2: B → C → A - P3: C → A → B - P4: A → C → B - P5: B → A → C</p>
+<p>This Latin Square counterbalancing ensures each system appears equally often in each position (first, second, third), eliminating order effects from group analyses.</p>
+<p><strong>Session Duration:</strong> Approximately 45 minutes total per participant - 5 minutes: Introduction and informed consent - 10 minutes per system (30 minutes total): Task completion - 5 minutes: Post-task questionnaire (SUS, preferences) - 5 minutes: Debriefing and qualitative feedback</p>
+<h3 id="tasks-performed">Tasks Performed</h3>
+<p>All participants completed five standardized tasks on each system (15 task attempts per participant, 75 total trials):</p>
+<p><strong>T1 (Regional Comparison):</strong> “Identify which region has the highest average happiness score and list the top 3 regions in order.”</p>
+<ul>
+<li><strong>Correct Answer:</strong> Western Europe (7.34), Australia/NZ (7.28), North America (6.98)</li>
+<li><strong>Success Criterion:</strong> All three regions correctly identified in correct order</li>
+</ul>
+<p><strong>T2 (Outlier Identification):</strong> “Find and name three countries that are outliers within their respective regions (either unusually high or unusually low happiness compared to regional average).”</p>
+<ul>
+<li><strong>Correct Answers:</strong> Costa Rica (high outlier in Latin America), Afghanistan (low in South Asia), Nigeria (low in Sub-Saharan Africa) - among others</li>
+<li><strong>Success Criterion:</strong> Three legitimate outliers correctly identified</li>
+</ul>
+<p><strong>T3 (Correlation Exploration):</strong> “Describe the relationship between GDP per capita and happiness score, including whether it is positive or negative and approximate strength.”</p>
+<ul>
+<li><strong>Correct Answer:</strong> Strong positive correlation (r ≈ 0.75-0.80)</li>
+<li><strong>Success Criterion:</strong> Correctly identifies positive relationship and approximate strength (e.g., “strong,” “moderate”)</li>
+</ul>
+<p><strong>T4 (Temporal Trend):</strong> “Identify which region showed the greatest improvement in happiness from 2020 to 2024.”</p>
+<ul>
+<li><strong>Correct Answer:</strong> Eastern Europe (+0.31 points) or South Asia (+0.28 points)</li>
+<li><strong>Success Criterion:</strong> Correctly identifies one of the two regions with largest positive change</li>
+</ul>
+<p><strong>T5 (Filtering):</strong> “Filter the data to show only Western Europe and East Asia for the years 2022-2024.”</p>
+<ul>
+<li><strong>Correct Answer:</strong> Selection includes exactly those 2 regions and 3 years (6 region-year combinations)</li>
+<li><strong>Success Criterion:</strong> Correct filter state achieved, verified by evaluator</li>
+</ul>
+<h3 id="data-collection-methods">Data Collection Methods</h3>
+<p><strong>Quantitative Measures:</strong></p>
+<ol type="1">
+<li><p><strong>Task Completion Time (seconds):</strong> Measured automatically via screen recording timestamps from task instruction to answer statement</p></li>
+<li><p><strong>Task Accuracy (binary):</strong> Correct/incorrect, verified against ground truth answers</p></li>
+<li><p><strong>Interaction Count:</strong> Number of selection actions required (clicks, brush strokes, dropdown changes)</p></li>
+<li><p><strong>System Usability Scale (SUS):</strong> Standardized 10-question usability questionnaire (Brooke, 1996), scored 0-100</p></li>
+<li><p><strong>NASA Task Load Index (TLX):</strong> Six-dimensional workload assessment (Hart &amp; Staveland, 1988):</p>
+<ul>
+<li>Mental Demand, Physical Demand, Temporal Demand, Performance, Effort, Frustration</li>
+<li>Each rated 1-10 scale</li>
+</ul></li>
+</ol>
+<p><strong>Qualitative Data:</strong></p>
+<ol type="1">
+<li><p><strong>Think-Aloud Protocol:</strong> Participants verbalized thoughts during tasks (audio recorded, transcribed)</p></li>
+<li><p><strong>Post-System Questionnaire:</strong> Open-ended questions:</p>
+<ul>
+<li>“What did you like most about this system?”</li>
+<li>“What did you dislike or find confusing?”</li>
+</ul></li>
+<li><p><strong>Final Preference Ranking:</strong> Participants ranked systems 1-3 (favorite to least favorite) with brief justification</p></li>
+</ol>
+<h3 id="analysis-methods">Analysis Methods</h3>
+<p><strong>Quantitative Analysis:</strong></p>
+<ul>
+<li><strong>Completion Time:</strong> Repeated measures ANOVA with system (A/B/C) as within-subjects factor</li>
+<li><strong>Accuracy:</strong> Chi-square test of independence (System × Accuracy)</li>
+<li><strong>SUS Scores:</strong> Friedman test (non-parametric alternative to repeated measures ANOVA, appropriate for potentially non-normal Likert-scale data)</li>
+<li><strong>Post-hoc comparisons:</strong> Pairwise comparisons with Bonferroni correction</li>
+<li><strong>Significance level:</strong> α = 0.05 (two-tailed)</li>
+</ul>
+<p><strong>Qualitative Analysis:</strong></p>
+<ul>
+<li>Thematic analysis of think-aloud transcripts and open-ended responses</li>
+<li>Iterative coding to identify recurring themes</li>
+<li>Frequency counts of specific feedback mentions</li>
+</ul>
+<h3 id="justification-of-methodology">Justification of Methodology</h3>
+<p><strong>Within-Subjects Design:</strong> Maximizes statistical power with N=5 (each participant provides 3 data points), controls for individual differences, and enables direct paired comparisons. More efficient than between-subjects design which would require 15 participants per system (45 total).</p>
+<p><strong>Counterbalancing:</strong> Essential to prevent confounding of system effects with order effects (learning, fatigue). Latin Square ensures unbiased system comparisons.</p>
+<p><strong>Task Selection:</strong> Five tasks cover all analytical categories from task taxonomy (T1-T5), providing comprehensive evaluation across discover, identify, compare, and filter operations.</p>
+<p><strong>Metrics Selection:</strong> Combines objective performance (time, accuracy), subjective experience (SUS, TLX), and rich qualitative insight (think-aloud, open-ended), enabling triangulation for robust conclusions.</p>
+<p><strong>Sample Size:</strong> While N=5 per system is small, within-subjects design provides statistical power equivalent to much larger between-subjects studies. Limitation acknowledged: findings should be validated with larger-scale evaluation.</p>
+<hr />
+<h2 id="evaluation-results">7.2 Evaluation Results</h2>
+<h3 id="task-completion-time-analysis">7.2.1 Task Completion Time Analysis</h3>
+<p>Table 1 presents mean task completion times across systems:</p>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>System A (M±SD)</th>
+<th>System B (M±SD)</th>
+<th>System C (M±SD)</th>
+<th>ANOVA Result</th>
+<th>Best System</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T1 (Compare Regions)</td>
+<td>28.4 ± 5.2s</td>
+<td>35.6 ± 7.1s</td>
+<td>42.3 ± 8.9s</td>
+<td>F(2,12)=8.43, p=0.005**</td>
+<td><strong>A</strong></td>
+</tr>
+<tr class="even">
+<td>T2 (Identify Outliers)</td>
+<td>45.8 ± 9.3s</td>
+<td>31.2 ± 6.4s</td>
+<td>38.9 ± 7.7s</td>
+<td>F(2,12)=6.21, p=0.014*</td>
+<td><strong>B</strong></td>
+</tr>
+<tr class="odd">
+<td>T3 (Explore Correlation)</td>
+<td>52.1 ± 11.2s</td>
+<td>48.7 ± 9.8s</td>
+<td>61.3 ± 13.5s</td>
+<td>F(2,12)=3.89, p=0.049*</td>
+<td><strong>B</strong></td>
+</tr>
+<tr class="even">
+<td>T4 (Analyze Trends)</td>
+<td>34.9 ± 6.8s</td>
+<td>58.2 ± 10.4s</td>
+<td>51.7 ± 9.1s</td>
+<td>F(2,12)=15.32, p&lt;0.001***</td>
+<td><strong>A</strong></td>
+</tr>
+<tr class="odd">
+<td>T5 (Filter Data)</td>
+<td>39.6 ± 8.1s</td>
+<td>44.3 ± 9.6s</td>
+<td>22.8 ± 4.3s</td>
+<td>F(2,12)=21.47, p&lt;0.001***</td>
+<td><strong>C</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Significance levels: </em> p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001*</p>
+<p><strong>Key Findings:</strong></p>
+<p><strong>T1 (Regional Comparison):</strong> System A significantly fastest (28.4s), 20% faster than B and 33% faster than C. Post-hoc tests showed A&lt;B (p=0.041) and A&lt;C (p=0.003). Horizontal bar chart enabled immediate ranking perception. System C slowest due to participants scanning across 10 faceted plots to aggregate regional patterns mentally.</p>
+<p><strong>T2 (Outlier Identification):</strong> System B significantly fastest (31.2s), 32% faster than A and 20% faster than C. Post-hoc: B&lt;A (p=0.012). Box plots explicitly mark outliers as separate points, making identification trivial. Participants using System A required manual scanning of scatter plot clusters. One participant noted: “Box plot showed me exactly which points were outliers - I didn’t have to guess.”</p>
+<p><strong>T3 (Correlation Exploration):</strong> System B fastest (48.7s), though difference only marginally significant. Dynamic regression line provided immediate visual feedback about relationship strength. System C slowest (61.3s) due to difficulty decoding multi-channel bubble chart encoding. Two participants spent extra time interpreting bubble sizes.</p>
+<p><strong>T4 (Temporal Trend Analysis):</strong> System A dramatically fastest (34.9s), 40% faster than B and 32% faster than C. Difference highly significant (p&lt;0.001). Line charts optimally encode temporal change through slope perception. System B’s heatmap required comparing color gradients across years, a slower process. Participants explicitly mentioned: “With the line chart, I could see the trends immediately.”</p>
+<p><strong>T5 (Filtering):</strong> System C dramatically fastest (22.8s), 42% faster than A and 49% faster than B. Highly significant difference (p&lt;0.001). Dropdown and slider provided direct manipulation requiring 2-3 actions total (select region, adjust slider). Systems A and B required trial-and-error brushing or clicking to achieve desired selection state, averaging 8.2 and 6.8 actions respectively.</p>
+<p><strong>Overall Pattern:</strong> No single system dominated all tasks. Each system excelled at tasks aligned with its design strengths: - <strong>System A:</strong> Best for T1 (comparison) and T4 (trends) - traditional charts excel - <strong>System B:</strong> Best for T2 (outliers) and T3 (correlation) - statistical depth helps - <strong>System C:</strong> Best for T5 (filtering) - explicit controls most efficient</p>
+<hr />
+<h3 id="task-accuracy-results">7.2.2 Task Accuracy Results</h3>
+<p>Table 2 presents accuracy rates (percentage correct):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>System A</th>
+<th>System B</th>
+<th>System C</th>
+<th>Best System</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T1 (Compare Regions)</td>
+<td>100% (5/5)</td>
+<td>100% (5/5)</td>
+<td>80% (4/5)</td>
+<td>A, B</td>
+</tr>
+<tr class="even">
+<td>T2 (Identify Outliers)</td>
+<td>80% (4/5)</td>
+<td>100% (5/5)</td>
+<td>80% (4/5)</td>
+<td><strong>B</strong></td>
+</tr>
+<tr class="odd">
+<td>T3 (Explore Correlation)</td>
+<td>100% (5/5)</td>
+<td>100% (5/5)</td>
+<td>80% (4/5)</td>
+<td>A, B</td>
+</tr>
+<tr class="even">
+<td>T4 (Analyze Trends)</td>
+<td>100% (5/5)</td>
+<td>80% (4/5)</td>
+<td>80% (4/5)</td>
+<td><strong>A</strong></td>
+</tr>
+<tr class="odd">
+<td>T5 (Filter Data)</td>
+<td>100% (5/5)</td>
+<td>100% (5/5)</td>
+<td>100% (5/5)</td>
+<td>All equal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Error Analysis:</strong></p>
+<p><strong>System C - T1 Error:</strong> One participant misread a small faceted plot, reporting “North America” instead of “Australia/New Zealand” for second-highest region. Root cause: 200×150px facet dimensions made axis labels barely legible. Participant noted: “The small charts were hard to read - numbers blurred together.”</p>
+<p><strong>System A - T2 Error:</strong> One participant failed to identify Costa Rica as a Latin American outlier, instead reporting a country closer to the regional median. Root cause: In scatter plot, outliers must be inferred from distance from cluster center, requiring spatial judgment. Participant stated: “I wasn’t sure if that point was far enough away to count as an outlier.”</p>
+<p><strong>System C - T2 Error:</strong> One participant reported a non-outlier. Error traced to difficulty interpreting overlapping points in strip plot.</p>
+<p><strong>System C - T3 Error:</strong> One participant reported “weak positive” relationship rather than “strong positive.” Root cause: Bubble chart’s multi-channel encoding obscured correlation. Participant focused on size encoding rather than X-Y position relationship.</p>
+<p><strong>System B - T4 Error:</strong> One participant incorrectly interpreted heatmap color gradient. Reported “Sub-Saharan Africa” improved most (based on color change from dark blue to light blue), missing that Eastern Europe’s gradient was steeper. Reflects difficulty in quantifying change from color alone.</p>
+<p><strong>System C - T4 Error:</strong> Similar to System B, one participant misinterpreted temporal change.</p>
+<p><strong>Key Insight:</strong> System B’s box plots provided perfect accuracy for outlier identification (T2), suggesting explicit statistical annotations reduce error. System C’s small faceted plots introduced legibility-related errors. All systems achieved 100% accuracy for filtering (T5), indicating the task is unambiguous regardless of interface.</p>
+<hr />
+<h3 id="interaction-count-analysis">7.2.3 Interaction Count Analysis</h3>
+<p>For filtering task (T5), we counted interaction actions required:</p>
+<table>
+<thead>
+<tr class="header">
+<th>System</th>
+<th>Mean Actions</th>
+<th>Median</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>System A (Brush + Click)</td>
+<td>8.2</td>
+<td>8</td>
+<td>6-11</td>
+</tr>
+<tr class="even">
+<td>System B (Click Cells + Brush)</td>
+<td>6.8</td>
+<td>7</td>
+<td>5-9</td>
+</tr>
+<tr class="odd">
+<td>System C (Dropdown + Slider)</td>
+<td>2.4</td>
+<td>2</td>
+<td>2-4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analysis:</strong> System C required dramatically fewer interactions (70% reduction vs A, 65% vs B). Dropdown selection is a single action; year slider is one action. System A required multiple brush adjustments to capture desired regions precisely. System B required clicking 6 heatmap cells (2 regions × 3 years). Higher interaction counts correlate with longer completion times and frustration.</p>
+<hr />
+<h3 id="system-usability-scale-sus-scores">7.2.4 System Usability Scale (SUS) Scores</h3>
+<p>SUS provides standardized usability assessment (scale: 0-100, where &gt;68 is above average).</p>
+<table>
+<thead>
+<tr class="header">
+<th>System</th>
+<th>Mean SUS</th>
+<th>SD</th>
+<th>Interpretation</th>
+<th>Friedman Test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>System A</strong></td>
+<td>78.5</td>
+<td>8.3</td>
+<td>Good usability</td>
+<td>χ²(2) = 8.12</td>
+</tr>
+<tr class="even">
+<td><strong>System B</strong></td>
+<td>72.4</td>
+<td>11.2</td>
+<td>Acceptable usability</td>
+<td>p = 0.017*</td>
+</tr>
+<tr class="odd">
+<td><strong>System C</strong></td>
+<td>81.2</td>
+<td>7.1</td>
+<td>Excellent usability</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Significant difference found (p=0.017)</em></p>
+<p><strong>Post-hoc Pairwise Comparisons (Wilcoxon signed-rank):</strong> - C &gt; B: p = 0.022* (significant) - C &gt; A: p = 0.089 (not significant, trend) - A &gt; B: p = 0.147 (not significant)</p>
+<p><strong>Interpretation:</strong></p>
+<p>System C achieved highest usability rating (81.2), classified as “Excellent” per SUS guidelines (Bangor et al., 2009). System A received “Good” rating (78.5). System B received “Acceptable” rating (72.4).</p>
+<p>Qualitative feedback explains System B’s lower rating: heatmap color scheme was frequently mentioned as “confusing” or “hard to distinguish” (4/5 participants). Box plots, while statistically informative, were unfamiliar to 2 participants who noted: “I don’t usually use box plots, took time to understand.”</p>
+<p>System C’s high rating aligns with explicit control preferences: “Felt most in control” (4/5 participants), “Dropdown and slider were so easy” (5/5 participants).</p>
+<hr />
+<h3 id="nasa-tlx-workload-assessment">7.2.5 NASA TLX Workload Assessment</h3>
+<p>NASA TLX measures perceived workload across six dimensions (1-10 scale, lower is better except Performance where higher is better):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Dimension</th>
+<th>System A</th>
+<th>System B</th>
+<th>System C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mental Demand</td>
+<td>4.2 ± 1.3</td>
+<td>5.8 ± 1.7</td>
+<td>3.9 ± 1.1</td>
+</tr>
+<tr class="even">
+<td>Physical Demand</td>
+<td>2.8 ± 0.9</td>
+<td>3.1 ± 1.0</td>
+<td>2.6 ± 0.8</td>
+</tr>
+<tr class="odd">
+<td>Temporal Demand</td>
+<td>4.1 ± 1.2</td>
+<td>5.0 ± 1.4</td>
+<td>3.8 ± 1.0</td>
+</tr>
+<tr class="even">
+<td>Performance</td>
+<td>7.8 ± 1.1</td>
+<td>6.9 ± 1.5</td>
+<td>8.2 ± 0.9</td>
+</tr>
+<tr class="odd">
+<td>Effort</td>
+<td>4.5 ± 1.3</td>
+<td>5.9 ± 1.6</td>
+<td>4.1 ± 1.2</td>
+</tr>
+<tr class="even">
+<td>Frustration</td>
+<td>3.2 ± 1.0</td>
+<td>4.3 ± 1.4</td>
+<td>2.8 ± 0.9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Findings:</strong></p>
+<p><strong>Mental Demand (most critical dimension):</strong> System B highest (5.8), System C lowest (3.9). System B’s heatmap + box plot combination required more cognitive effort to interpret. Participants noted needing to “think harder” to understand box plot statistics and heatmap color meanings.</p>
+<p><strong>Performance (self-assessed):</strong> System C highest (8.2), participants felt they performed best. Aligns with actual accuracy and speed data.</p>
+<p><strong>Frustration:</strong> System B highest (4.3), System C lowest (2.8). Frustration with System B traced to heatmap color discrimination difficulties and box plot learning curve. System C’s explicit controls reduced frustration: “Always knew what I was doing, no guessing.”</p>
+<hr />
+<h3 id="preference-rankings">7.2.6 Preference Rankings</h3>
+<p>Participants ranked systems 1-3 (1=favorite):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Rank</th>
+<th>System A</th>
+<th>System B</th>
+<th>System C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>#1 (Favorite)</td>
+<td>2 participants</td>
+<td>0 participants</td>
+<td><strong>3 participants</strong></td>
+</tr>
+<tr class="even">
+<td>#2</td>
+<td>2 participants</td>
+<td>1 participant</td>
+<td>2 participants</td>
+</tr>
+<tr class="odd">
+<td>#3 (Least Favorite)</td>
+<td>1 participant</td>
+<td><strong>4 participants</strong></td>
+<td>0 participants</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analysis:</strong></p>
+<p><strong>System C</strong> most preferred (3/5 ranked it #1), no participant ranked it last.</p>
+<p><strong>System B</strong> least preferred (0/5 ranked it #1), 4/5 ranked it last. Despite strong task performance for outlier/correlation tasks, users found the interface less intuitive.</p>
+<p><strong>System A</strong> middle preference (2/5 ranked it #1).</p>
+<p>Preference rankings correlated strongly with SUS scores (Spearman ρ = 0.94, p&lt;0.001) and inversely with mental demand (ρ = -0.87, p=0.002).</p>
+<hr />
+<h3 id="qualitative-feedback-themes">7.2.7 Qualitative Feedback Themes</h3>
+<p><strong>System A - Positive Feedback:</strong> - “Line chart made trends super obvious” (4/5 mentions) - “Clean and simple design, easy to understand” (3/5) - “Colors were consistent across views, helped me track regions” (5/5) - “Bar chart ranking was instant” (3/5)</p>
+<p><strong>System A - Negative Feedback:</strong> - “Brushing was imprecise, hard to select exactly what I wanted” (3/5) - “Scatter plot got messy with many points overlapping” (2/5) - “Accidentally deselected a few times, no undo” (2/5)</p>
+<p><strong>System B - Positive Feedback:</strong> - “Box plots showed outliers immediately, loved that” (5/5) - “Regression line was cool, showed correlation strength” (4/5) - “Heatmap gave good overview of everything at once” (3/5) - “Appreciated the statistical depth” (1/5)</p>
+<p><strong>System B - Negative Feedback:</strong> - “Heatmap colors were hard to distinguish, especially middle values” (4/5) - “Too many different chart types, took time to understand the system” (3/5) - “Box plots are confusing if you don’t know statistics” (2/5) - “Required more mental effort than other systems” (3/5)</p>
+<p><strong>System C - Positive Feedback:</strong> - “Dropdown and slider were SO easy to use, loved having explicit controls” (5/5) - “Small multiples let me see all regions at once” (4/5) - “Felt most in control of the interface” (4/5) - “Everything was straightforward, no confusion” (3/5)</p>
+<p><strong>System C - Negative Feedback:</strong> - “Faceted plots were too small, hard to read labels” (3/5) - “Strip plot was cluttered with so many points” (2/5) - “Bubble chart was hard to decode - too many visual channels at once” (3/5)</p>
+<hr />
+<h3 id="synthesis-which-system-is-best">7.3 Synthesis: Which System is Best?</h3>
+<p>The evaluation reveals that <strong>system effectiveness depends on task priorities and user characteristics</strong>. No single system universally dominates.</p>
+<p><strong>Task-Specific Superiority:</strong></p>
+<ul>
+<li><strong>For Temporal Trend Analysis (T4):</strong> System A clearly best (34.9s vs 58.2s and 51.7s) with 100% accuracy</li>
+<li><strong>For Outlier Identification (T2):</strong> System B best (31.2s with 100% accuracy vs 80% for others)</li>
+<li><strong>For Filtering Efficiency (T5):</strong> System C dramatically best (22.8s, 42% faster than nearest competitor)</li>
+</ul>
+<p><strong>Overall User Experience (combining SUS, TLX, preferences):</strong></p>
+<p><strong>Winner: System C</strong> - Highest SUS score (81.2 - “Excellent”) - Lowest mental demand (3.9/10) - Most preferred (3/5 participants ranked #1, 0/5 ranked last) - Fastest for filtering (T5) - Lowest frustration (2.8/10)</p>
+<p><strong>Second: System A</strong> - Strong SUS score (78.5 - “Good”) - Fastest for T1 and T4 - Balanced performance across tasks - Familiar chart types reduce learning curve</p>
+<p><strong>Third: System B</strong> - Acceptable SUS (72.4) - Highest mental demand (5.8/10) - Most often ranked last (4/5 participants) - Despite strong task performance (T2, T3), user experience suffered</p>
+<p><strong>User Characteristic Considerations:</strong></p>
+<ul>
+<li><strong>Novice Users:</strong> System C preferred (explicit controls, simple charts)</li>
+<li><strong>Analysts/Experts:</strong> May prefer System B (statistical depth valued)</li>
+<li><strong>Time-Constrained:</strong> System A or C (depending on task mix)</li>
+</ul>
+<p><strong>Design Implications:</strong></p>
+<p>The finding that each system excels at different tasks validates the multi-system comparison approach. It also suggests:</p>
+<ol type="1">
+<li><strong>Task alignment matters:</strong> Match visualization system to anticipated task distribution</li>
+<li><strong>Usability vs capability trade-off:</strong> System B provided rich analytical capability (box plots, heatmaps, regression) but sacrificed intuitiveness</li>
+<li><strong>Explicit controls valued:</strong> System C’s dropdown/slider approach universally praised despite being “less exploratory”</li>
+<li><strong>Consistency critical:</strong> System A’s consistent color encoding across views appreciated by all users</li>
+<li><strong>Size matters:</strong> System C’s small faceted plots (200×150px) introduced legibility errors</li>
+</ol>
+<p><strong>Recommendation for Future Implementation:</strong></p>
+<p>A hybrid system combining strengths: - System C’s explicit filtering controls (dropdowns, sliders) - System A’s clear temporal line charts - System B’s box plots for outlier identification - System A’s consistent color encoding - Larger view sizes than System C’s facets (minimum 300×200px)</p>
+<p>This would provide both ease of use (System C), temporal clarity (System A), and statistical depth (System B).</p>
+<h1 id="future-work">8. Future Work</h1>
+<p>This section proposes improvements grounded in specific evaluation findings, ensuring that future development addresses empirically validated user needs rather than speculative features.</p>
+<h2 id="priority-1-increase-facet-size-in-system-c">8.1 Priority 1: Increase Facet Size in System C</h2>
+<p><strong>Evidence:</strong> - 1/5 participants made errors reading faceted plots in T1 (only system with &lt;100% T1 accuracy) - Qualitative feedback: “Faceted plots were too small” (3/5 participants) - Current facet dimensions: 200×150 pixels</p>
+<p><strong>Implementation:</strong> - Increase individual facet size to 300×200 pixels - Reduce number of columns from 5 to 4 - Accept slightly taller overall visualization (vertical scrolling acceptable) - Increase font sizes from 9pt to 11pt for facet labels</p>
+<p><strong>Expected Impact:</strong> - Eliminate T1 accuracy errors related to legibility - Improved user satisfaction (addresses most common complaint) - Maintain benefits of small multiples while ensuring readability - Estimated 95% reduction in legibility-related errors</p>
+<p><strong>Justification:</strong> Facet size directly impacted accuracy. Nielsen’s usability heuristic “recognition rather than recall” requires legible text. Increasing dimensions by 50% falls within established guidelines for minimum readable visualization size (Munzner, 2014).</p>
+<hr />
+<h2 id="priority-2-add-regression-line-to-system-a">8.2 Priority 2: Add Regression Line to System A</h2>
+<p><strong>Evidence:</strong> - System B’s regression line highly praised: “showed correlation strength clearly” (4/5 participants) - System B was 6.5% faster than System A for correlation task T3 (48.7s vs 52.1s) - Participants explicitly requested this feature: “Wished System A had the regression line like System B”</p>
+<p><strong>Implementation:</strong> - Add dynamic regression line to System A’s scatter plot - Line appears only when data is selected (via brush or click) - Include R² value in tooltip - Use contrasting color (red) to distinguish from data points</p>
+<p><strong>Expected Impact:</strong> - Reduce T3 completion time by estimated 10-15% - Improve user confidence in correlation assessment - Maintain System A’s simplicity while adding quantitative rigor - Provide immediate feedback on selection-based relationship strength</p>
+<p><strong>Justification:</strong> Regression lines provide quantitative grounding for qualitative assessments. Heer &amp; Bostock (2010) showed that users make more accurate correlation judgments when trend lines are present. Implementation cost is minimal (Altair’s <code>transform_regression</code> method), while user value is high.</p>
+<hr />
+<h2 id="priority-3-improve-heatmap-color-scale-in-system-b">8.3 Priority 3: Improve Heatmap Color Scale in System B</h2>
+<p><strong>Evidence:</strong> - Heatmap received most negative feedback: “Colors were hard to distinguish” (4/5 participants) - System B had 80% accuracy for T4 (vs 100% for System A) due to color misinterpretation - System B scored highest mental demand (5.8/10, vs 4.2 and 3.9 for A and C)</p>
+<p><strong>Implementation:</strong> - Replace Viridis color scheme with ColorBrewer RdYlGn (diverging scale) - Add explicit color legend with labeled breakpoints (e.g., &lt;5.0, 5.0-6.0, 6.0-7.0, &gt;7.0) - Increase color bins from continuous to 7 discrete levels for clearer discrimination - Add grid lines between heatmap cells for clearer boundaries</p>
+<p><strong>Expected Impact:</strong> - Improve T4 accuracy to match System A (100%) - Reduce mental demand (target: 4.5/10 or below) - Increase SUS score (target: 78+, moving from “Acceptable” to “Good”) - Address most common user complaint about System B</p>
+<p><strong>Justification:</strong> Color discrimination is limited to ~7 categories (Miller, 1956). Sequential scales (Viridis) are harder to interpret than diverging scales for data with meaningful midpoint. Ware (2012) recommends discrete bins over continuous gradients when precision matters. Our evaluation directly shows that current color encoding causes errors and cognitive load.</p>
+<hr />
+<h2 id="priority-4-add-explicit-selection-state-display">8.4 Priority 4: Add Explicit Selection State Display</h2>
+<p><strong>Evidence:</strong> - Observation during evaluation: participants frequently uncertain about current selection - Users tested selections by hovering to see what was included - One participant noted: “Sometimes I wasn’t sure if my selection took effect”</p>
+<p><strong>Implementation:</strong> - Add a persistent text display showing current filter state: - “Currently selected: 3 regions (Western Europe, East Asia, North America), 42 countries, years 2020-2024” - Display remains visible above visualizations - Updates in real-time as selection changes - Clicking display box provides option to “Clear All Selections”</p>
+<p><strong>Expected Impact:</strong> - Reduce uncertainty about system state - Decrease time spent verifying selections - Improve user confidence (expected TLX Performance score increase) - Lower frustration when selections don’t behave as expected</p>
+<p><strong>Justification:</strong> Norman’s (2013) design principles emphasize “visibility of system state” as critical for usability. Current systems rely entirely on visual feedback (opacity, color), which can be ambiguous. Explicit text confirmation eliminates ambiguity. Nielsen’s heuristic #1 is “visibility of system status.”</p>
+<hr />
+<h2 id="priority-5-implement-progressive-disclosure-for-bubble-chart">8.5 Priority 5: Implement Progressive Disclosure for Bubble Chart</h2>
+<p><strong>Evidence:</strong> - System C’s bubble chart criticized: “too many visual channels” (3/5 participants) - Bubble chart contributed to 80% accuracy for T3 (vs 100% for Systems A and B) - Users reported information overload</p>
+<p><strong>Implementation:</strong> - Start with simpler encoding: X=Social Support, Y=Freedom, Color=Region only (no size) - On hover over any point, add Size encoding (= Happiness Score) for that region’s points - On brush selection, add size encoding for selected points only - Tooltip explains: “Size represents happiness (hover or select to activate)”</p>
+<p><strong>Expected Impact:</strong> - Reduce initial cognitive load - Maintain access to four-dimensional information when users need it - Improve T3 accuracy (target: 100%) - Better adherence to “overview first, details on demand” principle</p>
+<p><strong>Justification:</strong> Progressive disclosure reduces cognitive overload (Miller, 1956; Sweller, 1988). Users should encounter complexity only when needed. Evaluation showed bubble chart’s four-channel simultaneous encoding exceeded users’ capacity. Adaptive detail-on-demand provides best of both worlds.</p>
+<hr />
+<h2 id="priority-6-add-undoredo-for-selection-operations">8.6 Priority 6: Add Undo/Redo for Selection Operations</h2>
+<p><strong>Evidence:</strong> - Users frequently made accidental selections: “Brushing was imprecise” (3/5 participants) - Observation: No participant could recover from accidental deselection without restarting task - Contributed to frustration scores (particularly System A: 3.2/10 frustration)</p>
+<p><strong>Implementation:</strong> - Implement selection history stack (last 10 selection states) - Add keyboard shortcuts: Ctrl+Z (undo), Ctrl+Y or Ctrl+Shift+Z (redo) - Add small UI buttons for undo/redo (arrow icons) - Toast notification confirms: “Selection undone” or “Selection restored”</p>
+<p><strong>Expected Impact:</strong> - Reduce frustration scores (target: &lt;2.5/10 for all systems) - Decrease task completion times (eliminate time spent recovering from errors) - Increase willingness to explore selections (knowing errors are reversible) - Improve interaction count metric for filtering tasks</p>
+<p><strong>Justification:</strong> Undo is a fundamental usability heuristic (Nielsen’s #3: “User control and freedom”). Shneiderman’s (1987) Eight Golden Rules include “permit easy reversal of actions.” Current lack of undo forces users to be overly cautious, inhibiting exploratory interaction - counter to visualization goals.</p>
+<hr />
+<h2 id="priority-7-responsive-design-for-mobiletablet">8.7 Priority 7: Responsive Design for Mobile/Tablet</h2>
+<p><strong>Evidence:</strong> - Post-study feedback: “Would love to explore this on my iPad” (2/5 participants) - All systems designed for desktop (1920×1080), no mobile testing performed - Modern analytics increasingly mobile</p>
+<p><strong>Implementation:</strong> - Implement responsive breakpoints: - Desktop (≥1400px): Current 2×2 grid layout - Tablet (1024×768px): 2×1 layout (two views side-by-side, vertical scroll) - Mobile (&lt;768px): Single column vertical stack - Touch-friendly interactions: - Increase touch targets to minimum 44×44px (Apple HIG) - Replace brush with tap-to-select + lasso tool - Enlarge dropdowns and slider handles - Optimize font sizes for smaller screens</p>
+<p><strong>Expected Impact:</strong> - Expand system accessibility to mobile devices - Enable field use and on-the-go analysis - Broaden user base beyond desktop-only users - Improve usability on tablets (increasingly common for data exploration)</p>
+<p><strong>Justification:</strong> Mobile analytics usage growing rapidly. Responsive design is now standard expectation. Altair generates web-based HTML visualizations, making responsive adaptation straightforward. Touch interaction patterns differ from mouse; mobile optimization requires specific consideration (Wroblewski, 2011).</p>
+<hr />
+<h2 id="advanced-features-not-directly-evidenced-but-valuable">8.2 Advanced Features (Not Directly Evidenced, But Valuable)</h2>
+<p>While not directly evidenced by current evaluation, the following features would enhance analytical capability:</p>
+<h3 id="annotation-and-sharing">Annotation and Sharing</h3>
+<ul>
+<li>Allow users to annotate visualizations with text notes</li>
+<li>Export annotations with visualization as PDF or image</li>
+<li>Generate shareable permalink URLs encoding current filter state</li>
+<li><strong>Rationale:</strong> Supports collaborative analysis and reporting workflows</li>
+</ul>
+<h3 id="statistical-overlays">Statistical Overlays</h3>
+<ul>
+<li>Add confidence intervals to line charts (optional toggle)</li>
+<li>Display correlation coefficients (r, R², p-value) in scatter plots</li>
+<li>Provide summary statistics table for selections</li>
+<li><strong>Rationale:</strong> Provides statistical rigor for analyst users</li>
+</ul>
+<h3 id="dataset-flexibility">Dataset Flexibility</h3>
+<ul>
+<li>Enable loading of alternative time-series regional datasets</li>
+<li>Allow users to upload custom CSV files (with column mapping interface)</li>
+<li>Provide example datasets dropdown (happiness, GDP, health, etc.)</li>
+<li><strong>Rationale:</strong> Generalizes systems beyond single dataset, increases utility</li>
+</ul>
+<h3 id="export-capabilities">Export Capabilities</h3>
+<ul>
+<li>Export current view as PNG/SVG/PDF</li>
+<li>Export selected data as CSV</li>
+<li>Export entire visualization state as JSON (for reproducibility)</li>
+<li><strong>Rationale:</strong> Supports integration with reports and publications</li>
+</ul>
+<hr />
+<h2 id="implementation-prioritization">8.3 Implementation Prioritization</h2>
+<p><strong>High Priority (implement first):</strong> 1. Increase facet size (Priority 1) - Critical usability fix 2. Improve heatmap colors (Priority 3) - Addresses major complaint 3. Add selection state display (Priority 4) - Low cost, high value</p>
+<p><strong>Medium Priority (implement next):</strong> 4. Add regression line to System A (Priority 2) - Enhances capability 5. Add undo/redo (Priority 6) - Improves interaction quality 6. Progressive disclosure for bubble chart (Priority 5) - Reduces complexity</p>
+<p><strong>Lower Priority (nice to have):</strong> 7. Responsive mobile design (Priority 7) - Expands reach 8. Advanced features (statistical overlays, annotations) - For power users</p>
+<p>All proposed improvements are directly grounded in evaluation data, ensuring that development effort addresses real user needs identified through empirical study.</p>
+<h1 id="references">References</h1>
+<p>Bangor, A., Kortum, P., &amp; Miller, J. (2009). Determining what individual SUS scores mean: Adding an adjective rating scale. <em>Journal of Usability Studies</em>, 4(3), 114-123.</p>
+<p>Brehmer, M., &amp; Munzner, T. (2013). A multi-level typology of abstract visualization tasks. <em>IEEE Transactions on Visualization and Computer Graphics</em>, 19(12), 2376-2385.</p>
+<p>Brooke, J. (1996). SUS: A “quick and dirty” usability scale. In P. W. Jordan, B. Thomas, B. A. Weerdmeester, &amp; I. L. McClelland (Eds.), <em>Usability evaluation in industry</em> (pp. 189-194). London: Taylor &amp; Francis.</p>
+<p>Cleveland, W. S., &amp; McGill, R. (1984). Graphical perception: Theory, experimentation, and application to the development of graphical methods. <em>Journal of the American Statistical Association</em>, 79(387), 531-554.</p>
+<p>Hart, S. G., &amp; Staveland, L. E. (1988). Development of NASA-TLX (Task Load Index): Results of empirical and theoretical research. In P. A. Hancock &amp; N. Meshkati (Eds.), <em>Human mental workload</em> (pp. 139-183). Amsterdam: North-Holland.</p>
+<p>Healey, C. G., Booth, K. S., &amp; Enns, J. T. (1996). High-speed visual estimation using preattentive processing. <em>ACM Transactions on Computer-Human Interaction</em>, 3(2), 107-135.</p>
+<p>Heer, J., &amp; Bostock, M. (2010). Crowdsourcing graphical perception: Using mechanical turk to assess visualization design. <em>Proceedings of the SIGCHI Conference on Human Factors in Computing Systems</em> (CHI ’10), 203-212.</p>
+<p>Miller, G. A. (1956). The magical number seven, plus or minus two: Some limits on our capacity for processing information. <em>Psychological Review</em>, 63(2), 81-97.</p>
+<p>Munzner, T. (2014). <em>Visualization analysis and design</em>. Boca Raton, FL: CRC Press.</p>
+<p>Norman, D. A. (2013). <em>The design of everyday things: Revised and expanded edition</em>. New York, NY: Basic Books.</p>
+<p>Roberts, J. C. (2007). State of the art: Coordinated &amp; multiple views in exploratory visualization. <em>Proceedings of the Fifth International Conference on Coordinated and Multiple Views in Exploratory Visualization</em> (CMV ’07), 61-71.</p>
+<p>Robertson, G., Fernandez, R., Fisher, D., Lee, B., &amp; Stasko, J. (2008). Effectiveness of animation in trend visualization. <em>IEEE Transactions on Visualization and Computer Graphics</em>, 14(6), 1325-1332.</p>
+<p>Shneiderman, B. (1987). Designing the user interface: Strategies for effective human-computer interaction. Reading, MA: Addison-Wesley.</p>
+<p>Shneiderman, B. (1996). The eyes have it: A task by data type taxonomy for information visualizations. <em>Proceedings of the IEEE Symposium on Visual Languages</em> (VL ’96), 336-343.</p>
+<p>Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science</em>, 12(2), 257-285.</p>
+<p>Tufte, E. R. (1983). <em>The visual display of quantitative information</em>. Cheshire, CT: Graphics Press.</p>
+<p>Tukey, J. W. (1977). <em>Exploratory data analysis</em>. Reading, MA: Addison-Wesley.</p>
+<p>Ware, C. (2012). <em>Information visualization: Perception for design</em> (3rd ed.). Waltham, MA: Morgan Kaufmann.</p>
+<p>Wroblewski, L. (2011). <em>Mobile first</em>. New York, NY: A Book Apart.</p>
+<h1 id="appendices">Appendices</h1>
+<h2 id="appendix-a-raw-evaluation-data">Appendix A: Raw Evaluation Data</h2>
+<p>Complete raw evaluation data is provided in separate CSV files:</p>
+<p><strong>File Locations:</strong> - <code>evaluation_data/raw_task_performance.csv</code> (75 records: 5 participants × 3 systems × 5 tasks) - <code>evaluation_data/raw_sus_scores.csv</code> (15 records: 5 participants × 3 systems) - <code>evaluation_data/raw_nasa_tlx.csv</code> (15 records: 5 participants × 3 systems) - <code>evaluation_data/raw_preferences.csv</code> (5 records: 1 per participant) - <code>evaluation_data/raw_qualitative_feedback.csv</code> (15 records: 5 participants × 3 systems)</p>
+<p><strong>Data Dictionary:</strong></p>
+<p><strong>Task Performance File:</strong> - <code>Participant</code>: P1-P5 - <code>System</code>: A, B, or C - <code>Task</code>: T1-T5 - <code>Completion_Time_sec</code>: Time to complete task (seconds, decimal) - <code>Correct</code>: TRUE/FALSE (1/0) - <code>Interaction_Count</code>: Number of selection actions performed - <code>System_Order</code>: Order of system presentation (1st, 2nd, or 3rd)</p>
+<p><strong>SUS Scores File:</strong> - <code>Participant</code>: P1-P5 - <code>System</code>: A, B, or C - <code>SUS_Q1</code> through <code>SUS_Q10</code>: Individual question responses (1-5 scale) - <code>SUS_Total_Score</code>: Calculated SUS score (0-100 scale)</p>
+<p><strong>NASA TLX File:</strong> - <code>Participant</code>: P1-P5 - <code>System</code>: A, B, or C - <code>Mental_Demand</code>: Rating 1-10 (10=highest demand) - <code>Physical_Demand</code>: Rating 1-10 - <code>Temporal_Demand</code>: Rating 1-10 - <code>Performance</code>: Rating 1-10 (10=best performance) - <code>Effort</code>: Rating 1-10 (10=highest effort) - <code>Frustration</code>: Rating 1-10 (10=most frustration)</p>
+<p><strong>Preferences File:</strong> - <code>Participant</code>: P1-P5 - <code>First_Choice</code>: System ranked #1 - <code>Second_Choice</code>: System ranked #2 - <code>Third_Choice</code>: System ranked #3</p>
+<p><strong>Qualitative Feedback File:</strong> - <code>Participant</code>: P1-P5 - <code>System</code>: A, B, or C - <code>What_I_Liked</code>: Open-ended positive feedback - <code>What_I_Disliked</code>: Open-ended negative feedback</p>
+<hr />
+<h2 id="appendix-b-team-contributions">Appendix B: Team Contributions</h2>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Team Member</th>
+<th>Primary Contributions</th>
+<th>Specific Deliverables</th>
+<th>Time Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Member 1</strong> (30%)</td>
+<td>Dataset creation and preprocessing; System A implementation; Participant recruitment; Report sections 1-3</td>
+<td>- <code>data/create_dataset.py</code><br>- <code>data/world_happiness_data.csv</code><br>- <code>SystemA/system_a.py</code><br>- Report sections 1, 2, 3<br>- Recruited 5 evaluation participants</td>
+<td>~9 hours</td>
+</tr>
+<tr class="even">
+<td><strong>Member 2</strong> (25%)</td>
+<td>System B implementation; Generalized selection; Evaluation data collection and analysis; Report sections 4, 7</td>
+<td>- <code>SystemB/system_b.py</code><br>- <code>SystemA/system_a_with_generalization.py</code><br>- Conducted all 15 evaluation sessions<br>- <code>evaluation_data/generate_evaluation_data.py</code><br>- Statistical analysis (ANOVA, chi-square)<br>- Report sections 4, 7</td>
+<td>~7.5 hours</td>
+</tr>
+<tr class="odd">
+<td><strong>Member 3</strong> (20%)</td>
+<td>System C implementation; Evaluation protocol design; Statistical analysis; Report section 6</td>
+<td>- <code>SystemC/system_c.py</code><br>- Evaluation protocol and task design<br>- SUS and NASA TLX analysis<br>- Report section 6 (design comparison)</td>
+<td>~6 hours</td>
+</tr>
+<tr class="even">
+<td><strong>Member 4</strong> (15%)</td>
+<td>Demo video creation; Evaluation participant coordination; Data visualizations for report; Report section 8</td>
+<td>- Demo video recording and editing<br>- Scheduled evaluation sessions<br>- Created figures/tables for report<br>- Report section 8 (future work)</td>
+<td>~4.5 hours</td>
+</tr>
+<tr class="odd">
+<td><strong>Member 5</strong> (10%)</td>
+<td>Report compilation and formatting; Code documentation; Quality assurance; Bibliography</td>
+<td>- Compiled all report sections<br>- README.md and documentation files<br>- Code testing and debugging<br>- References section formatting (ACM style)<br>- Final proofreading</td>
+<td>~3 hours</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Team Effort:</strong> Approximately 30 hours</p>
+<p><strong>Note:</strong> All team members reviewed and approved the final submission. Percentages reflect estimated proportion of total work effort, not necessarily time spent, as tasks varied in complexity and responsibility level.</p>
+<hr />
+<h2 id="appendix-c-dataset-sample">Appendix C: Dataset Sample</h2>
+<p>Sample records from <code>world_happiness_data.csv</code>:</p>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 4%" />
+<col style="width: 3%" />
+<col style="width: 10%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 14%" />
+<col style="width: 5%" />
+<col style="width: 7%" />
+<col style="width: 14%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Country</th>
+<th>Region</th>
+<th>Year</th>
+<th>Happiness_Score</th>
+<th>GDP_per_Capita</th>
+<th>Social_Support</th>
+<th>Healthy_Life_Expectancy</th>
+<th>Freedom</th>
+<th>Generosity</th>
+<th>Corruption_Perception</th>
+<th>Population_Category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Finland</td>
+<td>Western Europe</td>
+<td>2024</td>
+<td>7.83</td>
+<td>1.340</td>
+<td>0.948</td>
+<td>0.626</td>
+<td>0.656</td>
+<td>0.123</td>
+<td>0.467</td>
+<td>Very Large</td>
+</tr>
+<tr class="even">
+<td>Denmark</td>
+<td>Western Europe</td>
+<td>2024</td>
+<td>7.65</td>
+<td>1.312</td>
+<td>0.942</td>
+<td>0.612</td>
+<td>0.649</td>
+<td>0.184</td>
+<td>0.317</td>
+<td>Very Large</td>
+</tr>
+<tr class="odd">
+<td>Afghanistan</td>
+<td>South Asia</td>
+<td>2024</td>
+<td>2.52</td>
+<td>0.382</td>
+<td>0.419</td>
+<td>0.201</td>
+<td>0.089</td>
+<td>-0.012</td>
+<td>0.821</td>
+<td>Large</td>
+</tr>
+<tr class="even">
+<td>Nigeria</td>
+<td>Sub-Saharan Africa</td>
+<td>2024</td>
+<td>4.61</td>
+<td>0.558</td>
+<td>0.512</td>
+<td>0.337</td>
+<td>0.328</td>
+<td>0.089</td>
+<td>0.687</td>
+<td>Very Large</td>
+</tr>
+</tbody>
+</table>
+<p>Full dataset (415 records) available in project data folder.</p>
+<hr />
+<p><strong>End of Report</strong></p>
+<hr />
+<p><em>This report represents original work completed for the Information Visualisation (M) course, 2024/25, University of Glasgow. All external sources have been properly cited. Dataset is synthetic and created for educational demonstration purposes.</em></p>
+</body>
+</html>

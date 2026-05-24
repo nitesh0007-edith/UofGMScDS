@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apache Spark — Complete Architecture Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0E17;--bg2:#111828;--card:#161D2F;--card2:#1A2238;--spark:#E8590C;--orange:#FF8C42;--yellow:#FFD166;--green:#06D6A0;--blue:#4CC9F0;--purple:#9B5DE5;--pink:#F72585;--t1:#E8ECF4;--t2:#8892A8;--t3:#5C6478;--border:#1E2A45;--hadoop:#F5C518}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);line-height:1.75;font-size:16.5px}
+code{font-family:'JetBrains Mono',monospace;background:rgba(232,89,12,.1);color:var(--orange);padding:2px 7px;border-radius:5px;font-size:.88em}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:2rem}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(232,89,12,.12) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 70%,rgba(76,201,240,.06) 0%,transparent 60%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 20%,transparent 70%)}
+.hero-content{position:relative;z-index:1;max-width:900px}
+.hero-badge{display:inline-block;padding:6px 18px;background:rgba(232,89,12,.12);border:1px solid rgba(232,89,12,.25);border-radius:50px;font-family:'JetBrains Mono',monospace;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:2rem;animation:fadeUp .8s ease-out}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.1;letter-spacing:-2px;background:linear-gradient(135deg,#fff 20%,var(--orange) 50%,var(--spark) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;animation:fadeUp .8s ease-out .15s both}
+.hero p{font-size:1.15rem;color:var(--t2);max-width:650px;margin:0 auto 2.5rem;animation:fadeUp .8s ease-out .3s both}
+nav.toc{position:sticky;top:0;z-index:100;background:rgba(11,14,23,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;gap:.25rem;justify-content:center;flex-wrap:wrap}
+nav.toc a{color:var(--t2);text-decoration:none;font-size:.82rem;font-weight:500;padding:6px 14px;border-radius:8px;transition:all .25s;white-space:nowrap}
+nav.toc a:hover{color:var(--orange);background:rgba(232,89,12,.08)}
+.body{max-width:1060px;margin:0 auto;padding:3rem 2rem 6rem}
+.sec{margin-bottom:5rem;scroll-margin-top:70px}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--spark);margin-bottom:.5rem}
+.sec h2{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;margin-bottom:1rem}
+.sec-intro{color:var(--t2);font-size:1.05rem;max-width:750px;margin-bottom:2.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem 2.25rem;margin-bottom:1.75rem;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--spark),var(--orange));opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card h3{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:700;margin-bottom:1rem}
+.card p,.card li{color:var(--t2);line-height:1.8}
+.dia{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:2rem;margin:2rem 0;overflow-x:auto}
+.dia svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.dia-cap{text-align:center;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--t3);margin-top:1rem}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+@media(max-width:700px){.cg{grid-template-columns:1fr}}
+.cc{border-radius:16px;padding:2rem;border:1px solid var(--border)}
+.cc.h{background:linear-gradient(135deg,rgba(245,197,24,.06),rgba(245,197,24,.02));border-color:rgba(245,197,24,.15)}
+.cc.s{background:linear-gradient(135deg,rgba(232,89,12,.08),rgba(232,89,12,.02));border-color:rgba(232,89,12,.2)}
+.cb{display:inline-block;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem}
+.cc.h .cb{background:rgba(245,197,24,.15);color:var(--hadoop)}.cc.s .cb{background:rgba(232,89,12,.15);color:var(--spark)}
+.cc h4{font-size:1.15rem;font-weight:700;margin-bottom:.75rem}
+.ci{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.75rem;color:var(--t2);font-size:.95rem}
+.ci .d{flex-shrink:0;width:8px;height:8px;border-radius:50%;margin-top:8px}
+.sf{margin:2rem 0}
+.si{display:flex;gap:1.5rem;position:relative}
+.sl{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.sn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;background:linear-gradient(135deg,var(--spark),var(--orange));color:#fff;z-index:2}
+.sline{width:2px;flex:1;background:linear-gradient(180deg,var(--spark),transparent);min-height:30px}
+.sc{padding-bottom:2rem}
+.sc h4{font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+.sc p{color:var(--t2);font-size:.95rem}
+.hb{border:1px solid rgba(232,89,12,.2);border-left:4px solid var(--spark);border-radius:0 12px 12px 0;padding:1.25rem 1.75rem;margin:1.5rem 0;background:linear-gradient(135deg,rgba(232,89,12,.08),rgba(255,140,66,.04))}
+.hb.info{background:linear-gradient(135deg,rgba(76,201,240,.08),rgba(76,201,240,.02));border-color:rgba(76,201,240,.2);border-left-color:var(--blue)}
+.hb.ok{background:linear-gradient(135deg,rgba(6,214,160,.08),rgba(6,214,160,.02));border-color:rgba(6,214,160,.2);border-left-color:var(--green)}
+.hb.warn{background:linear-gradient(135deg,rgba(255,209,102,.08),rgba(255,209,102,.02));border-color:rgba(255,209,102,.2);border-left-color:var(--yellow)}
+.hb strong{color:var(--t1)}.hb p{color:var(--t2);font-size:.95rem}
+.cb2{background:#0D1117;border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.25rem 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.7;color:#C9D1D9}
+.cb2 .cm{color:#6A737D}.cb2 .kw{color:#FF7B72}.cb2 .st{color:#A5D6FF}.cb2 .fn{color:#D2A8FF}
+table.dt{width:100%;border-collapse:separate;border-spacing:0;margin:2rem 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+table.dt th{background:var(--card2);padding:1rem 1.25rem;font-size:.82rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--border)}
+table.dt td{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);color:var(--t2);font-size:.92rem}
+table.dt tr:last-child td{border-bottom:none}
+table.dt tr:hover td{background:rgba(255,255,255,.02)}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+@media(max-width:700px){.pc{grid-template-columns:1fr}}
+.pp,.pn{border-radius:16px;padding:2rem;border:1px solid var(--border)}
+.pp{background:linear-gradient(135deg,rgba(6,214,160,.06),transparent);border-color:rgba(6,214,160,.15)}
+.pn{background:linear-gradient(135deg,rgba(247,37,133,.06),transparent);border-color:rgba(247,37,133,.15)}
+.pp h4{color:var(--green)}.pn h4{color:var(--pink)}
+.pi{display:flex;gap:.7rem;margin-bottom:.7rem;color:var(--t2);font-size:.95rem;align-items:flex-start}
+.pi .d{flex-shrink:0;width:8px;height:8px;border-radius:50%;margin-top:8px}
+.pp .d{background:var(--green)}.pn .d{background:var(--pink)}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.5px}
+.tag.la{background:rgba(155,93,229,.15);color:var(--purple)}
+.tag.ac{background:rgba(232,89,12,.15);color:var(--spark)}
+.tag.na{background:rgba(76,201,240,.15);color:var(--blue)}
+.tag.wi{background:rgba(6,214,160,.15);color:var(--green)}
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:2rem 0}
+.oc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:transform .2s,border-color .3s}
+.oc:hover{transform:translateY(-2px);border-color:rgba(232,89,12,.3)}
+.oc .on{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.95rem;color:var(--orange);margin-bottom:.4rem}
+.oc .ot{margin-bottom:.6rem}
+.oc p{font-size:.9rem;color:var(--t2)}
+.sb{margin:1.5rem 0}.sr{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.sl2{font-family:'JetBrains Mono',monospace;font-size:.82rem;width:80px;text-align:right;flex-shrink:0}
+.st2{flex:1;height:32px;background:rgba(255,255,255,.03);border-radius:8px;overflow:hidden}
+.sf2{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;color:#fff}
+.sf2.hb2{background:linear-gradient(90deg,var(--hadoop),#D4A517);width:10%}
+.sf2.sb2{background:linear-gradient(90deg,var(--spark),var(--orange));width:100%}
+footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--t3);font-size:.85rem}
+@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+.anim{opacity:0;transform:translateY(20px);transition:opacity .6s ease-out,transform .6s ease-out}
+.anim.vis{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-grid"></div>
+<div class="hero-content">
+<svg width="70" height="70" viewBox="0 0 70 70" fill="none" style="margin:0 auto 1.5rem;display:block"><path d="M35 5 L42 28 L65 28 L47 42 L53 65 L35 50 L17 65 L23 42 L5 28 L28 28 Z" fill="url(#sg)" stroke="rgba(232,89,12,0.4)" stroke-width="1"/><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E8590C"/><stop offset="100%" stop-color="#FF8C42"/></linearGradient></defs></svg>
+<div class="hero-badge">Complete Tutorial &middot; 2025</div>
+<h1>Apache Spark Architecture</h1>
+<p>A beginner-friendly visual guide to Spark architecture, job execution, transformations, and processing paradigms &mdash; compared with Hadoop MapReduce.</p>
+</div>
+</section>
+
+<nav class="toc">
+<a href="#s1">Architecture</a>
+<a href="#s2">Job Execution</a>
+<a href="#s3">Transformations</a>
+<a href="#s4">Pros &amp; Cons</a>
+<a href="#s5">Batch vs. Stream</a>
+</nav>
+
+<main class="body">
+
+<!-- ═══ SECTION 1: ARCHITECTURE ═══ -->
+<section class="sec anim" id="s1">
+<div class="sec-label">Chapter 01</div>
+<h2>Spark Architecture vs. Hadoop</h2>
+<p class="sec-intro">To understand why Spark dominates modern data engineering, we must first see how Hadoop MapReduce works and where its bottlenecks lie.</p>
+
+<div class="dia">
+<svg viewBox="0 0 850 380" fill="none" style="min-width:580px">
+<text x="425" y="30" text-anchor="middle" fill="#F5C518" font-family="JetBrains Mono,monospace" font-size="14" font-weight="600" letter-spacing="2">HADOOP MAPREDUCE ARCHITECTURE</text>
+<rect x="340" y="52" width="170" height="44" rx="10" fill="#1A2238" stroke="#F5C518" stroke-width="1.5"/><text x="425" y="79" text-anchor="middle" fill="#F5C518" font-family="DM Sans" font-size="13" font-weight="600">Client (Job)</text>
+<line x1="425" y1="96" x2="425" y2="125" stroke="#F5C518" stroke-width="1.5" stroke-dasharray="5,4"/><polygon points="420,123 425,133 430,123" fill="#F5C518"/>
+<rect x="310" y="135" width="230" height="52" rx="12" fill="rgba(245,197,24,.08)" stroke="#F5C518" stroke-width="1.5"/><text x="425" y="158" text-anchor="middle" fill="#F5C518" font-family="DM Sans" font-size="14" font-weight="700">Job Tracker</text><text x="425" y="177" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="11">Assigns Map &amp; Reduce tasks</text>
+<line x1="360" y1="187" x2="150" y2="230" stroke="#F5C518" stroke-width="1" stroke-dasharray="5,4"/><line x1="425" y1="187" x2="425" y2="230" stroke="#F5C518" stroke-width="1" stroke-dasharray="5,4"/><line x1="490" y1="187" x2="700" y2="230" stroke="#F5C518" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="50" y="232" width="200" height="46" rx="10" fill="#1A2238" stroke="rgba(245,197,24,.4)" stroke-width="1"/><text x="150" y="255" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Task Tracker 1</text><text x="150" y="271" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Map → Reduce</text>
+<rect x="325" y="232" width="200" height="46" rx="10" fill="#1A2238" stroke="rgba(245,197,24,.4)" stroke-width="1"/><text x="425" y="255" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Task Tracker 2</text><text x="425" y="271" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Map → Reduce</text>
+<rect x="600" y="232" width="200" height="46" rx="10" fill="#1A2238" stroke="rgba(245,197,24,.4)" stroke-width="1"/><text x="700" y="255" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Task Tracker 3</text><text x="700" y="271" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Map → Reduce</text>
+<line x1="150" y1="278" x2="150" y2="310" stroke="rgba(245,197,24,.3)" stroke-width="1" stroke-dasharray="3,3"/><line x1="425" y1="278" x2="425" y2="310" stroke="rgba(245,197,24,.3)" stroke-width="1" stroke-dasharray="3,3"/><line x1="700" y1="278" x2="700" y2="310" stroke="rgba(245,197,24,.3)" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="50" y="312" width="750" height="52" rx="12" fill="rgba(245,197,24,.04)" stroke="rgba(245,197,24,.2)" stroke-width="1" stroke-dasharray="6,4"/><text x="425" y="336" text-anchor="middle" fill="#F5C518" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600">HDFS (Hadoop Distributed File System)</text><text x="425" y="354" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="11">NameNode tracks locations · DataNodes store blocks · Disk I/O between every stage</text>
+</svg>
+<div class="dia-cap">Fig 1.1 — Hadoop writes intermediate data to HDFS (disk) between every Map/Reduce stage</div>
+</div>
+
+<div class="dia">
+<svg viewBox="0 0 850 410" fill="none" style="min-width:580px">
+<text x="425" y="30" text-anchor="middle" fill="#E8590C" font-family="JetBrains Mono,monospace" font-size="14" font-weight="600" letter-spacing="2">APACHE SPARK ARCHITECTURE</text>
+<rect x="295" y="52" width="260" height="56" rx="14" fill="rgba(232,89,12,.1)" stroke="#E8590C" stroke-width="2"/><text x="425" y="76" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="14" font-weight="700">Driver Program</text><text x="425" y="96" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="11">Creates SparkContext · Must stay alive</text>
+<line x1="425" y1="108" x2="425" y2="138" stroke="#E8590C" stroke-width="1.5"/><polygon points="420,136 425,146 430,136" fill="#E8590C"/>
+<rect x="310" y="148" width="230" height="48" rx="12" fill="#1A2238" stroke="#FF8C42" stroke-width="1.5"/><text x="425" y="170" text-anchor="middle" fill="#FF8C42" font-family="DM Sans" font-size="13" font-weight="700">Cluster Manager</text><text x="425" y="188" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="11">YARN / Mesos / Standalone / K8s</text>
+<line x1="360" y1="196" x2="150" y2="240" stroke="#FF8C42" stroke-width="1" stroke-dasharray="5,4"/><line x1="425" y1="196" x2="425" y2="240" stroke="#FF8C42" stroke-width="1" stroke-dasharray="5,4"/><line x1="490" y1="196" x2="700" y2="240" stroke="#FF8C42" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="35" y="242" width="230" height="90" rx="14" fill="#1A2238" stroke="rgba(232,89,12,.3)" stroke-width="1"/><text x="150" y="264" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Worker Node 1</text><rect x="55" y="276" width="190" height="44" rx="8" fill="rgba(232,89,12,.06)" stroke="rgba(232,89,12,.15)" stroke-width="1"/><text x="150" y="296" text-anchor="middle" fill="#FF8C42" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">Executor (JVM)</text><text x="150" y="312" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Thread Pool → Parallel Tasks</text>
+<rect x="310" y="242" width="230" height="90" rx="14" fill="#1A2238" stroke="rgba(232,89,12,.3)" stroke-width="1"/><text x="425" y="264" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Worker Node 2</text><rect x="330" y="276" width="190" height="44" rx="8" fill="rgba(232,89,12,.06)" stroke="rgba(232,89,12,.15)" stroke-width="1"/><text x="425" y="296" text-anchor="middle" fill="#FF8C42" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">Executor (JVM)</text><text x="425" y="312" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Thread Pool → Parallel Tasks</text>
+<rect x="585" y="242" width="230" height="90" rx="14" fill="#1A2238" stroke="rgba(232,89,12,.3)" stroke-width="1"/><text x="700" y="264" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="12" font-weight="600">Worker Node 3</text><rect x="605" y="276" width="190" height="44" rx="8" fill="rgba(232,89,12,.06)" stroke="rgba(232,89,12,.15)" stroke-width="1"/><text x="700" y="296" text-anchor="middle" fill="#FF8C42" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">Executor (JVM)</text><text x="700" y="312" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Thread Pool → Parallel Tasks</text>
+<rect x="200" y="365" width="450" height="32" rx="10" fill="rgba(6,214,160,.06)" stroke="rgba(6,214,160,.2)" stroke-width="1" stroke-dasharray="6,4"/><text x="425" y="386" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">IN-MEMORY PROCESSING · No mandatory disk I/O</text>
+</svg>
+<div class="dia-cap">Fig 1.2 — Spark keeps intermediate data in RAM, eliminating costly disk cycles</div>
+</div>
+
+<div class="cg">
+<div class="cc h"><div class="cb">Hadoop MapReduce</div><h4>Traditional Approach</h4>
+<div class="ci"><div class="d" style="background:#F5C518"></div><span><strong>Job Tracker</strong> assigns Map and Reduce tasks to the cluster</span></div>
+<div class="ci"><div class="d" style="background:#F5C518"></div><span><strong>Task Trackers</strong> execute individual Map and Reduce operations</span></div>
+<div class="ci"><div class="d" style="background:#F5C518"></div><span><strong>HDFS</strong> — NameNode tracks locations; DataNodes hold blocks</span></div>
+<div class="ci"><div class="d" style="background:#F5C518"></div><span>All intermediate data written to <strong>disk</strong> after every stage</span></div>
+</div>
+<div class="cc s"><div class="cb">Apache Spark</div><h4>Modern In-Memory Engine</h4>
+<div class="ci"><div class="d" style="background:#E8590C"></div><span><strong>Driver Program</strong> creates SparkContext and orchestrates the job</span></div>
+<div class="ci"><div class="d" style="background:#E8590C"></div><span><strong>Cluster Manager</strong> (YARN, Mesos, K8s) allocates resources</span></div>
+<div class="ci"><div class="d" style="background:#E8590C"></div><span><strong>Executors</strong> (JVMs) run tasks in thread pools — parallel execution</span></div>
+<div class="ci"><div class="d" style="background:#E8590C"></div><span>No mandatory persistent storage — data stays <strong>in memory (RAM)</strong></span></div>
+</div>
+</div>
+
+<table class="dt">
+<thead><tr><th>Aspect</th><th style="color:#F5C518">Hadoop</th><th style="color:#E8590C">Spark</th></tr></thead>
+<tbody>
+<tr><td><strong>Processing</strong></td><td>Disk-based (read → process → write)</td><td>In-memory (process in RAM)</td></tr>
+<tr><td><strong>Speed</strong></td><td>1× baseline</td><td>Up to 100× faster</td></tr>
+<tr><td><strong>Task Model</strong></td><td>One task per JVM process</td><td>Multiple tasks per Executor (thread pool)</td></tr>
+<tr><td><strong>Intermediate Data</strong></td><td>Written to HDFS between stages</td><td>Kept in RAM; disk spill only if needed</td></tr>
+<tr><td><strong>Fault Tolerance</strong></td><td>HDFS replication</td><td>RDD lineage (rebuilds lost partitions)</td></tr>
+<tr><td><strong>Driver</strong></td><td>Job Tracker stays running</td><td>Driver must stay alive for job duration</td></tr>
+<tr><td><strong>Storage</strong></td><td>Built-in HDFS</td><td>Pluggable (HDFS, S3, ADLS, etc.)</td></tr>
+</tbody></table>
+
+<div class="hb"><p><strong>💡 Key Takeaway:</strong> Hadoop writes intermediate results to disk after every Map/Reduce step, creating I/O bottlenecks. Spark eliminates this by keeping data in memory, making iterative algorithms (like ML training) dramatically faster.</p></div>
+</section>
+
+<!-- ═══ SECTION 2: JOB EXECUTION ═══ -->
+<section class="sec anim" id="s2">
+<div class="sec-label">Chapter 02</div>
+<h2>Job Execution Anatomy</h2>
+<p class="sec-intro">Spark's job lifecycle follows <strong>Lazy Evaluation</strong> — operations are not executed until absolutely necessary, allowing Spark to optimize the entire pipeline first.</p>
+
+<div class="dia">
+<svg viewBox="0 0 880 190" fill="none" style="min-width:620px">
+<text x="440" y="24" text-anchor="middle" fill="#E8590C" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">SPARK JOB LIFECYCLE — LAZY EVALUATION</text>
+<rect x="20" y="48" width="175" height="60" rx="14" fill="rgba(76,201,240,.08)" stroke="#4CC9F0" stroke-width="1.5"/><text x="107" y="72" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="12" font-weight="700">① Initialization</text><text x="107" y="92" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">SparkContext + RDDs</text>
+<line x1="195" y1="78" x2="225" y2="78" stroke="#4CC9F0" stroke-width="1.5"/><polygon points="223,73 233,78 223,83" fill="#4CC9F0"/>
+<rect x="235" y="48" width="175" height="60" rx="14" fill="rgba(155,93,229,.08)" stroke="#9B5DE5" stroke-width="1.5"/><text x="322" y="72" text-anchor="middle" fill="#9B5DE5" font-family="DM Sans" font-size="12" font-weight="700">② Build DAG</text><text x="322" y="92" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Transformations (no exec)</text>
+<line x1="410" y1="78" x2="440" y2="78" stroke="#9B5DE5" stroke-width="1.5"/><polygon points="438,73 448,78 438,83" fill="#9B5DE5"/>
+<rect x="450" y="48" width="175" height="60" rx="14" fill="rgba(232,89,12,.1)" stroke="#E8590C" stroke-width="2"/><text x="537" y="72" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="12" font-weight="700">③ Action Trigger</text><text x="537" y="92" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="10" font-weight="600">NOW it runs!</text>
+<line x1="625" y1="78" x2="655" y2="78" stroke="#E8590C" stroke-width="1.5"/><polygon points="653,73 663,78 653,83" fill="#E8590C"/>
+<rect x="665" y="48" width="195" height="60" rx="14" fill="rgba(6,214,160,.08)" stroke="#06D6A0" stroke-width="1.5"/><text x="762" y="72" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="12" font-weight="700">④ Scheduling</text><text x="762" y="92" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">DAG → Stages → Tasks</text>
+<rect x="240" y="130" width="400" height="42" rx="10" fill="rgba(155,93,229,.04)" stroke="rgba(155,93,229,.15)" stroke-width="1"/><text x="440" y="148" text-anchor="middle" fill="#9B5DE5" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">DAG = Directed Acyclic Graph</text><text x="440" y="165" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Nodes = RDDs, Edges = Transformations. One direction, no loops.</text>
+</svg>
+<div class="dia-cap">Fig 2.1 — Spark builds a complete plan before executing, enabling global optimization</div>
+</div>
+
+<div class="sf">
+<div class="si"><div class="sl"><div class="sn">1</div><div class="sline"></div></div><div class="sc"><h4>Initialization</h4><p>The client creates a <strong>SparkContext</strong> — the entry point to Spark. It connects to the Cluster Manager and creates input <strong>RDDs</strong> (Resilient Distributed Datasets) from data sources like HDFS, S3, or local files.</p></div></div>
+<div class="si"><div class="sl"><div class="sn">2</div><div class="sline"></div></div><div class="sc"><h4>DAG Construction (Lazy Phase)</h4><p>You chain transformations like <code>map()</code>, <code>filter()</code>, <code>groupByKey()</code> — but <strong>nothing executes</strong>. Spark records each transformation in a DAG, seeing the full picture for optimization (e.g., fusing operations, pruning unnecessary steps).</p></div></div>
+<div class="si"><div class="sl"><div class="sn">3</div><div class="sline"></div></div><div class="sc"><h4>Action Trigger</h4><p>Computation begins only when an <strong>Action</strong> is called — <code>collect()</code>, <code>count()</code>, or <code>saveAsTextFile()</code>. This materializes the DAG into actual work.</p></div></div>
+<div class="si"><div class="sl"><div class="sn">4</div><div class="sline"></div></div><div class="sc"><h4>Scheduling &amp; Execution</h4><p>The <strong>DAGScheduler</strong> breaks the graph into <em>stages</em> at shuffle boundaries. Each stage has <em>tasks</em> (one per partition). The <strong>TaskScheduler</strong> ships tasks to Executors, considering data locality and resource availability.</p></div></div>
+</div>
+
+<div class="dia">
+<svg viewBox="0 0 880 440" fill="none" style="min-width:620px">
+<text x="440" y="26" text-anchor="middle" fill="#E8590C" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">SPARK JOB EXECUTION STAGES</text>
+<rect x="300" y="45" width="280" height="36" rx="10" fill="rgba(232,89,12,.1)" stroke="#E8590C" stroke-width="2"/><text x="440" y="68" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="13" font-weight="700">Spark Job (triggered by Action)</text>
+<line x1="440" y1="81" x2="440" y2="100" stroke="#E8590C" stroke-width="1.5"/><polygon points="435,98 440,108 445,98" fill="#E8590C"/>
+<rect x="330" y="108" width="220" height="34" rx="10" fill="#1A2238" stroke="#FF8C42" stroke-width="1.5"/><text x="440" y="130" text-anchor="middle" fill="#FF8C42" font-family="DM Sans" font-size="12" font-weight="600">DAGScheduler</text>
+<line x1="440" y1="142" x2="440" y2="158" stroke="#FF8C42" stroke-width="1"/><line x1="200" y1="158" x2="680" y2="158" stroke="#FF8C42" stroke-width="1"/><line x1="200" y1="158" x2="200" y2="175" stroke="#FF8C42" stroke-width="1"/><line x1="680" y1="158" x2="680" y2="175" stroke="#FF8C42" stroke-width="1"/>
+<!-- Stage 1 -->
+<rect x="60" y="177" width="280" height="110" rx="14" fill="rgba(76,201,240,.05)" stroke="#4CC9F0" stroke-width="1.5"/><text x="200" y="198" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="12" font-weight="700">Stage 1 (Narrow Transforms)</text><text x="200" y="215" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">No shuffle — data stays on partition</text>
+<rect x="80" y="226" width="70" height="44" rx="8" fill="rgba(76,201,240,.08)" stroke="rgba(76,201,240,.2)" stroke-width="1"/><text x="115" y="246" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">Task 0</text><text x="115" y="261" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">map,filter</text>
+<rect x="158" y="226" width="70" height="44" rx="8" fill="rgba(76,201,240,.08)" stroke="rgba(76,201,240,.2)" stroke-width="1"/><text x="193" y="246" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">Task 1</text><text x="193" y="261" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">map,filter</text>
+<rect x="236" y="226" width="70" height="44" rx="8" fill="rgba(76,201,240,.08)" stroke="rgba(76,201,240,.2)" stroke-width="1"/><text x="271" y="246" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">Task 2</text><text x="271" y="261" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">map,filter</text>
+<!-- Shuffle -->
+<rect x="370" y="205" width="140" height="55" rx="10" fill="rgba(255,209,102,.06)" stroke="#FFD166" stroke-width="1.5" stroke-dasharray="6,4"/><text x="440" y="228" text-anchor="middle" fill="#FFD166" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">SHUFFLE</text><text x="440" y="248" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="9">Data redistributed</text>
+<line x1="340" y1="235" x2="370" y2="235" stroke="#FFD166" stroke-width="1" stroke-dasharray="4,3"/><line x1="510" y1="235" x2="540" y2="235" stroke="#FFD166" stroke-width="1" stroke-dasharray="4,3"/>
+<!-- Stage 2 -->
+<rect x="540" y="177" width="280" height="110" rx="14" fill="rgba(6,214,160,.05)" stroke="#06D6A0" stroke-width="1.5"/><text x="680" y="198" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="12" font-weight="700">Stage 2 (Wide Transforms)</text><text x="680" y="215" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Shuffle required — data moves</text>
+<rect x="570" y="226" width="95" height="44" rx="8" fill="rgba(6,214,160,.08)" stroke="rgba(6,214,160,.2)" stroke-width="1"/><text x="617" y="246" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">Task 0</text><text x="617" y="261" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">reduceByKey</text>
+<rect x="675" y="226" width="95" height="44" rx="8" fill="rgba(6,214,160,.08)" stroke="rgba(6,214,160,.2)" stroke-width="1"/><text x="722" y="246" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">Task 1</text><text x="722" y="261" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">reduceByKey</text>
+<!-- Labels -->
+<text x="200" y="302" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9.5" font-weight="600">NARROW DEPENDENCIES</text>
+<text x="680" y="302" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="9.5" font-weight="600">WIDE DEPENDENCIES</text>
+<!-- Task Scheduler -->
+<line x1="440" y1="310" x2="440" y2="335" stroke="#9B5DE5" stroke-width="1.5"/><polygon points="435,333 440,343 445,333" fill="#9B5DE5"/>
+<rect x="310" y="345" width="260" height="34" rx="10" fill="#1A2238" stroke="#9B5DE5" stroke-width="1.5"/><text x="440" y="367" text-anchor="middle" fill="#9B5DE5" font-family="DM Sans" font-size="12" font-weight="600">TaskScheduler → Executors</text>
+<line x1="440" y1="379" x2="440" y2="400" stroke="#9B5DE5" stroke-width="1"/><polygon points="435,398 440,408 445,398" fill="#9B5DE5"/>
+<rect x="330" y="410" width="220" height="28" rx="8" fill="rgba(232,89,12,.08)" stroke="#E8590C" stroke-width="1.5"/><text x="440" y="429" text-anchor="middle" fill="#E8ECF4" font-family="DM Sans" font-size="11" font-weight="600">Result → Driver / Storage</text>
+</svg>
+<div class="dia-cap">Fig 2.2 — A Spark Job splits into Stages at shuffle boundaries. Each Stage runs parallel Tasks.</div>
+</div>
+
+<div class="hb info"><p><strong>🔍 Narrow vs. Wide:</strong> <em>Narrow</em> transformations (<code>map</code>, <code>filter</code>) keep data on the same partition — zero network cost. <em>Wide</em> transformations (<code>groupByKey</code>, <code>reduceByKey</code>) require a <strong>shuffle</strong> — data moves across the network. Shuffles are Spark's most expensive operation!</p></div>
+
+<div class="card"><h3>Code Example: Lazy Evaluation</h3>
+<div class="cb2"><span class="cm"># Nothing happens — Spark records the plan</span>
+rdd = sc.textFile(<span class="st">"hdfs://data/logs.txt"</span>)          <span class="cm"># RDD created</span>
+filtered = rdd.<span class="fn">filter</span>(<span class="kw">lambda</span> line: <span class="st">"ERROR"</span> <span class="kw">in</span> line)    <span class="cm"># Lazy</span>
+mapped = filtered.<span class="fn">map</span>(<span class="kw">lambda</span> line: (line, 1))          <span class="cm"># Lazy</span>
+
+<span class="cm"># THIS triggers execution</span>
+result = mapped.<span class="fn">count</span>()                                 <span class="cm"># Action! → runs now</span>
+<span class="kw">print</span>(result)</div>
+<p>Until <code>count()</code> is called, Spark only builds a plan. It can fuse <code>filter</code> and <code>map</code> into a single pass — a massive optimization.</p>
+</div>
+</section>
+
+<!-- ═══ SECTION 3: TRANSFORMATIONS ═══ -->
+<section class="sec anim" id="s3">
+<div class="sec-label">Chapter 03</div>
+<h2>Transformations &amp; Actions</h2>
+<p class="sec-intro">Every Spark operation is either a <strong>Transformation</strong> (lazy — builds the plan) or an <strong>Action</strong> (eager — executes the plan). This distinction is fundamental to efficient Spark code.</p>
+
+<div class="dia">
+<svg viewBox="0 0 880 200" fill="none" style="min-width:580px">
+<text x="440" y="22" text-anchor="middle" fill="#E8590C" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">TRANSFORMATIONS (LAZY) vs ACTIONS (EAGER)</text>
+<rect x="30" y="48" width="110" height="120" rx="12" fill="rgba(76,201,240,.06)" stroke="#4CC9F0" stroke-width="1.5"/><text x="85" y="70" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="11" font-weight="700">Input RDD</text><text x="85" y="95" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">[1,2,3]</text><text x="85" y="112" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">[4,5,6]</text><text x="85" y="129" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">[7,8,9]</text><text x="85" y="155" text-anchor="middle" fill="#5C6478" font-family="DM Sans" font-size="9">3 partitions</text>
+<line x1="140" y1="108" x2="175" y2="108" stroke="#9B5DE5" stroke-width="1.5"/><polygon points="173,103 183,108 173,113" fill="#9B5DE5"/>
+<rect x="188" y="62" width="118" height="38" rx="10" fill="rgba(155,93,229,.08)" stroke="#9B5DE5" stroke-width="1.5"/><text x="247" y="78" text-anchor="middle" fill="#9B5DE5" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">filter(x>3)</text><text x="247" y="94" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">keep x &gt; 3</text>
+<line x1="247" y1="100" x2="247" y2="112" stroke="#9B5DE5" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="188" y="115" width="118" height="38" rx="10" fill="rgba(155,93,229,.08)" stroke="#9B5DE5" stroke-width="1.5"/><text x="247" y="131" text-anchor="middle" fill="#9B5DE5" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">map(x*2)</text><text x="247" y="147" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">multiply by 2</text>
+<rect x="195" y="162" width="105" height="18" rx="5" fill="rgba(155,93,229,.12)"/><text x="247" y="175" text-anchor="middle" fill="#9B5DE5" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600">LAZY — No work</text>
+<line x1="306" y1="108" x2="355" y2="108" stroke="#9B5DE5" stroke-width="1" stroke-dasharray="5,4"/><polygon points="353,103 363,108 353,113" fill="#9B5DE5"/>
+<rect x="368" y="75" width="110" height="66" rx="12" fill="rgba(155,93,229,.04)" stroke="rgba(155,93,229,.2)" stroke-width="1" stroke-dasharray="6,4"/><text x="423" y="102" text-anchor="middle" fill="#9B5DE5" font-family="DM Sans" font-size="10.5" font-weight="600">New RDD</text><text x="423" y="120" text-anchor="middle" fill="#6B7896" font-family="DM Sans" font-size="9">(not materialized)</text>
+<line x1="478" y1="108" x2="535" y2="108" stroke="#E8590C" stroke-width="2"/><polygon points="533,102 545,108 533,114" fill="#E8590C"/>
+<rect x="550" y="68" width="125" height="80" rx="14" fill="rgba(232,89,12,.1)" stroke="#E8590C" stroke-width="2"/><text x="612" y="94" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="13" font-weight="700">ACTION</text><text x="612" y="114" text-anchor="middle" fill="#FF8C42" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600">collect()</text><text x="612" y="136" text-anchor="middle" fill="#E8590C" font-family="DM Sans" font-size="10" font-weight="600">⚡ NOW it runs!</text>
+<line x1="675" y1="108" x2="718" y2="108" stroke="#06D6A0" stroke-width="1.5"/><polygon points="716,103 726,108 716,113" fill="#06D6A0"/>
+<rect x="730" y="78" width="110" height="60" rx="12" fill="rgba(6,214,160,.08)" stroke="#06D6A0" stroke-width="1.5"/><text x="785" y="102" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="11" font-weight="700">Result</text><text x="785" y="121" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">[8,10,12,</text><text x="785" y="133" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">14,16,18]</text>
+</svg>
+<div class="dia-cap">Fig 3.1 — Transformations build the plan; Actions materialize it into results</div>
+</div>
+
+<h3 style="margin-bottom:1rem;font-family:'Fraunces',serif;font-size:1.3rem">Common Transformations <span class="tag la">LAZY</span></h3>
+<div class="og">
+<div class="oc"><div class="on">map(func)</div><div class="ot"><span class="tag na">NARROW</span></div><p>Apply a function to <strong>every element</strong>, one output per input. e.g., <code>[1,2,3] → [2,4,6]</code></p></div>
+<div class="oc"><div class="on">filter(func)</div><div class="ot"><span class="tag na">NARROW</span></div><p>Keep only elements passing a condition. e.g., <code>[1,2,3,4] → [3,4]</code> (keep &gt; 2)</p></div>
+<div class="oc"><div class="on">flatMap(func)</div><div class="ot"><span class="tag na">NARROW</span></div><p>Like map, but each input can produce <strong>0 or more</strong> outputs. e.g., splitting sentences into words.</p></div>
+<div class="oc"><div class="on">groupByKey()</div><div class="ot"><span class="tag wi">WIDE — SHUFFLE</span></div><p>Groups all values with the same key. Causes a full <strong>network shuffle</strong>.</p></div>
+<div class="oc"><div class="on">reduceByKey(func)</div><div class="ot"><span class="tag wi">WIDE — SHUFFLE</span></div><p>Aggregates values by key. <strong>Better than groupByKey</strong> — aggregates locally first, reducing shuffle volume.</p></div>
+</div>
+
+<div class="dia">
+<svg viewBox="0 0 880 275" fill="none" style="min-width:620px">
+<text x="440" y="22" text-anchor="middle" fill="#FF8C42" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600" letter-spacing="2">reduceByKey vs groupByKey</text>
+<text x="220" y="48" text-anchor="middle" fill="#F72585" font-family="DM Sans" font-size="12" font-weight="700">groupByKey() — More Network Traffic</text>
+<rect x="30" y="58" width="155" height="44" rx="8" fill="rgba(247,37,133,.05)" stroke="rgba(247,37,133,.2)" stroke-width="1"/><text x="107" y="78" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a,1)(b,2)(a,3)</text><text x="107" y="96" text-anchor="middle" fill="#5C6478" font-family="DM Sans" font-size="9">Partition 1</text>
+<rect x="200" y="58" width="155" height="44" rx="8" fill="rgba(247,37,133,.05)" stroke="rgba(247,37,133,.2)" stroke-width="1"/><text x="277" y="78" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a,5)(b,1)(a,2)</text><text x="277" y="96" text-anchor="middle" fill="#5C6478" font-family="DM Sans" font-size="9">Partition 2</text>
+<text x="220" y="125" text-anchor="middle" fill="#F72585" font-family="DM Sans" font-size="10">⬇ ALL 6 records shuffled ⬇</text>
+<rect x="55" y="135" width="330" height="36" rx="8" fill="rgba(247,37,133,.05)" stroke="rgba(247,37,133,.3)" stroke-width="1"/><text x="220" y="158" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a,[1,3,5,2]) (b,[2,1]) → then reduce</text>
+<text x="660" y="48" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="12" font-weight="700">reduceByKey() — Local Aggregation First</text>
+<rect x="500" y="58" width="155" height="44" rx="8" fill="rgba(6,214,160,.05)" stroke="rgba(6,214,160,.2)" stroke-width="1"/><text x="577" y="74" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a,1)(b,2)(a,3)</text><text x="577" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">→ (a,4)(b,2)</text>
+<rect x="670" y="58" width="155" height="44" rx="8" fill="rgba(6,214,160,.05)" stroke="rgba(6,214,160,.2)" stroke-width="1"/><text x="747" y="74" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a,5)(b,1)(a,2)</text><text x="747" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600">→ (a,7)(b,1)</text>
+<text x="660" y="125" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="10">⬇ Only 4 aggregated records shuffled ⬇</text>
+<rect x="530" y="135" width="260" height="36" rx="8" fill="rgba(6,214,160,.05)" stroke="rgba(6,214,160,.3)" stroke-width="1"/><text x="660" y="158" text-anchor="middle" fill="#8892A8" font-family="JetBrains Mono,monospace" font-size="10">(a, 11) (b, 3) — Done!</text>
+<rect x="200" y="200" width="480" height="50" rx="12" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.15)" stroke-width="1"/><text x="440" y="222" text-anchor="middle" fill="#FFD166" font-family="DM Sans" font-size="12" font-weight="600">⚡ Always prefer reduceByKey over groupByKey</text><text x="440" y="240" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Savings grow exponentially with larger datasets</text>
+</svg>
+<div class="dia-cap">Fig 3.2 — reduceByKey aggregates locally before shuffling, drastically reducing network I/O</div>
+</div>
+
+<h3 style="margin:2rem 0 1rem;font-family:'Fraunces',serif;font-size:1.3rem">Common Actions <span class="tag ac">TRIGGER EXECUTION</span></h3>
+<div class="og">
+<div class="oc"><div class="on">collect()</div><div class="ot"><span class="tag ac">ACTION</span></div><p>Returns <strong>all elements</strong> to the Driver. ⚠️ Huge datasets can crash the Driver with OutOfMemoryError.</p></div>
+<div class="oc"><div class="on">count()</div><div class="ot"><span class="tag ac">ACTION</span></div><p>Returns the <strong>number of elements</strong>. Safe and commonly used to check data volume.</p></div>
+<div class="oc"><div class="on">saveAsTextFile(path)</div><div class="ot"><span class="tag ac">ACTION</span></div><p>Writes RDD to external storage (HDFS, S3, etc.). Each partition becomes a separate file.</p></div>
+</div>
+
+<div class="hb warn"><p><strong>⚠️ collect() Warning:</strong> Never call <code>collect()</code> on a large dataset in production. Use <code>take(n)</code> to preview a small sample, or <code>saveAsTextFile()</code> to persist results to storage.</p></div>
+</section>
+
+<!-- ═══ SECTION 4: PROS & CONS ═══ -->
+<section class="sec anim" id="s4">
+<div class="sec-label">Chapter 04</div>
+<h2>Advantages &amp; Disadvantages</h2>
+<p class="sec-intro">Spark has become the de facto standard for large-scale data processing, but it's not a silver bullet. Understanding its strengths and limits helps you pick the right tool.</p>
+
+<div class="card"><h3>Speed: Spark vs. Hadoop MapReduce</h3>
+<p style="color:var(--t2);margin-bottom:1.25rem">Spark's in-memory processing delivers dramatic speed gains, especially for iterative algorithms like ML training that repeatedly scan the same data.</p>
+<div class="sb">
+<div class="sr"><div class="sl2" style="color:#F5C518">Hadoop</div><div class="st2"><div class="sf2 hb2">1×</div></div></div>
+<div class="sr"><div class="sl2" style="color:#E8590C">Spark</div><div class="st2"><div class="sf2 sb2">Up to 100×</div></div></div>
+</div>
+<p style="color:var(--t3);font-size:.85rem;margin-top:.5rem">* Benchmarked on iterative ML workloads. Single-pass batch jobs typically see 10-30× improvement.</p>
+</div>
+
+<div class="pc">
+<div class="pp"><h4 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:1rem">Advantages</h4>
+<div class="pi"><div class="d"></div><span><strong>Lightning Speed</strong> — Up to 100× faster than Hadoop; avoids costly disk I/O between stages</span></div>
+<div class="pi"><div class="d"></div><span><strong>Unified Engine</strong> — Batch, SQL, streaming, ML (MLlib), and graph (GraphX) in one framework</span></div>
+<div class="pi"><div class="d"></div><span><strong>Multi-Language</strong> — Written in Scala, with first-class APIs for Python (PySpark), Java, R, and SQL</span></div>
+<div class="pi"><div class="d"></div><span><strong>Flexible Storage</strong> — Plugs into HDFS, S3, Azure ADLS, Delta Lake — no vendor lock-in</span></div>
+<div class="pi"><div class="d"></div><span><strong>Rich Ecosystem</strong> — Powers Databricks; integrates with Kafka, Hive, and modern data platforms</span></div>
+</div>
+<div class="pn"><h4 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:1rem">Disadvantages</h4>
+<div class="pi"><div class="d"></div><span><strong>Not True Streaming</strong> — Spark Streaming uses micro-batches, not event-at-a-time. Apache Flink is better for sub-second latency</span></div>
+<div class="pi"><div class="d"></div><span><strong>Memory Hungry</strong> — In-memory processing demands large RAM; insufficient memory causes disk spilling</span></div>
+<div class="pi"><div class="d"></div><span><strong>Complexity</strong> — Tuning shuffle partitions, memory fractions, and executor sizing requires deep expertise</span></div>
+<div class="pi"><div class="d"></div><span><strong>Driver Dependency</strong> — The Driver must remain alive; if it crashes, the entire job fails</span></div>
+<div class="pi"><div class="d"></div><span><strong>Cost</strong> — RAM is more expensive than disk. Spark clusters can be costly for very large persistent workloads</span></div>
+</div>
+</div>
+
+<div class="hb ok"><p><strong>✅ When to Choose Spark:</strong> Iterative ML training, interactive data exploration, complex ETL pipelines, SQL analytics over large datasets. For true real-time event-by-event processing, consider <strong>Apache Flink</strong> instead.</p></div>
+</section>
+
+<!-- ═══ SECTION 5: BATCH vs STREAMING ═══ -->
+<section class="sec anim" id="s5">
+<div class="sec-label">Chapter 05</div>
+<h2>Batch vs. Streaming Processing</h2>
+<p class="sec-intro">The final piece: understanding when to process data in large blocks (batch) versus handling it as it arrives (streaming). Each paradigm has distinct tradeoffs.</p>
+
+<div class="dia">
+<svg viewBox="0 0 880 340" fill="none" style="min-width:580px">
+<text x="440" y="26" text-anchor="middle" fill="#E8590C" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">BATCH vs STREAM PROCESSING</text>
+<!-- BATCH -->
+<text x="215" y="55" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="13" font-weight="700">Batch Processing</text>
+<rect x="40" y="70" width="55" height="36" rx="6" fill="rgba(76,201,240,.1)" stroke="#4CC9F0" stroke-width="1"/><text x="67" y="92" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9">Blk 1</text>
+<rect x="102" y="70" width="55" height="36" rx="6" fill="rgba(76,201,240,.1)" stroke="#4CC9F0" stroke-width="1"/><text x="129" y="92" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9">Blk 2</text>
+<rect x="164" y="70" width="55" height="36" rx="6" fill="rgba(76,201,240,.1)" stroke="#4CC9F0" stroke-width="1"/><text x="191" y="92" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9">Blk 3</text>
+<rect x="226" y="70" width="55" height="36" rx="6" fill="rgba(76,201,240,.1)" stroke="#4CC9F0" stroke-width="1"/><text x="253" y="92" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9">Blk 4</text>
+<rect x="288" y="70" width="55" height="36" rx="6" fill="rgba(76,201,240,.1)" stroke="#4CC9F0" stroke-width="1"/><text x="315" y="92" text-anchor="middle" fill="#4CC9F0" font-family="JetBrains Mono,monospace" font-size="9">Blk 5</text>
+<text x="215" y="128" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">All data collected, then processed at once</text>
+<line x1="215" y1="135" x2="215" y2="155" stroke="#4CC9F0" stroke-width="1.5"/><polygon points="210,153 215,163 220,153" fill="#4CC9F0"/>
+<rect x="115" y="165" width="200" height="44" rx="12" fill="rgba(76,201,240,.06)" stroke="#4CC9F0" stroke-width="1.5"/><text x="215" y="185" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="12" font-weight="700">Batch Engine</text><text x="215" y="202" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Spark / Hadoop MR</text>
+<line x1="215" y1="209" x2="215" y2="230" stroke="#4CC9F0" stroke-width="1"/><polygon points="210,228 215,238 220,228" fill="#4CC9F0"/>
+<rect x="135" y="240" width="160" height="32" rx="8" fill="rgba(76,201,240,.08)" stroke="#4CC9F0" stroke-width="1"/><text x="215" y="261" text-anchor="middle" fill="#4CC9F0" font-family="DM Sans" font-size="11" font-weight="600">Complete Result</text>
+<text x="215" y="296" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Metric: Total completion time</text>
+<text x="215" y="314" text-anchor="middle" fill="#5C6478" font-family="DM Sans" font-size="9.5">e.g., "Sum all transactions at end of day"</text>
+<!-- Divider -->
+<line x1="440" y1="50" x2="440" y2="320" stroke="var(--border)" stroke-width="1" stroke-dasharray="8,6"/>
+<text x="440" y="335" text-anchor="middle" fill="#5C6478" font-family="Fraunces,serif" font-size="14" font-weight="900">VS</text>
+<!-- STREAM -->
+<text x="665" y="55" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="13" font-weight="700">Stream Processing</text>
+<circle cx="492" cy="88" r="11" fill="rgba(6,214,160,.15)" stroke="#06D6A0" stroke-width="1"/><text x="492" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e1</text>
+<circle cx="528" cy="88" r="11" fill="rgba(6,214,160,.15)" stroke="#06D6A0" stroke-width="1"/><text x="528" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e2</text>
+<circle cx="564" cy="88" r="11" fill="rgba(6,214,160,.15)" stroke="#06D6A0" stroke-width="1"/><text x="564" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e3</text>
+<line x1="580" y1="88" x2="605" y2="88" stroke="#06D6A0" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="622" cy="88" r="11" fill="rgba(6,214,160,.15)" stroke="#06D6A0" stroke-width="1"/><text x="622" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e4</text>
+<circle cx="658" cy="88" r="11" fill="rgba(6,214,160,.15)" stroke="#06D6A0" stroke-width="1"/><text x="658" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e5</text>
+<line x1="674" y1="88" x2="700" y2="88" stroke="#06D6A0" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="718" cy="88" r="11" fill="rgba(6,214,160,.2)" stroke="#06D6A0" stroke-width="1.5"/><text x="718" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e6</text>
+<line x1="734" y1="88" x2="760" y2="88" stroke="#06D6A0" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="778" cy="88" r="11" fill="rgba(6,214,160,.25)" stroke="#06D6A0" stroke-width="2"/><text x="778" y="92" text-anchor="middle" fill="#06D6A0" font-family="JetBrains Mono,monospace" font-size="8">e7</text>
+<text x="665" y="128" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Events arrive continuously, processed immediately</text>
+<line x1="665" y1="135" x2="665" y2="155" stroke="#06D6A0" stroke-width="1.5"/><polygon points="660,153 665,163 670,153" fill="#06D6A0"/>
+<rect x="565" y="165" width="200" height="44" rx="12" fill="rgba(6,214,160,.06)" stroke="#06D6A0" stroke-width="1.5"/><text x="665" y="185" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="12" font-weight="700">Stream Engine</text><text x="665" y="202" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Flink / Kafka Streams</text>
+<line x1="665" y1="209" x2="665" y2="230" stroke="#06D6A0" stroke-width="1"/><polygon points="660,228 665,238 670,228" fill="#06D6A0"/>
+<rect x="565" y="240" width="200" height="32" rx="8" fill="rgba(6,214,160,.08)" stroke="#06D6A0" stroke-width="1"/><text x="665" y="261" text-anchor="middle" fill="#06D6A0" font-family="DM Sans" font-size="11" font-weight="600">Continuous Output</text>
+<text x="665" y="296" text-anchor="middle" fill="#8892A8" font-family="DM Sans" font-size="10">Metric: Latency per event</text>
+<text x="665" y="314" text-anchor="middle" fill="#5C6478" font-family="DM Sans" font-size="9.5">e.g., "Track user's running total in real-time"</text>
+</svg>
+<div class="dia-cap">Fig 5.1 — Batch processes all data at once; Streaming handles each event as it arrives</div>
+</div>
+
+<table class="dt">
+<thead><tr><th>Aspect</th><th style="color:#4CC9F0">Batch</th><th style="color:#06D6A0">Streaming</th></tr></thead>
+<tbody>
+<tr><td><strong>Data Nature</strong></td><td>Static, bounded dataset</td><td>Continuous, unbounded flow</td></tr>
+<tr><td><strong>Key Metric</strong></td><td>Total completion time</td><td>Per-event processing latency</td></tr>
+<tr><td><strong>When to Use</strong></td><td>End-of-day reports, ETL jobs, model training</td><td>Fraud detection, live dashboards, IoT</td></tr>
+<tr><td><strong>Example</strong></td><td>Sum all transactions at end of day</td><td>Alert when a user's spend exceeds $10K in real-time</td></tr>
+<tr><td><strong>Challenges</strong></td><td>Long wait for results; resource spikes</td><td>Variable input rates, buffering, state management</td></tr>
+<tr><td><strong>Spark Support</strong></td><td>Core strength (Spark Core, SQL)</td><td>Structured Streaming (micro-batch, not true event-at-a-time)</td></tr>
+<tr><td><strong>Better Alternative</strong></td><td>Spark is excellent for batch</td><td>Apache Flink for low-latency, stateful streaming</td></tr>
+</tbody></table>
+
+<div class="card"><h3>Stream Processing Challenges</h3>
+<p>Streaming introduces unique engineering challenges that batch processing doesn't face:</p>
+<div style="margin-top:1rem">
+<div class="ci"><div class="d" style="background:var(--yellow)"></div><span><strong>Variable Input Rates</strong> — Events may arrive in bursts or slow trickles. The engine must handle both without crashing or starving.</span></div>
+<div class="ci"><div class="d" style="background:var(--yellow)"></div><span><strong>Buffering</strong> — When events arrive faster than they can be processed, the system must queue them without losing data.</span></div>
+<div class="ci"><div class="d" style="background:var(--yellow)"></div><span><strong>State Management</strong> — Tracking running totals, counts, or windows of time requires maintaining state across events — and recovering it after failures.</span></div>
+<div class="ci"><div class="d" style="background:var(--yellow)"></div><span><strong>Out-of-Order Events</strong> — Network delays mean events can arrive in the wrong order. The engine must decide when "enough" events have arrived to produce correct results.</span></div>
+</div>
+</div>
+
+<div class="hb info"><p><strong>🔍 Spark's Position:</strong> Spark Structured Streaming uses <strong>micro-batching</strong> — it collects small batches of events (e.g., every 100ms) and processes them as tiny batch jobs. This gives near-real-time latency with batch-like simplicity, but it cannot match the true event-at-a-time processing of Apache Flink.</p></div>
+</section>
+
+</main>
+
+<footer>
+<p>Apache Spark Architecture Tutorial &middot; Created for MSc Data Science coursework &middot; 2025</p>
+<p style="margin-top:.5rem;font-size:.78rem">Built with HTML, CSS &amp; inline SVG diagrams</p>
+</footer>
+
+<script>
+// Intersection Observer for scroll animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('vis');
+        }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.anim').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

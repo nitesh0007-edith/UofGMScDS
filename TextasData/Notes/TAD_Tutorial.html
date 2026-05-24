@@ -1,0 +1,2921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text as Data - Complete Interactive Tutorial</title>
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-light: #e0e7ff;
+  --primary-dark: #3730a3;
+  --accent: #06b6d4;
+  --accent-light: #cffafe;
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --purple: #8b5cf6;
+  --purple-light: #ede9fe;
+  --pink: #ec4899;
+  --pink-light: #fce7f3;
+  --orange: #f97316;
+  --orange-light: #fff7ed;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --radius: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0f0f23;
+  color: var(--gray-800);
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.bg-pattern {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(79,70,229,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(6,182,212,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.1) 0%, transparent 50%),
+    #0f172a;
+}
+
+/* HERO */
+.hero {
+  text-align:center; padding:70px 20px 40px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content:''; position:absolute; top:-50%; left:-50%;
+  width:200%; height:200%;
+  background: radial-gradient(circle, rgba(79,70,229,0.08) 0%, transparent 70%);
+  animation: pulse 8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); opacity:0.5; }
+  50% { transform: scale(1.1); opacity:1; }
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem; font-weight: 900;
+  background: linear-gradient(135deg, #818cf8, #06b6d4, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; position: relative;
+  margin-bottom: 10px;
+}
+.hero .subtitle {
+  font-size: 1.1rem; color: rgba(255,255,255,0.6);
+  font-weight: 400; position: relative;
+  max-width: 750px; margin: 0 auto;
+}
+.hero .badge-row {
+  display:flex; justify-content:center; gap:12px; margin-top:18px;
+  flex-wrap: wrap; position: relative;
+}
+.hero .badge {
+  background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7); padding:6px 18px; border-radius:50px;
+  font-size:0.85rem; font-weight:500;
+  backdrop-filter: blur(10px);
+}
+
+/* NAVIGATION */
+.topic-nav {
+  display:flex; justify-content:center; gap:8px;
+  margin-bottom:30px; flex-wrap:wrap;
+  position:sticky; top:10px; z-index:100;
+  padding: 10px 20px;
+}
+.topic-nav a {
+  background: rgba(255,255,255,0.92);
+  color: var(--primary); padding:8px 18px;
+  border-radius:50px; text-decoration:none;
+  font-weight:600; font-size:0.82rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+.topic-nav a:hover {
+  transform: translateY(-2px);
+  background: var(--primary); color: white;
+  box-shadow: 0 6px 20px rgba(79,70,229,0.3);
+}
+
+/* CONTAINER */
+.container { max-width:1100px; margin:0 auto; padding:0 20px 80px; }
+
+/* SECTION */
+.topic-section {
+  background: white; border-radius: 24px;
+  padding: 44px; margin-bottom: 40px;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255,255,255,0.1);
+  position: relative; overflow: hidden;
+}
+.topic-section::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:5px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--purple));
+}
+.section-number {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:48px; height:48px; border-radius:50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; font-weight:800; font-size:1.2rem;
+  margin-bottom:12px;
+  box-shadow: 0 4px 15px rgba(79,70,229,0.3);
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+.section-subtitle {
+  color: var(--gray-500); font-size: 0.92rem; margin-bottom: 28px;
+  padding-bottom: 18px; border-bottom: 2px solid var(--gray-100);
+}
+
+/* SUBSECTION */
+.subsection {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: var(--gray-50);
+  border-radius: 14px;
+  border-left: 5px solid var(--primary);
+  transition: border-color 0.3s;
+}
+.subsection:hover { border-left-color: var(--accent); }
+.subsection h3 {
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.subsection h3 .icon {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:32px; height:32px; border-radius:8px;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: white; font-size:0.85rem;
+}
+
+/* BOXES */
+.formula-box {
+  background: linear-gradient(135deg, var(--purple-light), #f0e7ff);
+  border: 2px solid #c4b5fd; border-left: 5px solid var(--purple);
+  padding: 20px 24px; border-radius: 14px;
+  margin: 16px 0; text-align: center;
+  font-size: 1.05rem;
+  box-shadow: var(--shadow-sm);
+}
+.formula-box .label {
+  display: block; font-weight: 700; color: var(--purple);
+  margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.concept-box {
+  background: linear-gradient(135deg, var(--success-light), #ecfdf5);
+  border: 1px solid #6ee7b7; border-left: 5px solid var(--success);
+  padding: 18px 22px; border-radius: 14px;
+  margin: 14px 0; box-shadow: var(--shadow-sm);
+}
+.concept-box .label {
+  display: flex; align-items: center; gap: 6px;
+  font-weight: 700; color: #065f46; margin-bottom: 8px;
+  font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+
+.warning-box {
+  background: linear-gradient(135deg, var(--danger-light), #fff1f2);
+  border: 1px solid #fca5a5; border-left: 5px solid var(--danger);
+  padding: 18px 22px; border-radius: 14px;
+  margin: 14px 0; box-shadow: var(--shadow-sm);
+}
+.warning-box .label {
+  display: flex; align-items: center; gap: 6px;
+  font-weight: 700; color: var(--danger); margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.tip-box {
+  background: linear-gradient(135deg, var(--accent-light), #ecfeff);
+  border: 1px solid #67e8f9; border-left: 5px solid var(--accent);
+  padding: 18px 22px; border-radius: 14px;
+  margin: 14px 0; box-shadow: var(--shadow-sm);
+}
+.tip-box .label {
+  display: flex; align-items: center; gap: 6px;
+  font-weight: 700; color: #155e75; margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.example-box {
+  background: linear-gradient(135deg, var(--orange-light), #fffbeb);
+  border: 1px solid #fdba74; border-left: 5px solid var(--orange);
+  padding: 18px 22px; border-radius: 14px;
+  margin: 14px 0; box-shadow: var(--shadow-sm);
+}
+.example-box .label {
+  display: flex; align-items: center; gap: 6px;
+  font-weight: 700; color: #9a3412; margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.think-box {
+  background: linear-gradient(135deg, var(--pink-light), #fdf2f8);
+  border: 1px solid #f9a8d4; border-left: 5px solid var(--pink);
+  padding: 18px 22px; border-radius: 14px;
+  margin: 14px 0; box-shadow: var(--shadow-sm);
+}
+.think-box .label {
+  display: flex; align-items: center; gap: 6px;
+  font-weight: 700; color: #9d174d; margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+/* EXAM Q */
+.exam-question {
+  margin: 20px 0;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.exam-q-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; padding: 16px 22px;
+  font-weight: 700; font-size: 1rem;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; user-select: none;
+}
+.exam-q-header .marks {
+  background: rgba(255,255,255,0.2); padding: 4px 14px;
+  border-radius: 50px; font-size: 0.82rem;
+}
+.exam-q-body {
+  padding: 22px;
+  display: none;
+}
+.exam-q-body.open { display: block; }
+.q-text {
+  background: linear-gradient(135deg, #fff7ed, #fffbeb);
+  border: 1px solid #fed7aa; border-left: 4px solid var(--warning);
+  padding: 14px 18px; border-radius: 12px;
+  margin-bottom: 16px; font-style: italic;
+  color: #92400e; font-size: 0.93rem;
+}
+.q-text::before {
+  content: '\f059'; font-family: 'Font Awesome 6 Free';
+  font-weight: 900; margin-right: 8px; font-style: normal;
+}
+.answer-title {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--success); font-weight: 700; font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+/* TABLES */
+table {
+  width:100%; border-collapse: separate; border-spacing: 0;
+  margin: 14px 0; font-size: 0.91rem;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+th {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; padding: 11px 14px; text-align: center;
+  font-weight: 600; font-size: 0.86rem;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+td {
+  padding: 9px 14px; text-align: center;
+  border-bottom: 1px solid var(--gray-100);
+}
+tr:nth-child(even) { background: var(--gray-50); }
+tr:hover { background: var(--primary-light); }
+
+/* CALC BLOCKS */
+.calc {
+  background: #1e293b; color: #e2e8f0;
+  border: 1px solid #334155;
+  padding: 16px 20px; border-radius: 12px;
+  margin: 12px 0; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.86rem; overflow-x: auto;
+  white-space: pre-wrap; line-height: 1.7;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+.calc .comment { color: #64748b; }
+.calc .highlight { color: #fbbf24; font-weight: 600; }
+.calc .result { color: #34d399; font-weight: 700; }
+
+/* STEPS */
+.steps { margin: 14px 0; }
+.step {
+  display: flex; gap: 14px; margin: 12px 0;
+  align-items: flex-start;
+}
+.step-num {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; min-width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(79,70,229,0.3);
+}
+.step-content { flex: 1; padding-top: 4px; }
+
+/* MISC */
+.highlight-text { background: #fef08a; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+ul, ol { padding-left: 22px; margin: 8px 0; }
+li { margin-bottom: 7px; }
+.divider { height: 2px; background: linear-gradient(90deg, transparent, var(--gray-200), transparent); margin: 22px 0; }
+code { background: #f1f5f9; padding: 2px 8px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.88em; color: var(--primary-dark); }
+
+/* INTERACTIVE QUIZ */
+.quiz-container {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius); padding: 22px;
+  margin: 18px 0;
+}
+.quiz-container h4 {
+  color: var(--primary-dark); margin-bottom: 12px;
+  font-size: 1rem;
+}
+.quiz-option {
+  display: block; padding: 10px 16px; margin: 6px 0;
+  background: white; border: 2px solid var(--gray-200);
+  border-radius: 10px; cursor: pointer;
+  transition: all 0.2s; font-size: 0.92rem;
+}
+.quiz-option:hover { border-color: var(--primary); background: var(--primary-light); }
+.quiz-option.correct { border-color: var(--success); background: var(--success-light); }
+.quiz-option.wrong { border-color: var(--danger); background: var(--danger-light); }
+.quiz-feedback {
+  margin-top: 10px; padding: 12px 16px;
+  border-radius: 10px; font-weight: 500;
+  display: none;
+}
+
+/* SCROLL TOP */
+.scroll-top {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--primary); color: white;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; cursor: pointer; z-index: 200;
+  box-shadow: 0 4px 20px rgba(79,70,229,0.4);
+  transition: all 0.3s; opacity: 0; pointer-events: none;
+  text-decoration: none; border: none;
+}
+.scroll-top.visible { opacity: 1; pointer-events: all; }
+.scroll-top:hover { transform: translateY(-3px); background: var(--primary-dark); }
+
+/* PROGRESS BAR */
+.progress-bar {
+  position: fixed; top: 0; left: 0; height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--purple));
+  z-index: 1000; transition: width 0.1s;
+  width: 0%;
+}
+
+/* FOOTER */
+.footer { text-align: center; color: rgba(255,255,255,0.4); padding: 40px 20px; font-size: 0.85rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .topic-section { padding: 22px; border-radius: 16px; }
+  .topic-nav a { padding: 6px 12px; font-size: 0.75rem; }
+  .subsection { padding: 16px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 7px 8px; }
+  .section-title { font-size: 1.5rem; }
+}
+
+/* Animated entry */
+.topic-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s, transform 0.6s; }
+.topic-section.visible { opacity: 1; transform: translateY(0); }
+
+/* Tab System for comparisons */
+.tab-container { margin: 14px 0; }
+.tab-buttons { display: flex; gap: 4px; margin-bottom: 0; }
+.tab-btn {
+  padding: 8px 20px; border: none; border-radius: 10px 10px 0 0;
+  background: var(--gray-200); color: var(--gray-600);
+  font-weight: 600; font-size: 0.88rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--primary); color: white; }
+.tab-content { display: none; padding: 18px; background: white; border: 1px solid var(--gray-200); border-radius: 0 10px 10px 10px; }
+.tab-content.active { display: block; }
+
+/* ===== DARK MODE ===== */
+body.light-mode .bg-pattern {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 50%, #ede9fe 100%);
+}
+body.light-mode .hero h1 {
+  background: linear-gradient(135deg, #4f46e5, #0891b2, #7c3aed);
+  -webkit-background-clip: text; background-clip: text;
+}
+body.light-mode .hero .subtitle { color: var(--gray-600); }
+body.light-mode .hero .badge { background: rgba(79,70,229,0.1); border-color: rgba(79,70,229,0.2); color: var(--primary-dark); }
+body.light-mode .footer { color: var(--gray-500); }
+body.light-mode .topic-nav a { background: white; }
+
+/* THEME TOGGLE */
+.theme-toggle {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+  color: white; width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; cursor: pointer; z-index: 300;
+  backdrop-filter: blur(10px); transition: all 0.3s;
+}
+body.light-mode .theme-toggle { background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); color: var(--gray-700); }
+.theme-toggle:hover { transform: scale(1.1); }
+
+/* INTERACTIVE CALCULATOR */
+.calculator-box {
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border: 2px solid #86efac; border-radius: var(--radius);
+  padding: 24px; margin: 18px 0;
+}
+.calculator-box h4 {
+  color: #166534; margin-bottom: 14px; font-size: 1.05rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.calc-input-group {
+  display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0;
+  align-items: center;
+}
+.calc-input-group label {
+  font-weight: 600; font-size: 0.9rem; color: var(--gray-700);
+  min-width: 70px;
+}
+.calc-input {
+  padding: 8px 14px; border: 2px solid var(--gray-300);
+  border-radius: 10px; font-size: 0.92rem; font-family: 'JetBrains Mono', monospace;
+  width: 200px; transition: border-color 0.2s;
+}
+.calc-input:focus { outline: none; border-color: var(--primary); }
+.calc-btn {
+  padding: 8px 24px; background: linear-gradient(135deg, var(--success), #059669);
+  color: white; border: none; border-radius: 10px;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 2px 10px rgba(16,185,129,0.3);
+}
+.calc-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
+.calc-result {
+  margin-top: 12px; padding: 14px 18px;
+  background: white; border-radius: 10px;
+  border: 1px solid #86efac;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem; display: none;
+}
+
+/* FLASHCARD */
+.flashcard-container {
+  perspective: 1000px;
+  margin: 18px 0;
+}
+.flashcard {
+  width: 100%; min-height: 200px;
+  position: relative; cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; width: 100%; min-height: 200px;
+  backface-visibility: hidden;
+  border-radius: var(--radius);
+  padding: 28px; display: flex;
+  flex-direction: column; justify-content: center;
+  align-items: center; text-align: center;
+}
+.flashcard-front {
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: white;
+}
+.flashcard-front h3 { font-size: 1.2rem; margin-bottom: 12px; }
+.flashcard-front p { font-size: 1rem; opacity: 0.9; }
+.flashcard-back {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: var(--gray-800);
+  transform: rotateY(180deg);
+  border: 2px solid #6ee7b7;
+}
+.flashcard-back p { font-size: 0.95rem; line-height: 1.7; }
+.flashcard-nav {
+  display: flex; justify-content: center; gap: 12px; margin-top: 14px;
+}
+.flashcard-nav button {
+  padding: 8px 24px; border-radius: 50px;
+  border: 2px solid var(--primary);
+  background: white; color: var(--primary);
+  font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.flashcard-nav button:hover { background: var(--primary); color: white; }
+.flashcard-counter {
+  text-align: center; color: var(--gray-500);
+  font-size: 0.85rem; margin-top: 8px; font-weight: 600;
+}
+
+/* K-MEANS ANIMATION */
+.kmeans-canvas-wrap {
+  background: white; border-radius: var(--radius);
+  border: 2px solid var(--gray-200); padding: 10px;
+  margin: 14px 0; text-align: center;
+}
+.kmeans-canvas-wrap canvas {
+  max-width: 100%; border-radius: 10px;
+}
+.kmeans-controls {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; margin-top: 10px;
+}
+.kmeans-controls button {
+  padding: 8px 20px; border-radius: 50px; border: none;
+  font-weight: 700; cursor: pointer; font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.kmeans-btn-primary { background: var(--primary); color: white; }
+.kmeans-btn-primary:hover { background: var(--primary-dark); }
+.kmeans-btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+.kmeans-btn-secondary:hover { background: var(--gray-300); }
+.kmeans-status {
+  text-align: center; margin-top: 8px; font-size: 0.88rem;
+  color: var(--gray-600); font-weight: 500;
+}
+
+/* ATTENTION HEATMAP */
+.attention-grid {
+  display: grid; gap: 2px; margin: 14px auto;
+  width: fit-content;
+}
+.attention-cell {
+  width: 52px; height: 52px; display: flex; align-items: center;
+  justify-content: center; font-size: 0.7rem; font-weight: 600;
+  border-radius: 4px; color: white; transition: transform 0.2s;
+}
+.attention-cell:hover { transform: scale(1.15); z-index: 2; }
+.attention-label {
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.78rem; color: var(--gray-700);
+  background: var(--gray-100); border-radius: 4px;
+}
+
+/* FLOATING SIDEBAR TOC */
+.sidebar-toggle {
+  position: fixed; top: 20px; left: 20px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+  color: white; width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; cursor: pointer; z-index: 300;
+  backdrop-filter: blur(10px); transition: all 0.3s;
+}
+body.light-mode .sidebar-toggle { background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); color: var(--gray-700); }
+.sidebar-toggle:hover { transform: scale(1.1); }
+
+.sidebar-toc {
+  position: fixed; top: 0; left: -320px;
+  width: 300px; height: 100vh;
+  background: rgba(15,23,42,0.97); backdrop-filter: blur(20px);
+  z-index: 500; padding: 70px 20px 30px;
+  transition: left 0.3s ease;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-toc.open { left: 0; }
+.sidebar-toc h3 {
+  color: rgba(255,255,255,0.5); font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 14px; padding-left: 10px;
+}
+.sidebar-toc a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; color: rgba(255,255,255,0.7);
+  text-decoration: none; border-radius: 10px;
+  font-size: 0.88rem; font-weight: 500;
+  transition: all 0.2s; margin-bottom: 2px;
+}
+.sidebar-toc a:hover { background: rgba(255,255,255,0.1); color: white; }
+.sidebar-toc a .toc-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 26px; border-radius: 8px;
+  background: rgba(79,70,229,0.3); color: #a5b4fc;
+  font-size: 0.78rem; font-weight: 700;
+}
+.sidebar-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); z-index: 400;
+  display: none; cursor: pointer;
+}
+.sidebar-overlay.open { display: block; }
+
+.sidebar-toc .search-box {
+  width: 100%; padding: 8px 14px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; color: white; font-size: 0.88rem;
+  margin-bottom: 16px; outline: none;
+}
+.sidebar-toc .search-box::placeholder { color: rgba(255,255,255,0.4); }
+</style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+  <i class="fa-solid fa-sun" id="themeIcon"></i>
+</button>
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle" onclick="toggleSidebar()" title="Table of Contents">
+  <i class="fa-solid fa-bars"></i>
+</button>
+
+<!-- SIDEBAR TOC -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar-toc" id="sidebarToc">
+  <h3>Table of Contents</h3>
+  <input type="text" class="search-box" placeholder="Search topics..." oninput="filterTOC(this.value)" id="tocSearch">
+  <a href="#s1" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">1</span> Tokens & Document Similarity</a>
+  <a href="#s2" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">2</span> Vectors, TF-IDF & Clustering</a>
+  <a href="#s3" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">3</span> Language Modelling</a>
+  <a href="#s4" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">4</span> Text Classification</a>
+  <a href="#s5" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">5</span> Contextual Embeddings</a>
+  <a href="#s6" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">6</span> POS Tagging & Parsing</a>
+  <a href="#s7" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">7</span> Ethics & Info Extraction</a>
+  <a href="#s8" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">8</span> Information Extraction</a>
+  <a href="#s9" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">9</span> Large Language Models</a>
+  <a href="#s10" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">10</span> Exam Strategy</a>
+  <a href="#s11" onclick="toggleSidebar()" class="toc-link"><span class="toc-num">11</span> Crib Sheet Reference</a>
+  <a href="#interactive-tools" onclick="toggleSidebar()" class="toc-link"><span class="toc-num"><i class="fa-solid fa-calculator" style="font-size:0.7rem"></i></span> Interactive Tools</a>
+  <a href="#flashcards" onclick="toggleSidebar()" class="toc-link"><span class="toc-num"><i class="fa-solid fa-clone" style="font-size:0.7rem"></i></span> Flashcard Revision</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Text as Data</h1>
+  <h1 style="font-size:1.8rem; margin-top:-6px;">Complete Interactive Tutorial</h1>
+  <p class="subtitle">University of Glasgow &middot; COMPSCI 5096/5106 &middot; Beginner-Friendly Guide with Real Examples, MathJax Formulas & Exam Practice</p>
+  <div class="badge-row">
+    <span class="badge"><i class="fa-solid fa-book-open"></i> 11 Topics</span>
+    <span class="badge"><i class="fa-solid fa-calculator"></i> MathJax Formulas</span>
+    <span class="badge"><i class="fa-solid fa-lightbulb"></i> Real-Life Examples</span>
+    <span class="badge"><i class="fa-solid fa-graduation-cap"></i> Exam Questions</span>
+    <span class="badge"><i class="fa-solid fa-gamepad"></i> Interactive Quizzes</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- NAV -->
+<div class="topic-nav" id="topnav">
+  <a href="#s1"><i class="fa-solid fa-puzzle-piece"></i> 1. Tokens</a>
+  <a href="#s2"><i class="fa-solid fa-chart-bar"></i> 2. Vectors</a>
+  <a href="#s3"><i class="fa-solid fa-language"></i> 3. Language Models</a>
+  <a href="#s4"><i class="fa-solid fa-tags"></i> 4. Classification</a>
+  <a href="#s5"><i class="fa-solid fa-brain"></i> 5. Embeddings</a>
+  <a href="#s6"><i class="fa-solid fa-code"></i> 6. POS & Parsing</a>
+  <a href="#s7"><i class="fa-solid fa-scale-balanced"></i> 7. Ethics</a>
+  <a href="#s8"><i class="fa-solid fa-microscope"></i> 8. Info Extract</a>
+  <a href="#s9"><i class="fa-solid fa-robot"></i> 9. LLMs</a>
+  <a href="#s10"><i class="fa-solid fa-bullseye"></i> 10. Exam Tips</a>
+  <a href="#s11"><i class="fa-solid fa-square-root-variable"></i> 11. Crib Sheet</a>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 1: INTRODUCTION, TOKENS & SIMILARITY     -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s1">
+  <div class="section-number">1</div>
+  <h2 class="section-title">Introduction, Tokens & Document Similarity</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-info-circle"></i> How computers read text: cleaning, splitting into tokens, and measuring how similar two documents are</p>
+
+  <!-- 1.1 NLP Pipeline -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-filter"></i></span> 1.1 The NLP Pipeline</h3>
+    <p>Before a computer can understand text, it needs to process it step-by-step. Think of it like preparing ingredients before cooking:</p>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-utensils"></i> Real-Life Analogy</div>
+      Imagine you receive a messy handwritten recipe card. You would: (1) wipe off stains, (2) separate each word, (3) standardize abbreviations like "tbsp" &rarr; "tablespoon", (4) ignore common filler words like "the". That's exactly what the NLP pipeline does with text!
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>Data Cleaning:</strong> Remove non-relevant content &mdash; HTML tags, URLs, tables, boilerplate headers/footers. <br><em>Example:</em> <code>&lt;p&gt;Hello &lt;b&gt;world&lt;/b&gt;&lt;/p&gt;</code> &rarr; <code>Hello world</code></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>Tokenization:</strong> Split text into individual units (tokens). Tokens can be words, subwords, or characters.<br><em>Example:</em> <code>"I can't wait!"</code> &rarr; <code>["I", "ca", "n't", "wait", "!"]</code></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>Normalization:</strong> Reduce variation &mdash; convert everything to lowercase.<br><em>Example:</em> <code>"Apple"</code> &rarr; <code>"apple"</code>, so "Apple" and "apple" are treated the same</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content"><strong>Stemming:</strong> Chop off word endings using rules (fast but crude).<br><em>Example:</em> <code>"running"</code> &rarr; <code>"run"</code>, <code>"textiles"</code> &rarr; <code>"textil"</code></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content"><strong>Lemmatization:</strong> Use a dictionary to find the base form (slower but more accurate).<br><em>Example:</em> <code>"better"</code> &rarr; <code>"good"</code>, <code>"mice"</code> &rarr; <code>"mouse"</code></div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content"><strong>Stopword Removal:</strong> Remove high-frequency, low-information words.<br><em>Example:</em> Remove "the", "is", "a", "of" &mdash; they appear everywhere and don't help distinguish documents</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Exam Tip</div>
+      When asked to justify preprocessing steps, always give a <strong>domain-specific example</strong>. E.g., for patent classification: case folding ensures "Textile" (start of sentence) and "textile" (mid-sentence) are treated identically; stemming ensures "textiles" and "textile" map to the same token.
+    </div>
+  </div>
+
+  <!-- 1.2 Encodings -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-keyboard"></i></span> 1.2 Character Encodings</h3>
+    <p>Computers store text as numbers. An encoding tells the computer which number represents which character.</p>
+
+    <table>
+      <tr><th>Encoding</th><th>Bytes per Character</th><th>Characters Supported</th><th>Use Case</th></tr>
+      <tr><td><strong>ASCII</strong></td><td>1 byte</td><td>128 (English letters, digits, symbols)</td><td>Simple English text</td></tr>
+      <tr><td><strong>Unicode (UTF-8)</strong></td><td>1-4 bytes</td><td>150,000+ (all world scripts)</td><td>Multilingual text, emojis</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-globe"></i> Why This Matters</div>
+      If your system uses ASCII and encounters Chinese text (&#x4F60;&#x597D;) or emojis (&#x1F60A;), it will break! Unicode (UTF-8) is the modern standard that handles everything &mdash; English, Arabic, Japanese, and even emojis.
+    </div>
+  </div>
+
+  <!-- 1.3 Tokenization Approaches -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-scissors"></i></span> 1.3 Tokenization Approaches</h3>
+    <p>Tokenization means splitting text into meaningful pieces. There are three main approaches:</p>
+
+    <table>
+      <tr><th>Method</th><th>How It Works</th><th>Example: "I can't believe it's raining!"</th><th>Pros/Cons</th></tr>
+      <tr><td><strong>Whitespace</strong></td><td>Split on spaces</td><td>["I", "can't", "believe", "it's", "raining!"]</td><td>Simple but misses contractions, punctuation</td></tr>
+      <tr><td><strong>Rule-based</strong></td><td>Regex patterns for punctuation, contractions</td><td>["I", "ca", "n't", "believe", "it", "'s", "raining", "!"]</td><td>Better handling but needs manual rules</td></tr>
+      <tr><td><strong>Subword (BPE)</strong></td><td>Learn common character sequences</td><td>["I", "can", "'t", "believe", "it", "'s", "rain", "ing", "!"]</td><td>Handles any word, used by modern models</td></tr>
+    </table>
+  </div>
+
+  <!-- 1.4 Similarity Measures -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-equals"></i></span> 1.4 Set-Based Similarity Measures</h3>
+    <p>Given two documents as <strong>sets of unique tokens</strong> X and Y, how similar are they?</p>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Critical Point</div>
+      These measures work on <strong>sets</strong> (unique elements only). If a word appears 5 times, it only counts once! Don't confuse <strong>types</strong> (unique tokens) with <strong>tokens</strong> (total occurrences).
+    </div>
+
+    <table>
+      <tr><th>Measure</th><th>Formula</th><th>Range</th><th>Intuition</th></tr>
+      <tr><td><strong>Overlap Count</strong></td><td>$|X \cap Y|$</td><td>$[0, \min(|X|,|Y|)]$</td><td>How many words in common?</td></tr>
+      <tr><td><strong>Overlap Coefficient</strong></td><td>$\frac{|X \cap Y|}{\min(|X|, |Y|)}$</td><td>$[0, 1]$</td><td>Overlap relative to smaller set</td></tr>
+      <tr><td><strong>Sorensen-Dice</strong></td><td>$\frac{2|X \cap Y|}{|X| + |Y|}$</td><td>$[0, 1]$</td><td>Overlap relative to average size</td></tr>
+      <tr><td><strong>Jaccard</strong></td><td>$\frac{|X \cap Y|}{|X \cup Y|}$</td><td>$[0, 1]$</td><td>Overlap relative to total unique words</td></tr>
+    </table>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Key Relationship</div>
+      <code>similarity(X, Y)</code> is proportional to <code>-distance(X, Y)</code>. More similar = less distance.
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-shopping-cart"></i> Real-Life Example: Comparing Shopping Lists</div>
+      <strong>Alice's list:</strong> {milk, eggs, bread, butter, cheese}<br>
+      <strong>Bob's list:</strong> {milk, eggs, bread, apples, oranges, grapes}<br><br>
+      <strong>Intersection:</strong> {milk, eggs, bread} &rarr; $|X \cap Y| = 3$<br>
+      <strong>Union:</strong> {milk, eggs, bread, butter, cheese, apples, oranges, grapes} &rarr; $|X \cup Y| = 8$
+    </div>
+
+    <div class="calc"><span class="comment">// Overlap Coefficient</span>
+$|X \cap Y| / \min(|X|,|Y|) = 3 / \min(5,6) = 3/5 = $ <span class="result">0.60</span>
+
+<span class="comment">// Sorensen-Dice</span>
+$2|X \cap Y| / (|X|+|Y|) = 2 \times 3 / (5+6) = 6/11 = $ <span class="result">0.545</span>
+
+<span class="comment">// Jaccard</span>
+$|X \cap Y| / |X \cup Y| = 3 / 8 = $ <span class="result">0.375</span></div>
+
+    <!-- Exam Q -->
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: Set Similarity (2025 Q1c style)</span>
+        <span class="marks">4 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Given DocX with tokens {A, C, G, H} and DocY with tokens {A, B, D, E, G, H, I, J}, compute the Overlap Coefficient and Jaccard Similarity.</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="calc">Set(DocX) = {A, C, G, H}          &rarr; |DocX| = 4
+Set(DocY) = {A, B, D, E, G, H, I, J} &rarr; |DocY| = 8
+
+Intersection = {A, G, H}              &rarr; |Intersection| = 3
+Union = {A, B, C, D, E, G, H, I, J}   &rarr; |Union| = 9</div>
+        <div class="formula-box">
+          <span class="label">Overlap Coefficient</span>
+          $\text{Overlap} = \frac{|X \cap Y|}{\min(|X|, |Y|)} = \frac{3}{\min(4, 8)} = \frac{3}{4} = \mathbf{0.75}$
+        </div>
+        <div class="formula-box">
+          <span class="label">Jaccard Similarity</span>
+          $\text{Jaccard} = \frac{|X \cap Y|}{|X \cup Y|} = \frac{3}{9} = \frac{1}{3} \approx \mathbf{0.333}$
+        </div>
+        <div class="tip-box">
+          <div class="label"><i class="fa-solid fa-lightbulb"></i> Why the difference?</div>
+          Overlap divides by the <em>smaller</em> set (generous), Jaccard divides by the <em>union</em> (strict). Overlap is high when one set is a subset of the other.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1.5 Metric Properties -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-ruler"></i></span> 1.5 Properties of a Metric (Distance Function)</h3>
+    <p>A distance function $d$ is a <strong>metric</strong> if it satisfies ALL four properties:</p>
+
+    <div class="formula-box">
+      <span class="label">The Four Metric Properties</span>
+      1. <strong>Identity:</strong> $d(X, X) = 0$ &nbsp;&mdash;&nbsp; distance to yourself is zero<br>
+      2. <strong>Positivity:</strong> $d(X, Y) > 0$ when $X \neq Y$ &nbsp;&mdash;&nbsp; different things have positive distance<br>
+      3. <strong>Symmetry:</strong> $d(X, Y) = d(Y, X)$ &nbsp;&mdash;&nbsp; A-to-B same as B-to-A<br>
+      4. <strong>Triangle Inequality:</strong> $d(X, Z) \leq d(X, Y) + d(Y, Z)$ &nbsp;&mdash;&nbsp; shortcut can't be longer than detour
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-map-marker-alt"></i> Real-Life Analogy: City Distances</div>
+      Think of distances between cities:<br>
+      &bull; London &rarr; London = 0 km (identity) &#10004;<br>
+      &bull; London &rarr; Paris > 0 km (positivity) &#10004;<br>
+      &bull; London &rarr; Paris = Paris &rarr; London (symmetry) &#10004;<br>
+      &bull; London &rarr; Tokyo &le; London &rarr; Paris + Paris &rarr; Tokyo (triangle inequality) &#10004;
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Important Definitions</div>
+      &bull; A <strong>semi-metric</strong> violates triangle inequality.<br>
+      &bull; A <strong>pseudo-metric</strong> violates positivity (different objects can have distance 0).
+    </div>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Exam Tip (2022 Q2d)</div>
+      <strong>Sorensen-Dice is a semi-metric</strong> &mdash; it breaks triangle inequality. To show this: find three sets A, B, C where $d(A,C) > d(A,B) + d(B,C)$. Remember to convert similarity to distance first: $d = 1 - \text{sim}$.
+    </div>
+  </div>
+
+  <!-- 1.6 Regex -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span> 1.6 Regular Expressions Quick Reference</h3>
+    <p>Regex (regular expressions) are patterns for finding text. Think of them as "wildcard search on steroids".</p>
+
+    <table>
+      <tr><th>Pattern</th><th>Meaning</th><th>Example Match</th></tr>
+      <tr><td><code>.</code></td><td>Any single character</td><td><code>c.t</code> matches "cat", "cut", "c9t"</td></tr>
+      <tr><td><code>[abc]</code></td><td>One of a, b, or c</td><td><code>[aeiou]</code> matches any vowel</td></tr>
+      <tr><td><code>[^abc]</code></td><td>Any char EXCEPT a, b, c</td><td><code>[^0-9]</code> matches non-digits</td></tr>
+      <tr><td><code>[a-z]</code></td><td>Range</td><td><code>[A-Z]</code> matches uppercase letters</td></tr>
+      <tr><td><code>\d, \w, \s</code></td><td>Digit, word char, whitespace</td><td><code>\d{3}</code> matches "123"</td></tr>
+      <tr><td><code>*, +, ?</code></td><td>0+, 1+, 0 or 1 times</td><td><code>colou?r</code> matches "color" & "colour"</td></tr>
+      <tr><td><code>^, $</code></td><td>Start/end of string</td><td><code>^Hello</code> matches lines starting with "Hello"</td></tr>
+      <tr><td><code>\b</code></td><td>Word boundary</td><td><code>\bcat\b</code> matches "cat" but not "category"</td></tr>
+    </table>
+  </div>
+
+  <!-- 1.7 N-grams -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-grip"></i></span> 1.7 N-grams</h3>
+    <p>An <strong>n-gram</strong> is a contiguous sequence of n items from text. Think of it as a sliding window.</p>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-comment"></i> Example: "the cat sat on the mat"</div>
+      <strong>Unigrams (n=1):</strong> [the, cat, sat, on, the, mat]<br>
+      <strong>Bigrams (n=2):</strong> [the cat, cat sat, sat on, on the, the mat]<br>
+      <strong>Trigrams (n=3):</strong> [the cat sat, cat sat on, sat on the, on the mat]
+    </div>
+
+    <div class="formula-box">
+      <span class="label">Maximum Possible N-grams</span>
+      For alphabet size $A$ and text length $L$:<br>
+      If $A^n \leq L - n + 1$: max = $A^n$ (all combinations possible)<br>
+      If $A^n > L - n + 1$: max = $L - n + 1$ (limited by text length)
+    </div>
+
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: Max N-grams (2022 style)</span>
+        <span class="marks">4 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Given alphabet = {A, B, C, D, E} (size 5) and text of length 593, calculate the maximum number of unique n-grams for n = 1 to 5.</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <table>
+          <tr><th>n</th><th>$A^n$</th><th>$L - n + 1$</th><th>Max N-grams</th><th>Reason</th></tr>
+          <tr><td>1</td><td>$5^1 = 5$</td><td>593</td><td><span class="highlight-text">5</span></td><td>$5 \leq 593$, so max = $A^n$</td></tr>
+          <tr><td>2</td><td>$5^2 = 25$</td><td>592</td><td><span class="highlight-text">25</span></td><td>$25 \leq 592$</td></tr>
+          <tr><td>3</td><td>$5^3 = 125$</td><td>591</td><td><span class="highlight-text">125</span></td><td>$125 \leq 591$</td></tr>
+          <tr><td>4</td><td>$5^4 = 625$</td><td>590</td><td><span class="highlight-text">590</span></td><td>$625 > 590$, so max = $L-n+1$</td></tr>
+          <tr><td>5</td><td>$5^5 = 3125$</td><td>589</td><td><span class="highlight-text">589</span></td><td>$3125 > 589$</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Tokens & Similarity</h4>
+    <p>Which similarity measure uses the UNION in its denominator?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) Overlap Coefficient</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">B) Sorensen-Dice</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">C) Jaccard Similarity</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) Overlap Count</div>
+    <div class="quiz-feedback" id="qf1"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--    SECTION 2: GEOMETRIC SIMILARITY, DISTRIBUTIONS, CLUSTERING -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s2">
+  <div class="section-number">2</div>
+  <h2 class="section-title">Geometric Similarity, Text Distributions & Clustering</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-chart-bar"></i> Converting text to numbers (vectors), measuring similarity with angles/distances, and grouping similar documents</p>
+
+  <!-- 2.1 TF Variants -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-hashtag"></i></span> 2.1 Term Frequency (TF) Variants</h3>
+    <p>We need to represent documents as numbers. The simplest approach: count how often each word appears.</p>
+
+    <table>
+      <tr><th>Method</th><th>Formula</th><th>When to Use</th></tr>
+      <tr><td><strong>Raw TF</strong></td><td>$\text{tf}(t,d) = \text{count of } t \text{ in } d$</td><td>Simplest, linear scaling</td></tr>
+      <tr><td><strong>Log-transformed TF</strong></td><td>$1 + \log_{10}(\text{tf}(t,d))$ if tf &gt; 0, else 0</td><td>Dampens effect of very frequent words</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-newspaper"></i> Real-Life Example: News Articles</div>
+      In an article about football, "goal" might appear 20 times. Raw TF = 20. But does appearing 20 times vs 10 times make it <em>twice</em> as relevant? Probably not. Log TF dampens this: $1 + \log_{10}(20) = 2.3$ vs $1 + \log_{10}(10) = 2.0$.
+    </div>
+  </div>
+
+  <!-- 2.2 IDF and TF-IDF -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-weight-scale"></i></span> 2.2 IDF and TF-IDF</h3>
+    <p>Some words are common across ALL documents (like "the"). We need to down-weight them. That's what <strong>IDF</strong> (Inverse Document Frequency) does.</p>
+
+    <div class="formula-box">
+      <span class="label">IDF Formula</span>
+      $$\text{IDF}(t) = \log\left(\frac{N}{\text{df}(t)}\right)$$
+      Where $N$ = total number of documents, $\text{df}(t)$ = number of documents containing term $t$
+    </div>
+
+    <div class="formula-box">
+      <span class="label">TF-IDF Formula</span>
+      $$\text{TF-IDF}(t, d) = (1 + \log(\text{tf}(t,d))) \times \log\left(\frac{N}{\text{df}(t)}\right)$$
+      Or with linear TF: $\text{TF-IDF}(t,d) = \text{tf}(t,d) \times \text{IDF}(t)$
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-search"></i> Real-Life Example: Google Search</div>
+      Imagine 1,000 web pages. The word "the" appears in all 1,000 &rarr; IDF = log(1000/1000) = 0. It's useless for search!<br>
+      The word "quantum" appears in only 5 &rarr; IDF = log(1000/5) = 2.3. Very distinctive!<br><br>
+      <strong>TF-IDF rewards words that are frequent in a document BUT rare overall.</strong>
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Zipf's Law</div>
+      A few words are extremely frequent; most words are very rare. The frequency of a word is inversely proportional to its rank. Word #1 appears about twice as often as word #2, three times as often as word #3, etc.
+    </div>
+
+    <!-- Exam Q -->
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: TF-IDF Calculation (2025 Resit Q1)</span>
+        <span class="marks">4 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Given a vocabulary with IDF values and document DocX: G C G A H A G, compute the TF-IDF vector using linear TF.</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Count tokens:</strong> A=2, B=0, C=1, G=3, H=1 (all others = 0)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Multiply TF &times; IDF:</strong></div></div>
+        </div>
+        <table>
+          <tr><th>Token</th><th>TF</th><th>IDF</th><th>TF &times; IDF</th></tr>
+          <tr><td>A</td><td>2</td><td>2</td><td><span class="highlight-text">4</span></td></tr>
+          <tr><td>B</td><td>0</td><td>4</td><td>0</td></tr>
+          <tr><td>C</td><td>1</td><td>1</td><td><span class="highlight-text">1</span></td></tr>
+          <tr><td>G</td><td>3</td><td>1</td><td><span class="highlight-text">3</span></td></tr>
+          <tr><td>H</td><td>1</td><td>3</td><td><span class="highlight-text">3</span></td></tr>
+        </table>
+        <div class="formula-box">
+          <span class="label">Final Dense Vector</span>
+          <strong>DocX = [4, 0, 1, 0, 0, 0, 3, 3, 0, 0]</strong>
+        </div>
+        <div class="warning-box">
+          <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Reversing TF-IDF</div>
+          To reconstruct text from TF-IDF: divide by IDF to get TF. But <strong>word order is lost</strong> &mdash; bag-of-words only tells you WHAT words appear and HOW MANY times, not the order.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.3 Vector Similarity -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-arrows-left-right"></i></span> 2.3 Vector Similarity Measures</h3>
+    <p>Once documents are vectors, we can measure distance/similarity geometrically.</p>
+
+    <table>
+      <tr><th>Measure</th><th>Formula</th><th>Key Property</th></tr>
+      <tr><td><strong>Euclidean Distance</strong></td><td>$d(\vec{x}, \vec{y}) = \sqrt{\sum_i (x_i - y_i)^2}$</td><td>Sensitive to vector magnitude (length)</td></tr>
+      <tr><td><strong>Cosine Similarity</strong></td><td>$\cos(\theta) = \frac{\vec{d_1} \cdot \vec{d_2}}{||\vec{d_1}|| \times ||\vec{d_2}||}$</td><td>Magnitude-independent (measures angle)</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-book"></i> Why Cosine is Better for Text</div>
+      Imagine two documents about "machine learning". Document A is 100 words, Document B is 10,000 words (a textbook chapter). Their TF vectors have very different magnitudes. Euclidean distance would say they're far apart. But cosine similarity measures the <em>angle</em> between them &mdash; if they use the same words in the same proportions, the angle is small (high similarity), regardless of length!
+    </div>
+
+    <div class="formula-box">
+      <span class="label">Cosine Similarity Worked Example</span>
+      $\vec{A} = [1, 2, 3], \quad \vec{B} = [2, 4, 6]$<br><br>
+      $\vec{A} \cdot \vec{B} = (1)(2) + (2)(4) + (3)(6) = 2 + 8 + 18 = 28$<br>
+      $||\vec{A}|| = \sqrt{1+4+9} = \sqrt{14}$, &nbsp; $||\vec{B}|| = \sqrt{4+16+36} = \sqrt{56}$<br>
+      $\cos(\theta) = \frac{28}{\sqrt{14} \times \sqrt{56}} = \frac{28}{28} = \mathbf{1.0}$<br><br>
+      <em>Perfect similarity! B is just A scaled by 2 &mdash; same direction, different magnitude.</em>
+    </div>
+  </div>
+
+  <!-- 2.4 K-Means Clustering -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-object-group"></i></span> 2.4 K-Means Clustering</h3>
+    <p>Clustering groups similar documents together <em>without labels</em>. K-Means is the most common algorithm.</p>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-envelope"></i> Real-Life Example: Email Organization</div>
+      Imagine you have 10,000 emails and want to automatically organize them into groups. K-Means might discover clusters like: "work emails", "online shopping", "social media notifications", "newsletters" &mdash; all without you telling it what groups to look for!
+    </div>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">0</div><div class="step-content"><strong>Initialize:</strong> Pick k random points as initial centroids (cluster centers)</div></div>
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Assign:</strong> Each data point goes to its nearest centroid</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Update:</strong> Recalculate each centroid as the mean of its assigned points</div></div>
+      <div class="step"><div class="step-num">R</div><div class="step-content"><strong>Repeat:</strong> Steps 1-2 until assignments stop changing (convergence)</div></div>
+    </div>
+
+    <table>
+      <tr><th>Initialization Method</th><th>How It Works</th></tr>
+      <tr><td><strong>Forgy</strong></td><td>Randomly select k data points as initial centroids</td></tr>
+      <tr><td><strong>Random Partition</strong></td><td>Randomly assign each point to a cluster, then compute centroids</td></tr>
+    </table>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Choosing k: The Elbow Method</div>
+      Plot total within-cluster distance vs. k. The "elbow" point (where improvement diminishes sharply) is a good choice for k. Too few clusters = things that are different get grouped. Too many = things that are similar get split.
+    </div>
+  </div>
+
+  <!-- 2.5 Measuring Clustering Quality -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-chart-line"></i></span> 2.5 Measuring Clustering Quality</h3>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Two Types of Evaluation</div>
+      <strong>Intrinsic</strong> (no labels needed): How well-separated are clusters?<br>
+      <strong>Extrinsic</strong> (needs labels): Do clusters match known categories?
+    </div>
+
+    <p><strong>Silhouette Score</strong> combines two ideas: <strong>cohesion</strong> (how close points are within a cluster) and <strong>separation</strong> (how far apart clusters are).</p>
+
+    <div class="formula-box">
+      <span class="label">Silhouette Score</span>
+      $$s(i) = \begin{cases} 1 - \frac{\text{cohesion}(i)}{\text{separation}(i)} & \text{if cohesion} < \text{separation} \\ 0 & \text{if cohesion} = \text{separation} \\ \frac{\text{separation}(i)}{\text{cohesion}(i)} - 1 & \text{if cohesion} > \text{separation} \end{cases}$$
+      <br>Range: $[-1, 1]$. Higher = better. Negative = point might be in wrong cluster.
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Definitions</div>
+      <strong>Cohesion(i):</strong> Average distance from point i to all OTHER points in the SAME cluster (lower = better)<br>
+      <strong>Separation(i):</strong> Minimum average distance from point i to points in ANY OTHER cluster (higher = better)<br>
+      <strong>Purity:</strong> (extrinsic) Fraction of each cluster that belongs to the majority class
+    </div>
+
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: Silhouette Score</span>
+        <span class="marks">3 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Point X has cohesion = 2.0 and separation = 5.0. Calculate its silhouette score. Is this a good clustering for point X?</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="calc">cohesion = 2.0, separation = 5.0
+Since cohesion < separation:
+  s(X) = 1 - cohesion/separation = 1 - 2.0/5.0 = 1 - 0.4 = <span class="result">0.6</span>
+
+This is a good score! Point X is closer to its own cluster
+than to the nearest other cluster.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Vectors & Clustering</h4>
+    <p>Why is cosine similarity preferred over Euclidean distance for comparing text documents?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) Cosine is faster to compute</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">B) Cosine is independent of document length (magnitude)</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) Cosine always gives higher values</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) Cosine works with negative values</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 3: LANGUAGE MODELLING                    -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s3">
+  <div class="section-number">3</div>
+  <h2 class="section-title">Language Modelling</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-language"></i> Predicting the next word: probability foundations, n-gram models, smoothing, and text generation</p>
+
+  <!-- 3.1 Probability -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-dice"></i></span> 3.1 Probability Foundations</h3>
+    <p>Language modelling is about predicting what word comes next. We need some probability basics first.</p>
+
+    <div class="formula-box">
+      <span class="label">Essential Probability Rules</span>
+      $0 \leq P(x) \leq 1$ &nbsp; and &nbsp; $\sum P(x) = 1$<br><br>
+      <strong>Bayes' Rule:</strong> $P(A|B) = \frac{P(B|A) \times P(A)}{P(B)}$<br><br>
+      <strong>Chain Rule:</strong> $P(A,B,C) = P(A|B,C) \times P(B|C) \times P(C)$<br><br>
+      <strong>Independence:</strong> A and B are independent iff $P(A|B) = P(A)$
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-mobile"></i> Real-Life Example: Phone Autocomplete</div>
+      When you type "I want to" on your phone and it suggests "eat", "go", "know" &mdash; that's a language model! It estimates $P(\text{next word} | \text{previous words})$ and shows the highest-probability options.
+    </div>
+  </div>
+
+  <!-- 3.2 N-gram Models -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-link"></i></span> 3.2 N-gram Language Models</h3>
+    <p>The <strong>Markov assumption</strong>: the probability of a word depends only on the previous n-1 words.</p>
+
+    <table>
+      <tr><th>Model</th><th>Assumption</th><th>Formula</th><th>Example</th></tr>
+      <tr><td><strong>Unigram</strong></td><td>Words are independent</td><td>$P(w_i) = \frac{\text{Count}(w_i)}{N}$</td><td>P("the") = 200/1000 = 0.2</td></tr>
+      <tr><td><strong>Bigram</strong></td><td>Depends on previous word</td><td>$P(w_i|w_{i-1}) = \frac{\text{Count}(w_{i-1}, w_i)}{\text{Count}(w_{i-1})}$</td><td>P("cat"|"the") = Count("the cat")/Count("the")</td></tr>
+      <tr><td><strong>Trigram</strong></td><td>Depends on previous 2 words</td><td>$P(w_i|w_{i-2},w_{i-1}) = \frac{\text{Count}(w_{i-2},w_{i-1},w_i)}{\text{Count}(w_{i-2},w_{i-1})}$</td><td>P("mat"|"the","cat") = ...</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-comment-dots"></i> Real-Life Example: Text Prediction</div>
+      <strong>Training text:</strong> "the cat sat on the mat the cat ate the fish"<br><br>
+      <strong>Bigram counts after "the":</strong> cat&times;2, mat&times;1, fish&times;1 (total: 4)<br>
+      $P(\text{cat}|\text{the}) = 2/4 = 0.5$<br>
+      $P(\text{mat}|\text{the}) = 1/4 = 0.25$<br>
+      $P(\text{fish}|\text{the}) = 1/4 = 0.25$<br><br>
+      So after typing "the", the model predicts "cat" is most likely!
+    </div>
+  </div>
+
+  <!-- 3.3 Smoothing -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-wave-square"></i></span> 3.3 Smoothing</h3>
+    <p><strong>Problem:</strong> What if we encounter an n-gram not seen in training? Its count = 0 &rarr; probability = 0 &rarr; the ENTIRE sequence probability becomes 0!</p>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> The Zero-Probability Problem</div>
+      If your model sees "the dog" 100 times but never "the elephant", it thinks $P(\text{elephant}|\text{the}) = 0$. That's too harsh &mdash; "the elephant" is perfectly valid English!
+    </div>
+
+    <h4 style="margin-top:16px; color: var(--primary-dark);">Add-k Smoothing</h4>
+    <div class="formula-box">
+      <span class="label">Add-k Smoothing Formula</span>
+      $$P_{\text{add-k}}(w | \text{context}) = \frac{\text{Count}(w, \text{context}) + k}{\sum_{w'} \text{Count}(w', \text{context}) + k \times |V|}$$
+      When $k=1$, this is called <strong>Laplace smoothing</strong>. $|V|$ = vocabulary size.
+    </div>
+
+    <h4 style="margin-top:16px; color: var(--primary-dark);">Interpolation</h4>
+    <div class="formula-box">
+      <span class="label">Interpolation Formula</span>
+      $$P_{\text{interp}}(w_i | w_{i-1}, w_{i-2}) = \lambda_1 \cdot P_{\text{tri}} + \lambda_2 \cdot P_{\text{bi}} + \lambda_3 \cdot P_{\text{uni}}$$
+      Where $\lambda_1 + \lambda_2 + \lambda_3 = 1$. Mix higher-order and lower-order models.
+    </div>
+
+    <h4 style="margin-top:16px; color: var(--primary-dark);">Jelinek-Mercer Smoothing</h4>
+    <div class="formula-box">
+      <span class="label">Jelinek-Mercer Formula</span>
+      $$P_{\text{JM}}(t | \text{doc}) = \lambda \cdot P(t | \text{doc}) + (1 - \lambda) \cdot P(t | \text{collection})$$
+      Mix document-specific probability with corpus-wide probability.
+    </div>
+  </div>
+
+  <!-- 3.4 Evaluation -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-gauge-high"></i></span> 3.4 Language Model Evaluation</h3>
+
+    <table>
+      <tr><th>Metric</th><th>Formula</th><th>Interpretation</th></tr>
+      <tr><td><strong>Entropy</strong></td><td>$H = -\sum P(x) \cdot \log_2 P(x)$</td><td>Uncertainty in distribution. Higher = more uncertain</td></tr>
+      <tr><td><strong>Cross-Entropy</strong></td><td>$H = -\frac{1}{n} \sum \log_2 P(w_i)$</td><td>How well model predicts test data. Lower = better</td></tr>
+      <tr><td><strong>Perplexity</strong></td><td>$PP = 2^{\text{Cross-Entropy}}$</td><td>Effective number of choices. <strong>Lower = better model</strong></td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-brain"></i> Intuition for Perplexity</div>
+      Perplexity of 10 means the model is as confused as if it had to choose randomly between 10 equally likely words at each position. A good English language model might have perplexity around 50-100 (out of 50,000+ vocabulary words).
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Evaluation Types</div>
+      <strong>Intrinsic:</strong> Evaluate LM directly (perplexity)<br>
+      <strong>Extrinsic:</strong> Evaluate LM as part of another task (e.g., machine translation quality)<br>
+      <strong>Syntactic:</strong> Does generated text follow grammar rules?<br>
+      <strong>Semantic:</strong> Does generated text convey actual meaning?
+    </div>
+  </div>
+
+  <!-- 3.5 Generation Strategies -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-pen-fancy"></i></span> 3.5 Text Generation Strategies</h3>
+
+    <table>
+      <tr><th>Strategy</th><th>How It Works</th><th>Output Quality</th></tr>
+      <tr><td><strong>Greedy</strong></td><td>Always pick highest-probability next token</td><td>Deterministic, boring, repetitive</td></tr>
+      <tr><td><strong>Sampling</strong></td><td>Sample from the full probability distribution</td><td>More diverse but can be incoherent</td></tr>
+      <tr><td><strong>Beam Search</strong></td><td>Track k best candidates, expand each, keep top k</td><td>Better than greedy, not too random</td></tr>
+      <tr><td><strong>Top-k</strong></td><td>Sample only from the k highest-probability tokens</td><td>Good balance of quality and diversity</td></tr>
+      <tr><td><strong>Top-p (nucleus)</strong></td><td>Sample from smallest set with cumulative probability &ge; p</td><td>Adaptive, widely used in practice</td></tr>
+    </table>
+
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: N-gram Generation (2024 Q2 style)</span>
+        <span class="marks">8 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Text: BCBBCBBABCCCBBCCBCCB (20 chars, alphabet: {A, B, C}). Generate 3 characters using: (a) greedy unigram, (b) trigram greedy starting from context "CB".</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+
+        <p><strong>(a) Greedy Unigram:</strong></p>
+        <div class="calc"><span class="comment">// Count each character:</span>
+B = 10, C = 8, A = 2. Total = 20
+
+<span class="comment">// Greedy always picks highest probability:</span>
+P(B) = 10/20 = 0.5  &larr; <span class="highlight">highest</span>
+P(C) = 8/20 = 0.4
+P(A) = 2/20 = 0.1
+
+<span class="comment">// Generate: always pick B</span>
+Result: <span class="result">BBB</span></div>
+
+        <p><strong>(b) Trigram Greedy from "CB":</strong></p>
+        <div class="calc"><span class="comment">// Look at last 2 chars: CB. Find all trigrams starting with CB:</span>
+CBB: 3 times, CBC: 1 time, CBA: 0 times
+Total: 4
+
+<span class="comment">// Pick highest: B (prob = 3/4)</span>
+Generated: B. Context is now: BB
+
+<span class="comment">// Last 2 chars: BB. Find all trigrams starting with BB:</span>
+BBA: 1, BBB: 0, BBC: 1 &rarr; Tie A and C!
+<span class="comment">// Break tie alphabetically: pick A</span>
+
+Generated: BA. Context is now: BA
+
+<span class="comment">// Last 2 chars: BA. Find trigrams starting with BA:</span>
+BAB: 1 &rarr; pick B
+
+Result: <span class="result">BAB</span></div>
+
+        <div class="warning-box">
+          <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistake</div>
+          Don't forget: newly generated characters become part of the context for subsequent predictions! After generating "B" from "CB", the context becomes "BB" (not still "CB").
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.6 Zero Probability -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-ban"></i></span> 3.6 The Zero-Probability Problem</h3>
+    <p>A bigram model cannot generate a sequence if any constituent bigram has zero count in the training data.</p>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-wrench"></i> Solution</div>
+      Apply <strong>add-k smoothing</strong> to give all unseen n-grams a small probability, then use <strong>sampling</strong> (not greedy) to allow selection of low-probability tokens.
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Language Models</h4>
+    <p>A language model has perplexity 50. Another has perplexity 150. Which is better?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">A) Perplexity 50 (lower is better)</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">B) Perplexity 150 (higher is better)</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) They're equally good</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) Can't tell without more information</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- PLACEHOLDER: Sections 4-11 will be appended -->
+<!-- ============================================================ -->
+<!--              SECTION 4: TEXT CLASSIFICATION                   -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s4">
+  <div class="section-number">4</div>
+  <h2 class="section-title">Text Classification</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-tags"></i> Assigning categories to text: types, metrics, evaluation, and common pitfalls</p>
+
+  <!-- 4.1 Types -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-layer-group"></i></span> 4.1 Types of Classification</h3>
+
+    <table>
+      <tr><th>Type</th><th>Description</th><th>Real-Life Example</th></tr>
+      <tr><td><strong>Binary</strong></td><td>2 classes</td><td>Email: Spam or Not Spam</td></tr>
+      <tr><td><strong>Multi-class</strong></td><td>1 label from n mutually exclusive classes</td><td>Movie review: Positive / Negative / Neutral</td></tr>
+      <tr><td><strong>Multi-label</strong></td><td>Multiple labels per instance</td><td>News article: tagged as "Politics" AND "Economy" AND "UK"</td></tr>
+    </table>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Exam Tip (2025 Q2a)</div>
+      If categories <em>overlap</em> (e.g., a recipe is both "Italian" AND "pasta"), it's <strong>multi-label</strong>, not multi-class. This distinction is frequently tested! Multi-class means exactly ONE label per item.
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-film"></i> Real-Life Example: Netflix</div>
+      <strong>Multi-class:</strong> "Is this movie rated G, PG, PG-13, or R?" (exactly one rating)<br>
+      <strong>Multi-label:</strong> "What genres? Action, Comedy, Romance..." (a movie can be multiple genres)
+    </div>
+  </div>
+
+  <!-- 4.2 Metrics -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-chart-pie"></i></span> 4.2 Classification Metrics</h3>
+
+    <p><strong>Binary Confusion Matrix</strong> &mdash; the foundation of all classification metrics:</p>
+    <table>
+      <tr><th></th><th>Predicted Positive</th><th>Predicted Negative</th></tr>
+      <tr><td><strong>Actual Positive</strong></td><td style="background:#d1fae5"><strong>TP</strong> (True Positive)</td><td style="background:#fee2e2"><strong>FN</strong> (False Negative)</td></tr>
+      <tr><td><strong>Actual Negative</strong></td><td style="background:#fee2e2"><strong>FP</strong> (False Positive)</td><td style="background:#d1fae5"><strong>TN</strong> (True Negative)</td></tr>
+    </table>
+
+    <div class="formula-box">
+      <span class="label">Core Classification Metrics</span>
+      $$\text{Accuracy} = \frac{TP + TN}{TP + FP + TN + FN}$$
+      $$\text{Precision} = \frac{TP}{TP + FP} \quad \text{"Of predicted positives, how many correct?"}$$
+      $$\text{Recall} = \frac{TP}{TP + FN} \quad \text{"Of actual positives, how many found?"}$$
+      $$F_1 = \frac{2 \times P \times R}{P + R} = \frac{2TP}{2TP + FP + FN}$$
+      $$F_\beta = \frac{(1 + \beta^2) \times P \times R}{\beta^2 \times P + R}$$
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-stethoscope"></i> Real-Life Example: Medical Testing</div>
+      A COVID test:<br>
+      &bull; <strong>High Precision</strong> = When the test says "positive", it's almost always right (few false alarms)<br>
+      &bull; <strong>High Recall</strong> = The test catches almost all infected people (few missed cases)<br>
+      &bull; For a deadly disease, <strong>recall is more important</strong> &mdash; missing a case (FN) is worse than a false alarm (FP)
+    </div>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Key Rule</div>
+      $F_1$ is the harmonic mean of Precision and Recall. It MUST always be <strong>between</strong> P and R. If $F_1 > \max(P, R)$, something is wrong! (2025 Q2c tested this)
+    </div>
+
+    <h4 style="margin-top:16px; color: var(--primary-dark);">Multi-class Averaging</h4>
+    <table>
+      <tr><th>Method</th><th>How It Works</th><th>When to Use</th></tr>
+      <tr><td><strong>Macro</strong></td><td>Unweighted average of per-class metric</td><td>When all classes are equally important</td></tr>
+      <tr><td><strong>Weighted</strong></td><td>Weighted by class sample count</td><td>When class sizes vary</td></tr>
+      <tr><td><strong>Micro</strong></td><td>Sum TP/FP/TN/FN across all classes first</td><td>When you care about overall performance</td></tr>
+    </table>
+
+    <!-- Exam Q -->
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: Confusion Matrix Metrics</span>
+        <span class="marks">6 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Given this confusion matrix for a spam classifier, compute Precision, Recall, and F1.</div>
+        <table>
+          <tr><th></th><th>Pred: Spam</th><th>Pred: Not Spam</th></tr>
+          <tr><td><strong>Actual: Spam</strong></td><td>40 (TP)</td><td>10 (FN)</td></tr>
+          <tr><td><strong>Actual: Not Spam</strong></td><td>5 (FP)</td><td>145 (TN)</td></tr>
+        </table>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="calc">Precision = TP / (TP + FP) = 40 / (40 + 5) = 40/45 = <span class="result">0.889</span>
+Recall    = TP / (TP + FN) = 40 / (40 + 10) = 40/50 = <span class="result">0.800</span>
+F1        = 2 * P * R / (P + R) = 2 * 0.889 * 0.800 / (0.889 + 0.800)
+          = 1.422 / 1.689 = <span class="result">0.842</span>
+
+<span class="comment">// Sanity check: F1 (0.842) is between P (0.889) and R (0.800) &#10004;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.3 ROC -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-chart-area"></i></span> 4.3 ROC Curve and AUROC</h3>
+    <p>The ROC curve plots True Positive Rate (recall) vs False Positive Rate at different thresholds.</p>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Key Concepts</div>
+      <strong>How to build ROC:</strong> Start bottom-left. Order predictions by confidence. For each: actual positive &rarr; move UP, actual negative &rarr; move RIGHT.<br><br>
+      <strong>AUROC</strong> = Area Under the ROC Curve.<br>
+      &bull; 0.5 = random guessing (diagonal line)<br>
+      &bull; 1.0 = perfect classifier<br>
+      &bull; < 0.5 = worse than random (model might have labels flipped)
+    </div>
+  </div>
+
+  <!-- 4.4 Data Splitting -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-scissors"></i></span> 4.4 Data Splitting & Cross-Validation</h3>
+
+    <table>
+      <tr><th>Approach</th><th>How It Works</th><th>When to Use</th></tr>
+      <tr><td><strong>Train / Val / Test</strong></td><td>Split into 3 parts. Train on train, tune on val, final eval on test</td><td>Large datasets (1000+ samples)</td></tr>
+      <tr><td><strong>K-Fold CV</strong></td><td>Split into k folds, rotate test fold k times, average results</td><td>Small datasets (< 1000 samples)</td></tr>
+    </table>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Never peek at test data!</div>
+      The test set must ONLY be used for final evaluation. If you tune hyperparameters on it, your results are biased (test set leakage).
+    </div>
+  </div>
+
+  <!-- 4.5 Common Problems -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-bug"></i></span> 4.5 Common Classifier Problems</h3>
+
+    <table>
+      <tr><th>Problem</th><th>Symptoms</th><th>Example Fix</th></tr>
+      <tr><td><strong>Underfitting</strong></td><td>Poor on train AND test</td><td>Use more complex model, add features</td></tr>
+      <tr><td><strong>Overfitting</strong></td><td>Great on train, poor on test</td><td>Add regularization, more training data</td></tr>
+      <tr><td><strong>Class Imbalance</strong></td><td>Model always predicts majority class</td><td>Oversample minority, use F1 not accuracy</td></tr>
+      <tr><td><strong>Test Set Leakage</strong></td><td>Suspiciously high test accuracy</td><td>Ensure no overlap between train/test</td></tr>
+      <tr><td><strong>Noise</strong></td><td>Inconsistent predictions</td><td>Clean labels, remove outliers</td></tr>
+    </table>
+
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: Overfitting vs Underfitting (2022 Q3d style)</span>
+        <span class="marks">4 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">System A: Train accuracy slightly better than baseline*, Test accuracy better than baseline*. System B: Train accuracy much better than baseline*, Test accuracy worse than baseline. (* = statistically significant) Diagnose each.</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="calc"><span class="highlight">System A: Good generalization</span>
+- Both train and test improve over baseline
+- Test improvement is statistically significant
+- Model has learned genuine patterns
+
+<span class="highlight">System B: Overfitting</span>
+- Train performance is much better (memorized training data)
+- Test performance is worse (can't generalize)
+- Gap between train and test = classic overfitting sign</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.6 Anomaly Detection -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-search"></i></span> 4.6 Anomaly Detection in Reported Metrics (2025 Q2c)</h3>
+    <p>In exams, you may be asked to spot errors in a reported experimental setup. Common anomalies:</p>
+    <ul>
+      <li><strong>Perplexity reported for classification</strong> &mdash; wrong metric (it's for language models)</li>
+      <li><strong>Different classes in train vs test</strong> confusion matrices</li>
+      <li><strong>Accuracy doesn't match confusion matrix values</strong></li>
+      <li><strong>Class distribution mismatch</strong> between train and test</li>
+      <li><strong>Validation set larger than training set</strong></li>
+      <li><strong>Perfect test with poor train</strong> &mdash; suspicious data leakage</li>
+      <li><strong>$F_1$ not between Precision and Recall</strong> &mdash; mathematically impossible</li>
+      <li><strong>Macro P/R/F1 for binary</strong> &mdash; just use regular P/R/F1</li>
+    </ul>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Classification</h4>
+    <p>A model has Precision = 0.3 and Recall = 0.5. A student reports F1 = 0.7. Is this possible?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) Yes, F1 can be higher than both P and R</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">B) No, F1 must always be between P and R</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) Yes, if we use weighted averaging</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) It depends on the dataset size</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 5: CONTEXTUAL WORD EMBEDDINGS            -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s5">
+  <div class="section-number">5</div>
+  <h2 class="section-title">Contextual Word Embeddings</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-brain"></i> From static word vectors to transformers: Word2Vec, BERT, GPT, attention, BPE, and transfer learning</p>
+
+  <!-- 5.1 Static -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-cube"></i></span> 5.1 Static Word Embeddings</h3>
+    <p>The idea: represent each word as a dense vector of numbers (e.g., 300 dimensions) based on the words it appears near.</p>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Distributional Hypothesis</div>
+      <em>"You shall know a word by the company it keeps"</em> &mdash; words that appear in similar contexts have similar meanings. "King" and "queen" appear near similar words, so they get similar vectors.
+    </div>
+
+    <h4 style="margin-top:14px; color: var(--primary-dark);">Word2Vec</h4>
+    <ul>
+      <li>Learns dense vectors via <strong>noise contrastive estimation</strong></li>
+      <li><strong>Negative samples</strong> help learning by contrasting true context vs random words</li>
+      <li>Famous example: $\vec{\text{king}} - \vec{\text{man}} + \vec{\text{woman}} \approx \vec{\text{queen}}$</li>
+    </ul>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> The Polysemy Problem</div>
+      Word2Vec produces <strong>ONE vector per word</strong>. But "bank" means a financial institution AND a river bank. "Python" is a snake AND a programming language. The single vector mixes both meanings, hurting downstream tasks. Static embeddings handle <strong>synonymy</strong> (similar words &rarr; similar vectors) but NOT <strong>polysemy</strong> (one word, multiple meanings).
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Window Size Trade-off</div>
+      <strong>Too large k:</strong> Contexts too broad and noisy, vectors inconsistent<br>
+      <strong>Too small k:</strong> Not enough information to represent word meaning<br>
+      <strong>Function word problem:</strong> Words like "the", "of" appear in ALL contexts, so $P(\text{context}|\text{word})$ is near-uniform &mdash; their vectors are unreliable.
+    </div>
+  </div>
+
+  <!-- 5.2 Contextual -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span> 5.2 Contextual Word Embeddings</h3>
+    <p>The breakthrough: give each word a <strong>different vector depending on its context</strong>!</p>
+
+    <table>
+      <tr><th>Model</th><th>Architecture</th><th>Key Feature</th><th>Year</th></tr>
+      <tr><td><strong>ELMo</strong></td><td>Bi-LSTM</td><td>Different vector per context</td><td>2018</td></tr>
+      <tr><td><strong>BERT</strong></td><td>Transformer (Encoder)</td><td>Bidirectional, masked LM</td><td>2018</td></tr>
+      <tr><td><strong>GPT</strong></td><td>Transformer (Decoder)</td><td>Unidirectional, causal LM</td><td>2018+</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-comment-dots"></i> How Contextual Embeddings Solve Polysemy</div>
+      <strong>Sentence 1:</strong> "I deposited money in the <u>bank</u>"<br>
+      <strong>Sentence 2:</strong> "I sat by the river <u>bank</u>"<br><br>
+      In Word2Vec, "bank" has ONE vector mixing both meanings.<br>
+      In BERT, "bank" gets <strong>different vectors</strong> in each sentence because the surrounding words are different! The financial context pushes it toward money-related meanings; the river context pushes it toward nature-related meanings.
+    </div>
+  </div>
+
+  <!-- 5.3 Self-Attention -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-eye"></i></span> 5.3 Self-Attention Mechanism</h3>
+    <p>The core of transformers. Each word "attends" to every other word to decide what's important.</p>
+
+    <div class="formula-box">
+      <span class="label">Self-Attention Formula</span>
+      $$Q = \text{Input} \times W_Q \quad \text{(Queries: "what am I looking for?")}$$
+      $$K = \text{Input} \times W_K \quad \text{(Keys: "what do I contain?")}$$
+      $$V = \text{Input} \times W_V \quad \text{(Values: "what information do I provide?")}$$
+      $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q \times K^T}{\sqrt{d_k}}\right) \times V$$
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-book-open"></i> Real-Life Analogy: Library Research</div>
+      Imagine you're in a library:<br>
+      &bull; <strong>Query (Q):</strong> Your research question &mdash; "Tell me about climate change"<br>
+      &bull; <strong>Key (K):</strong> Each book's title/summary &mdash; helps you find relevant books<br>
+      &bull; <strong>Value (V):</strong> The actual content of each book &mdash; what you actually read<br><br>
+      You compare your query with each book's key (dot product), focus on the most relevant ones (softmax), and read their content (multiply by V).
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Why divide by $\sqrt{d_k}$?</div>
+      Without scaling, large dot products push softmax to extreme values (nearly 0 or 1), making gradients vanish. Dividing by $\sqrt{d_k}$ keeps values in a manageable range.
+    </div>
+
+    <p><strong>Multi-head attention:</strong> Run multiple attention heads in parallel (each with different $W_Q, W_K, W_V$), then concatenate results. This lets the model attend to different types of relationships simultaneously.</p>
+  </div>
+
+  <!-- 5.4 BPE -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-puzzle-piece"></i></span> 5.4 Subword Tokenization: BPE Algorithm</h3>
+    <p>Byte Pair Encoding (BPE) is how modern models tokenize text &mdash; between word-level and character-level.</p>
+
+    <h4 style="color: var(--primary-dark);">Training Phase (Learning Merge Rules)</h4>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content">Pre-tokenize text into words</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content">Initialize vocabulary with all individual characters</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content">Find the most common adjacent symbol pair</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content">Merge all instances into a new symbol, add to vocabulary</div></div>
+      <div class="step"><div class="step-num">R</div><div class="step-content">Repeat 3-4 until target vocabulary size reached</div></div>
+    </div>
+
+    <h4 style="color: var(--primary-dark); margin-top: 14px;">Encoding Phase (Applying Learned Rules)</h4>
+    <p>Split word into characters, apply merge rules in the order they were learned.</p>
+
+    <div class="exam-question">
+      <div class="exam-q-header" onclick="toggleExamQ(this)">
+        <span><i class="fa-solid fa-pen"></i> Exam Practice: BPE Encoding (2024 Q1c style)</span>
+        <span class="marks">6 marks</span>
+      </div>
+      <div class="exam-q-body">
+        <div class="q-text">Encode "mississippi pie" using learned rules: is, pi, ie, pie, ppi, sippi (in order)</div>
+        <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+        <div class="calc"><span class="comment">// Encode "mississippi"</span>
+Start: m i s s i s s i p p i
+
+Rule 1 (i,s &rarr; is):  m <span class="highlight">is</span> s <span class="highlight">is</span> s i p p i
+Rule 2 (p,i &rarr; pi):  m is s is s i p <span class="highlight">pi</span>
+  <span class="comment">(no more p,i pairs adjacent)</span>
+Rule 3 (i,e &rarr; ie):  no i,e pairs &rarr; same
+Rule 4 (p,ie &rarr; pie): no p,ie pairs &rarr; same
+Rule 5 (p,pi &rarr; ppi): m is s is s i <span class="highlight">ppi</span>
+Rule 6 (si,ppi &rarr; sippi): m is s is <span class="highlight">sippi</span>
+
+Result: m is s is sippi
+
+<span class="comment">// Encode "pie"</span>
+Start: p i e
+Rule 1 (i,s &rarr; is): no i,s &rarr; same
+Rule 2 (p,i &rarr; pi): <span class="highlight">pi</span> e
+Rule 3 (i,e &rarr; ie): no separate i,e &rarr; same
+Rule 4 (p,ie &rarr; pie): no p,ie &rarr; already merged to pi
+  <span class="comment">Actually: pi + e, no merge applicable</span>
+
+Result: <span class="result">pi e</span></div>
+      </div>
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> BPE Vocabulary Size Trade-offs (2024 Q1d)</div>
+      <strong>Too low (e.g., 100):</strong> Most tokens are single characters, losing morphological info; sequences become very long<br>
+      <strong>Too high (e.g., 100M):</strong> Approaches word-level; rare words get poor embeddings; wastes memory
+    </div>
+  </div>
+
+  <!-- 5.5 Special Tokens -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-star"></i></span> 5.5 Special Tokens</h3>
+    <table>
+      <tr><th>Token</th><th>Purpose</th><th>Used By</th></tr>
+      <tr><td><code>[CLS]</code></td><td>Classification token (sentence-level representation)</td><td>BERT</td></tr>
+      <tr><td><code>[SEP]</code></td><td>Separator between sentences</td><td>BERT</td></tr>
+      <tr><td><code>[PAD]</code></td><td>Padding for batch processing</td><td>All</td></tr>
+      <tr><td><code>[MASK]</code></td><td>Masked token for MLM training</td><td>BERT</td></tr>
+      <tr><td><code>[UNK]</code></td><td>Unknown token (less needed with BPE since chars cover Unicode)</td><td>All</td></tr>
+    </table>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Exam Tip (2024 Q1b)</div>
+      BPE operates on bytes, so it can represent ANY Unicode character. However, <code>[UNK]</code> may still be needed for corrupted/invalid byte sequences.
+    </div>
+  </div>
+
+  <!-- 5.6 Encoder vs Decoder -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-code-compare"></i></span> 5.6 Encoder (BERT) vs Decoder (GPT)</h3>
+
+    <table>
+      <tr><th>Feature</th><th>Encoder (BERT)</th><th>Decoder (GPT)</th></tr>
+      <tr><td><strong>Attention</strong></td><td>Bidirectional (sees all tokens)</td><td>Causal/masked (sees only left context)</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Classification, NER, understanding</td><td>Generation, completion</td></tr>
+      <tr><td><strong>Training</strong></td><td>Masked Language Model (predict [MASK])</td><td>Causal LM (predict next word)</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-brain"></i> Intuition</div>
+      <strong>BERT (Encoder)</strong> is like reading an entire paragraph and answering questions about it. It sees everything at once.<br>
+      <strong>GPT (Decoder)</strong> is like writing a story word by word. It can only look at what's been written so far, not what comes next.
+    </div>
+  </div>
+
+  <!-- 5.7 Transfer Learning -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></span> 5.7 Transfer Learning: Pretrain + Fine-tune</h3>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Pretrain</strong> on massive unlabelled corpus (expensive, done once). The model learns general language understanding.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Fine-tune</strong> on small labelled task-specific data (cheap, done per task). The model specializes.</div></div>
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-graduation-cap"></i> Analogy</div>
+      <strong>Pretraining</strong> = Going to university and getting a broad education<br>
+      <strong>Fine-tuning</strong> = Getting specialized on-the-job training for a specific role
+    </div>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Exam Tip (2022 Q3e)</div>
+      To add POS information to BERT: create a new embedding layer (one embedding per POS tag), add it to the input alongside token and positional embeddings. This differs from bag-of-features models where each word-POS pair is a separate sparse feature.
+    </div>
+  </div>
+
+  <!-- 5.8 Stopwords BoW vs Transformers -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-filter"></i></span> 5.8 Stopwords: BoW vs Transformers (2024 Q1a)</h3>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Key Distinction</div>
+      <strong>Removed in BoW:</strong> Stopwords add noise since BoW ignores word order. "The cat sat on the mat" and "mat the the cat on sat" are identical in BoW.<br><br>
+      <strong>Kept in Transformers:</strong> Transformers use positional encoding and attention to model word relationships. Stopwords carry syntactic meaning. "Not good" vs "good" &mdash; removing "not" completely changes sentiment!
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Embeddings</h4>
+    <p>What is the main advantage of BERT over Word2Vec?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) BERT uses fewer parameters</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">B) BERT produces different vectors for the same word in different contexts (solves polysemy)</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) BERT doesn't need training data</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) BERT only works with English</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 6: POS TAGGING & PARSING                 -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s6">
+  <div class="section-number">6</div>
+  <h2 class="section-title">POS Tagging & Parsing</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-code"></i> Labelling words with grammatical roles and understanding sentence structure</p>
+
+  <!-- 6.1 HMM -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-diagram-project"></i></span> 6.1 Hidden Markov Model (HMM) for POS Tagging</h3>
+    <p>POS tagging assigns grammatical labels (noun, verb, adjective, etc.) to each word. HMMs use two probability components:</p>
+
+    <div class="formula-box">
+      <span class="label">HMM Components</span>
+      <strong>Transition probabilities:</strong> $P(y_i | y_{i-1})$ &mdash; probability of tag given previous tag<br>
+      <em>"After a determiner (DET), a noun (NN) is likely"</em><br><br>
+      <strong>Emission probabilities:</strong> $P(x_i | y_i)$ &mdash; probability of word given its tag<br>
+      <em>"Given tag VERB, the word 'run' has probability 0.05"</em>
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-comment"></i> Real-Life Example</div>
+      Sentence: <strong>"The dog runs fast"</strong><br><br>
+      Tags: DET &rarr; NN &rarr; VBZ &rarr; RB<br>
+      &bull; $P(\text{NN}|\text{DET})$ = high (after "the", a noun usually follows)<br>
+      &bull; $P(\text{dog}|\text{NN})$ = the probability of seeing "dog" when the tag is noun<br>
+      &bull; The best tag sequence maximizes the product of all transitions &times; emissions
+    </div>
+  </div>
+
+  <!-- 6.2 Decoding -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-route"></i></span> 6.2 Decoding Strategies</h3>
+
+    <table>
+      <tr><th>Strategy</th><th>How It Works</th><th>Quality</th><th>Speed</th></tr>
+      <tr><td><strong>Greedy</strong></td><td>Pick best transition &times; emission at each token independently</td><td>Suboptimal (local decisions)</td><td>Fast</td></tr>
+      <tr><td><strong>Viterbi</strong></td><td>Dynamic programming: find globally optimal path through all possible tag sequences</td><td>Optimal</td><td>Slower but polynomial</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-map"></i> Analogy: GPS Navigation</div>
+      <strong>Greedy:</strong> At each intersection, take the road that looks shortest right now. You might end up on a longer route overall.<br>
+      <strong>Viterbi:</strong> Calculate ALL possible routes first, then pick the shortest total path. Guaranteed optimal.
+    </div>
+  </div>
+
+  <!-- 6.3 Domain Mismatch -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span> 6.3 Domain Mismatch Problem (2022 Q3c)</h3>
+    <p>A POS tagger trained on news text may fail on patents, medical text, or social media because:</p>
+    <ul>
+      <li>Specialized vocabulary not in training data</li>
+      <li>Different sentence structures (legal text is very different from news)</li>
+    </ul>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-wrench"></i> Solutions</div>
+      1. <strong>Fine-tune</strong> the tagger on domain-specific annotated data<br>
+      2. <strong>Pre/post-processing</strong> with domain-specific dictionaries for known domain words
+    </div>
+  </div>
+
+  <!-- 6.4 Parsing -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-sitemap"></i></span> 6.4 Constituency & Dependency Parsing</h3>
+
+    <h4 style="color: var(--primary-dark);">Constituency Parsing</h4>
+    <p>Breaks sentences into <strong>nested phrases</strong> (tree structure):</p>
+    <div class="calc"><span class="comment">// "The big cat sat on the mat"</span>
+S &rarr; NP VP
+NP &rarr; DET ADJ NN &rarr; "The big cat"
+VP &rarr; VBD PP &rarr; "sat on the mat"
+PP &rarr; IN NP &rarr; "on the mat"</div>
+
+    <h4 style="color: var(--primary-dark); margin-top:14px;">Dependency Parsing</h4>
+    <p>Creates a <strong>directed graph</strong> of word relationships (subject, object, modifier).</p>
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Properties of Dependency Trees</div>
+      &bull; Weakly connected, acyclic<br>
+      &bull; Single root<br>
+      &bull; Each word has exactly one head (except root)
+    </div>
+
+    <h4 style="color: var(--primary-dark); margin-top:14px;">Transition-based Dependency Parsing</h4>
+    <table>
+      <tr><th>Action</th><th>Effect</th></tr>
+      <tr><td><strong>Shift</strong></td><td>Move top of buffer to stack</td></tr>
+      <tr><td><strong>Left-Arc</strong></td><td>Create arc from stack top to second element; remove second</td></tr>
+      <tr><td><strong>Right-Arc</strong></td><td>Create arc from second element to stack top; remove stack top</td></tr>
+    </table>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: POS & Parsing</h4>
+    <p>Which decoding strategy guarantees finding the optimal tag sequence in an HMM?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) Greedy decoding</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">B) Viterbi algorithm</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) Beam search</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) Random sampling</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 7: ETHICS & INFORMATION EXTRACTION       -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s7">
+  <div class="section-number">7</div>
+  <h2 class="section-title">Ethics & Information Extraction</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-scale-balanced"></i> Responsible NLP: bias, transparency, environmental impact, and best practices</p>
+
+  <!-- 7.1 Ethical Concerns -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-shield-halved"></i></span> 7.1 Ethical Concerns in NLP</h3>
+
+    <table>
+      <tr><th>Issue</th><th>Description</th><th>Real-World Example</th></tr>
+      <tr><td><strong>Bias</strong></td><td>Models inherit biases from training data</td><td>Resume screener penalizes female names because training data was biased toward male hires</td></tr>
+      <tr><td><strong>Environmental Cost</strong></td><td>Training large models uses massive compute</td><td>Training GPT-3 reportedly used ~1,287 MWh of electricity (equivalent to 500 cars for a year)</td></tr>
+      <tr><td><strong>Transparency</strong></td><td>Neural models are "black boxes"</td><td>A bank rejects a loan application but can't explain why the AI made that decision</td></tr>
+      <tr><td><strong>Copyright</strong></td><td>Training on copyrighted data raises legal questions</td><td>Artists sued AI companies for training on their artwork without consent</td></tr>
+      <tr><td><strong>Liability</strong></td><td>Who is responsible for harmful AI output?</td><td>AI chatbot gives dangerous medical advice &mdash; is the developer or user liable?</td></tr>
+      <tr><td><strong>Education Impact</strong></td><td>AI text generation threatens academic integrity</td><td>Students using ChatGPT to write essays</td></tr>
+    </table>
+  </div>
+
+  <!-- 7.2 Best Practices -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-list-check"></i></span> 7.2 Best Practices</h3>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-file-lines"></i> Datasheets for Datasets</div>
+      Document: how data was collected, its composition (demographics, languages), intended use, known biases, licensing. Like a nutrition label for data!
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-id-card"></i> Model Cards</div>
+      Document: model performance across different groups, limitations, intended use, training details, ethical considerations. Think of it as a "user manual" for AI models.
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-building"></i> Real-Life Example</div>
+      Before deploying a sentiment analysis model for customer feedback, a company should check: Does it perform equally well on reviews written in different dialects? Does it show gender bias? A model card would document these checks.
+    </div>
+  </div>
+
+  <div class="exam-question">
+    <div class="exam-q-header" onclick="toggleExamQ(this)">
+      <span><i class="fa-solid fa-pen"></i> Exam Practice: Ethics Discussion (2024/2025 style)</span>
+      <span class="marks">4 marks</span>
+    </div>
+    <div class="exam-q-body">
+      <div class="q-text">A company wants to deploy an LLM for moderating user comments on their platform. Discuss two ethical concerns and suggest mitigations.</div>
+      <div class="answer-title"><i class="fa-solid fa-check-circle"></i> Solution</div>
+      <ol>
+        <li><strong>Bias in moderation:</strong> The LLM may disproportionately flag content from certain cultural or linguistic groups as "toxic" (e.g., African American Vernacular English has been shown to be over-flagged). <em>Mitigation:</em> Evaluate per-group performance, include diverse annotators, use model cards to document disparities.</li>
+        <li><strong>Lack of transparency:</strong> Users whose content is removed don't understand why. <em>Mitigation:</em> Provide explanations for moderation decisions, allow appeals, keep humans in the loop for borderline cases.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--       SECTION 8: INFORMATION EXTRACTION (ADVANCED)           -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s8">
+  <div class="section-number">8</div>
+  <h2 class="section-title">Information Extraction (Advanced)</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-microscope"></i> Extracting structured knowledge from unstructured text: NER, entity linking, relation extraction, coreference</p>
+
+  <!-- 8.1 NER -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-tag"></i></span> 8.1 Named Entity Recognition (NER)</h3>
+    <p>NER identifies and classifies named entities (people, places, organizations) in text.</p>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> IOB Tagging Scheme</div>
+      <strong>B-TYPE:</strong> Beginning of an entity<br>
+      <strong>I-TYPE:</strong> Inside (continuation of) an entity<br>
+      <strong>O:</strong> Outside any entity
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-newspaper"></i> Example</div>
+      <code>[Barack]<sub>B-PER</sub> [Obama]<sub>I-PER</sub> [visited]<sub>O</sub> [Paris]<sub>B-LOC</sub></code><br><br>
+      "Barack Obama" is a PERSON entity (2 tokens). "visited" is not an entity. "Paris" is a LOCATION entity.
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-hospital"></i> Real-Life Use: Medical Records</div>
+      "Patient took <u>Aspirin</u> 500mg for <u>headache</u>."<br>
+      NER identifies: Aspirin = B-DRUG, headache = B-SYMPTOM<br>
+      This helps automatically extract medical information from doctor's notes!
+    </div>
+
+    <p><strong>Approaches:</strong> CRF (Conditional Random Fields), Transformer-based sequence labeling</p>
+  </div>
+
+  <!-- 8.2 Entity Linking -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-link"></i></span> 8.2 Entity Linking</h3>
+    <p><strong>Goal:</strong> Map entity mentions (strings) to knowledge base entries (things).</p>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> "From Strings to Things"</div>
+      "Paris" in text &rarr; Is it Paris, France? Paris, Texas? Paris Hilton?<br>
+      Entity linking uses <strong>context</strong> to resolve ambiguity.
+    </div>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Candidate Generation:</strong> Find possible matches (dictionary lookup, dense vector retrieval)</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Candidate Reranking:</strong> Use context to score each candidate (Transformer model)</div></div>
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-map-pin"></i> Example</div>
+      "I visited <strong>Paris</strong> and saw the <strong>Eiffel Tower</strong>."<br>
+      Context: "Eiffel Tower" makes it clear &rarr; Paris, France (not Texas!)
+    </div>
+  </div>
+
+  <!-- 8.3 Relation Extraction -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-arrows-left-right"></i></span> 8.3 Relation Extraction</h3>
+    <p><strong>Goal:</strong> Extract triples <code>(subject, relation, object)</code> from text.</p>
+
+    <table>
+      <tr><th>Approach</th><th>How</th><th>Pros/Cons</th></tr>
+      <tr><td><strong>Co-occurrence</strong></td><td>Two entities in same sentence</td><td>No actual relation type extracted</td></tr>
+      <tr><td><strong>Rule-based</strong></td><td>Patterns like "X, who starred in Y"</td><td>High precision, low recall</td></tr>
+      <tr><td><strong>BERT-based</strong></td><td>Entity markers + pooling for classification</td><td>Best performance, needs training data</td></tr>
+    </table>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-diagram-project"></i> BERT-based Approach</div>
+      Input: <code>[E1] Barack Obama [/E1] visited [E2] Paris [/E2]</code><br>
+      The model uses [E1] and [E2] representations to classify the relation as "visited" or "traveled_to".
+    </div>
+  </div>
+
+  <!-- 8.4 Coreference -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-people-arrows"></i></span> 8.4 Coreference Resolution</h3>
+    <p>Determining which mentions in text refer to the same entity.</p>
+
+    <table>
+      <tr><th>Type</th><th>Definition</th><th>Example</th></tr>
+      <tr><td><strong>Anaphora</strong></td><td>Refers to something mentioned earlier</td><td>"<u>Barack Obama</u> gave a speech. <u>He</u> was eloquent."</td></tr>
+      <tr><td><strong>Cataphora</strong></td><td>Refers to something mentioned later</td><td>"Before <u>he</u> left, <u>Obama</u> thanked everyone."</td></tr>
+      <tr><td><strong>Exophora</strong></td><td>Refers to something outside the text</td><td>"Look at <u>that</u>!" (pointing at something)</td></tr>
+    </table>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Mention detection:</strong> Find all pronouns, named entities, NPs</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Mention clustering:</strong> Determine which mentions refer to the same entity</div></div>
+    </div>
+
+    <p><strong>Hobbs' Algorithm:</strong> A syntactic tree-based method to find the noun phrase a pronoun refers to.</p>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: Information Extraction</h4>
+    <p>In the IOB tagging scheme, what does the "I" in "I-PER" indicate?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) The start of a person entity</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">B) Inside (continuation of) a person entity</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">C) An independent person entity</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) An irregular person entity</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 9: LARGE LANGUAGE MODELS                 -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s9">
+  <div class="section-number">9</div>
+  <h2 class="section-title">Large Language Models (LLMs)</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-robot"></i> From GPT to ChatGPT: training pipeline, prompt engineering, issues, and practical considerations</p>
+
+  <!-- 9.1 Training Pipeline -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-gears"></i></span> 9.1 LLM Training Pipeline</h3>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Pretraining:</strong> Learn language on massive text corpora (books, web pages, code). Uses causal LM objective (predict next word). Costs millions of dollars.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Instruction Tuning:</strong> Fine-tune on instruction-following examples. "Summarize this article" &rarr; [summary]. Makes the model helpful and responsive.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><strong>RLHF (Reinforcement Learning from Human Feedback):</strong> Humans rank model outputs. A reward model is trained on these rankings, then used to fine-tune the LLM to align with human preferences.</div></div>
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-robot"></i> Real-Life Analogy</div>
+      <strong>Pretraining:</strong> A child reads millions of books and learns how language works<br>
+      <strong>Instruction Tuning:</strong> The child goes to school and learns to follow instructions<br>
+      <strong>RLHF:</strong> A teacher gives feedback: "This answer is good, but that one could be harmful" &mdash; aligning behavior with societal values
+    </div>
+  </div>
+
+  <!-- 9.2 Prompt Engineering -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span> 9.2 Prompt Engineering</h3>
+
+    <table>
+      <tr><th>Strategy</th><th>Description</th><th>Example Prompt</th></tr>
+      <tr><td><strong>Zero-shot</strong></td><td>No examples provided</td><td>"Classify this review as positive or negative: ..."</td></tr>
+      <tr><td><strong>Few-shot</strong></td><td>Provide examples in prompt</td><td>"Example 1: 'Great!' &rarr; positive. Example 2: 'Terrible' &rarr; negative. Now classify: ..."</td></tr>
+      <tr><td><strong>Chain-of-Thought</strong></td><td>Ask model to reason step by step</td><td>"Let's think step by step..."</td></tr>
+      <tr><td><strong>Explicit Instructions</strong></td><td>Detailed task description</td><td>"You are a sentiment classifier. Output only 'positive' or 'negative'."</td></tr>
+    </table>
+
+    <div class="tip-box">
+      <div class="label"><i class="fa-solid fa-lightbulb"></i> Practical Tip</div>
+      Few-shot usually beats zero-shot. Chain-of-Thought is especially effective for reasoning tasks (math, logic). Be specific in instructions &mdash; vague prompts get vague answers.
+    </div>
+  </div>
+
+  <!-- 9.3 LLM Issues -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-exclamation-circle"></i></span> 9.3 LLM Issues</h3>
+
+    <table>
+      <tr><th>Issue</th><th>Description</th><th>Why It Matters</th></tr>
+      <tr><td><strong>Hallucination</strong></td><td>Generates plausible but false information</td><td>Can spread misinformation, dangerous in medical/legal contexts</td></tr>
+      <tr><td><strong>Dangerous Generations</strong></td><td>Harmful, biased, or toxic outputs</td><td>Can perpetuate stereotypes or provide harmful instructions</td></tr>
+      <tr><td><strong>Test Set Leakage</strong></td><td>Training data may contain benchmark test sets</td><td>Inflates reported performance; model doesn't truly generalize</td></tr>
+      <tr><td><strong>Expense</strong></td><td>Inference costs are significant</td><td>GPT-4 costs ~$30-60 per million tokens; not feasible for all applications</td></tr>
+    </table>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Zero-Shot Evaluation Caveat (2024 Q3a)</div>
+      Before claiming "zero-shot" performance, verify that:<br>
+      &bull; The LLM's pretraining data did NOT include the test dataset<br>
+      &bull; The prompt itself doesn't contain examples from the dataset<br>
+      &bull; The model was not instruction-tuned on similar tasks
+    </div>
+  </div>
+
+  <!-- 9.4 Cost Ranking -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-coins"></i></span> 9.4 Computational Cost Ranking (2025 Q3a)</h3>
+
+    <div class="formula-box">
+      <span class="label">Cost Ranking (Least &rarr; Most Expensive)</span>
+      <strong>Logistic Regression (TF-IDF) &lt; BERT-base (~110M params) &lt; LLaMA-70B (~70B params)</strong>
+    </div>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-server"></i> Scale Comparison</div>
+      &bull; <strong>Logistic Regression:</strong> Runs on any laptop CPU in milliseconds<br>
+      &bull; <strong>BERT-base:</strong> Needs a GPU, ~110 million parameters<br>
+      &bull; <strong>LLaMA-70B:</strong> Needs multiple high-end GPUs, 70 billion parameters (600x larger than BERT!)
+    </div>
+  </div>
+
+  <!-- 9.5 Multilingual -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-globe"></i></span> 9.5 Multilingual Considerations (2025 Q3c)</h3>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-key"></i> Problems with New Languages</div>
+      <strong>Logistic Regression:</strong> Vocabulary is language-specific; all tokens in a new language are unknown features<br>
+      <strong>BERT:</strong> Subword tokenizer trained on specific language(s); other languages split into meaningless character sequences<br><br>
+      <strong>Solution:</strong> Use multilingual models (mBERT, XLM-R) or collect/train on new language data
+    </div>
+  </div>
+
+  <!-- 9.6 Tokenization Pitfalls -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-bomb"></i></span> 9.6 Subword Tokenization Pitfalls (2025 Q3d)</h3>
+
+    <div class="example-box">
+      <div class="label"><i class="fa-solid fa-building"></i> Real-World Problem</div>
+      Brand name "BeStep" might tokenize as <code>["Best", "##ep"]</code>. The sub-token "Best" overlaps with the positive word "best", causing the sentiment classifier to ALWAYS predict positive for any mention of BeStep, regardless of context!
+    </div>
+
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-wrench"></i> Solution</div>
+      Replace brand names with neutral placeholders like "[BRAND]" in the training data, or add the brand name as a special token in the tokenizer vocabulary.
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h4><i class="fa-solid fa-gamepad"></i> Quick Quiz: LLMs</h4>
+    <p>What is the purpose of RLHF in LLM training?</p>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">A) To make the model larger</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">B) To reduce computational cost</div>
+    <div class="quiz-option" onclick="checkQuiz(this, true)">C) To align model outputs with human preferences</div>
+    <div class="quiz-option" onclick="checkQuiz(this, false)">D) To improve tokenization</div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 10: EXAM STRATEGY                        -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s10">
+  <div class="section-number">10</div>
+  <h2 class="section-title">Exam Strategy & Past Paper Analysis</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-bullseye"></i> How to ace the exam: structure, time management, recurring questions, and answer patterns</p>
+
+  <!-- 10.1 Structure -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-file-lines"></i></span> 10.1 Exam Structure</h3>
+    <ul>
+      <li><strong>3 compulsory questions</strong>, ~20 marks each (60 total)</li>
+      <li><strong>Duration:</strong> 1h 30m + 30m additional time</li>
+      <li><strong>Open book</strong> &mdash; crib sheet provided</li>
+      <li><strong>Mix of:</strong> calculation, pseudo-code, explanation/discussion, worked examples</li>
+    </ul>
+  </div>
+
+  <!-- 10.2 Recurring Questions -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-rotate"></i></span> 10.2 Recurring Question Types</h3>
+
+    <table>
+      <tr><th>Type</th><th>Frequency</th><th>Topics</th></tr>
+      <tr><td><strong>Similarity calculation</strong></td><td>Every year</td><td>Jaccard, Dice, Overlap, Cosine, TF-IDF</td></tr>
+      <tr><td><strong>N-gram language model</strong></td><td>Every year</td><td>Build model, generate text (greedy/beam), smoothing</td></tr>
+      <tr><td><strong>BPE tokenization</strong></td><td>2024, 2025</td><td>Apply merge rules, discuss vocab size</td></tr>
+      <tr><td><strong>Classification metrics</strong></td><td>Every year</td><td>Confusion matrix, P/R/F1, macro/micro, anomalies</td></tr>
+      <tr><td><strong>Applied NLP scenario</strong></td><td>Every year</td><td>Real-world system design, error analysis</td></tr>
+      <tr><td><strong>BERT vs BoW</strong></td><td>2022, 2025</td><td>Features, transfer learning, stopwords</td></tr>
+      <tr><td><strong>Ethical/practical issues</strong></td><td>2024, 2025</td><td>Bias, cost, multilingual, dataset quality</td></tr>
+    </table>
+  </div>
+
+  <!-- 10.3 Time Strategy -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-clock"></i></span> 10.3 Time Allocation</h3>
+
+    <table>
+      <tr><th>Time</th><th>Focus</th><th>Approach</th></tr>
+      <tr><td>First 25 min</td><td>Q1 (~20 marks)</td><td>Often calculation-heavy; do carefully</td></tr>
+      <tr><td>Next 25 min</td><td>Q2 (~20 marks)</td><td>Often language model / generation</td></tr>
+      <tr><td>Next 25 min</td><td>Q3 (~20 marks)</td><td>Often discussion / applied scenario</td></tr>
+      <tr><td>Final 15 min</td><td>Review</td><td>Check calculations, add detail to discussions</td></tr>
+    </table>
+  </div>
+
+  <!-- 10.4 High-Scoring Patterns -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-trophy"></i></span> 10.4 High-Scoring Answer Patterns</h3>
+    <ol>
+      <li><strong>Domain-specific examples</strong> &mdash; not generic. "In patent classification, 'light' can be noun (F: lighting) or adjective (D: lightweight fabric)."</li>
+      <li><strong>Explicit working</strong> &mdash; show ALL counts, intermediate steps, final answer</li>
+      <li><strong>Address all parts</strong> &mdash; if asked for "three problems", give exactly three (or more)</li>
+      <li><strong>Connect concepts</strong> &mdash; "This is overfitting because train performance improved but test degraded."</li>
+      <li><strong>Mention trade-offs</strong> &mdash; "While BERT captures context better, it is computationally more expensive."</li>
+    </ol>
+  </div>
+
+  <!-- 10.5 Common Mistakes -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-circle-xmark"></i></span> 10.5 Common Mistakes to Avoid</h3>
+
+    <div class="warning-box">
+      <div class="label"><i class="fa-solid fa-triangle-exclamation"></i> Top 7 Mistakes Students Make</div>
+      <ol>
+        <li>Confusing <strong>similarity</strong> and <strong>distance</strong> (they are inversely related)</li>
+        <li>Forgetting that <strong>Sorensen-Dice uses set cardinality</strong>, not token count (duplicates don't count)</li>
+        <li>Confusing <strong>types</strong> (unique tokens) vs <strong>tokens</strong> (total occurrences)</li>
+        <li>Not converting <strong>similarity to distance</strong> before checking triangle inequality</li>
+        <li>Using <strong>wrong context</strong> in n-gram generation (newly generated tokens ARE part of context)</li>
+        <li>Reporting <strong>Macro</strong> metrics for binary classification (just use P/R/F1)</li>
+        <li>$F_1$ MUST always be <strong>between Precision and Recall</strong> &mdash; if not, something is wrong</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              SECTION 11: CRIB SHEET REFERENCE                 -->
+<!-- ============================================================ -->
+<div class="topic-section" id="s11">
+  <div class="section-number">11</div>
+  <h2 class="section-title">Crib Sheet Reference (All Formulas)</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-square-root-variable"></i> Every formula you need in one place &mdash; your exam cheat sheet</p>
+
+  <!-- Similarity -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-equals"></i></span> Set Similarity Measures</h3>
+    <div class="formula-box">
+      $\text{Overlap Count} = |X \cap Y|$<br><br>
+      $\text{Overlap Coefficient} = \frac{|X \cap Y|}{\min(|X|, |Y|)}$<br><br>
+      $\text{Sorensen-Dice} = \frac{2|X \cap Y|}{|X| + |Y|}$<br><br>
+      $\text{Jaccard} = \frac{|X \cap Y|}{|X \cup Y|}$
+    </div>
+  </div>
+
+  <!-- Distance -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-ruler"></i></span> Distance & Vector Measures</h3>
+    <div class="formula-box">
+      $\text{Euclidean: } d(\vec{x},\vec{y}) = \sqrt{\sum_i (x_i - y_i)^2}$<br><br>
+      $\text{Cosine Similarity: } \cos(\theta) = \frac{\vec{d_1} \cdot \vec{d_2}}{||\vec{d_1}|| \times ||\vec{d_2}||}$
+    </div>
+  </div>
+
+  <!-- TF-IDF -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-hashtag"></i></span> TF-IDF</h3>
+    <div class="formula-box">
+      $\text{Log TF} = 1 + \log_{10}(\text{tf})$ &nbsp; if tf &gt; 0, else 0<br><br>
+      $\text{IDF} = \log\left(\frac{N}{\text{df}_t}\right)$<br><br>
+      $\text{TF-IDF} = (1 + \log(\text{tf})) \times \log\left(\frac{N}{\text{df}_t}\right)$
+    </div>
+  </div>
+
+  <!-- Language Model -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-language"></i></span> Language Model Formulas</h3>
+    <div class="formula-box">
+      $\text{Add-k: } P = \frac{\text{count} + k}{N + k \times |V|}$<br><br>
+      $\text{Interpolation: } \lambda_1 P_{\text{tri}} + \lambda_2 P_{\text{bi}} + \lambda_3 P_{\text{uni}}$ &nbsp; where $\sum \lambda = 1$<br><br>
+      $\text{Jelinek-Mercer: } \lambda \cdot P(t|\text{doc}) + (1-\lambda) \cdot P(t|\text{collection})$<br><br>
+      $\text{Cross-Entropy} = -\frac{1}{n} \sum \log_2 P(w_i)$<br><br>
+      $\text{Perplexity} = 2^{\text{Cross-Entropy}}$<br><br>
+      $\text{Entropy} = -\sum P(x) \cdot \log_2 P(x)$
+    </div>
+  </div>
+
+  <!-- Classification -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-tags"></i></span> Classification Metrics</h3>
+    <div class="formula-box">
+      $\text{Accuracy} = \frac{TP + TN}{TP + FP + TN + FN}$<br><br>
+      $\text{Precision} = \frac{TP}{TP + FP}$<br><br>
+      $\text{Recall} = \frac{TP}{TP + FN}$<br><br>
+      $F_1 = \frac{2 \times P \times R}{P + R} = \frac{2TP}{2TP + FP + FN}$<br><br>
+      $F_\beta = \frac{(1 + \beta^2) \times P \times R}{\beta^2 \times P + R}$
+    </div>
+  </div>
+
+  <!-- Self-Attention -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-brain"></i></span> Self-Attention</h3>
+    <div class="formula-box">
+      $Q = \text{Input} \times W_Q, \quad K = \text{Input} \times W_K, \quad V = \text{Input} \times W_V$<br><br>
+      $\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q \times K^T}{\sqrt{d_k}}\right) \times V$
+    </div>
+  </div>
+
+  <!-- HMM -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-diagram-project"></i></span> HMM</h3>
+    <div class="formula-box">
+      $\text{Transitions: } P(y_i | y_{i-1})$<br><br>
+      $\text{Emissions: } P(x_i | y_i)$
+    </div>
+  </div>
+
+  <!-- Silhouette -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-chart-line"></i></span> Silhouette Score</h3>
+    <div class="formula-box">
+      $$s(i) = \begin{cases} 1 - \frac{\text{cohesion}}{\text{separation}} & \text{if cohesion} < \text{separation} \\ 0 & \text{if equal} \\ \frac{\text{separation}}{\text{cohesion}} - 1 & \text{if cohesion} > \text{separation} \end{cases}$$
+      Range: $[-1, 1]$. Higher = better clustering.
+    </div>
+  </div>
+
+  <!-- Metric Properties -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-ruler-combined"></i></span> Metric Properties</h3>
+    <div class="formula-box">
+      1. Identity: $d(X, X) = 0$<br>
+      2. Positivity: $d(X, Y) > 0$ for $X \neq Y$<br>
+      3. Symmetry: $d(X, Y) = d(Y, X)$<br>
+      4. Triangle Inequality: $d(X, Z) \leq d(X, Y) + d(Y, Z)$
+    </div>
+  </div>
+
+  <!-- Python Quick Reference -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-brands fa-python"></i></span> Python String Operations</h3>
+    <div class="calc"><span class="comment"># Common string operations for exam</span>
+a + b                 <span class="comment"># Concatenate</span>
+text[i:j]             <span class="comment"># Substring from i to j</span>
+text[:-i]             <span class="comment"># Remove final i characters</span>
+.upper() / .lower()   <span class="comment"># Case conversion</span>
+.strip()              <span class="comment"># Remove whitespace</span>
+.replace(a, b)        <span class="comment"># Replace substring</span>
+.split(a)             <span class="comment"># Split by delimiter</span>
+.startswith() / .endswith()  <span class="comment"># Check prefix/suffix</span>
+.find() / .count()    <span class="comment"># Find/count substrings</span>
+a.join(list)          <span class="comment"># Join list with delimiter</span></div>
+  </div>
+
+  <!-- Quick Revision Checklist -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-clipboard-check"></i></span> Quick Revision Checklist</h3>
+    <div class="concept-box">
+      <div class="label"><i class="fa-solid fa-check-double"></i> Can You Do These?</div>
+      <ul>
+        <li>Calculate Jaccard, Dice, Overlap from two tokenized documents?</li>
+        <li>Build unigram/bigram/trigram tables and generate text with greedy/beam search?</li>
+        <li>Apply add-k smoothing to an n-gram model?</li>
+        <li>Calculate Precision, Recall, F1 from a confusion matrix?</li>
+        <li>Identify overfitting/underfitting from train vs test metrics?</li>
+        <li>Trace through BPE merge rules on a given input?</li>
+        <li>Explain the self-attention formula (Q, K, V)?</li>
+        <li>Explain encoder (BERT) vs decoder (GPT) differences?</li>
+        <li>Describe the NER pipeline (IOB tagging, entity linking)?</li>
+        <li>Discuss ethical issues with concrete examples?</li>
+        <li>Explain why static embeddings fail on polysemy?</li>
+        <li>Describe K-means clustering steps and silhouette evaluation?</li>
+        <li>Explain transfer learning (pretrain + fine-tune)?</li>
+        <li>Design a classification experiment (data split, metrics, significance)?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              INTERACTIVE TOOLS                                -->
+<!-- ============================================================ -->
+<div class="topic-section" id="interactive-tools">
+  <div class="section-number"><i class="fa-solid fa-calculator" style="font-size:1rem"></i></div>
+  <h2 class="section-title">Interactive Tools & Visualizations</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-wand-magic-sparkles"></i> Play with the concepts! Enter your own values and see results in real-time</p>
+
+  <!-- Similarity Calculator -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-calculator"></i></span> Set Similarity Calculator</h3>
+    <p>Enter two sets of tokens (comma-separated) and compute all similarity measures instantly.</p>
+
+    <div class="calculator-box">
+      <h4><i class="fa-solid fa-play-circle"></i> Try It Yourself</h4>
+      <div class="calc-input-group">
+        <label>Set X:</label>
+        <input type="text" class="calc-input" id="setX" placeholder="e.g., cat, dog, fish, bird" value="milk, eggs, bread, butter, cheese">
+      </div>
+      <div class="calc-input-group">
+        <label>Set Y:</label>
+        <input type="text" class="calc-input" id="setY" placeholder="e.g., dog, fish, snake" value="milk, eggs, bread, apples, oranges, grapes">
+      </div>
+      <button class="calc-btn" onclick="calcSimilarity()"><i class="fa-solid fa-calculator"></i> Calculate</button>
+      <div class="calc-result" id="simResult"></div>
+    </div>
+  </div>
+
+  <!-- Perplexity Calculator -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-gauge-high"></i></span> Perplexity Calculator</h3>
+    <p>Enter word probabilities (comma-separated) from your language model and compute cross-entropy & perplexity.</p>
+
+    <div class="calculator-box">
+      <h4><i class="fa-solid fa-play-circle"></i> Compute Perplexity</h4>
+      <div class="calc-input-group">
+        <label>Probabilities:</label>
+        <input type="text" class="calc-input" id="probInput" placeholder="e.g., 0.5, 0.3, 0.1, 0.8" value="0.5, 0.3, 0.1, 0.8, 0.6" style="width:300px;">
+      </div>
+      <button class="calc-btn" onclick="calcPerplexity()"><i class="fa-solid fa-calculator"></i> Calculate</button>
+      <div class="calc-result" id="perpResult"></div>
+    </div>
+  </div>
+
+  <!-- F1 Calculator -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-chart-pie"></i></span> Confusion Matrix &rarr; Metrics Calculator</h3>
+    <p>Enter your confusion matrix values and get all classification metrics instantly.</p>
+
+    <div class="calculator-box">
+      <h4><i class="fa-solid fa-play-circle"></i> Compute Metrics from Confusion Matrix</h4>
+      <div class="calc-input-group">
+        <label>TP:</label><input type="number" class="calc-input" id="cmTP" value="40" style="width:80px;">
+        <label>FP:</label><input type="number" class="calc-input" id="cmFP" value="5" style="width:80px;">
+        <label>FN:</label><input type="number" class="calc-input" id="cmFN" value="10" style="width:80px;">
+        <label>TN:</label><input type="number" class="calc-input" id="cmTN" value="145" style="width:80px;">
+      </div>
+      <button class="calc-btn" onclick="calcMetrics()"><i class="fa-solid fa-calculator"></i> Calculate</button>
+      <div class="calc-result" id="metricsResult"></div>
+    </div>
+  </div>
+
+  <!-- K-Means Animation -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-object-group"></i></span> K-Means Clustering — Live Animation</h3>
+    <p>Watch K-Means cluster random data points step by step. Click "Step" to see each iteration or "Auto Run" for animation.</p>
+
+    <div class="kmeans-canvas-wrap">
+      <canvas id="kmeansCanvas" width="500" height="380"></canvas>
+      <div class="kmeans-controls">
+        <button class="kmeans-btn-primary" onclick="kmeansReset()"><i class="fa-solid fa-refresh"></i> New Data</button>
+        <button class="kmeans-btn-primary" onclick="kmeansStep()"><i class="fa-solid fa-forward-step"></i> Step</button>
+        <button class="kmeans-btn-primary" onclick="kmeansAutoRun()"><i class="fa-solid fa-play"></i> Auto Run</button>
+        <button class="kmeans-btn-secondary" onclick="kmeansStop()"><i class="fa-solid fa-stop"></i> Stop</button>
+      </div>
+      <div class="kmeans-status" id="kmeansStatus">Click "New Data" to generate points, then "Step" to iterate</div>
+    </div>
+  </div>
+
+  <!-- Attention Heatmap -->
+  <div class="subsection">
+    <h3><span class="icon"><i class="fa-solid fa-eye"></i></span> Self-Attention Heatmap Visualization</h3>
+    <p>This shows how much each word "attends" to every other word. Brighter = higher attention weight. Hover over cells to see values.</p>
+
+    <div style="text-align:center;">
+      <p style="font-weight:600; color: var(--gray-700); margin-bottom:8px;">Sentence: "The cat sat on the mat"</p>
+      <div class="attention-grid" id="attentionGrid" style="grid-template-columns: repeat(7, 52px);"></div>
+      <p style="font-size:0.82rem; color: var(--gray-500); margin-top:8px;">Row = Query word, Column = Key word. Brighter purple = higher attention.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--              FLASHCARD REVISION                               -->
+<!-- ============================================================ -->
+<div class="topic-section" id="flashcards">
+  <div class="section-number"><i class="fa-solid fa-clone" style="font-size:1rem"></i></div>
+  <h2 class="section-title">Flashcard Revision Mode</h2>
+  <p class="section-subtitle"><i class="fa-solid fa-bolt"></i> Click the card to reveal the answer. Use arrows to navigate. Perfect for last-minute revision!</p>
+
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-front" id="flashFront">
+        <h3 id="flashQ">Loading...</h3>
+        <p style="opacity:0.7; font-size:0.85rem; margin-top:12px;"><i class="fa-solid fa-hand-pointer"></i> Click to reveal answer</p>
+      </div>
+      <div class="flashcard-back" id="flashBack">
+        <p id="flashA">Loading...</p>
+      </div>
+    </div>
+  </div>
+  <div class="flashcard-counter" id="flashCounter">1 / 20</div>
+  <div class="flashcard-nav">
+    <button onclick="prevCard()"><i class="fa-solid fa-arrow-left"></i> Previous</button>
+    <button onclick="shuffleCards()"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+    <button onclick="nextCard()">Next <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Text as Data &mdash; Complete Interactive Tutorial &middot; University of Glasgow &middot; COMPSCI 5096/5106</p>
+  <p>Covers all 11 topics + exam questions from 2022&ndash;2025 &middot; Last updated: March 2026</p>
+</div>
+
+</div><!-- end container -->
+
+<!-- Scroll to top button -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script>
+// Toggle exam questions
+function toggleExamQ(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Quiz checker
+function checkQuiz(option, isCorrect) {
+  const parent = option.parentElement;
+  const options = parent.querySelectorAll('.quiz-option');
+  const feedback = parent.querySelector('.quiz-feedback');
+
+  // Disable further clicks
+  options.forEach(opt => opt.style.pointerEvents = 'none');
+
+  if (isCorrect) {
+    option.classList.add('correct');
+    feedback.textContent = 'Correct! Well done!';
+    feedback.style.background = '#d1fae5';
+    feedback.style.color = '#065f46';
+  } else {
+    option.classList.add('wrong');
+    // Highlight the correct one
+    options.forEach(opt => {
+      if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+        opt.classList.add('correct');
+      }
+    });
+    feedback.textContent = 'Not quite! The correct answer is highlighted in green.';
+    feedback.style.background = '#fee2e2';
+    feedback.style.color = '#991b1b';
+  }
+  feedback.style.display = 'block';
+}
+
+// Scroll to top button visibility
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  if (window.scrollY > 500) {
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+
+  // Progress bar
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+// Animate sections on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.topic-section').forEach(section => {
+  observer.observe(section);
+});
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  document.body.classList.toggle('light-mode');
+  const icon = document.getElementById('themeIcon');
+  if (document.body.classList.contains('light-mode')) {
+    icon.className = 'fa-solid fa-moon';
+  } else {
+    icon.className = 'fa-solid fa-sun';
+  }
+  localStorage.setItem('tad-theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+}
+// Load saved theme
+if (localStorage.getItem('tad-theme') === 'light') {
+  document.body.classList.add('light-mode');
+  document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+}
+
+// ===== SIDEBAR =====
+function toggleSidebar() {
+  document.getElementById('sidebarToc').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function filterTOC(query) {
+  const links = document.querySelectorAll('.toc-link');
+  const q = query.toLowerCase();
+  links.forEach(link => {
+    link.style.display = link.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+  });
+}
+
+// ===== SIMILARITY CALCULATOR =====
+function calcSimilarity() {
+  const xTokens = document.getElementById('setX').value.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+  const yTokens = document.getElementById('setY').value.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+  const setX = new Set(xTokens);
+  const setY = new Set(yTokens);
+  const intersection = new Set([...setX].filter(x => setY.has(x)));
+  const union = new Set([...setX, ...setY]);
+
+  const intSize = intersection.size;
+  const uniSize = union.size;
+  const xSize = setX.size;
+  const ySize = setY.size;
+
+  const overlap = intSize / Math.min(xSize, ySize);
+  const dice = (2 * intSize) / (xSize + ySize);
+  const jaccard = intSize / uniSize;
+
+  const result = document.getElementById('simResult');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <strong>Set X:</strong> {${[...setX].join(', ')}} &nbsp; |X| = ${xSize}<br>
+    <strong>Set Y:</strong> {${[...setY].join(', ')}} &nbsp; |Y| = ${ySize}<br>
+    <strong>Intersection:</strong> {${[...intersection].join(', ')}} &nbsp; |X&cap;Y| = ${intSize}<br>
+    <strong>Union:</strong> {${[...union].join(', ')}} &nbsp; |X&cup;Y| = ${uniSize}<br><br>
+    <strong style="color:#8b5cf6;">Overlap Coefficient:</strong> ${intSize}/${Math.min(xSize,ySize)} = <strong>${overlap.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">Sorensen-Dice:</strong> ${2*intSize}/${xSize+ySize} = <strong>${dice.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">Jaccard:</strong> ${intSize}/${uniSize} = <strong>${jaccard.toFixed(4)}</strong>
+  `;
+}
+
+// ===== PERPLEXITY CALCULATOR =====
+function calcPerplexity() {
+  const probs = document.getElementById('probInput').value.split(',').map(s => parseFloat(s.trim())).filter(p => !isNaN(p) && p > 0);
+  if (probs.length === 0) return;
+  const n = probs.length;
+  const logSum = probs.reduce((sum, p) => sum + Math.log2(p), 0);
+  const crossEntropy = -logSum / n;
+  const perplexity = Math.pow(2, crossEntropy);
+
+  const result = document.getElementById('perpResult');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <strong>Probabilities:</strong> [${probs.join(', ')}] &nbsp; (${n} words)<br>
+    <strong>log₂ sum:</strong> ${probs.map(p => `log₂(${p})=${Math.log2(p).toFixed(3)}`).join(' + ')} = ${logSum.toFixed(4)}<br><br>
+    <strong style="color:#8b5cf6;">Cross-Entropy:</strong> -${logSum.toFixed(4)}/${n} = <strong>${crossEntropy.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">Perplexity:</strong> 2^${crossEntropy.toFixed(4)} = <strong>${perplexity.toFixed(4)}</strong><br>
+    <em style="color: var(--gray-500);">Interpretation: The model is as uncertain as randomly choosing between ~${Math.round(perplexity)} equally likely words.</em>
+  `;
+}
+
+// ===== METRICS CALCULATOR =====
+function calcMetrics() {
+  const tp = parseInt(document.getElementById('cmTP').value) || 0;
+  const fp = parseInt(document.getElementById('cmFP').value) || 0;
+  const fn = parseInt(document.getElementById('cmFN').value) || 0;
+  const tn = parseInt(document.getElementById('cmTN').value) || 0;
+  const total = tp + fp + fn + tn;
+  const acc = (tp + tn) / total;
+  const prec = tp / (tp + fp);
+  const rec = tp / (tp + fn);
+  const f1 = 2 * prec * rec / (prec + rec);
+
+  const result = document.getElementById('metricsResult');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <table style="margin:0; font-size:0.88rem;">
+      <tr><th></th><th>Pred +</th><th>Pred -</th></tr>
+      <tr><td><strong>Actual +</strong></td><td style="background:#d1fae5">${tp} (TP)</td><td style="background:#fee2e2">${fn} (FN)</td></tr>
+      <tr><td><strong>Actual -</strong></td><td style="background:#fee2e2">${fp} (FP)</td><td style="background:#d1fae5">${tn} (TN)</td></tr>
+    </table><br>
+    <strong style="color:#8b5cf6;">Accuracy:</strong> (${tp}+${tn})/${total} = <strong>${acc.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">Precision:</strong> ${tp}/(${tp}+${fp}) = <strong>${prec.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">Recall:</strong> ${tp}/(${tp}+${fn}) = <strong>${rec.toFixed(4)}</strong><br>
+    <strong style="color:#8b5cf6;">F1 Score:</strong> 2&times;${prec.toFixed(3)}&times;${rec.toFixed(3)}/(${prec.toFixed(3)}+${rec.toFixed(3)}) = <strong>${f1.toFixed(4)}</strong><br>
+    <em style="color: ${f1 >= Math.min(prec,rec) && f1 <= Math.max(prec,rec) ? '#10b981' : '#ef4444'};">
+    ${f1 >= Math.min(prec,rec) && f1 <= Math.max(prec,rec) ? '✓ F1 is between P and R (valid!)' : '✗ F1 is NOT between P and R (something is wrong!)'}
+    </em>
+  `;
+}
+
+// ===== K-MEANS ANIMATION =====
+let kPoints = [], kCentroids = [], kAssignments = [], kK = 3, kColors = ['#ef4444','#3b82f6','#10b981'], kInterval = null, kStep2 = 0;
+
+function kmeansReset() {
+  kmeansStop();
+  const canvas = document.getElementById('kmeansCanvas');
+  const ctx = canvas.getContext('2d');
+  kPoints = [];
+  // Generate 3 clusters of random points
+  const centers = [[120,100],[350,280],[250,150]];
+  for (let c = 0; c < 3; c++) {
+    for (let i = 0; i < 20; i++) {
+      kPoints.push({
+        x: centers[c][0] + (Math.random()-0.5)*140,
+        y: centers[c][1] + (Math.random()-0.5)*120
+      });
+    }
+  }
+  // Random initial centroids
+  kCentroids = [];
+  for (let i = 0; i < kK; i++) {
+    kCentroids.push({x: Math.random()*460+20, y: Math.random()*340+20});
+  }
+  kAssignments = new Array(kPoints.length).fill(0);
+  kStep2 = 0;
+  drawKmeans(ctx, canvas);
+  document.getElementById('kmeansStatus').textContent = 'Data generated! Click "Step" to start clustering. Step: 0';
+}
+
+function drawKmeans(ctx, canvas) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Draw points
+  kPoints.forEach((p,i) => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = kColors[kAssignments[i]] + '99';
+    ctx.fill();
+    ctx.strokeStyle = kColors[kAssignments[i]]; ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+  // Draw centroids
+  kCentroids.forEach((c,i) => {
+    ctx.beginPath(); ctx.arc(c.x, c.y, 10, 0, Math.PI*2);
+    ctx.fillStyle = kColors[i]; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = 'white'; ctx.font = 'bold 10px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('C'+(i+1), c.x, c.y);
+  });
+}
+
+function kmeansStep() {
+  const canvas = document.getElementById('kmeansCanvas');
+  const ctx = canvas.getContext('2d');
+  if (kPoints.length === 0) { kmeansReset(); return; }
+
+  // Assign step
+  let changed = false;
+  kPoints.forEach((p,i) => {
+    let minDist = Infinity, best = 0;
+    kCentroids.forEach((c,j) => {
+      const d = Math.sqrt((p.x-c.x)**2 + (p.y-c.y)**2);
+      if (d < minDist) { minDist = d; best = j; }
+    });
+    if (kAssignments[i] !== best) changed = true;
+    kAssignments[i] = best;
+  });
+
+  // Update centroids
+  for (let j = 0; j < kK; j++) {
+    const members = kPoints.filter((_,i) => kAssignments[i] === j);
+    if (members.length > 0) {
+      kCentroids[j] = {
+        x: members.reduce((s,p) => s+p.x, 0) / members.length,
+        y: members.reduce((s,p) => s+p.y, 0) / members.length
+      };
+    }
+  }
+
+  kStep2++;
+  drawKmeans(ctx, canvas);
+  document.getElementById('kmeansStatus').textContent = changed ? `Step ${kStep2}: Assignments updated, centroids recalculated...` : `Converged after ${kStep2} steps! Clustering complete.`;
+  if (!changed) kmeansStop();
+}
+
+function kmeansAutoRun() {
+  if (kPoints.length === 0) kmeansReset();
+  kmeansStop();
+  kInterval = setInterval(kmeansStep, 600);
+}
+function kmeansStop() { if (kInterval) { clearInterval(kInterval); kInterval = null; } }
+
+// ===== ATTENTION HEATMAP =====
+(function buildAttention() {
+  const words = ['', 'The', 'cat', 'sat', 'on', 'the', 'mat'];
+  // Simulated attention weights (row=query, col=key)
+  const weights = [
+    [0,0,0,0,0,0], // placeholder
+    [0.05, 0.30, 0.15, 0.10, 0.35, 0.05], // The -> (attends most to cat and the)
+    [0.08, 0.10, 0.45, 0.07, 0.05, 0.25], // cat -> (attends to sat, mat)
+    [0.05, 0.40, 0.10, 0.20, 0.05, 0.20], // sat -> (attends to cat, on, mat)
+    [0.10, 0.05, 0.08, 0.05, 0.42, 0.30], // on -> (attends to the, mat)
+    [0.30, 0.15, 0.05, 0.08, 0.07, 0.35], // the -> (attends to The, mat)
+    [0.05, 0.25, 0.30, 0.10, 0.10, 0.20], // mat -> (attends to cat, sat)
+  ];
+
+  const grid = document.getElementById('attentionGrid');
+  if (!grid) return;
+  // Header row
+  words.forEach(w => {
+    const cell = document.createElement('div');
+    cell.className = 'attention-label';
+    cell.textContent = w;
+    grid.appendChild(cell);
+  });
+  // Data rows
+  for (let i = 1; i < words.length; i++) {
+    // Row label
+    const label = document.createElement('div');
+    label.className = 'attention-label';
+    label.textContent = words[i];
+    grid.appendChild(label);
+    // Attention cells
+    for (let j = 0; j < 6; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'attention-cell';
+      const w = weights[i][j];
+      const intensity = Math.round(w * 255);
+      cell.style.background = `rgba(139, 92, 246, ${w * 2})`;
+      cell.style.color = w > 0.25 ? 'white' : '#4b5563';
+      cell.textContent = w.toFixed(2);
+      cell.title = `${words[i]} → ${words[j+1]}: ${(w*100).toFixed(0)}% attention`;
+      grid.appendChild(cell);
+    }
+  }
+})();
+
+// ===== FLASHCARDS =====
+const flashcards = [
+  {q: "What is the Jaccard Similarity formula?", a: "J(X,Y) = |X ∩ Y| / |X ∪ Y|. It measures overlap relative to the total unique elements. Range: [0, 1]."},
+  {q: "What is the difference between types and tokens?", a: "Types = unique words (vocabulary size). Tokens = total word occurrences. 'the cat sat on the mat' has 5 types but 6 tokens."},
+  {q: "What is TF-IDF?", a: "Term Frequency × Inverse Document Frequency. Rewards words that are frequent in a document but rare across the corpus. TF-IDF = (1 + log(tf)) × log(N/df)."},
+  {q: "What are the 4 metric properties?", a: "1. Identity: d(X,X) = 0\n2. Positivity: d(X,Y) > 0 for X≠Y\n3. Symmetry: d(X,Y) = d(Y,X)\n4. Triangle Inequality: d(X,Z) ≤ d(X,Y) + d(Y,Z)"},
+  {q: "Why is cosine similarity preferred for text?", a: "It's magnitude-independent — it measures the angle between vectors, not their length. This means documents of different lengths can be compared fairly."},
+  {q: "What is the Markov assumption?", a: "The probability of a word depends only on the previous n-1 words. Bigram: depends on 1 previous word. Trigram: depends on 2 previous words."},
+  {q: "What is Add-k smoothing?", a: "P(w|context) = (count + k) / (N + k×|V|). Adds k to all counts to avoid zero probabilities. When k=1, called Laplace smoothing."},
+  {q: "What does perplexity measure?", a: "How 'confused' the model is. PP = 2^(cross-entropy). Lower = better. PP of 50 means model is as uncertain as choosing randomly from 50 words."},
+  {q: "What is the difference between Precision and Recall?", a: "Precision = TP/(TP+FP) — 'Of predictions, how many correct?'\nRecall = TP/(TP+FN) — 'Of actual positives, how many found?'"},
+  {q: "F1 must always be between...?", a: "F1 must always be between Precision and Recall (inclusive). If F1 > max(P,R), there is a calculation error. F1 is the harmonic mean of P and R."},
+  {q: "Multi-class vs Multi-label?", a: "Multi-class: exactly ONE label per instance (mutually exclusive). Multi-label: MULTIPLE labels per instance (categories can overlap)."},
+  {q: "What problem does Word2Vec have that BERT solves?", a: "Polysemy! Word2Vec gives ONE vector per word regardless of context. 'bank' (financial) and 'bank' (river) get the same vector. BERT produces different vectors based on context."},
+  {q: "What is the self-attention formula?", a: "Attention(Q,K,V) = softmax(Q×K^T / √d_k) × V\nQ = queries, K = keys, V = values. Division by √d_k prevents extreme softmax values."},
+  {q: "What is BPE?", a: "Byte Pair Encoding — a subword tokenization algorithm. Starts with characters, iteratively merges the most frequent adjacent pair until target vocab size is reached."},
+  {q: "Encoder (BERT) vs Decoder (GPT)?", a: "BERT: bidirectional attention (sees all tokens), best for classification/understanding, trained with Masked LM.\nGPT: causal attention (left-to-right only), best for generation, trained with Causal LM."},
+  {q: "What is the IOB tagging scheme?", a: "B-TYPE: Beginning of entity\nI-TYPE: Inside (continuation) of entity\nO: Outside any entity\nExample: [Barack]_B-PER [Obama]_I-PER [visited]_O [Paris]_B-LOC"},
+  {q: "What are HMM components?", a: "Transition probabilities: P(tag_i | tag_{i-1}) — tag sequence patterns.\nEmission probabilities: P(word_i | tag_i) — word-tag associations."},
+  {q: "Greedy vs Viterbi decoding?", a: "Greedy: picks best tag at each position independently (fast, suboptimal).\nViterbi: dynamic programming to find globally optimal tag sequence (slower, guaranteed optimal)."},
+  {q: "What is RLHF?", a: "Reinforcement Learning from Human Feedback. Humans rank model outputs → train a reward model → use it to fine-tune the LLM to align with human preferences."},
+  {q: "Name 3 common mistakes students make in the exam.", a: "1. Confusing similarity and distance (inversely related)\n2. Sorensen-Dice uses SET cardinality (no duplicates)\n3. In n-gram generation, newly generated tokens become part of context"},
+];
+
+let currentCard = 0;
+
+function updateCard() {
+  document.getElementById('flashQ').textContent = flashcards[currentCard].q;
+  document.getElementById('flashA').textContent = flashcards[currentCard].a;
+  document.getElementById('flashCounter').textContent = `${currentCard + 1} / ${flashcards.length}`;
+  // Un-flip
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard() {
+  currentCard = (currentCard + 1) % flashcards.length;
+  updateCard();
+}
+
+function prevCard() {
+  currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+  updateCard();
+}
+
+function shuffleCards() {
+  for (let i = flashcards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+  }
+  currentCard = 0;
+  updateCard();
+}
+
+// Initialize
+updateCard();
+
+// Keyboard navigation for flashcards
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); flipCard(); }
+});
+</script>
+
+</body>
+</html>

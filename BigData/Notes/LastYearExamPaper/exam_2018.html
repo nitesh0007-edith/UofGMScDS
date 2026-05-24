@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data (H) Exam 2018 Summer - Solutions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #10b98108 0%, #06b6d408 100%), #f5f7fb;
+    color: #2d3748;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #064e3b 0%, #047857 40%, #10b981 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; position: relative; }
+  .header .badge-row { margin-top: 1rem; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.2rem; backdrop-filter: blur(4px); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .nav-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav-bar .nav-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { background: #047857; color: white; transform: translateY(-1px); }
+
+  .question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s;
+  }
+  .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .q-title { font-size: 1.3rem; font-weight: 700; color: #064e3b; }
+  .q-marks {
+    background: linear-gradient(135deg, #064e3b, #10b981);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .q-text {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #047857;
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .answer-section { margin-top: 1.2rem; }
+  .answer-section h4 {
+    color: #064e3b;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .answer-section h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, #047857, #10b981);
+    border-radius: 2px;
+  }
+
+  .answer-section p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  .step-list { list-style: none; padding: 0; margin: 0.8rem 0; counter-reset: step; }
+  .step-list > li {
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.5rem;
+    margin-bottom: 0.6rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    counter-increment: step;
+  }
+  .step-list > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.8rem;
+    top: 0.8rem;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #047857, #10b981);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .step-list > li strong { color: #064e3b; }
+
+  .concept-box {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 1px solid #6ee7b7;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .concept-box h5 { color: #065f46; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .concept-box p { font-size: 0.9rem; color: #064e3b; margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box h5 { color: #166534; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .example-box h5::before { content: '💡 '; }
+  .example-box p { font-size: 0.9rem; color: #15803d; }
+
+  .warning-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.9rem; color: #92400e; }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .comparison-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .comparison-card h5 { color: #064e3b; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .comparison-card p { font-size: 0.88rem; color: #475569; }
+  .comparison-card.highlight { border-color: #10b981; background: #ecfdf5; }
+
+  .bullet-list { padding-left: 1.5rem; margin: 0.5rem 0; }
+  .bullet-list li { margin-bottom: 0.4rem; font-size: 0.93rem; color: #475569; }
+  .bullet-list li strong { color: #064e3b; }
+
+  .moodle-tip {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    border: 1px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin: 1.5rem 0;
+  }
+  .moodle-tip h5 { color: #9d174d; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .moodle-tip h5::before { content: '✍️ '; }
+  .moodle-tip p { font-size: 0.85rem; color: #831843; }
+
+  .marks-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #059669;
+  }
+
+  .code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, #064e3b, #047857);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .summary-box h5 { font-size: 0.95rem; margin-bottom: 0.5rem; opacity: 0.9; }
+  .summary-box p { font-size: 0.9rem; opacity: 0.85; }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th { background: #064e3b; color: white; padding: 0.7rem 1rem; font-weight: 600; text-align: left; }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  .divider { border: none; border-top: 2px dashed #d1fae5; margin: 2rem 0; }
+
+  @media (max-width: 768px) {
+    .comparison-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .question-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Big Data (H Level) Exam — Summer 2018 Solutions</h1>
+  <div class="subtitle">University of Glasgow — Official Answers with Detailed Explanations</div>
+  <div class="badge-row">
+    <span class="badge">75 Marks</span>
+    <span class="badge">3 Questions</span>
+    <span class="badge">1 Hour</span>
+    <span class="badge">Answer ALL</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav-bar">
+    <span class="nav-label">Jump to:</span>
+    <a href="#q1" class="nav-link">Q1 — HDFS (25 marks)</a>
+    <a href="#q2" class="nav-link">Q2 — MapReduce (25 marks)</a>
+    <a href="#q3" class="nav-link">Q3 — Storage Systems (25 marks)</a>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <div class="question-card" id="q1">
+    <div class="q-header">
+      <span class="q-title">Question 1 — HDFS</span>
+      <span class="q-marks">25 marks</span>
+    </div>
+
+    <!-- Q1a -->
+    <div class="q-text">
+      <strong>Q1a.</strong> Describe the HDFS Read Protocol step by step. <span class="marks-badge">10 marks — 2 per step</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>HDFS Read Protocol — 5 Steps <span class="marks-badge">10 marks</span></h4>
+
+      <p>When a client wants to read a file from HDFS, the process is designed so that the NameNode (NN) only provides <strong>metadata</strong> — it never touches the actual data. This keeps the NN lightweight and prevents it from becoming a bottleneck, even when thousands of clients are reading simultaneously. The actual data flows directly from DataNodes (DNs) to the client, which is the key to HDFS's scalability.</p>
+
+      <ol class="step-list">
+        <li><strong>Client contacts NameNode:</strong> The client sends a read request to the NameNode, which looks up the file in its namespace. The NN responds with a complete list of all blocks that make up the file, along with the DataNode locations for each block <em>and</em> their replicas. This is purely a metadata operation — the NN knows where every block lives because DataNodes periodically send heartbeats and block reports. The NN sorts the DN locations by network distance from the client, so the client always knows which DN is closest. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>Client selects closest DataNode per block:</strong> For each block, the client picks the <strong>nearest DataNode</strong> from the sorted list and opens a direct TCP connection to it. "Nearest" is determined by Hadoop's network topology awareness — same-node is closest, then same-rack, then same-datacenter, then cross-datacenter. The client contacts the DN directly, bypassing the NameNode entirely for data transfer. This is critical for performance: if the NN had to relay all data, it would become a massive bottleneck. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>DataNode sends block data + metadata (checksum):</strong> The selected DataNode reads the block from its local disk and streams it to the client. Along with the raw data, the DN also sends <strong>checksum metadata</strong> — a pre-computed hash of the block data. This checksum was originally computed when the block was written and stored alongside the block on the DN's local filesystem. Sending the checksum alongside the data allows the client to verify data integrity end-to-end without a separate request. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>Client verifies checksum — falls back to next replica on corruption:</strong> Upon receiving the block, the client independently computes a checksum of the received data and compares it against the checksum sent by the DN. If they match, the block is healthy and the client proceeds. If they <strong>do not match</strong>, the data is corrupt — the client reports the corrupted block to the NameNode (so it can schedule a re-replication), then seamlessly retries the read from the <strong>next closest replica</strong> in the list. This is completely transparent to the application using HDFS. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>Process repeats for each block:</strong> The above steps are repeated for every block that constitutes the file. Blocks are read in order (block 0, then block 1, then block 2, etc.) to reconstruct the file sequentially. Each block may come from a different DataNode, which distributes the I/O load across the cluster and enables parallel reading when clients need it. The client assembles the blocks into the complete file. <span class="marks-badge">2 marks</span></li>
+      </ol>
+
+      <div class="example-box">
+        <h5>Real-World Analogy — Ordering Book Chapters from Warehouses</h5>
+        <p>Imagine you want to read a 5-chapter book, but each chapter is stored in different Amazon warehouses across the country. You first call the central catalog office (the NameNode) and ask: "Where are all the chapters of this book?" The catalog office tells you: "Chapter 1 is in London, Manchester, and Edinburgh warehouses. Chapter 2 is in Bristol, Leeds, and Glasgow warehouses..." and so on. You then call the <strong>nearest warehouse</strong> for each chapter. When a chapter arrives, you check it against a photo of the original page (checksum). If the chapter is damaged, you call the backup warehouse. You never ask the catalog office to ship the chapters themselves — it only tells you <em>where</em> to find them.</p>
+      </div>
+
+      <div class="concept-box">
+        <h5>Key Design Principle</h5>
+        <p><strong>Separation of metadata and data paths.</strong> The NameNode handles metadata (which blocks, which DNs) while DataNodes handle data transfer. This separation is what makes HDFS scale to thousands of simultaneous readers without the NN becoming a bottleneck.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q1b -->
+    <div class="q-text">
+      <strong>Q1b.</strong> Describe the NameNode recovery mechanism, including all recovery resources. <span class="marks-badge">15 marks — 5 per resource</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Problem: Why Recovery Matters</h4>
+      <p>The NameNode is the <strong>single most critical component</strong> in HDFS. It holds the entire filesystem's directory tree, file-to-block mappings, and access permissions in memory. If the NameNode crashes and this state is lost, the <em>entire cluster's data becomes inaccessible</em> — the blocks still exist on DataNodes, but nobody knows which blocks belong to which files. HDFS solves this with three complementary recovery resources.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Three Recovery Resources <span class="marks-badge">5 marks each</span></h4>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h5>1. Image (In-Memory State)</h5>
+          <p>The <strong>Image</strong> is the complete, live state of the NameNode held entirely in RAM. It contains the full filename namespace (directory tree), all file-to-block mappings, block-to-DataNode locations, replication counts, permissions, and quotas. It is kept in memory for lightning-fast lookups — every metadata operation (open file, list directory, check permissions) is served from this in-memory structure. However, RAM is <strong>volatile</strong> — if the NameNode process crashes or the machine loses power, the Image is completely lost. This is why the other two resources exist.</p>
+        </div>
+        <div class="comparison-card highlight">
+          <h5>2. Journal (EditLog / Write-Ahead Log)</h5>
+          <p>The <strong>Journal</strong> (also called the EditLog or WAL) is a write-ahead log stored on <strong>persistent disk storage</strong>. Every single operation that modifies the namespace — creating a file, deleting a directory, renaming, changing permissions, adding a block — is written to this log <strong>BEFORE</strong> it is applied to the in-memory Image. This "write-ahead" guarantee means that even if the NN crashes mid-operation, the journal on disk has a complete record of everything that happened. The journal grows continuously between checkpoints.</p>
+        </div>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card" style="grid-column: 1 / -1;">
+          <h5>3. Checkpoint (FsImage)</h5>
+          <p>The <strong>Checkpoint</strong> (stored as FsImage on disk) is a periodic, complete snapshot of the in-memory Image dumped to stable storage. Think of it as a "save game" — a frozen-in-time copy of the entire filesystem state at a specific moment. Checkpoints are created periodically to limit how much of the journal needs to be replayed during recovery. Without checkpoints, recovery would require replaying the <em>entire</em> journal from the very beginning of the filesystem's life, which could take hours or days on a large cluster.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Recovery Process</h4>
+
+      <p>When the NameNode restarts after a crash, it performs the following recovery sequence:</p>
+
+      <ol class="step-list">
+        <li><strong>Load last checkpoint (FsImage) from disk into memory:</strong> This restores the filesystem state to the point when the checkpoint was created. It may be hours or even a day old, so it is not fully up-to-date.</li>
+        <li><strong>Replay all journal (EditLog) entries recorded after that checkpoint:</strong> Each journal entry represents a single namespace mutation. By replaying them in order on top of the checkpoint, the NameNode reconstructs exactly the state it had before the crash.</li>
+        <li><strong>Full state recovered:</strong> The in-memory Image is now identical to what it was before the crash. The NN can begin serving clients again.</li>
+      </ol>
+
+      <div class="concept-box">
+        <h5>Recovery Formula</h5>
+        <p><strong>Current State = Last Checkpoint + Replay(all Journal entries since that checkpoint)</strong></p>
+        <p>This is the same principle used by databases everywhere — the checkpoint provides the baseline, and the journal provides the delta.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Secondary NameNode — The Checkpoint Helper</h4>
+
+      <p>The <strong>Secondary NameNode</strong> is a separate process (often running on a different machine) whose sole job is to periodically merge the checkpoint (FsImage) with the journal (EditLog) to produce a <strong>new, up-to-date checkpoint</strong>. Here is the key nuance that examiners love to test:</p>
+
+      <div class="warning-box">
+        <p><strong>The Secondary NameNode is NOT a hot standby.</strong> It does NOT take over when the primary NameNode fails. It cannot serve client requests. Its only purpose is housekeeping — by creating fresh checkpoints, it ensures that the journal stays short, which means recovery after a crash is fast (fewer entries to replay). Without the Secondary NameNode, the journal would grow indefinitely, and recovery could take a very long time.</p>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy — A Hospital Records System</h5>
+        <p>Think of a hospital. The <strong>Image</strong> is the doctor's complete mental model of every patient's condition — fast to access but lost if the doctor suddenly forgets everything. The <strong>Checkpoint</strong> is the weekly patient status report that the hospital prints and files in a cabinet — a reliable snapshot, but potentially days out of date. The <strong>Journal</strong> is the daily logbook where every nurse writes down every medication change, every new symptom, every procedure performed — written down <em>before</em> anything is done to the patient. If the doctor loses their memory (crash), the hospital loads last week's printed report and replays this week's daily logs to reconstruct the full picture. The <strong>Secondary NameNode</strong> is like a medical secretary who, every few hours, takes the latest weekly report plus all the daily logs since then and produces a fresh combined report. The secretary doesn't treat patients — they just keep the paperwork manageable.</p>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q1 Summary</h5>
+      <p>HDFS Read: Client asks NN for block locations, reads directly from nearest DN, verifies checksums, falls back to replicas on corruption. NameNode Recovery: Image (volatile RAM state) + Journal (write-ahead log on disk) + Checkpoint (periodic snapshot on disk). Recovery = load checkpoint + replay journal. Secondary NN merges checkpoint+journal into fresh checkpoints but is NOT a failover standby.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>Q1a: Write exactly 5 numbered steps, one per paragraph. Mention NameNode, DataNode, checksum, replica failover, and block-level reading. Q1b: Structure around the three resources (5 marks each), then explain the recovery formula and the Secondary NN's role (and that it is NOT a standby). Use the terms "write-ahead", "volatile", "stable storage", and "replay".</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <div class="question-card" id="q2">
+    <div class="q-header">
+      <span class="q-title">Question 2 — MapReduce</span>
+      <span class="q-marks">25 marks</span>
+    </div>
+
+    <!-- Q2a -->
+    <div class="q-text">
+      <strong>Q2a.</strong> Given a web graph where each line is <code>source_url → target_url1, target_url2, ...</code>, write MapReduce pseudocode to count how many pages link TO each page (in-link count). <span class="marks-badge">10 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Understanding the Problem</h4>
+      <p>We have a dataset representing the link structure of the web. Each line describes one web page and the pages it links <em>to</em>. Our goal is to <strong>invert</strong> this relationship: instead of knowing "Page A links to Pages B, C, D", we want to know "Page B is linked to by 47 pages" — the <strong>in-link count</strong> (also called the in-degree in graph theory). This is exactly the kind of computation that drives Google's PageRank algorithm, which counts and weights incoming links to determine page importance.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Mapper <span class="marks-badge">5 marks</span></h4>
+      <p>The mapper's job is simple but crucial: for each line of input, it parses the source URL and all its target URLs, then emits each <strong>target</strong> as a key with the value <code>1</code>. The source URL is deliberately ignored in the output because we do not care about who is doing the linking — we only care about who is being linked <em>to</em>.</p>
+
+      <div class="code-block">map(key, value):
+    // key   = line offset (ignored)
+    // value = "sourceURL\ttargetURL1, targetURL2, targetURL3, ..."
+
+    parts   = value.split("\t")
+    source  = parts[0]           // we don't emit the source
+    targets = parts[1].split(",")
+
+    for each target in targets:
+        emit(target.trim(), 1)   // one "vote" for this target page</div>
+
+      <p>For example, if the input line is <code>google.com → wikipedia.org, github.com, bbc.co.uk</code>, the mapper emits three key-value pairs: <code>(wikipedia.org, 1)</code>, <code>(github.com, 1)</code>, and <code>(bbc.co.uk, 1)</code>.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Reducer <span class="marks-badge">5 marks</span></h4>
+      <p>The MapReduce framework groups all values by key before handing them to the reducer. So the reducer receives a target page URL as the key and a list of 1s as the values — one 1 for every page that links to it. The reducer simply sums all the 1s to get the total in-link count.</p>
+
+      <div class="code-block">reduce(key, values):
+    // key    = target page URL
+    // values = [1, 1, 1, 1, ...]  (one per in-link)
+
+    total_inlinks = 0
+    for each v in values:
+        total_inlinks += v
+
+    emit(key, total_inlinks)</div>
+
+      <p>For example, if <code>wikipedia.org</code> appears as a target in 1,500 different source lines, the reducer receives <code>(wikipedia.org, [1, 1, 1, ..., 1])</code> with 1,500 ones, and emits <code>(wikipedia.org, 1500)</code>.</p>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy — Counting Social Media Followers</h5>
+      <p>Think of Instagram. Each user's "following" list is one line of input. The mapper reads "Alice follows Bob, Charlie, Diana" and notes one follower-vote for each of Bob, Charlie, and Diana. After all users' following lists are processed, the reducer counts up all the votes for each person. Bob might end up with 500 follower-votes (meaning 500 people follow him). This is exactly the in-link count — the number of incoming edges in a directed graph.</p>
+    </div>
+
+    <div class="concept-box">
+      <h5>Why This Works with MapReduce</h5>
+      <p>The beauty of this approach is that it is <strong>embarrassingly parallel</strong>. Each mapper processes one chunk of the web graph independently. The framework handles grouping all the "votes" for the same target page together, regardless of which mapper emitted them. The reducer then performs a simple aggregation. No mapper needs to communicate with any other mapper — all coordination happens in the shuffle phase.</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q2b -->
+    <div class="q-text">
+      <strong>Q2b.</strong> How would you find the top-k most in-linked pages? <span class="marks-badge">5 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Top-k Most In-Linked Pages <span class="marks-badge">5 marks</span></h4>
+
+      <p>After Q2a gives us the in-link count for every page, we need to find the <strong>k pages with the highest counts</strong>. There are two main approaches:</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card highlight">
+          <h5>Approach 1: Chained MapReduce Job</h5>
+          <p>Run a second MapReduce job that takes the output of Q2a as input. The mapper can invert key/value to emit <code>(inlink_count, page_url)</code>. Use a <strong>single reducer</strong> (set number of reducers to 1) that maintains a sorted top-k list (e.g., a min-heap / priority queue of size k). In the <code>cleanup()</code> method, emit the final top-k entries.</p>
+        </div>
+        <div class="comparison-card">
+          <h5>Approach 2: Setup/Cleanup Pattern</h5>
+          <p>Within a single MapReduce job, each mapper maintains a local top-k list using a priority queue. In <code>cleanup()</code>, each mapper emits its local top-k. A single reducer merges all local top-k lists into a global top-k. This is more efficient because it reduces the data flowing through the shuffle.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <h5>Real-World Analogy — Finding the Most-Followed Instagram Accounts</h5>
+        <p>After counting all followers (Q2a), you want to find the top 10 most-followed accounts. Rather than sorting billions of accounts globally (expensive), each regional office (mapper) picks its local top 10, then a single headquarters (reducer) takes all the regional top-10 lists and finds the global top 10. This is much faster than a full global sort because only a tiny fraction of the data needs to travel to the reducer.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q2c -->
+    <div class="q-text">
+      <strong>Q2c.</strong> Describe the data flow from Mapper to Reducer (the shuffle and sort phase) in detail. <span class="marks-badge">10 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Shuffle and Sort Phase — Detailed Data Flow <span class="marks-badge">10 marks</span></h4>
+
+      <p>The shuffle is the "magic middle" of MapReduce — it is where the framework takes the unordered output from many mappers and delivers it to reducers as <strong>sorted, grouped streams</strong>. It is often the most expensive phase of a MapReduce job because it involves disk I/O, network transfer, and sorting. Here is exactly what happens:</p>
+
+      <ol class="step-list">
+        <li><strong>Mapper writes to circular memory buffer (100MB default):</strong> As the map function emits key-value pairs, they are not written directly to disk. Instead, they go into an in-memory <strong>circular buffer</strong>, typically 100MB in size. This buffer acts as a staging area that batches output for efficiency. Using a circular buffer means the mapper does not need to allocate new memory for each output record — it just wraps around and reuses space. <span class="marks-badge">~1 mark</span></li>
+
+        <li><strong>Spill triggered at 80% threshold:</strong> When the buffer is 80% full (the <code>io.sort.spill.percent</code> threshold), a background thread begins <strong>spilling</strong> the buffer contents to disk. The mapper can continue writing to the remaining 20% while the spill happens, avoiding a complete stall. If the mapper produces output faster than the spill thread can write, the mapper must wait — this is called back-pressure. <span class="marks-badge">~1 mark</span></li>
+
+        <li><strong>Partition + sort before each spill:</strong> Before data is spilled to disk, it undergoes two critical transformations. First, each key-value pair is <strong>partitioned</strong> — a hash function is applied to the key, and the result modulo the number of reducers determines which reducer will receive this record. Second, within each partition, the records are <strong>sorted by key</strong>. This means each spill file on disk contains data already organized by destination reducer and sorted within each reducer's partition. <span class="marks-badge">~2 marks</span></li>
+
+        <li><strong>Combiner runs on each spill (if configured):</strong> If the programmer has specified a <strong>combiner function</strong> (a local mini-reducer), it runs on each spill before the data is written to disk. The combiner performs partial aggregation — for example, in our in-link counting job, instead of spilling <code>(wikipedia.org, 1), (wikipedia.org, 1), (wikipedia.org, 1)</code>, the combiner would collapse these into <code>(wikipedia.org, 3)</code>. This dramatically reduces the amount of data written to disk and later transferred over the network. <span class="marks-badge">~1 mark</span></li>
+
+        <li><strong>Multiple spills merged into a single sorted file per mapper:</strong> A mapper may produce many spill files over its lifetime (each time the buffer fills up). Once the mapper finishes, all spill files are <strong>merged</strong> into a single sorted file per partition using a multi-way merge sort. If there are many spill files, the merge may happen in multiple rounds. The combiner may run again during this merge. The result is one neatly organized file on the mapper's local disk, with sections for each reducer. <span class="marks-badge">~1 mark</span></li>
+
+        <li><strong>Partitions transferred to reducers over HTTP (the shuffle):</strong> Each reducer contacts every mapper via HTTP and requests its partition of the data. This is the actual network transfer phase — the "shuffle" in the strictest sense. The framework uses a configurable number of parallel HTTP connections (default: 5) so that reducers can fetch data from multiple mappers simultaneously. Data transfer begins as soon as mappers finish, even while other mappers are still running. <span class="marks-badge">~2 marks</span></li>
+
+        <li><strong>Reducer merges sorted runs from multiple mappers:</strong> Each reducer now has one sorted file from each mapper. It performs a <strong>multi-way merge sort</strong> to combine all these files into a single sorted stream. This is efficient because each input file is already sorted — the merge just picks the smallest key across all files at each step. If the combined data is too large for memory, intermediate merge files are spilled to disk. <span class="marks-badge">~1 mark</span></li>
+
+        <li><strong>Final sorted input fed to reduce function:</strong> The fully merged, sorted stream is fed to the <code>reduce()</code> function. All values for the same key are guaranteed to be adjacent (because the stream is sorted), so the framework can efficiently group them and call the reducer with <code>(key, [list of all values])</code>. The reduce function processes each group and writes its output to HDFS. <span class="marks-badge">~1 mark</span></li>
+      </ol>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy — A National Postal Sorting System</h5>
+      <p>Imagine a country's postal system. Each post office (mapper) collects outgoing letters (mapper output) into a mailbox (circular buffer). When the mailbox is nearly full, a postal worker empties it (spill), sorting letters by destination ZIP code (partitioning) and alphabetically within each ZIP code (sorting). If there is a local assistant (combiner), they consolidate duplicate packages before the truck arrives. Multiple batches from the day are merged into one neat stack per ZIP code. Trucks (HTTP shuffle) then deliver each ZIP code's stack to the regional sorting center (reducer). Each regional center receives stacks from every post office in the country and merges them all into one final alphabetical sequence (merge sort). The mail carrier (reduce function) then delivers each person's complete bundle of letters in order.</p>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>Performance insight:</strong> The shuffle phase is often the bottleneck of a MapReduce job because it involves both disk I/O (spills, merges) and network I/O (transfer to reducers). This is why combiners are so valuable — they reduce the data volume at the source, before it hits the network. A well-designed combiner can reduce shuffle data by 10x or more.</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q2 Summary</h5>
+      <p>In-link counting: Mapper emits (target, 1) for each link; Reducer sums to get total in-links per page. Top-k: Chain a second job or use setup/cleanup pattern with a priority queue and a single reducer. Shuffle: Buffer (100MB) → spill at 80% → partition + sort → combiner → merge spills → HTTP transfer to reducers → merge sort → reduce function.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>Q2a: Write clear pseudocode for both mapper and reducer. Explain what the key and value represent. Q2b: Mention "chained MR job" or "single reducer with cleanup pattern". Q2c: This is worth 10 marks — give all 8 steps with specific details (100MB buffer, 80% threshold, hash partitioning, merge sort). Draw a diagram if time permits.</p>
+    </div>
+  </div>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <div class="question-card" id="q3">
+    <div class="q-header">
+      <span class="q-title">Question 3 — Storage Systems</span>
+      <span class="q-marks">25 marks</span>
+    </div>
+
+    <!-- Q3a -->
+    <div class="q-text">
+      <strong>Q3a.</strong> Explain the LSM Tree and why it provides high write throughput. <span class="marks-badge">8 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>LSM Tree — Log-Structured Merge Tree <span class="marks-badge">8 marks</span></h4>
+
+      <p>The Log-Structured Merge Tree (LSM Tree) is a data structure designed for workloads with <strong>far more writes than reads</strong>. It is the storage engine behind HBase, Cassandra, LevelDB, RocksDB, and many other modern databases. The fundamental insight is one sentence long but worth 2 marks on its own:</p>
+
+      <div class="concept-box">
+        <h5>The Key Insight</h5>
+        <p><strong>LSM Trees convert random writes into sequential writes.</strong> On spinning disks, sequential writes are 100-1000x faster than random writes. On SSDs, the difference is smaller but still significant (5-10x). By never updating data in place, LSM trees avoid the random I/O penalty that cripples B-tree-based storage engines under heavy write loads.</p>
+      </div>
+
+      <p>Here is how the write path works:</p>
+
+      <ol class="step-list">
+        <li><strong>Write to in-memory MemTable (fast):</strong> All incoming writes go directly into an in-memory sorted data structure called the <strong>MemTable</strong> (typically a red-black tree or skip list). Writing to memory is extremely fast — there is no disk seek involved. Simultaneously, the write is appended to a <strong>Write-Ahead Log (WAL)</strong> on disk for durability. The WAL is a simple append-only file — also sequential, so it is fast too. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>MemTable flushed as sorted SSTable to disk:</strong> When the MemTable reaches a size threshold (e.g., 64MB), it is frozen and <strong>flushed</strong> to disk as an <strong>SSTable</strong> (Sorted String Table) — an immutable, sorted file. Because the MemTable is already sorted in memory, this flush is a single sequential write to disk, which is the fastest possible disk operation. A new empty MemTable is created to accept further writes. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>No random disk I/O for writes:</strong> Unlike a B-tree, which must read a page from disk, modify it, and write it back (random read + random write for every update), the LSM tree <strong>never</strong> performs random disk I/O on the write path. Every disk operation is either an append (WAL) or a sequential write (SSTable flush). This is why LSM trees achieve dramatically higher write throughput than B-trees. <span class="marks-badge">2 marks</span></li>
+
+        <li><strong>Background compaction keeps reads reasonable:</strong> Over time, many SSTables accumulate on disk. Reading becomes slower because a lookup may need to check multiple SSTables (since the same key could exist in several). To mitigate this, a background <strong>compaction</strong> process periodically merges multiple SSTables into fewer, larger ones, discarding deleted and overwritten entries. Compaction is essentially a merge sort of sorted files — it is sequential I/O and does not block writes. <span class="marks-badge">2 marks</span></li>
+      </ol>
+    </div>
+
+    <div class="answer-section">
+      <h4>LSM Tree vs B-Tree — Trade-offs</h4>
+      <table>
+        <tr><th>Aspect</th><th>LSM Tree</th><th>B-Tree</th></tr>
+        <tr><td><strong>Write speed</strong></td><td>Very fast (sequential I/O only)</td><td>Slower (random I/O to update pages)</td></tr>
+        <tr><td><strong>Read speed</strong></td><td>Potentially slower (may check multiple SSTables)</td><td>Fast (single tree traversal)</td></tr>
+        <tr><td><strong>Write amplification</strong></td><td>Higher (data written multiple times due to compaction)</td><td>Lower (write once to correct page)</td></tr>
+        <tr><td><strong>Space amplification</strong></td><td>May have temporary duplicates across SSTables</td><td>Minimal (in-place updates)</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Write-heavy workloads (logging, time-series, IoT)</td><td>Read-heavy workloads (OLTP, indexing)</td></tr>
+      </table>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy — Two Note-Taking Systems</h5>
+      <p><strong>B-Tree approach:</strong> You have a massive, alphabetically organized notebook. Every time you need to update a fact, you find the right page (random seek), erase the old entry, and write the new one. Finding the right page takes time, especially if the notebook has thousands of pages.</p>
+      <p><strong>LSM Tree approach:</strong> Instead, you jot every new fact on a fresh sticky note (MemTable) and toss it into an inbox. When the inbox is full, you sort all the sticky notes alphabetically and staple them into a neat packet (SSTable flush). You never search through old packets to update them — you just write a new note. Later, during a quiet period, you merge multiple packets into one clean, updated master packet (compaction). Writing is blazing fast because you never search — but reading may require checking several packets until you find the latest version of a fact.</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q3b -->
+    <div class="q-text">
+      <strong>Q3b.</strong> Describe the HBase on-disk storage format in detail. <span class="marks-badge">9 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>HBase On-Disk Storage Format <span class="marks-badge">9 marks</span></h4>
+
+      <p>HBase stores its data on HDFS using a file format called <strong>HFile</strong>, which is based on the SSTable (Sorted String Table) concept from Google's Bigtable paper. Understanding the HFile format is essential because it determines how HBase achieves fast lookups on top of an append-only distributed filesystem.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>HFile Structure <span class="marks-badge">3 marks</span></h4>
+      <p>Each HFile is a self-contained, immutable file on HDFS with the following internal structure:</p>
+
+      <table>
+        <tr><th>Section</th><th>Purpose</th><th>Location in File</th></tr>
+        <tr><td><strong>Data Blocks</strong></td><td>Contain the actual sorted key-value pairs. Each block is typically 64KB. Multiple blocks make up the data section.</td><td>Beginning of file</td></tr>
+        <tr><td><strong>Meta Blocks</strong></td><td>Store optional metadata, most importantly Bloom filters for fast negative lookups.</td><td>After data blocks</td></tr>
+        <tr><td><strong>File Info</strong></td><td>General file-level metadata: average key length, compression codec, comparator class, etc.</td><td>After meta blocks</td></tr>
+        <tr><td><strong>Data Index</strong></td><td>An index mapping key ranges to data block offsets. Enables binary search to jump directly to the right block.</td><td>Near end of file</td></tr>
+        <tr><td><strong>Meta Index</strong></td><td>An index for locating meta blocks (Bloom filters, etc.) within the file.</td><td>Near end of file</td></tr>
+        <tr><td><strong>Trailer</strong></td><td>A fixed-size block at the very end of the file containing pointers (offsets) to all the other sections. This is read first when opening an HFile.</td><td>End of file</td></tr>
+      </table>
+    </div>
+
+    <div class="answer-section">
+      <h4>Key-Value Sort Order <span class="marks-badge">2 marks</span></h4>
+      <p>Within data blocks, key-value pairs are sorted by a <strong>composite key</strong> in the following order:</p>
+      <div class="code-block">(row_key, column_family, column_qualifier, timestamp DESC)</div>
+      <p>The descending timestamp order means that the <strong>most recent version</strong> of a cell appears first, which makes "get latest version" queries very efficient — HBase just reads the first entry it finds for a given row+column combination.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Block Index — Efficient Lookups <span class="marks-badge">1 mark</span></h4>
+      <p>The <strong>Data Index</strong> records the first key of each data block. To find a specific key, HBase performs a <strong>binary search</strong> on the index to identify which data block contains the target key, then reads only that one block from disk. This means reading a single key from a multi-gigabyte HFile requires loading only the index (small, often cached in memory) and one 64KB data block — not the entire file.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Bloom Filters — Quick Negative Lookups <span class="marks-badge">1 mark</span></h4>
+      <p><strong>Bloom filters</strong> are probabilistic data structures stored in the meta blocks of each HFile. Before performing an expensive disk read, HBase checks the Bloom filter to determine if the requested key <em>could possibly</em> exist in this HFile. If the Bloom filter says "no", the HFile is skipped entirely — saving a disk seek. Bloom filters can have false positives (saying "maybe" when the key is absent) but <strong>never false negatives</strong> (they never say "no" when the key is actually present).</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>Column Family Separation <span class="marks-badge">1 mark</span></h4>
+      <p>Each <strong>column family</strong> is stored in its own set of HFiles (called a "Store" in HBase terminology). This means accessing one column family never requires reading HFiles belonging to another column family. This is a major advantage for wide tables where queries typically access only a few column families — only the relevant HFiles are read, not the entire row's data.</p>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy — A Well-Organized Library</h5>
+      <p>Think of each HFile as a book in a library. Each book (HFile) contains: a <strong>table of contents</strong> at the back (the Data Index) that tells you which chapter covers which topic; a <strong>quick-reference card</strong> (Bloom filter) on the front cover that lets the librarian instantly say "this book definitely does NOT contain information about Topic X" without opening it; and inside, the content (Data Blocks) is organized alphabetically within each genre section (Column Family). Books within the same genre are shelved together, and you never need to open a Science book when looking for History.</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q3c -->
+    <div class="q-text">
+      <strong>Q3c.</strong> Explain Cassandra's consistency levels and the trade-offs involved. <span class="marks-badge">8 marks</span>
+    </div>
+
+    <div class="answer-section">
+      <h4>Cassandra Consistency Levels <span class="marks-badge">8 marks</span></h4>
+
+      <p>Cassandra is a distributed database where data is <strong>replicated across multiple nodes</strong> for fault tolerance. The key question is: when a client reads or writes data, how many replicas must participate before the operation is considered successful? This is controlled by <strong>consistency levels</strong>, and Cassandra is unique in that it lets you set this <em>per query</em> — giving you fine-grained control over the consistency-availability trade-off.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Quorum Formula <span class="marks-badge">2 marks</span></h4>
+
+      <div class="concept-box">
+        <h5>Strong Consistency Guarantee</h5>
+        <p><strong>R + W > N</strong></p>
+        <p>Where: <strong>N</strong> = replication factor (total number of replicas of each data item), <strong>R</strong> = number of replicas that must respond to a read, <strong>W</strong> = number of replicas that must acknowledge a write.</p>
+        <p>When R + W > N, the read set and write set <strong>must overlap</strong> — at least one node in any read will have seen the latest write. This guarantees the client always sees the most recent data.</p>
+      </div>
+    </div>
+
+    <div class="answer-section">
+      <h4>Consistency Level Options <span class="marks-badge">4 marks</span></h4>
+
+      <table>
+        <tr><th>Level</th><th>Replicas Required</th><th>Consistency</th><th>Availability</th><th>Latency</th></tr>
+        <tr><td><strong>ONE</strong></td><td>1 replica responds</td><td>Weakest — may read stale data</td><td>Highest — works even if N-1 replicas are down</td><td>Lowest</td></tr>
+        <tr><td><strong>QUORUM</strong></td><td>Majority: floor(N/2) + 1</td><td>Strong (when both R and W are QUORUM)</td><td>Good — tolerates minority failures</td><td>Moderate</td></tr>
+        <tr><td><strong>ALL</strong></td><td>All N replicas must respond</td><td>Strongest — guaranteed latest data</td><td>Lowest — fails if any single replica is down</td><td>Highest</td></tr>
+        <tr><td><strong>LOCAL_QUORUM</strong></td><td>Quorum within local datacenter</td><td>Strong within datacenter</td><td>Good for multi-DC deployments</td><td>Low (no cross-DC latency)</td></tr>
+      </table>
+
+      <p>With N=3 (the most common configuration): ONE requires 1 replica, QUORUM requires 2 replicas, ALL requires 3 replicas.</p>
+    </div>
+
+    <div class="answer-section">
+      <h4>The Trade-off <span class="marks-badge">2 marks</span></h4>
+
+      <p>Every consistency level represents a point on the <strong>consistency-availability-latency spectrum</strong>:</p>
+
+      <ul class="bullet-list">
+        <li><strong>Higher consistency (more replicas) = lower availability + higher latency.</strong> If you require ALL replicas to respond, the operation fails if even one replica is unreachable. And you must wait for the slowest replica (the "tail latency" problem).</li>
+        <li><strong>Lower consistency (fewer replicas) = higher availability + lower latency.</strong> With ONE, the operation succeeds as long as any single replica is alive, and you get the response as fast as the quickest replica can answer. But you might read stale data.</li>
+        <li><strong>QUORUM is the sweet spot</strong> for most applications — it provides strong consistency (when used for both reads and writes) while tolerating minority failures. With N=3 and QUORUM (R=2, W=2): 2+2=4 > 3, so strong consistency is guaranteed, and the system tolerates 1 node failure.</li>
+        <li><strong>Tunable per query:</strong> The most powerful aspect is that Cassandra lets you choose different consistency levels for different operations. You might use QUORUM for financial transactions but ONE for social media feed reads where occasional staleness is acceptable.</li>
+      </ul>
+    </div>
+
+    <div class="example-box">
+      <h5>Real-World Analogy — Group Decision Making</h5>
+      <p><strong>ONE</strong> is like asking one friend if a restaurant is good — you get an instant answer, but it might not reflect the latest reviews. <strong>QUORUM</strong> is like polling a majority of your friend group — "3 out of 5 of you say it's good? Let's go." It takes a bit longer but you get a reliable consensus. <strong>ALL</strong> is like requiring unanimous agreement from every single friend before going out — you get the most informed decision, but if even one friend's phone is off, you're stuck waiting. <strong>LOCAL_QUORUM</strong> is like only polling friends in your city — faster (no long-distance calls) but you miss input from friends in other cities.</p>
+    </div>
+
+    <div class="warning-box">
+      <p><strong>CAP Theorem connection:</strong> Cassandra is fundamentally an <strong>AP system</strong> (Availability + Partition tolerance) — it defaults to being always available, even at the cost of consistency. However, by using QUORUM or ALL consistency levels where R + W > N, you can effectively make it behave like a <strong>CP system</strong> for specific queries. This tunability is Cassandra's key differentiator from systems like HBase (which is strictly CP).</p>
+    </div>
+
+    <div class="summary-box">
+      <h5>Q3 Summary</h5>
+      <p>LSM Tree: converts random writes to sequential — writes go to MemTable + WAL, flush as sorted SSTables, background compaction keeps reads fast. Trade-off: faster writes, potentially slower reads than B-trees. HBase HFiles: data blocks + meta blocks + file info + data index + meta index + trailer; sorted by (row, CF, qualifier, timestamp DESC); Bloom filters for negative lookups; column families in separate HFiles. Cassandra: R+W>N for strong consistency; ONE (fast/weak) vs QUORUM (balanced) vs ALL (slow/strong); tuneable per query; higher consistency = lower availability + higher latency.</p>
+    </div>
+
+    <div class="moodle-tip">
+      <h5>Exam Strategy</h5>
+      <p>Q3a: Lead with "converts random writes to sequential" — this is THE key insight. Then explain MemTable + WAL + flush + compaction. Mention the trade-off with reads. Q3b: List all 6 HFile sections, state the sort order explicitly, mention Bloom filters and column family separation. Q3c: State R+W>N formula first, then the table of levels, then discuss the consistency-availability trade-off. Mention "tuneable per query" — examiners love that.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

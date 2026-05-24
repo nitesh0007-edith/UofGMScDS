@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Rankings - Visualization Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chart-container h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .rank-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .ticker {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .positive {
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #ed8936;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .error {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #742a2a;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            border-left: 5px solid #4299e1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        footer {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Top 5 Investment Rankings</h1>
+            <p style="color: #666; margin-top: 10px;">Big Data Analysis Results - Apache Spark 4.0</p>
+            <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+        </header>
+
+        <div id="loading" class="loading">
+            Loading results... ⏳
+        </div>
+
+        <div id="error-container"></div>
+
+        <div id="content" style="display: none;">
+            <!-- Key Metrics -->
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Execution Time</div>
+                    <div class="metric-value" id="exec-time">-</div>
+                    <div class="metric-label">seconds</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Best Return</div>
+                    <div class="metric-value positive" id="best-return">-</div>
+                    <div class="metric-label">5-day returns</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg Volatility</div>
+                    <div class="metric-value" id="avg-vol">-</div>
+                    <div class="metric-label">of top 5</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg P/E Ratio</div>
+                    <div class="metric-value" id="avg-pe">-</div>
+                    <div class="metric-label">of top 5</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>📈 Analysis Date:</strong> <span id="timestamp">-</span><br>
+                <strong>🎯 Criteria:</strong> Volatility ≤ 4.0 | P/E Ratio ≤ 25.0 | Sorted by Returns (descending)
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Returns Comparison -->
+                <div class="chart-container">
+                    <h2>📈 Returns Comparison</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="returnsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Volatility Comparison -->
+                <div class="chart-container">
+                    <h2>📊 Volatility Comparison</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="volatilityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- P/E Ratio Comparison -->
+                <div class="chart-container">
+                    <h2>💰 P/E Ratio Comparison</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="peRatioChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sector Distribution -->
+                <div class="chart-container">
+                    <h2>🏢 Sector Distribution</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Risk-Return Scatter Plot -->
+                <div class="chart-container full-width">
+                    <h2>⚖️ Risk vs Return Analysis</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Table -->
+            <div class="chart-container full-width">
+                <h2>📋 Detailed Rankings</h2>
+                <table id="rankings-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Company</th>
+                            <th>Ticker</th>
+                            <th>Sector</th>
+                            <th>Industry</th>
+                            <th>Returns</th>
+                            <th>Volatility</th>
+                            <th>P/E Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Big Data Assessed Exercise 2025</strong></p>
+            <p style="color: #666; margin-top: 5px; font-size: 0.9em;">
+                Apache Spark 4.0 | Java 21 | Chart.js Visualization
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        let charts = {};
+
+        async function loadData() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('content').style.display = 'none';
+                document.getElementById('error-container').innerHTML = '';
+
+                const response = await fetch('results.json?t=' + new Date().getTime());
+
+                if (!response.ok) {
+                    throw new Error('Results file not found. Please run your Spark application first!');
+                }
+
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+                displayMetrics(data);
+                displayCharts(data);
+                displayTable(data);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-container').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error Loading Results</h3>
+                        <p><strong>Message:</strong> ${error.message}</p>
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Make sure you've run your Spark application</li>
+                            <li>Check that results.json exists in the results/ directory</li>
+                            <li>Add the ResultsExporter code to your AssessedExercise.java</li>
+                            <li>Click the Refresh button above</li>
+                        </ol>
+                    </div>
+                `;
+            }
+        }
+
+        function displayMetrics(data) {
+            const investments = data.topInvestments;
+
+            document.getElementById('exec-time').textContent = data.executionTime;
+            document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleString();
+
+            if (investments.length > 0) {
+                document.getElementById('best-return').textContent =
+                    (investments[0].returns * 100).toFixed(2) + '%';
+
+                const avgVol = investments.reduce((sum, inv) => sum + inv.volatility, 0) / investments.length;
+                document.getElementById('avg-vol').textContent = avgVol.toFixed(3);
+
+                const avgPE = investments.reduce((sum, inv) => sum + inv.peRatio, 0) / investments.length;
+                document.getElementById('avg-pe').textContent = avgPE.toFixed(2);
+            }
+        }
+
+        function displayCharts(data) {
+            const investments = data.topInvestments;
+
+            // Destroy existing charts safely
+            Object.keys(charts).forEach(key => {
+                if (charts[key]) {
+                    try {
+                        charts[key].destroy();
+                    } catch (e) {
+                        console.warn('Error destroying chart:', key, e);
+                    }
+                }
+            });
+            charts = {};
+
+            // Returns Chart
+            charts.returns = new Chart(document.getElementById('returnsChart'), {
+                type: 'bar',
+                data: {
+                    labels: investments.map(inv => inv.ticker),
+                    datasets: [{
+                        label: '5-Day Returns (%)',
+                        data: investments.map(inv => inv.returns * 100),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Higher returns = Better performance'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Returns (%)' }
+                        }
+                    }
+                }
+            });
+
+            // Volatility Chart
+            charts.volatility = new Chart(document.getElementById('volatilityChart'), {
+                type: 'bar',
+                data: {
+                    labels: investments.map(inv => inv.ticker),
+                    datasets: [{
+                        label: 'Volatility',
+                        data: investments.map(inv => inv.volatility),
+                        backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Lower volatility = Lower risk'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Volatility' }
+                        }
+                    }
+                }
+            });
+
+            // P/E Ratio Chart
+            charts.peRatio = new Chart(document.getElementById('peRatioChart'), {
+                type: 'bar',
+                data: {
+                    labels: investments.map(inv => inv.ticker),
+                    datasets: [{
+                        label: 'P/E Ratio',
+                        data: investments.map(inv => inv.peRatio),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Lower P/E = Better value'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'P/E Ratio' }
+                        }
+                    }
+                }
+            });
+
+            // Sector Distribution
+            const sectors = {};
+            investments.forEach(inv => {
+                sectors[inv.sector] = (sectors[inv.sector] || 0) + 1;
+            });
+
+            charts.sector = new Chart(document.getElementById('sectorChart'), {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(sectors),
+                    datasets: [{
+                        data: Object.values(sectors),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top 5 by sector'
+                        }
+                    }
+                }
+            });
+
+            // Risk-Return Scatter
+            charts.scatter = new Chart(document.getElementById('scatterChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: investments.map((inv, idx) => ({
+                        label: inv.ticker + ' - ' + inv.name,
+                        data: [{ x: inv.volatility, y: inv.returns * 100 }],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ][idx],
+                        pointRadius: 10,
+                        pointHoverRadius: 15
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Ideal: High Returns (top) + Low Volatility (left)'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Volatility (Risk) →' },
+                            beginAtZero: true
+                        },
+                        y: {
+                            title: { display: true, text: 'Returns (%) →' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            data.topInvestments.forEach(inv => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="rank-badge ${inv.rank === 1 ? 'rank-1' : ''}">${inv.rank}</span></td>
+                    <td><strong>${inv.name}</strong></td>
+                    <td><span class="ticker">${inv.ticker}</span></td>
+                    <td>${inv.sector}</td>
+                    <td>${inv.industry}</td>
+                    <td class="positive">${(inv.returns * 100).toFixed(2)}%</td>
+                    <td>${inv.volatility.toFixed(4)}</td>
+                    <td>${inv.peRatio.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Load data on page load
+        window.addEventListener('load', loadData);
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>

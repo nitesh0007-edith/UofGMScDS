@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: Backpropagation | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 7</span></div>
+            <h1>Back<span class="gradient-text">propagation</span></h1>
+            <p class="chapter-description">The algorithm that makes deep learning possible—efficiently computing gradients through complex networks using the chain rule.</p>
+            <div class="chapter-nav">
+                <a href="chapter6.html" class="nav-btn">← Previous</a>
+                <a href="chapter8.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="the-problem" class="content-section">
+                <h2>The Problem</h2>
+                <p>To train a network, we need gradients of the loss with respect to every parameter. With millions of parameters and complex compositions, how do we compute this efficiently?</p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Backpropagation</div>
+                    <p><strong>Backpropagation:</strong> An algorithm that efficiently computes gradients by propagating error signals backward through the network, reusing intermediate computations via the chain rule.</p>
+                </div>
+            </section>
+            
+            <section id="chain-rule" class="content-section">
+                <h2>The Chain Rule</h2>
+                <p>The mathematical foundation of backprop. For composed functions f(g(x)):</p>
+                
+                <div class="math-block"><div class="equation">∂f/∂x = (∂f/∂g) · (∂g/∂x)</div></div>
+                
+                <p>For a chain of functions f₁ → f₂ → ... → fₙ → L:</p>
+                
+                <div class="math-block"><div class="equation">∂L/∂f₁ = (∂L/∂fₙ) · (∂fₙ/∂fₙ₋₁) · ... · (∂f₂/∂f₁)</div></div>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Simple Example</div>
+                    <p>
+                        Let L = (wx + b)²<br><br>
+                        Forward: z = wx + b, L = z²<br>
+                        Backward: ∂L/∂z = 2z, ∂z/∂w = x<br>
+                        Result: ∂L/∂w = 2z · x = 2(wx + b) · x
+                    </p>
+                </div>
+            </section>
+            
+            <section id="computational-graphs" class="content-section">
+                <h2>Computational Graphs</h2>
+                <p>Neural networks are represented as directed acyclic graphs (DAGs):</p>
+                <ul>
+                    <li><strong>Nodes:</strong> Operations (add, multiply, activation)</li>
+                    <li><strong>Edges:</strong> Data flow between operations</li>
+                </ul>
+                
+                <h3>Forward Pass</h3>
+                <p>Compute outputs by traversing the graph from inputs to loss.</p>
+                
+                <h3>Backward Pass</h3>
+                <p>Compute gradients by traversing from loss back to parameters, applying chain rule at each node.</p>
+            </section>
+            
+            <section id="algorithm" class="content-section">
+                <h2>The Backprop Algorithm</h2>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Step by Step</div>
+                    <p>
+                        <strong>1. Forward pass:</strong> Compute and cache all intermediate values<br>
+                        <strong>2. Compute loss:</strong> Evaluate L at the output<br>
+                        <strong>3. Initialize:</strong> ∂L/∂L = 1<br>
+                        <strong>4. Backward pass:</strong> For each layer from output to input:<br>
+                        &nbsp;&nbsp;&nbsp;• Compute local gradients using cached values<br>
+                        &nbsp;&nbsp;&nbsp;• Multiply by incoming gradient (chain rule)<br>
+                        &nbsp;&nbsp;&nbsp;• Pass gradient to previous layer<br>
+                        <strong>5. Update:</strong> Use computed ∂L/∂φ to update parameters
+                    </p>
+                </div>
+            </section>
+            
+            <section id="layer-gradients" class="content-section">
+                <h2>Gradients for Common Layers</h2>
+                
+                <h3>Linear Layer: y = Wx + b</h3>
+                <div class="math-block"><div class="equation">∂L/∂W = (∂L/∂y) · xᵀ<br>∂L/∂b = ∂L/∂y<br>∂L/∂x = Wᵀ · (∂L/∂y)</div></div>
+                
+                <h3>ReLU: y = max(0, x)</h3>
+                <div class="math-block"><div class="equation">∂L/∂x = (∂L/∂y) · 𝟙(x > 0)</div></div>
+                <p>Gradient passes through where input was positive, blocked where negative.</p>
+                
+                <h3>Softmax + Cross-Entropy</h3>
+                <p>Combined gradient has elegant form:</p>
+                <div class="math-block"><div class="equation">∂L/∂z = ŷ - y</div></div>
+                <p>Just the difference between prediction and target!</p>
+            </section>
+            
+            <section id="automatic-differentiation" class="content-section">
+                <h2>Automatic Differentiation</h2>
+                <p>Modern frameworks (PyTorch, TensorFlow) implement backprop automatically:</p>
+                
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">Python (PyTorch)</span></div>
+                    <pre><code># Define computation
+x = torch.tensor([1.0], requires_grad=True)
+y = x ** 2 + 2 * x + 1
+    
+# Compute gradients automatically
+y.backward()
+print(x.grad)  # dy/dx = 2x + 2 = 4</code></pre>
+                </div>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 You Don't Need to Implement Backprop!</div>
+                    <p>Frameworks handle gradient computation automatically. Understanding the concept helps with debugging and designing custom layers, but you won't write backprop from scratch.</p>
+                </div>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>Backpropagation efficiently computes gradients using the chain rule</li>
+                        <li>Forward pass: compute outputs and cache intermediates</li>
+                        <li>Backward pass: propagate gradients from loss to parameters</li>
+                        <li>Each layer has local gradient formulas</li>
+                        <li>Modern frameworks do this automatically (autograd)</li>
+                        <li>Understanding helps with debugging and custom implementations</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter6.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Training Models</span></a>
+                <a href="chapter8.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Measuring Performance →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#the-problem">The Problem</a></li>
+                    <li><a href="#chain-rule">Chain Rule</a></li>
+                    <li><a href="#computational-graphs">Computational Graphs</a></li>
+                    <li><a href="#algorithm">The Algorithm</a></li>
+                    <li><a href="#layer-gradients">Layer Gradients</a></li>
+                    <li><a href="#automatic-differentiation">Automatic Diff</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

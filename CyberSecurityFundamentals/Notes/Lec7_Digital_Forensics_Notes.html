@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSF Lec 7: Digital Forensics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #1f2937;
+  --border: #30363d; --text: #e6edf3; --text2: #8b949e;
+  --blue: #58a6ff; --green: #3fb950; --red: #f85149;
+  --orange: #ff7b72; --purple: #bc8cff; --yellow: #e3b341;
+  --cyan: #79c0ff; --pink: #f778ba;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; }
+
+nav { position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); padding: 0 1rem; display: flex; align-items: center; gap: .5rem; overflow-x: auto; }
+nav a { color: var(--text2); text-decoration: none; padding: .75rem .6rem; font-size: .82rem; white-space: nowrap;
+        border-bottom: 2px solid transparent; transition: all .2s; }
+nav a:hover, nav a.active { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-title { color: var(--purple); font-weight: 700; font-size: .9rem; padding: .75rem .6rem; white-space: nowrap; }
+
+.hero { text-align: center; padding: 4rem 2rem 3rem; background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+        position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(88,166,255,.08) 0%, transparent 60%),
+              radial-gradient(circle at 70% 50%, rgba(188,140,255,.08) 0%, transparent 60%); }
+.hero h1 { font-size: clamp(1.8rem,4vw,3rem); font-weight: 800; position: relative;
+  background: linear-gradient(135deg, var(--blue), var(--purple), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--text2); margin-top: .8rem; font-size: 1rem; position: relative; }
+.tags { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1.2rem; position: relative; }
+.tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: .3rem .9rem; font-size: .78rem; color: var(--cyan); }
+
+section { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; }
+section + section { border-top: 1px solid var(--border); }
+h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .6rem; }
+h2 .icon { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 .8rem; color: var(--cyan); }
+h4 { font-size: 1rem; font-weight: 600; margin: 1rem 0 .5rem; color: var(--yellow); }
+p { color: var(--text2); margin-bottom: .8rem; }
+ul, ol { color: var(--text2); padding-left: 1.4rem; margin-bottom: .8rem; }
+li { margin-bottom: .3rem; }
+strong { color: var(--text); }
+
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
+.card-blue  { border-left: 3px solid var(--blue); }
+.card-green { border-left: 3px solid var(--green); }
+.card-red   { border-left: 3px solid var(--red); }
+.card-purple{ border-left: 3px solid var(--purple); }
+.card-yellow{ border-left: 3px solid var(--yellow); }
+.card-orange{ border-left: 3px solid var(--orange); }
+.card-cyan  { border-left: 3px solid var(--cyan); }
+.card-pink  { border-left: 3px solid var(--pink); }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+
+.math-block { background: #0a0e14; border: 1px solid var(--border); border-radius: 10px;
+              padding: 1.2rem 1.5rem; margin: 1rem 0; overflow-x: auto; font-size: 1.05rem; }
+
+pre { background: #0a0e14; border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .88rem; line-height: 1.6; margin: .8rem 0; }
+code { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .88rem; background: rgba(255,255,255,.06);
+       padding: .1rem .35rem; border-radius: 4px; color: var(--cyan); }
+.kw { color: var(--orange); } .fn { color: var(--blue); } .str { color: var(--green); }
+.num { color: var(--purple); } .cm { color: var(--text2); font-style: italic; }
+.var { color: var(--yellow); }
+
+.steps { counter-reset: step; }
+.step { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
+.step::before { counter-increment: step; content: counter(step); background: var(--blue);
+                color: #000; font-weight: 800; border-radius: 50%; width: 2rem; height: 2rem;
+                display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: .9rem; }
+.step-body { flex: 1; }
+
+.reveal-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+              padding: .6rem 1.2rem; color: var(--blue); cursor: pointer; font-size: .9rem;
+              display: inline-flex; align-items: center; gap: .5rem; transition: all .2s; margin: .5rem 0; width: 100%; }
+.reveal-btn:hover { background: rgba(88,166,255,.1); border-color: var(--blue); }
+.reveal-content { display: none; margin-top: .8rem; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+.reveal-content.open { display: block; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; }
+th { background: var(--bg3); color: var(--text); padding: .7rem 1rem; text-align: left; border: 1px solid var(--border); }
+td { padding: .6rem 1rem; border: 1px solid var(--border); color: var(--text2); }
+tr:hover td { background: rgba(255,255,255,.03); }
+
+.badge { display: inline-block; padding: .2rem .6rem; border-radius: 12px; font-size: .75rem; font-weight: 600; }
+.badge-blue { background: rgba(88,166,255,.15); color: var(--blue); }
+.badge-green { background: rgba(63,185,80,.15); color: var(--green); }
+.badge-red { background: rgba(248,81,73,.15); color: var(--red); }
+.badge-yellow { background: rgba(227,179,65,.15); color: var(--yellow); }
+.badge-purple { background: rgba(188,140,255,.15); color: var(--purple); }
+.badge-orange { background: rgba(255,123,114,.15); color: var(--orange); }
+
+/* Quiz */
+.quiz-q { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
+.quiz-q p { color: var(--text); font-weight: 600; margin-bottom: .8rem; }
+.quiz-opt { display: block; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+            padding: .6rem 1rem; margin: .3rem 0; cursor: pointer; color: var(--text2); transition: all .2s; font-size: .9rem; }
+.quiz-opt:hover { border-color: var(--blue); color: var(--text); }
+.quiz-opt.correct { background: rgba(63,185,80,.2); border-color: var(--green); color: var(--green); }
+.quiz-opt.wrong   { background: rgba(248,81,73,.2);  border-color: var(--red);   color: var(--red); }
+.quiz-result { margin-top: .8rem; padding: .8rem; border-radius: 8px; font-size: .9rem; display: none; }
+.quiz-result.show { display: block; }
+.quiz-result.ok { background: rgba(63,185,80,.1); border: 1px solid var(--green); color: var(--green); }
+.quiz-result.bad { background: rgba(248,81,73,.1); border: 1px solid var(--red); color: var(--red); }
+#quiz-score { text-align: center; font-size: 1.3rem; font-weight: 700; color: var(--yellow); margin-top: 1rem; display: none; }
+
+/* Forensic pipeline animation */
+.pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 2rem 0; justify-content: center; }
+.pipe-step { background: var(--bg2); border: 2px solid var(--border); border-radius: 12px; padding: 1rem 1.4rem;
+             text-align: center; min-width: 120px; cursor: pointer; transition: all .3s; position: relative; }
+.pipe-step:hover { border-color: var(--blue); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(88,166,255,.2); }
+.pipe-step .pipe-icon { font-size: 2rem; margin-bottom: .4rem; }
+.pipe-step .pipe-label { font-size: .85rem; font-weight: 600; color: var(--text); }
+.pipe-step .pipe-num { position: absolute; top: -10px; left: -10px; background: var(--blue); color: #000;
+                       font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: flex;
+                       align-items: center; justify-content: center; font-size: .75rem; }
+.pipe-arrow { color: var(--text2); font-size: 1.5rem; padding: 0 .3rem; }
+
+/* Hash animation */
+.hash-demo { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+.hash-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+              padding: .7rem 1rem; color: var(--text); font-size: .95rem; font-family: monospace; }
+.hash-output { margin-top: .8rem; padding: .8rem 1rem; background: #0a0e14; border-radius: 8px;
+               font-family: monospace; font-size: .85rem; color: var(--green); word-break: break-all; }
+.hash-btn { background: var(--blue); color: #000; border: none; border-radius: 8px; padding: .5rem 1.2rem;
+            font-weight: 700; cursor: pointer; margin-top: .6rem; font-size: .9rem; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.timeline::before { content:''; position: absolute; left: .6rem; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 1.5rem; }
+.tl-item::before { content:''; position: absolute; left: -1.55rem; top: .4rem; width: 12px; height: 12px;
+                   border-radius: 50%; background: var(--blue); border: 2px solid var(--bg); }
+.tl-item.green::before { background: var(--green); }
+.tl-item.red::before { background: var(--red); }
+.tl-item.yellow::before { background: var(--yellow); }
+.tl-item.purple::before { background: var(--purple); }
+
+/* Tooltip */
+.tip { position: relative; cursor: help; border-bottom: 1px dashed var(--text2); }
+.tip::after { content: attr(data-tip); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+              background: #111; color: var(--text); padding: .5rem .8rem; border-radius: 6px; font-size: .8rem;
+              white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; border: 1px solid var(--border); z-index: 10; }
+.tip:hover::after { opacity: 1; }
+
+.alert { border-radius: 10px; padding: 1rem 1.2rem; margin: .8rem 0; display: flex; gap: .7rem; align-items: flex-start; }
+.alert-blue  { background: rgba(88,166,255,.08);  border: 1px solid rgba(88,166,255,.3);  }
+.alert-green { background: rgba(63,185,80,.08);   border: 1px solid rgba(63,185,80,.3);   }
+.alert-red   { background: rgba(248,81,73,.08);   border: 1px solid rgba(248,81,73,.3);   }
+.alert-yellow{ background: rgba(227,179,65,.08);  border: 1px solid rgba(227,179,65,.3);  }
+.alert-icon  { font-size: 1.2rem; flex-shrink: 0; }
+.alert p { margin: 0; }
+
+/* Progress bar */
+.progress-wrap { background: var(--bg3); border-radius: 99px; height: 8px; margin: .4rem 0; }
+.progress-bar  { height: 8px; border-radius: 99px; transition: width 1s ease; }
+
+/* Comparison table */
+.cmp-header { background: var(--bg3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-title">CSF Lec 7</span>
+  <a href="#overview">Overview</a>
+  <a href="#types">Types</a>
+  <a href="#process">Process</a>
+  <a href="#seizure">Seizure</a>
+  <a href="#acquisition">Acquisition</a>
+  <a href="#analysis">Analysis</a>
+  <a href="#report">Report</a>
+  <a href="#hashing">Hashing</a>
+  <a href="#tools">Tools</a>
+  <a href="#legal">Legal</a>
+  <a href="#exam">Exam Q&A</a>
+  <a href="#extra">Extra Q&A</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Digital Forensics</h1>
+  <p>COMPSCI5063 — Cyber Security Fundamentals · Lecture 7</p>
+  <div class="tags">
+    <span class="tag">Seizure</span>
+    <span class="tag">Acquisition</span>
+    <span class="tag">Analysis</span>
+    <span class="tag">Chain of Custody</span>
+    <span class="tag">MD5 Hashing</span>
+    <span class="tag">Autopsy</span>
+    <span class="tag">FTK Imager</span>
+    <span class="tag">Registry</span>
+    <span class="tag">Timeline</span>
+    <span class="tag">Computer Misuse Act</span>
+    <span class="tag">Trojan Defence</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ OVERVIEW ═══════════════════════════ -->
+<section id="overview">
+  <h2><span class="icon">🔍</span> What is Digital Forensics?</h2>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">💡</span>
+    <p><strong>Definition:</strong> Digital Forensics is a digital investigation that focuses on a digital device (computer, router, switch, cell-phone, SIM-card) involved in an incident or crime, using an adaptation of the scientific method — establish hypotheses, then test them against evidence.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>Devices Investigated</h4>
+      <ul>
+        <li>Computers &amp; laptops</li>
+        <li>Routers &amp; switches</li>
+        <li>Cell-phones &amp; SIM cards</li>
+        <li>USB drives &amp; external storage</li>
+        <li>Cloud accounts</li>
+      </ul>
+    </div>
+    <div class="card card-orange">
+      <h4>Crimes Involved</h4>
+      <ul>
+        <li>Computer intrusion / hacking</li>
+        <li>Internet fraud &amp; scams</li>
+        <li>Child exploitation</li>
+        <li>Bomb threats via cell-phone</li>
+        <li>Insider threats</li>
+        <li>Financial fraud</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Investigation Goals</h3>
+  <div class="grid3">
+    <div class="card card-green">
+      <h4>🛡️ Prevent Further Intrusions</h4>
+      <p>Reconstruct the intruder's <em>modus operandi</em> to predict and block future attacks.</p>
+    </div>
+    <div class="card card-yellow">
+      <h4>📋 Assess Damage</h4>
+      <p>Certify whether the system is safe for continued use after an incident.</p>
+    </div>
+    <div class="card card-purple">
+      <h4>⚖️ Reconstruct Incident</h4>
+      <p>Build a factual record for criminal or internal disciplinary proceedings.</p>
+    </div>
+  </div>
+
+  <h3>Evidence — Two Notions</h3>
+  <div class="grid2">
+    <div class="card card-cyan">
+      <h4>Procedural Evidence</h4>
+      <p>Anything on which our findings are based — what the investigator observes and records.</p>
+    </div>
+    <div class="card card-red">
+      <h4>Legal Evidence</h4>
+      <p>Defined by the "rules of evidence" — differs by legislation. Hear-say is procedural evidence but often excluded as legal evidence.</p>
+    </div>
+  </div>
+
+  <h3>Who Needs to Know Digital Forensics?</h3>
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>Legal Professionals</h4>
+      <ul>
+        <li>Judges, prosecutors, attorneys</li>
+        <li>Law enforcement officers</li>
+        <li>Expert witnesses</li>
+      </ul>
+    </div>
+    <div class="card card-green">
+      <h4>IT/Security Professionals</h4>
+      <ul>
+        <li>Systems &amp; network administrators</li>
+        <li>Security officers</li>
+        <li>Managers writing procedures</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TYPES ═══════════════════════════ -->
+<section id="types">
+  <h2><span class="icon">🗂️</span> Types of Digital Forensics</h2>
+
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>💻 Computer Forensics</h4>
+      <p>Acquiring a snapshot of a computer's internal state — cloning the hard drive and/or RAM — then analysing the copy. Most common branch.</p>
+      <p><strong>Key action:</strong> Bit-by-bit disk image</p>
+    </div>
+    <div class="card card-cyan">
+      <h4>🌐 Network Forensics</h4>
+      <p>Capturing and analysing network traffic. Helps with intrusion detection and reconstructing communication between hosts.</p>
+      <p><strong>Key action:</strong> Packet capture (pcap)</p>
+    </div>
+    <div class="card card-green">
+      <h4>📱 Mobile Forensics</h4>
+      <p>Recovering data from mobile devices — call logs, messages, app data, GPS coordinates, even deleted content.</p>
+      <p><strong>Key action:</strong> Logical/physical extraction</p>
+    </div>
+    <div class="card card-yellow">
+      <h4>📊 Forensic Data Analysis (FDA)</h4>
+      <p>Structured data analysis focused on financial crimes — e-mails, databases, spreadsheets to detect fraud.</p>
+      <p><strong>Key action:</strong> Transaction analysis</p>
+    </div>
+  </div>
+
+  <div class="alert alert-yellow">
+    <span class="alert-icon">⚠️</span>
+    <p>Most of the time these practices are used in digital crime investigations with the goal of leading to <strong>successful prosecution</strong>. Evidence must be gathered correctly or it may be inadmissible in court.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PROCESS ═══════════════════════════ -->
+<section id="process">
+  <h2><span class="icon">⚙️</span> The 4-Step Forensic Process</h2>
+
+  <p>Computer forensics follows a strict, repeatable process. Each step must be documented carefully to maintain the <strong>chain of custody</strong>.</p>
+
+  <div class="pipeline">
+    <div class="pipe-step" onclick="showPipeInfo(0)">
+      <div class="pipe-num">1</div>
+      <div class="pipe-icon">🚔</div>
+      <div class="pipe-label">Seizure</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" onclick="showPipeInfo(1)">
+      <div class="pipe-num">2</div>
+      <div class="pipe-icon">💾</div>
+      <div class="pipe-label">Acquisition</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" onclick="showPipeInfo(2)">
+      <div class="pipe-num">3</div>
+      <div class="pipe-icon">🔬</div>
+      <div class="pipe-label">Analysis</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" onclick="showPipeInfo(3)">
+      <div class="pipe-num">4</div>
+      <div class="pipe-icon">📄</div>
+      <div class="pipe-label">Report</div>
+    </div>
+  </div>
+
+  <div id="pipe-info" style="background:var(--bg2);border:1px solid var(--blue);border-radius:12px;padding:1.2rem;margin-top:1rem;display:none;">
+    <p id="pipe-info-text"></p>
+  </div>
+
+  <div class="alert alert-red">
+    <span class="alert-icon">🔑</span>
+    <p><strong>Golden Rule:</strong> Always work on a <em>copy</em> — never the original evidence. Any modification to original evidence can render it inadmissible.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SEIZURE ═══════════════════════════ -->
+<section id="seizure">
+  <h2><span class="icon">🚔</span> Step 1: Seizure</h2>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">🎯</span>
+    <p><strong>Goal:</strong> Prevent digital devices from being used and data from being changed before a forensic copy is made.</p>
+  </div>
+
+  <h3>Arriving at the Crime Scene</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-body">
+        <strong>Photograph everything</strong> — Take pictures and screenshots of the scene, all devices, cables, and screen state before touching anything.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Inspect and label all hardware</strong> — Every device must be catalogued in a formal register: serial numbers, make, model, condition.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Bag all equipment in anti-static bags</strong> — Protects against electrostatic discharge and tampering. Be alert for hidden devices (e.g., USB hidden in a plug socket — "tower bomb").
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Check BIOS time (F10 or similar)</strong> — Incorrect BIOS time can misdirect the investigation timeline. Record it carefully.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Record hard drive details</strong> — Model, serial number, capacity, interface type.
+      </div>
+    </div>
+  </div>
+
+  <h3>Powered-OFF vs Powered-ON Decision</h3>
+  <div class="grid2">
+    <div class="card card-green">
+      <h4>Desktop is POWERED OFF</h4>
+      <p>Remove the hard drive and place it in a safe, anti-static box. This preserves the disk state exactly.</p>
+      <p><span class="badge badge-green">Low risk</span></p>
+    </div>
+    <div class="card card-red">
+      <h4>Desktop is POWERED ON</h4>
+      <p>Decision: proceed with <strong>live forensics</strong> or power off? Live forensics captures volatile memory (RAM) but risks log-writing. Consider:</p>
+      <ul>
+        <li>RAM contains running processes, encryption keys, open network sockets</li>
+        <li>Powering off destroys volatile data</li>
+        <li>Pulling the plug abruptly prevents graceful shutdown writes</li>
+      </ul>
+      <p><span class="badge badge-red">High complexity</span></p>
+    </div>
+  </div>
+
+  <h3>Registry — A Gold Mine of Evidence</h3>
+  <p>The Windows registry contains a wide variety of information about users, software, hardware, and network configuration.</p>
+
+  <pre><span class="cm"># Auto-start programs (malware persistence)</span>
+<span class="str">HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</span>
+  Value: Skype → <span class="str">"C:\Program Files\Skype\Skype.exe" /minimized</span>
+
+<span class="cm"># User-specific auto-start (suspicious entry)</span>
+<span class="str">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Run</span>
+  Value: a → <span class="str">"notepad.exe"</span>   <span class="cm">&lt;-- suspicious: why would notepad auto-run?</span>
+
+<span class="cm"># DNS server (network configuration)</span>
+<span class="str">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters</span>
+  Value: DhcpNameServer → <span class="num">192.168.1.1 192.168.1.2</span></pre>
+
+  <div class="alert alert-yellow">
+    <span class="alert-icon">⚠️</span>
+    <p><strong>Why BIOS time matters:</strong> If BIOS is set wrongly, timestamps on all files will be incorrect — pointing the investigation in the wrong direction. Always record and reconcile BIOS time with real-world time.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ ACQUISITION ═══════════════════════════ -->
+<section id="acquisition">
+  <h2><span class="icon">💾</span> Step 2: Acquisition</h2>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">🎯</span>
+    <p><strong>Goal:</strong> Create a forensically-sound, bit-for-bit copy of the suspect drive — then work only from that copy.</p>
+  </div>
+
+  <h3>The Acquisition Process</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-body">
+        <strong>Connect Write Blocker</strong> — Hardware device placed between the suspect drive and the forensic workstation. Ensures <em>nothing</em> can be written back to the evidence drive.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Create forensic image</strong> — Use FTK Imager or <code>dd</code> to create a bit-by-bit copy. Common formats: <code>.dd</code> (raw) or <code>.E01</code> (EnCase, includes metadata).
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Generate and store hash value</strong> — Compute MD5 / SHA-256 of both the original and the copy. Store securely. This proves the copy is identical and has not been tampered with.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-body">
+        <strong>Make a working copy</strong> — Work on a second copy of the image. If anything goes wrong you don't need to re-image the evidence drive.
+      </div>
+    </div>
+  </div>
+
+  <h3>Forensic Image Formats</h3>
+  <table>
+    <tr class="cmp-header"><th>Format</th><th>Extension</th><th>Features</th><th>Use Case</th></tr>
+    <tr><td>Raw</td><td><code>.dd</code></td><td>Bit-for-bit copy, no metadata</td><td>Maximum compatibility</td></tr>
+    <tr><td>EnCase</td><td><code>.E01</code></td><td>Includes metadata, compression, hash</td><td>Law enforcement standard</td></tr>
+    <tr><td>AFF</td><td><code>.aff</code></td><td>Open format, extensible</td><td>Academic/research</td></tr>
+  </table>
+
+  <h3>Creating a Forensic Image with <code>dd</code></h3>
+  <pre><span class="cm"># Basic dd image (raw format)</span>
+<span class="fn">dd</span> <span class="var">if</span>=/dev/sda <span class="var">of</span>=/mnt/evidence/suspect.dd <span class="var">bs</span>=4096 <span class="var">conv</span>=noerror,sync
+
+<span class="cm"># dc3dd — forensic version with progress, hashing</span>
+<span class="fn">dc3dd</span> <span class="var">if</span>=/dev/sda <span class="var">of</span>=/mnt/evidence/suspect.dd <span class="var">hash</span>=md5 <span class="var">log</span>=/mnt/evidence/hash.log
+
+<span class="cm"># Verify integrity after copy</span>
+<span class="fn">md5sum</span> suspect.dd
+<span class="cm"># Output: 3d9f5a... suspect.dd  (must match original hash)</span></pre>
+
+  <div class="alert alert-red">
+    <span class="alert-icon">🔒</span>
+    <p><strong>Write Blockers are critical.</strong> Without a write blocker, mounting a drive can automatically update file access times (atime), modify the MBR, or trigger OS auto-run — all of which contaminate evidence.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ HASHING ═══════════════════════════ -->
+<section id="hashing">
+  <h2><span class="icon">#️⃣</span> Hashing in Digital Forensics</h2>
+
+  <p>Hash functions are the backbone of evidence integrity verification. They provide a unique fingerprint of any data.</p>
+
+  <h3>Key Properties of Cryptographic Hash Functions</h3>
+  <div class="grid3">
+    <div class="card card-blue">
+      <h4>Deterministic</h4>
+      <p>Same input → always same output. Any bit change completely changes the hash.</p>
+    </div>
+    <div class="card card-green">
+      <h4>One-Way</h4>
+      <p>Cannot reverse the hash to recover the original data (pre-image resistance).</p>
+    </div>
+    <div class="card card-purple">
+      <h4>Collision Resistant</h4>
+      <p>Computationally infeasible to find two different inputs with the same hash.</p>
+    </div>
+  </div>
+
+  <h3>Hash Function Mathematics</h3>
+  <div class="math-block">
+    \[ H: \{0,1\}^* \rightarrow \{0,1\}^n \]
+    <br>
+    \[ \text{If } D_1 \neq D_2 \text{, then } H(D_1) \neq H(D_2) \text{ (with overwhelming probability)} \]
+    <br>
+    \[ \text{Change 1 bit of input} \Rightarrow \text{approx. 50\% of output bits flip (avalanche effect)} \]
+  </div>
+
+  <h3>Common Algorithms Used in Forensics</h3>
+  <table>
+    <tr class="cmp-header"><th>Algorithm</th><th>Output Size</th><th>Status</th><th>Forensic Use</th></tr>
+    <tr><td>MD5</td><td>128 bits (32 hex)</td><td><span class="badge badge-yellow">Weak (collisions found)</span></td><td>Still widely used for evidence integrity</td></tr>
+    <tr><td>SHA-1</td><td>160 bits (40 hex)</td><td><span class="badge badge-red">Deprecated</span></td><td>Legacy systems</td></tr>
+    <tr><td>SHA-256</td><td>256 bits (64 hex)</td><td><span class="badge badge-green">Recommended</span></td><td>Modern investigations</td></tr>
+    <tr><td>SHA-512</td><td>512 bits (128 hex)</td><td><span class="badge badge-green">Recommended</span></td><td>High-security investigations</td></tr>
+  </table>
+
+  <h3>Interactive Hash Demo</h3>
+  <div class="hash-demo">
+    <p style="color:var(--text2);margin-bottom:.8rem;font-size:.9rem;">Type text below to see how a single character change completely alters the hash (simulated SHA-256):</p>
+    <input class="hash-input" id="hashIn" type="text" value="Digital Forensics Evidence" oninput="updateHash()">
+    <div class="hash-output" id="hashOut">Loading...</div>
+    <p style="font-size:.8rem;color:var(--text2);margin-top:.5rem;">Note: This is a browser-native SHA-256 via Web Crypto API — identical to real forensic hashing.</p>
+  </div>
+
+  <h3>Whitelist Hashing</h3>
+  <p>To find suspicious files, investigators compare a hash of every file on the suspect drive against a <strong>whitelist</strong> of known-good hashes (from a clean OS install).</p>
+  <pre><span class="cm"># Create MD5 hash list of all files on suspect drive</span>
+<span class="fn">md5deep</span> -r /mnt/suspect/ &gt; suspect_hashes.txt
+
+<span class="cm"># Create whitelist from known-clean Windows XP image</span>
+<span class="fn">md5deep</span> -r /mnt/winxp_clean/ &gt; clean_hashes.txt
+
+<span class="cm"># Find files on suspect drive NOT in whitelist (potential malware/evidence)</span>
+<span class="fn">comm</span> -23 &lt;(sort suspect_hashes.txt) &lt;(sort clean_hashes.txt)</pre>
+
+  <div class="alert alert-green">
+    <span class="alert-icon">✅</span>
+    <p><strong>Chain of Custody via Hash:</strong> Hash(original) → store → Hash(copy) → confirm equal → analyse copy. At any point, re-hash the copy to prove nothing has changed.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ ANALYSIS ═══════════════════════════ -->
+<section id="analysis">
+  <h2><span class="icon">🔬</span> Step 3: Analysis</h2>
+  <p>Analysis involves searching the forensic copy for evidence using multiple complementary techniques.</p>
+
+  <h3>3a. Physical Searching with Autopsy</h3>
+  <div class="card card-blue">
+    <h4>Autopsy Workflow</h4>
+    <div class="steps">
+      <div class="step"><div class="step-body"><strong>Hash check</strong> — Verify the image hash before starting analysis.</div></div>
+      <div class="step"><div class="step-body"><strong>Create a case</strong> — Autopsy organises all findings under named cases with timestamps.</div></div>
+      <div class="step"><div class="step-body"><strong>Ingest modules</strong> — Run keyword search, file type sorting, hash lookup, EXIF extraction.</div></div>
+      <div class="step"><div class="step-body"><strong>String &amp; grep search</strong> — Search for keywords (names, URLs, email addresses) across unallocated space too.</div></div>
+      <div class="step"><div class="step-body"><strong>File carving with Foremost</strong> — Recover deleted files by their magic bytes (file signatures), not file system entries.</div></div>
+    </div>
+  </div>
+
+  <h3>File Carving — How Foremost Works</h3>
+  <p>Even deleted files leave their raw bytes on disk until overwritten. Foremost reads file <strong>magic bytes</strong> (headers and footers) to recover them.</p>
+  <table>
+    <tr class="cmp-header"><th>File Type</th><th>Magic Header (hex)</th><th>Magic Footer (hex)</th></tr>
+    <tr><td>JPEG</td><td><code>FF D8 FF</code></td><td><code>FF D9</code></td></tr>
+    <tr><td>PNG</td><td><code>89 50 4E 47</code></td><td><code>49 45 4E 44 AE 42 60 82</code></td></tr>
+    <tr><td>PDF</td><td><code>25 50 44 46</code> (%PDF)</td><td><code>%%EOF</code></td></tr>
+    <tr><td>ZIP/DOCX</td><td><code>50 4B 03 04</code></td><td><code>50 4B 05 06</code></td></tr>
+  </table>
+
+  <pre><span class="cm"># Extract all recoverable files from forensic image</span>
+<span class="fn">foremost</span> -i suspect.dd -o /output/carved/ -t jpg,pdf,doc,zip
+
+<span class="cm"># Search for keyword "password" in entire image (including unallocated)</span>
+<span class="fn">grep</span> -a -i "password" suspect.dd
+
+<span class="cm"># Extract EXIF metadata from recovered images</span>
+<span class="fn">exiftool</span> /output/carved/jpg/*.jpg | <span class="fn">grep</span> -E "Date|GPS|Camera"</pre>
+
+  <h3>3b. Registry Examination</h3>
+  <p>Tool: <strong>RegViewer</strong> — opens raw registry hive files from the forensic copy.</p>
+  <div class="grid2">
+    <div class="card card-purple">
+      <h4>Key Registry Hives</h4>
+      <ul>
+        <li><code>NTUSER.DAT</code> — Per-user settings, recent files, typed URLs</li>
+        <li><code>SYSTEM</code> — Hardware, services, USB history</li>
+        <li><code>SOFTWARE</code> — Installed applications</li>
+        <li><code>SAM</code> — User accounts and password hashes</li>
+        <li><code>SECURITY</code> — Security policies, audit settings</li>
+      </ul>
+    </div>
+    <div class="card card-cyan">
+      <h4>What Registry Reveals</h4>
+      <ul>
+        <li>All users and their last login times</li>
+        <li>All USB devices ever connected (with timestamps)</li>
+        <li>Recently opened files (RecentDocs)</li>
+        <li>Malware persistence (Run keys)</li>
+        <li>Network shares and mapped drives</li>
+        <li>Installed/uninstalled software</li>
+      </ul>
+    </div>
+  </div>
+
+  <pre><span class="cm"># Copy registry hive from forensic image (mounted)</span>
+<span class="fn">cp</span> /mnt/suspect/Windows/System32/config/SYSTEM ./
+<span class="fn">cp</span> /mnt/suspect/Windows/System32/config/SOFTWARE ./
+<span class="fn">cp</span> /mnt/suspect/Users/johndoe/NTUSER.DAT ./
+
+<span class="cm"># Load into regripper for automated analysis</span>
+<span class="fn">regripper</span> -r SYSTEM -f system &gt; system_analysis.txt
+<span class="fn">regripper</span> -r NTUSER.DAT -f ntuser &gt; user_analysis.txt</pre>
+
+  <h3>3c. Browser Analysis</h3>
+  <p>Browser history is stored in structured databases. Autopsy can automatically extract and display them.</p>
+  <div class="card card-orange">
+    <h4>What Browser Analysis Reveals</h4>
+    <ul>
+      <li>Websites visited (with timestamps)</li>
+      <li>Downloads — what was downloaded, from where, when</li>
+      <li>Search queries typed into search engines</li>
+      <li>Bookmarks and saved passwords</li>
+      <li>Web-based email access</li>
+      <li>Local files accessed via browser (e.g., <code>file:///C:/Users/johndoe/photos/</code>)</li>
+    </ul>
+  </div>
+
+  <pre><span class="cm"># Example browser history entries found in investigation:</span>
+http://downloadmozilla.org/?product=firefox&os=win&lang=en-GB
+http://windowsupdate.microsoft.com
+<span class="str">C:/Documents%20and%20Settings/johndoe/My%20Documents/My%20Pictures/tm_duck_3.jpg</span>
+<span class="str">C:/Documents%20and%20Settings/johndoe/My%20Documents/My%20Pictures/snow_geese.jpg</span>
+<span class="cm">
+# Note: Last two entries show suspect accessed LOCAL photos via browser
+# This can establish what content was viewed at what time</span></pre>
+
+  <h3>3d. EXIF Metadata (Metacam)</h3>
+  <pre><span class="cm"># Extract image metadata — reveals camera model, GPS, date</span>
+<span class="fn">metacam</span> suspect_photo.jpg
+
+<span class="cm"># Output example:</span>
+Make:          Canon
+Model:         EOS 5D Mark IV
+DateTimeOriginal: 2024:03:15 14:22:33
+GPSLatitude:   51.5074° N
+GPSLongitude:  0.1278° W</pre>
+
+  <h3>3e. Timeline Reconstruction</h3>
+  <p>Timeline is one of the most crucial parts — it establishes <strong>who did what, when</strong>.</p>
+  <div class="steps">
+    <div class="step"><div class="step-body"><strong>Create .fls file</strong> — List all files and directories with timestamps from the image.</div></div>
+    <div class="step"><div class="step-body"><strong>Generate body file</strong> — Convert .fls output to timeline format.</div></div>
+    <div class="step"><div class="step-body"><strong>Import into Zeitline or Autopsy</strong> — Visual timeline of all file system events: created, modified, accessed, changed (CMAC).</div></div>
+    <div class="step"><div class="step-body"><strong>Filter and correlate</strong> — Cross-reference with browser history, registry events, and log files.</div></div>
+  </div>
+
+  <pre><span class="cm"># Sleuthkit: create file listing with timestamps</span>
+<span class="fn">fls</span> -r -m / suspect.dd &gt; suspect.fls
+
+<span class="cm"># Create timeline</span>
+<span class="fn">mactime</span> -b suspect.fls -d &gt; timeline.csv
+
+<span class="cm"># Filter for specific date range</span>
+<span class="fn">grep</span> "2024-03-15" timeline.csv</pre>
+
+  <div class="alert alert-yellow">
+    <span class="alert-icon">🕐</span>
+    <p><strong>CMAC Timestamps:</strong> Every file has four timestamps — <strong>C</strong>reated, <strong>M</strong>odified, <strong>A</strong>ccessed, <strong>C</strong>hanged (metadata). Anti-forensic tools can modify MAC times, but Changed time is harder to fake.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ REPORT ═══════════════════════════ -->
+<section id="report">
+  <h2><span class="icon">📄</span> Step 4: Report</h2>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">⚖️</span>
+    <p><strong>Purpose:</strong> The report must be objective, comprehensive, and prepared for potential court testimony. It contains no personal opinions — only factual findings.</p>
+  </div>
+
+  <h3>Required Report Sections</h3>
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>📋 Job Description &amp; Instructions</h4>
+      <p>What was the investigator tasked with? Who commissioned the investigation? What was the legal authority?</p>
+    </div>
+    <div class="card card-green">
+      <h4>🖥️ Description of Examined Items</h4>
+      <p>Full list of all seized devices with serial numbers, hash values of images, condition on receipt.</p>
+    </div>
+    <div class="card card-yellow">
+      <h4>🔍 Analysis Methodology</h4>
+      <p>Which tools were used? Which techniques? In what order? All steps must be reproducible.</p>
+    </div>
+    <div class="card card-purple">
+      <h4>📑 Production List &amp; Findings</h4>
+      <p>All evidence found — files, emails, browser history, registry entries — with timestamps and references.</p>
+    </div>
+  </div>
+
+  <div class="alert alert-red">
+    <span class="alert-icon">🚫</span>
+    <p><strong>Avoid:</strong> Personal opinions, speculation, or unsupported conclusions. Every claim must be backed by recovered data with timestamps and provenance.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TOOLS ═══════════════════════════ -->
+<section id="tools">
+  <h2><span class="icon">🛠️</span> Forensic Tools Reference</h2>
+
+  <div class="grid2">
+    <div class="card card-blue">
+      <h4>FTK Imager</h4>
+      <p>Industry-standard forensic imaging tool. Creates <code>.E01</code> and raw images. Includes hash verification and preview.</p>
+      <p><span class="badge badge-blue">Acquisition</span></p>
+    </div>
+    <div class="card card-cyan">
+      <h4>Autopsy</h4>
+      <p>Open-source GUI forensic platform. Runs on Sleuth Kit. Handles disk images, extracts browser history, registry, email, and more.</p>
+      <p><span class="badge badge-blue">Analysis</span></p>
+    </div>
+    <div class="card card-green">
+      <h4>Foremost</h4>
+      <p>Command-line file carving tool. Recovers deleted files from raw images using file signature matching.</p>
+      <p><span class="badge badge-blue">Analysis</span></p>
+    </div>
+    <div class="card card-purple">
+      <h4>md5deep / hashdeep</h4>
+      <p>Recursive MD5/SHA hashing tool. Creates hash lists for whitelisting and integrity checking.</p>
+      <p><span class="badge badge-blue">Verification</span></p>
+    </div>
+    <div class="card card-yellow">
+      <h4>RegViewer / RegRipper</h4>
+      <p>Parse and analyse Windows registry hive files. RegRipper has plugins for common forensic artefacts.</p>
+      <p><span class="badge badge-blue">Analysis</span></p>
+    </div>
+    <div class="card card-orange">
+      <h4>Metacam / ExifTool</h4>
+      <p>Extract EXIF metadata from images and videos — timestamps, GPS, camera model, author.</p>
+      <p><span class="badge badge-blue">Analysis</span></p>
+    </div>
+    <div class="card card-pink">
+      <h4>Zeitline / Plaso</h4>
+      <p>Timeline reconstruction tools. Correlate file system events, registry changes, log entries into a unified timeline.</p>
+      <p><span class="badge badge-blue">Timeline</span></p>
+    </div>
+    <div class="card card-red">
+      <h4>Write Blockers</h4>
+      <p>Hardware devices (e.g., Tableau, WiebeTech) that prevent any write operations to evidence drives. Essential for admissibility.</p>
+      <p><span class="badge badge-red">Physical</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ LEGAL ═══════════════════════════ -->
+<section id="legal">
+  <h2><span class="icon">⚖️</span> Legal Framework</h2>
+
+  <div class="alert alert-yellow">
+    <span class="alert-icon">📚</span>
+    <p>Understanding the legal context is essential — evidence gathered outside legal authority is inadmissible. Investigators must know which legislation applies.</p>
+  </div>
+
+  <h3>Computer Misuse Act 1990 (CMA)</h3>
+  <div class="card card-red">
+    <p>The <strong>main UK legislation</strong> covering offences against computer systems. Deliberately does not define "computer" to allow for technological development.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item red">
+      <strong>Section 1 — Unauthorised Access</strong>
+      <p>Accessing a computer without right. Must have <em>knowledge</em> that access is unauthorised (recklessness not sufficient). Includes "hacking".</p>
+    </div>
+    <div class="tl-item yellow">
+      <strong>Section 2 — Unauthorised Access with Intent</strong>
+      <p>Section 1 offence committed as a precursor to another crime (e.g., accessing a bank account to commit fraud).</p>
+    </div>
+    <div class="tl-item orange">
+      <div style="color:var(--orange);font-weight:600;">Section 3 — Unauthorised Acts (Impair Systems)</div>
+      <p>Recklessly impairing computer operation — covers <strong>DDoS attacks</strong>, ransomware, data destruction.</p>
+    </div>
+    <div class="tl-item purple">
+      <div style="color:var(--purple);font-weight:600;">Section 3ZA — Serious Damage</div>
+      <p>Acts risking serious damage to human welfare, environment, economy, or <strong>national security</strong>. Targets critical infrastructure attacks.</p>
+    </div>
+    <div class="tl-item">
+      <strong>Section 3A — Making/Supplying Malware</strong>
+      <p>Creating or distributing malicious tools (malware, exploit kits) for use in CMA offences.</p>
+    </div>
+  </div>
+
+  <h3>Other Relevant Legislation</h3>
+  <div class="grid2">
+    <div class="card card-purple">
+      <h4>Regulation of Investigatory Powers Act 2000 (RIPA)</h4>
+      <p><strong>Section 1(1)(b):</strong> Offence to intentionally intercept communications on a <em>public</em> telecom system without lawful authority.</p>
+      <p><strong>Section 1(2):</strong> Offence to intercept communications on a <em>private</em> telecom system.</p>
+      <p><strong>Key distinction:</strong> RIPA → interception during transmission; CMA → unauthorised access to stored data.</p>
+    </div>
+    <div class="card card-blue">
+      <h4>Data Protection Act 1998 (DPA)</h4>
+      <p><strong>Section 55</strong> creates criminal offences for:</p>
+      <ul>
+        <li>Obtaining or disclosing personal data</li>
+        <li>Procuring disclosure of personal data</li>
+        <li>Selling or offering to sell personal data</li>
+      </ul>
+      <p>Often charged alongside CMA offences — e.g., Trojans stealing personal data.</p>
+    </div>
+    <div class="card card-green">
+      <h4>Copyright, Designs and Patents Act 1988 (CDPA)</h4>
+      <p>Covers digital piracy, software cracking, circumvention of copy-protection. Can apply when pirated software is found on a suspect machine.</p>
+    </div>
+    <div class="card card-yellow">
+      <h4>England vs Scotland Evidence</h4>
+      <p><strong>England:</strong> Single-source evidence can be sufficient for conviction.</p>
+      <p><strong>Scotland:</strong> Requires corroboration — evidence from <em>more than one source</em>. A significant practical difference for digital investigations.</p>
+    </div>
+  </div>
+
+  <h3>Hot Topics</h3>
+  <div class="grid2">
+    <div class="card card-orange">
+      <h4>Trojan Defence</h4>
+      <p>Defendant claims malware (Trojan, virus, bot) — not them — was responsible for the criminal act on their device.</p>
+      <p><strong>Use cases:</strong></p>
+      <ul>
+        <li>Illegal content found on device → "I didn't put it there, a Trojan did"</li>
+        <li>Cybercrime committed via defendant's IP → "My machine was compromised"</li>
+        <li>Also used to claim lack of criminal <em>intent</em> even if technically responsible</li>
+      </ul>
+      <p><strong>Forensic counter:</strong> Investigate whether the malware actually exists and had capability for the alleged act.</p>
+    </div>
+    <div class="card card-red">
+      <h4>Wireless Broadband Scenario</h4>
+      <p>What if someone used your open WiFi for illegal activities?</p>
+      <ul>
+        <li>Police trace the IP to your address</li>
+        <li>You are innocent but must prove it</li>
+        <li><strong>Investigation:</strong> Test WiFi coverage range, check router logs, interview neighbours, seek other suspects</li>
+        <li>Protects yourself: Use WPA3, strong passwords, keep router logs enabled</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ EXAM Q&A ═══════════════════════════ -->
+<section id="exam">
+  <h2><span class="icon">📝</span> Exam Questions &amp; Model Answers</h2>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">📌</span>
+    <p>Questions from <strong>May 2025 COMPSCI5063 MSc Exam</strong> — all questions with full worked solutions.</p>
+  </div>
+
+  <!-- Q1 -->
+  <div class="card card-blue" style="margin-top:1.5rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;">
+      <h4 style="margin:0;">Question 1 — Session ID Vulnerability [5 marks]</h4>
+      <span class="badge badge-blue">May 2025</span>
+    </div>
+    <p><em>A company called Travelsafe operates through a website that uses URL session IDs (unique numbers assigned to a user for a specific session after authentication). The website has a search box for holiday locations. Mention and describe a potential vulnerability and the corresponding defence mechanisms that can be employed to mitigate it.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <h4>Vulnerability: Session Hijacking via URL Session ID</h4>
+      <p><strong>What it is:</strong> When session IDs are embedded in URLs (e.g., <code>travelsafe.com/search?sessionid=abc123&q=Paris</code>), they are exposed in:</p>
+      <ul>
+        <li>Browser history (stored on the device)</li>
+        <li>Server access logs</li>
+        <li>Referrer headers (sent to third-party sites linked from the page)</li>
+        <li>Shoulder surfing / screen capture</li>
+        <li>Bookmarked URLs accidentally shared</li>
+      </ul>
+      <p>An attacker who obtains a valid session ID can replay it to impersonate the authenticated user — this is <strong>session hijacking</strong>.</p>
+      <p><strong>Additional vulnerability: XSS via Search Box</strong> — If the search box reflects user input without sanitisation, attackers can inject JavaScript to steal session cookies or IDs.</p>
+
+      <h4>Defence Mechanisms</h4>
+      <ul>
+        <li><strong>Use HTTP-only cookies</strong> instead of URL parameters to store session IDs — cookies don't appear in URLs or referrer headers</li>
+        <li><strong>Set Secure flag</strong> on cookies — transmitted only over HTTPS</li>
+        <li><strong>Set HttpOnly flag</strong> — prevents JavaScript from reading the cookie (mitigates XSS-based theft)</li>
+        <li><strong>Session timeout</strong> — invalidate sessions after inactivity (e.g., 15 minutes)</li>
+        <li><strong>Regenerate session ID</strong> after login to prevent session fixation</li>
+        <li><strong>Bind session to IP/User-Agent</strong> — detect anomalous session use</li>
+        <li><strong>Input sanitisation</strong> on search box — prevent XSS (escape &lt;, &gt;, &quot;, use Content-Security-Policy)</li>
+        <li><strong>HTTPS everywhere</strong> — prevents man-in-the-middle interception of session IDs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card card-cyan" style="margin-top:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;">
+      <h4 style="margin:0;">Question 2 — SSO Security [7 marks]</h4>
+      <span class="badge badge-blue">May 2025</span>
+    </div>
+    <p><em>Some companies including Google and Amazon use SSO for user authentication. (1) Argue advantages and disadvantages of SSO over traditional approaches. (2) Explain what SSO means for Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <h4>Part 1: Advantages vs Disadvantages</h4>
+      <table>
+        <tr class="cmp-header"><th>Advantages of SSO</th><th>Disadvantages of SSO</th></tr>
+        <tr><td>One set of credentials → reduced password fatigue → stronger passwords chosen</td><td>Single point of failure: compromise of SSO provider = access to ALL linked services</td></tr>
+        <tr><td>Fewer passwords to forget → fewer helpdesk password resets</td><td>If SSO provider goes down, users locked out of all services</td></tr>
+        <tr><td>Centralised security policy enforcement (MFA, lockout, audit)</td><td>Users less aware of individual application security — over-reliance on SSO</td></tr>
+        <tr><td>Reduced attack surface — one system to secure instead of many</td><td>Privacy concern: SSO provider can track which services are accessed and when</td></tr>
+        <tr><td>Seamless user experience — improves productivity</td><td>Vendor lock-in risk if using proprietary SSO provider</td></tr>
+      </table>
+
+      <h4>Part 2: CIA+ Security Properties</h4>
+      <div class="grid2">
+        <div class="card card-blue">
+          <h4>Confidentiality</h4>
+          <p>SSO centralises authentication → credentials transmitted fewer times, reducing interception opportunities. BUT: a single credential breach exposes all linked accounts.</p>
+        </div>
+        <div class="card card-green">
+          <h4>Integrity</h4>
+          <p>Centralised identity provider can enforce password policies and MFA, reducing likelihood of weak/compromised credentials altering data. Tokens (SAML/OAuth) are signed to prevent tampering.</p>
+        </div>
+        <div class="card card-yellow">
+          <h4>Authenticity</h4>
+          <p>SSO uses standardised protocols (SAML, OAuth 2.0, OIDC) with cryptographic assertions — strong guarantee that authenticated identity is genuine.</p>
+        </div>
+        <div class="card card-purple">
+          <h4>Accountability</h4>
+          <p>All authentication events logged centrally — clear audit trail of who logged in when and from where across all services. Easier to detect anomalous login patterns.</p>
+        </div>
+        <div class="card card-orange">
+          <h4>Non-repudiation</h4>
+          <p>Centralised log of authentication events with timestamps and IP addresses. User cannot deny logging in at a specific time — strong evidence in incident investigations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="card card-purple" style="margin-top:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;">
+      <h4 style="margin:0;">Question 3 — Block Cipher ECB/CBC [13 marks]</h4>
+      <span class="badge badge-blue">May 2025</span>
+    </div>
+    <p><em>A block cipher on 4-bit blocks (hex digits). Key K implements permutation:</em></p>
+    <table style="max-width:600px;">
+      <tr class="cmp-header"><th>m</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th></tr>
+      <tr><td><strong>E<sub>K</sub>(m)</strong></td><td>1</td><td>b</td><td>5</td><td>c</td><td>7</td><td>e</td><td>2</td><td>a</td><td>4</td><td>9</td><td>3</td><td>d</td><td>0</td><td>f</td><td>6</td><td>8</td></tr>
+    </table>
+    <p style="margin-top:.8rem;"><em>(a) Decrypt ECB: 187b06 &nbsp;|&nbsp; (b) Decrypt CBC with IV=1: 301be &nbsp;|&nbsp; (c) Explain ECB security issue [7 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Full Worked Solution</button>
+    <div class="reveal-content">
+
+      <h4>Step 0: Build the Inverse Permutation (Decryption Table)</h4>
+      <p>To decrypt, we need D<sub>K</sub> = E<sub>K</sub><sup>-1</sup> — swap rows of the encryption table:</p>
+      <table style="max-width:600px;">
+        <tr class="cmp-header"><th>c</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th></tr>
+        <tr><td><strong>D<sub>K</sub>(c)</strong></td><td>c</td><td>0</td><td>6</td><td>a</td><td>8</td><td>2</td><td>e</td><td>4</td><td>f</td><td>9</td><td>7</td><td>1</td><td>3</td><td>b</td><td>5</td><td>d</td></tr>
+      </table>
+      <p style="font-size:.85rem;color:var(--text2);">Derivation: E<sub>K</sub>(0)=1 → D<sub>K</sub>(1)=0; E<sub>K</sub>(1)=b → D<sub>K</sub>(b)=1; E<sub>K</sub>(2)=5 → D<sub>K</sub>(5)=2; E<sub>K</sub>(3)=c → D<sub>K</sub>(c)=3; E<sub>K</sub>(4)=7 → D<sub>K</sub>(7)=4; E<sub>K</sub>(5)=e → D<sub>K</sub>(e)=5; E<sub>K</sub>(6)=2 → D<sub>K</sub>(2)=6; E<sub>K</sub>(7)=a → D<sub>K</sub>(a)=7; E<sub>K</sub>(8)=4 → D<sub>K</sub>(4)=8; E<sub>K</sub>(9)=9 → D<sub>K</sub>(9)=9; E<sub>K</sub>(a)=3 → D<sub>K</sub>(3)=a; E<sub>K</sub>(b)=d → D<sub>K</sub>(d)=b; E<sub>K</sub>(c)=0 → D<sub>K</sub>(0)=c; E<sub>K</sub>(d)=f → D<sub>K</sub>(f)=d; E<sub>K</sub>(e)=6 → D<sub>K</sub>(6)=e; E<sub>K</sub>(f)=8 → D<sub>K</sub>(8)=f.</p>
+
+      <h4>Part (a): ECB Decryption of 187b06 [2 marks]</h4>
+      <div class="math-block">
+        \[ \text{Ciphertext blocks: } 1, 8, 7, b, 0, 6 \]
+        \[ D_K(1) = 0 \]
+        \[ D_K(8) = f \]
+        \[ D_K(7) = 4 \]
+        \[ D_K(b) = 1 \]
+        \[ D_K(0) = c \]
+        \[ D_K(6) = e \]
+        \[ \boxed{\text{Plaintext} = 0f41ce} \]
+      </div>
+      <p><strong>ECB decryption:</strong> Each block decrypted independently — just look up each ciphertext nibble in D<sub>K</sub>.</p>
+
+      <h4>Part (b): CBC Decryption of 301be, IV=1 [4 marks]</h4>
+      <p>CBC Decryption formula:</p>
+      <div class="math-block">
+        \[ P_i = D_K(C_i) \oplus C_{i-1} \quad \text{where } C_0 = IV \]
+      </div>
+      <p>Ciphertext blocks: <strong>C₁=3, C₂=0, C₃=1, C₄=b, C₅=e</strong> &nbsp; IV = C₀ = 1</p>
+      <div class="math-block">
+        \[ P_1 = D_K(3) \oplus C_0 = a \oplus 1 \]
+        \[ \text{In hex: } a = 1010_2, \; 1 = 0001_2 \Rightarrow a \oplus 1 = 1011_2 = b \]
+        \[ P_1 = b \]
+        <br>
+        \[ P_2 = D_K(0) \oplus C_1 = c \oplus 3 \]
+        \[ c = 1100_2, \; 3 = 0011_2 \Rightarrow c \oplus 3 = 1111_2 = f \]
+        \[ P_2 = f \]
+        <br>
+        \[ P_3 = D_K(1) \oplus C_2 = 0 \oplus 0 = 0 \]
+        \[ P_3 = 0 \]
+        <br>
+        \[ P_4 = D_K(b) \oplus C_3 = 1 \oplus 1 = 0 \]
+        \[ P_4 = 0 \]
+        <br>
+        \[ P_5 = D_K(e) \oplus C_4 = 5 \oplus b \]
+        \[ 5 = 0101_2, \; b = 1011_2 \Rightarrow 5 \oplus b = 1110_2 = e \]
+        \[ P_5 = e \]
+        <br>
+        \[ \boxed{\text{Plaintext} = bf00e} \]
+      </div>
+
+      <h4>Part (c): ECB Security Issue [7 marks]</h4>
+      <p><strong>Why ECB is insecure:</strong></p>
+      <ul>
+        <li>ECB encrypts each block <em>independently</em> with the same key — same plaintext block always produces the same ciphertext block</li>
+        <li>This means an attacker observing ciphertext can detect <strong>repeating patterns</strong> that reveal structure of the plaintext</li>
+        <li>Classic example: encrypting a bitmap image in ECB — the encrypted image still shows the outline/shape of the original (the "ECB penguin" demonstration)</li>
+        <li>Eve doesn't need the key — she only needs to notice that block X appears in position Y across different messages to infer structural information</li>
+      </ul>
+
+      <div class="alert alert-red">
+        <span class="alert-icon">🔴</span>
+        <p><strong>Eve's attack in the scenario:</strong> She notices that certain ciphertext blocks repeat across Alice's messages. Since each plaintext block always encrypts to the same ciphertext block, repeated blocks in ciphertext → repeated blocks in plaintext. She can infer "this message has the same header as that one" or build a codebook of known plaintext-ciphertext pairs.</p>
+      </div>
+
+      <p><strong>More Secure Alternative: CBC (Cipher Block Chaining)</strong></p>
+      <div class="math-block">
+        \[ C_i = E_K(P_i \oplus C_{i-1}), \quad C_0 = IV \]
+      </div>
+      <ul>
+        <li>Each plaintext block is XORed with the previous ciphertext block before encryption</li>
+        <li>Even if P₁ = P₂, C₁ ≠ C₂ (because they are XORed with different preceding blocks)</li>
+        <li>A random, unpredictable IV ensures that two encryptions of the same message with the same key produce completely different ciphertexts</li>
+        <li>Patterns in plaintext are destroyed — Eve cannot infer structural information</li>
+      </ul>
+
+      <p><strong>Even better: CTR, GCM modes</strong> — CTR turns a block cipher into a stream cipher (parallelisable); GCM adds authenticated encryption (also detects tampering).</p>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="card card-yellow" style="margin-top:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;">
+      <h4 style="margin:0;">Question 4 — RSA + Brute Force [15 marks]</h4>
+      <span class="badge badge-blue">May 2025</span>
+    </div>
+    <p><em>(a) Given public key e=17, n=1763, find the private key d. Show all steps. [10 marks]<br>(b) Brute force: 2⁸ encryptions/sec, 16-bit key. How long? What if key doubles? [5 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Full Worked Solution</button>
+    <div class="reveal-content">
+
+      <h4>Part (a): RSA Private Key Derivation</h4>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-body">
+            <strong>Factor n = 1763</strong>
+            <div class="math-block">
+              \[ 1763 = 41 \times 43 \]
+              \[ \text{Check: } 41 \times 43 = 41 \times 40 + 41 \times 3 = 1640 + 123 = 1763 \checkmark \]
+              \[ \therefore \; p = 41, \; q = 43 \]
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <strong>Compute Euler's Totient φ(n)</strong>
+            <div class="math-block">
+              \[ \phi(n) = (p-1)(q-1) = 40 \times 42 = 1680 \]
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <strong>Verify gcd(e, φ(n)) = 1</strong>
+            <div class="math-block">
+              \[ \gcd(17, 1680) = ? \]
+              \[ 1680 = 98 \times 17 + 14 \]
+              \[ 17 = 1 \times 14 + 3 \]
+              \[ 14 = 4 \times 3 + 2 \]
+              \[ 3 = 1 \times 2 + 1 \]
+              \[ 2 = 2 \times 1 \]
+              \[ \therefore \gcd(17, 1680) = 1 \checkmark \text{ (e and φ(n) are coprime)} \]
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <strong>Find d = e⁻¹ mod φ(n) using Extended Euclidean Algorithm</strong>
+            <p>We need: <strong>17d ≡ 1 (mod 1680)</strong></p>
+            <div class="math-block">
+              \[ \text{Back-substituting from Euclidean steps:} \]
+              \[ 1 = 3 - 1 \times 2 \]
+              \[ = 3 - 1 \times (14 - 4 \times 3) = 5 \times 3 - 14 \]
+              \[ = 5 \times (17 - 14) - 14 = 5 \times 17 - 6 \times 14 \]
+              \[ = 5 \times 17 - 6 \times (1680 - 98 \times 17) \]
+              \[ = 5 \times 17 - 6 \times 1680 + 588 \times 17 \]
+              \[ = 593 \times 17 - 6 \times 1680 \]
+              \[ \therefore \; 593 \times 17 \equiv 1 \pmod{1680} \]
+              \[ \boxed{d = 593} \]
+            </div>
+            <p><strong>Verification:</strong> 17 × 593 = 10081 = 6 × 1680 + 1 = 10080 + 1 ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-green">
+        <span class="alert-icon">🔑</span>
+        <p><strong>Result:</strong> Public key = (e=17, n=1763) &nbsp;|&nbsp; Private key = (d=593, n=1763)</p>
+      </div>
+
+      <h4>Part (b): Brute Force Analysis</h4>
+      <div class="math-block">
+        \[ \text{Key space} = 2^{16} = 65,536 \text{ keys} \]
+        \[ \text{Speed} = 2^8 = 256 \text{ enc/sec} \]
+        \[ \text{Worst-case time} = \frac{2^{16}}{2^8} = 2^8 = 256 \text{ seconds} \approx 4.27 \text{ minutes} \]
+        \[ \text{Average time} = \frac{256}{2} = 128 \text{ seconds} \approx 2 \text{ minutes} \]
+      </div>
+
+      <p><strong>Practical scenario:</strong></p>
+      <ul>
+        <li><span class="badge badge-green">Practical</span> — Encrypting a single short message (e.g., a bank PIN) where the adversary knows the plaintext structure. 2 minutes is feasible for a targeted offline attack.</li>
+        <li><span class="badge badge-red">Not Practical</span> — Real-time interception where the session key changes every few seconds. By the time you crack it, the session is over.</li>
+      </ul>
+
+      <p><strong>Doubling the key size to 32 bits:</strong></p>
+      <div class="math-block">
+        \[ \text{Key space} = 2^{32} = 4,294,967,296 \text{ keys} \]
+        \[ \text{Time} = \frac{2^{32}}{2^8} = 2^{24} \approx 16.7 \text{ million seconds} \approx 194 \text{ days} \]
+      </div>
+      <p>Doubling the key size squares the key space — it doesn't just double the time, it <strong>exponentially increases</strong> it. This is why modern symmetric keys are 128-256 bits.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ EXTRA Q&A ═══════════════════════════ -->
+<section id="extra">
+  <h2><span class="icon">➕</span> Extra Practice Questions</h2>
+
+  <!-- Digital Forensics focused extra questions -->
+  <div class="card card-blue" style="margin-bottom:1rem;">
+    <h4>Extra Q1 — Forensic Process Steps [8 marks]</h4>
+    <p><em>A cyber investigator arrives at a scene where a desktop PC is suspected of being used in an internet fraud case. The PC is powered on. Describe the four main steps of a computer forensic investigation, explaining what actions should be taken at each step and why order matters. [8 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <h4>Step 1: Seizure</h4>
+      <p>The investigator must first <strong>prevent further changes</strong> to the digital evidence. Since the PC is powered on, a decision must be made: if RAM is critical (e.g., encryption keys may be in memory), perform live forensics first to dump RAM before powering off. Otherwise, carefully power off (pull plug to avoid graceful shutdown writes). Actions:</p>
+      <ul>
+        <li>Photograph the scene and screen state</li>
+        <li>Label and register all hardware in a formal evidence log</li>
+        <li>Record BIOS time and hard drive details</li>
+        <li>Place in anti-static bags</li>
+        <li>Check for hidden storage devices (USB in plug sockets, etc.)</li>
+      </ul>
+      <p><strong>Why order matters:</strong> The scene must be preserved before anything is touched — any change, however small, can compromise admissibility.</p>
+
+      <h4>Step 2: Acquisition</h4>
+      <p>Create a <strong>forensically-sound bit-for-bit copy</strong> of the suspect drive using a write blocker and FTK Imager or <code>dd</code>. Generate an MD5/SHA-256 hash of both original and copy and store it securely. Create a working copy for analysis.</p>
+      <p><strong>Why order matters:</strong> All analysis must be done on the copy — if acquisition is skipped or done incorrectly, any subsequent analysis taints the evidence.</p>
+
+      <h4>Step 3: Analysis</h4>
+      <p>Analyse the forensic copy using multiple techniques:</p>
+      <ul>
+        <li><strong>Physical search</strong> — Autopsy, keyword search, file carving with Foremost</li>
+        <li><strong>Whitelist comparison</strong> — md5deep to identify non-OS files</li>
+        <li><strong>Registry examination</strong> — installed software, USB history, auto-start entries</li>
+        <li><strong>Browser analysis</strong> — visited URLs, downloads, cached pages</li>
+        <li><strong>Timeline reconstruction</strong> — Zeitline/Autopsy to correlate events chronologically</li>
+      </ul>
+      <p>For a fraud case: look for communication with fraudulent websites, downloaded tools, financial records, contact lists.</p>
+
+      <h4>Step 4: Report</h4>
+      <p>Produce a comprehensive, objective report: job description, list of examined items with hashes, methodology, and production list with findings. The report must contain no personal opinions and be suitable for use as evidence in court proceedings.</p>
+    </div>
+  </div>
+
+  <div class="card card-green" style="margin-bottom:1rem;">
+    <h4>Extra Q2 — Chain of Custody [5 marks]</h4>
+    <p><em>Explain what the "chain of custody" is in digital forensics and why it is critical for legal proceedings. What role does hashing play in maintaining chain of custody? [5 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p><strong>Chain of Custody</strong> is the chronological documentation of the seizure, custody, control, transfer, analysis, and disposition of physical or electronic evidence. It records:</p>
+      <ul>
+        <li>Who collected the evidence</li>
+        <li>When and where it was collected</li>
+        <li>Who handled it at each stage</li>
+        <li>What was done to it at each stage</li>
+        <li>Where it is stored and how it is secured</li>
+      </ul>
+      <p><strong>Why critical:</strong> Courts require that evidence not have been tampered with between collection and presentation. Any break in the chain of custody can cause evidence to be ruled inadmissible — even if the evidence itself is genuine. Defence attorneys routinely challenge chain of custody.</p>
+
+      <p><strong>Role of Hashing:</strong></p>
+      <ul>
+        <li>A hash (MD5 or SHA-256) of the original evidence drive is computed at the moment of acquisition</li>
+        <li>The same hash is recomputed from the forensic copy — if identical, the copy is proven to be an exact duplicate</li>
+        <li>Before analysis, the working copy's hash is recomputed — if identical, nothing has changed since acquisition</li>
+        <li>At court, the hash proves mathematically that the evidence presented is identical to what was seized</li>
+      </ul>
+      <div class="math-block">
+        \[ \text{Integrity check:} \; H(\text{original}) = H(\text{copy}) \Rightarrow \text{copy is unmodified} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-purple" style="margin-bottom:1rem;">
+    <h4>Extra Q3 — Trojan Defence [6 marks]</h4>
+    <p><em>Describe the "Trojan Defence" and explain how a forensic investigator would attempt to rebut it. What evidence would they look for? [6 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p><strong>Trojan Defence:</strong> The defendant claims that malware (a Trojan horse, virus, or bot) was present on their device and was responsible for the alleged criminal activity — not the defendant themselves. The defendant may:</p>
+      <ul>
+        <li>Deny knowledge of illegal content placed by the malware</li>
+        <li>Deny committing crimes performed via their compromised device</li>
+        <li>Admit technical responsibility but deny criminal intent due to malware involvement</li>
+      </ul>
+
+      <p><strong>How a forensic investigator rebuts the Trojan Defence:</strong></p>
+      <ul>
+        <li><strong>Prove malware doesn't exist:</strong> Analyse the forensic image for any malware. If none is found, the defence claim is unsupported.</li>
+        <li><strong>Prove malware lacked capability:</strong> Even if malware exists, demonstrate it could not have performed the specific act (e.g., it's a keylogger, not a file uploader).</li>
+        <li><strong>Timeline analysis:</strong> Show that the criminal activity occurred when the defendant was known to be using the device (using login events, browser activity, file access times).</li>
+        <li><strong>Browser and search history:</strong> Deliberately searched terms, bookmarks, or downloads that are consistent with intent — hard to attribute to a Trojan.</li>
+        <li><strong>Registry and user activity:</strong> User interaction with specific files or applications at the time of the offence.</li>
+        <li><strong>Anti-forensic evidence:</strong> Presence of file deletion tools, history-wiping tools suggests deliberate concealment, not Trojan activity.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-orange" style="margin-bottom:1rem;">
+    <h4>Extra Q4 — Write Blockers &amp; Evidence Contamination [4 marks]</h4>
+    <p><em>Why must a write blocker be used during evidence acquisition? What specific risks arise if evidence is mounted without a write blocker? [4 marks]</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p>A <strong>write blocker</strong> is a hardware device placed between the evidence drive and the forensic workstation that allows read commands to pass through but blocks any write commands.</p>
+      <p><strong>Without a write blocker, mounting a drive may:</strong></p>
+      <ul>
+        <li><strong>Update file access times (atime)</strong> — any file the OS reads will have its last-accessed timestamp changed, altering potential evidence</li>
+        <li><strong>Modify the Master Boot Record (MBR)</strong> — some OS may write to the MBR during mounting</li>
+        <li><strong>Trigger auto-run or auto-play</strong> — executing content on the suspect drive, potentially destroying volatile artefacts or triggering malware</li>
+        <li><strong>Create swap/temp files</strong> — OS may write temporary data to the suspect volume</li>
+        <li><strong>Write journaling data</strong> — file systems like NTFS/ext4 may update journal logs on mount</li>
+      </ul>
+      <p>Any write to the evidence drive changes its hash value, <strong>breaking the chain of custody</strong> and potentially making all evidence from that drive inadmissible in court.</p>
+    </div>
+  </div>
+
+  <div class="card card-red" style="margin-bottom:1rem;">
+    <h4>Extra Q5 — Computer Misuse Act Scenarios [6 marks]</h4>
+    <p><em>For each scenario below, identify the most appropriate CMA 1990 offence section and justify your choice:<br>
+    (a) A hacker accesses a company's server without permission to read customer data.<br>
+    (b) A criminal launches a DDoS attack against a hospital, taking its systems offline.<br>
+    (c) A developer sells a script designed to exploit CMA s.1 weaknesses.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p><strong>(a) Section 1 — Unauthorised Access to Computer Material</strong></p>
+      <p>The hacker accessed the server without authorisation and knew the access was unauthorised. There is clear intention to access data held in a computer. S.1 requires: knowledge of unauthorised access + intention to access a program or data. If the hacker accessed data to facilitate fraud, S.2 would also apply.</p>
+
+      <p><strong>(b) Section 3 — Unauthorised Acts with Intent to Impair</strong></p>
+      <p>A DDoS attack is explicitly covered under S.3, which addresses reckless or intentional acts that impair, prevent access to, or hinder computer operations. A hospital DDoS may additionally engage S.3ZA if it risks serious damage to human welfare (patient safety). S.3ZA is aimed specifically at attacks on critical national infrastructure.</p>
+
+      <p><strong>(c) Section 3A — Making/Supplying Articles for Use in CMA Offences</strong></p>
+      <p>The developer is making and selling tools specifically designed to facilitate S.1 offences. S.3A targets those who create or distribute malware, exploit kits, or scripts intended for use in S.1, S.3, or S.3ZA offences. The criminal intent is embedded in the purpose of the tool.</p>
+    </div>
+  </div>
+
+  <div class="card card-cyan" style="margin-bottom:1rem;">
+    <h4>Extra Q6 — Phishing Email Investigation [6 marks]</h4>
+    <p><em>An employee receives a suspicious email urging them to log in and download a "salary summary" PDF. (a) What should the employee check? (b) What can the information security team identify from the email and how?</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <h4>Part (a): What the Employee Should Check</h4>
+      <ul>
+        <li><strong>Sender email address</strong> — Does it match the legitimate domain? Attackers spoof display names but the actual address (e.g., <code>hr@c0mpany.com</code> vs <code>hr@company.com</code>) differs.</li>
+        <li><strong>Grammar and language</strong> — Phishing emails often contain spelling mistakes, unusual phrasing, or awkward language.</li>
+        <li><strong>Urgency/pressure</strong> — Legitimate HR emails don't demand immediate action or threaten consequences.</li>
+        <li><strong>Links</strong> — Hover over links (don't click!) to see actual destination URL. Does it match what's displayed?</li>
+        <li><strong>Attachment</strong> — Was a salary PDF expected? Does the filename match what was promised?</li>
+        <li><strong>Good practice next step:</strong> Report to the IT/security team without opening the attachment. Inform colleagues as a heads-up.</li>
+      </ul>
+
+      <h4>Part (b): What the Security Team Can Identify</h4>
+      <ul>
+        <li><strong>Sender IP address</strong> — Examine full email headers (View Source) to find the originating IP address, bypassing display name spoofing.</li>
+        <li><strong>Sender domain reputation</strong> — Look up the originating IP/domain using tools like IPVoid, VirusTotal, or MX Toolbox to check if it is associated with known phishing campaigns.</li>
+        <li><strong>Malicious attachment analysis</strong> — Submit the PDF to a sandbox (e.g., Any.Run, Cuckoo) or VirusTotal to check if it contains exploit code, macros, or malware without opening it on a real device.</li>
+        <li><strong>Bonus:</strong> DKIM/SPF/DMARC header analysis to confirm whether the email domain is authenticated or spoofed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-yellow" style="margin-bottom:1rem;">
+    <h4>Extra Q7 — ECB vs CBC Illustrated [4 marks]</h4>
+    <p><em>Alice encrypts a 12-nibble message "aaaaaa bbbbbb" (where aaaaaa and bbbbbb are two identical 6-nibble blocks) using ECB mode, then CBC mode. Explain what the attacker observes in each case and what information they can infer.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p><strong>ECB mode:</strong></p>
+      <p>Since the two plaintext blocks are identical and ECB applies the same key independently to each: E<sub>K</sub>(aaaaaa) = X, E<sub>K</sub>(aaaaaa) = X. The ciphertext is <strong>XX</strong> — two identical blocks. An attacker immediately sees: "This message contains a repeated block of plaintext" — they know the message has repetitive structure even without knowing the key.</p>
+
+      <p><strong>CBC mode:</strong></p>
+      <div class="math-block">
+        \[ C_1 = E_K(P_1 \oplus IV) \]
+        \[ C_2 = E_K(P_2 \oplus C_1) \]
+      </div>
+      <p>Even though P₁ = P₂, since C₁ ≠ IV (generally), C₁ ≠ C₂. The ciphertext appears as two <em>different</em> blocks. The attacker sees no repetition and cannot infer that the plaintext blocks were identical.</p>
+      <p><strong>Conclusion:</strong> ECB leaks plaintext patterns; CBC destroys them through chaining. This is why CBC (or better, GCM) should always be preferred over ECB for real messages.</p>
+    </div>
+  </div>
+
+  <div class="card card-pink" style="margin-bottom:1rem;">
+    <h4>Extra Q8 — File Carving Concept [4 marks]</h4>
+    <p><em>Explain how Foremost can recover a deleted JPEG file from a forensic disk image when the file system entry for that file no longer exists.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p>When a file is "deleted" in most file systems (NTFS, FAT), the OS simply marks the directory entry as available — the actual file data remains on disk until overwritten by new data.</p>
+      <p><strong>Foremost's file carving process:</strong></p>
+      <ol>
+        <li>Read the raw disk image byte-by-byte (ignoring the file system entirely)</li>
+        <li>Scan for known <strong>file signatures (magic bytes)</strong>: JPEG files begin with <code>FF D8 FF</code> and end with <code>FF D9</code></li>
+        <li>When a JPEG header is found, start extracting bytes</li>
+        <li>Continue until the JPEG footer <code>FF D9</code> is found</li>
+        <li>Save the extracted bytes as a recovered JPEG file</li>
+      </ol>
+      <p>This works even without file system metadata because the actual data bytes are still present on disk. Limitations: if data has been overwritten, it cannot be recovered. Fragmented files (stored non-contiguously) are harder to recover correctly.</p>
+      <div class="math-block">
+        \[ \text{JPEG signature: } \underbrace{FF\;D8\;FF}_{\text{header}} \;\ldots\; \underbrace{FF\;D9}_{\text{footer}} \]
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-blue" style="margin-bottom:1rem;">
+    <h4>Extra Q9 — RIPA vs CMA Distinction [4 marks]</h4>
+    <p><em>A hacker intercepts emails while they are being transmitted, and also breaks into the email server to read stored messages. Which legislation covers each action and why?</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <p><strong>Intercepting emails in transmission → RIPA 2000</strong></p>
+      <p>Section 1(1)(b) RIPA makes it an offence to intentionally and without lawful authority intercept communications <em>during their transmission</em> on a public telecommunications system. The key element is that the data is in motion on the network — this is RIPA's domain. Prosecutors would typically charge under RIPA here, though CMA may also be considered.</p>
+
+      <p><strong>Breaking into the email server → CMA 1990</strong></p>
+      <p>Accessing the email server without authorisation to read stored messages is a Section 1 CMA offence (unauthorised access to computer material). The data is at rest (stored), not in transit — this is CMA's domain. If the hacker then used the stored data to commit further crimes (fraud, blackmail), S.2 CMA would also apply.</p>
+
+      <p><strong>Key distinction:</strong> RIPA = data in transit (interception); CMA = data at rest (unauthorised access). Both can be charged simultaneously if both actions occurred.</p>
+    </div>
+  </div>
+
+  <div class="card card-green" style="margin-bottom:1rem;">
+    <h4>Extra Q10 — Threat Model for Password Auth [6 marks]</h4>
+    <p><em>List and describe four threat models for password-based user authentication and their corresponding mitigations.</em></p>
+    <button class="reveal-btn" onclick="toggleReveal(this)">▶ Show Model Answer</button>
+    <div class="reveal-content">
+      <table>
+        <tr class="cmp-header"><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+        <tr>
+          <td><strong>Brute Force</strong></td>
+          <td>Systematically try every possible password combination</td>
+          <td>Account lockout after N failed attempts; CAPTCHA; rate limiting; long minimum password requirement</td>
+        </tr>
+        <tr>
+          <td><strong>Dictionary Attack</strong></td>
+          <td>Try passwords from a precompiled wordlist of common passwords</td>
+          <td>Enforce complexity rules; check new passwords against known-compromised lists (Have I Been Pwned API); use salted hashes so precomputed tables are useless</td>
+        </tr>
+        <tr>
+          <td><strong>Phishing</strong></td>
+          <td>Trick user into entering credentials on a fake website</td>
+          <td>Use MFA (even if password stolen, attacker needs second factor); FIDO2/WebAuthn keys that bind to legitimate domain; security awareness training</td>
+        </tr>
+        <tr>
+          <td><strong>Keylogging / Malware</strong></td>
+          <td>Malware installed on device records keystrokes as password is typed</td>
+          <td>Endpoint protection/antivirus; never store passwords in plaintext; use a password manager (auto-fills, doesn't type); audit for unauthorised software</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ QUIZ ═══════════════════════════ -->
+<section id="quiz">
+  <h2><span class="icon">🧩</span> Self-Test Quiz (10 Questions)</h2>
+  <p style="color:var(--text2);margin-bottom:1.5rem;">Test your understanding. Click an answer to check it instantly.</p>
+
+  <div class="quiz-q" id="q1">
+    <p>1. Which of the following correctly describes the purpose of a write blocker in digital forensics?</p>
+    <span class="quiz-opt" onclick="answer(this,'q1',false)">A) It compresses the forensic image to save disk space</span>
+    <span class="quiz-opt" onclick="answer(this,'q1',true)">B) It prevents any data from being written to the suspect drive during acquisition</span>
+    <span class="quiz-opt" onclick="answer(this,'q1',false)">C) It blocks malware from running during analysis</span>
+    <span class="quiz-opt" onclick="answer(this,'q1',false)">D) It encrypts the forensic image</span>
+    <div class="quiz-result" id="q1-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q2">
+    <p>2. In CBC mode decryption, how is plaintext block P₂ computed from ciphertext blocks C₁ and C₂?</p>
+    <span class="quiz-opt" onclick="answer(this,'q2',false)">A) P₂ = D<sub>K</sub>(C₂) ⊕ IV</span>
+    <span class="quiz-opt" onclick="answer(this,'q2',false)">B) P₂ = D<sub>K</sub>(C₁) ⊕ C₂</span>
+    <span class="quiz-opt" onclick="answer(this,'q2',true)">C) P₂ = D<sub>K</sub>(C₂) ⊕ C₁</span>
+    <span class="quiz-opt" onclick="answer(this,'q2',false)">D) P₂ = E<sub>K</sub>(C₂) ⊕ C₁</span>
+    <div class="quiz-result" id="q2-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q3">
+    <p>3. What is the primary weakness of ECB mode that makes it insecure for most applications?</p>
+    <span class="quiz-opt" onclick="answer(this,'q3',false)">A) It uses too short a key</span>
+    <span class="quiz-opt" onclick="answer(this,'q3',true)">B) Identical plaintext blocks always produce identical ciphertext blocks, leaking structural patterns</span>
+    <span class="quiz-opt" onclick="answer(this,'q3',false)">C) It cannot handle messages longer than one block</span>
+    <span class="quiz-opt" onclick="answer(this,'q3',false)">D) It requires a new key for every message</span>
+    <div class="quiz-result" id="q3-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q4">
+    <p>4. Under the Computer Misuse Act 1990, which section specifically covers DDoS attacks?</p>
+    <span class="quiz-opt" onclick="answer(this,'q4',false)">A) Section 1 — Unauthorised access</span>
+    <span class="quiz-opt" onclick="answer(this,'q4',false)">B) Section 2 — Unauthorised access with intent</span>
+    <span class="quiz-opt" onclick="answer(this,'q4',true)">C) Section 3 — Unauthorised acts with intent to impair</span>
+    <span class="quiz-opt" onclick="answer(this,'q4',false)">D) Section 3A — Making articles for use in CMA offences</span>
+    <div class="quiz-result" id="q4-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q5">
+    <p>5. In RSA with n=1763, e=17, what is φ(n) given that 1763 = 41 × 43?</p>
+    <span class="quiz-opt" onclick="answer(this,'q5',false)">A) 1762</span>
+    <span class="quiz-opt" onclick="answer(this,'q5',false)">B) 1722</span>
+    <span class="quiz-opt" onclick="answer(this,'q5',true)">C) 1680</span>
+    <span class="quiz-opt" onclick="answer(this,'q5',false)">D) 1763</span>
+    <div class="quiz-result" id="q5-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q6">
+    <p>6. What tool is specifically used in digital forensics to recover deleted files from a disk image using file signature (magic byte) matching?</p>
+    <span class="quiz-opt" onclick="answer(this,'q6',false)">A) RegViewer</span>
+    <span class="quiz-opt" onclick="answer(this,'q6',false)">B) Zeitline</span>
+    <span class="quiz-opt" onclick="answer(this,'q6',true)">C) Foremost</span>
+    <span class="quiz-opt" onclick="answer(this,'q6',false)">D) md5deep</span>
+    <div class="quiz-result" id="q6-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q7">
+    <p>7. The Trojan Defence in legal proceedings involves the defendant claiming that:</p>
+    <span class="quiz-opt" onclick="answer(this,'q7',false)">A) They were using a Trojan to protect their files</span>
+    <span class="quiz-opt" onclick="answer(this,'q7',true)">B) Malware on their device was responsible for the criminal activity, not them</span>
+    <span class="quiz-opt" onclick="answer(this,'q7',false)">C) The evidence was tampered with by a Trojan during the investigation</span>
+    <span class="quiz-opt" onclick="answer(this,'q7',false)">D) Trojans are legal under the Data Protection Act</span>
+    <div class="quiz-result" id="q7-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q8">
+    <p>8. In Scotland, what is a key difference in evidence requirements compared to England for criminal prosecution?</p>
+    <span class="quiz-opt" onclick="answer(this,'q8',false)">A) Digital evidence is not admissible in Scotland</span>
+    <span class="quiz-opt" onclick="answer(this,'q8',true)">B) Scotland requires corroboration — evidence from more than one source</span>
+    <span class="quiz-opt" onclick="answer(this,'q8',false)">C) Scotland follows RIPA instead of CMA</span>
+    <span class="quiz-opt" onclick="answer(this,'q8',false)">D) England requires more sources of evidence than Scotland</span>
+    <div class="quiz-result" id="q8-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q9">
+    <p>9. When decrypting ECB ciphertext block "a" using the given permutation table (E<sub>K</sub>(7)=a), what is the plaintext?</p>
+    <span class="quiz-opt" onclick="answer(this,'q9',false)">A) a</span>
+    <span class="quiz-opt" onclick="answer(this,'q9',false)">B) 3</span>
+    <span class="quiz-opt" onclick="answer(this,'q9',true)">C) 7</span>
+    <span class="quiz-opt" onclick="answer(this,'q9',false)">D) e</span>
+    <div class="quiz-result" id="q9-r"></div>
+  </div>
+
+  <div class="quiz-q" id="q10">
+    <p>10. If brute force takes 256 seconds with a 16-bit key and 2⁸ enc/sec, how long would it take with a 32-bit key (same speed)?</p>
+    <span class="quiz-opt" onclick="answer(this,'q10',false)">A) 512 seconds</span>
+    <span class="quiz-opt" onclick="answer(this,'q10',false)">B) 65,536 seconds (≈18 hours)</span>
+    <span class="quiz-opt" onclick="answer(this,'q10',true)">C) 16,777,216 seconds (≈194 days)</span>
+    <span class="quiz-opt" onclick="answer(this,'q10',false)">D) 4,096 seconds (≈68 minutes)</span>
+    <div class="quiz-result" id="q10-r"></div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button onclick="showScore()" style="background:var(--blue);color:#000;border:none;border-radius:10px;padding:.8rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;">Show Final Score</button>
+  </div>
+  <div id="quiz-score"></div>
+</section>
+
+<footer style="text-align:center;padding:3rem 1rem;color:var(--text2);font-size:.85rem;border-top:1px solid var(--border);">
+  CSF Lec 7 — Digital Forensics · COMPSCI5063 MSc · University of Glasgow<br>
+  Generated for exam preparation — covers May 2025 exam + additional practice questions
+</footer>
+
+<script>
+// Navigation highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
+});
+
+// Reveal/toggle
+function toggleReveal(btn) {
+  const content = btn.nextElementSibling;
+  const open = content.classList.toggle('open');
+  btn.textContent = (open ? '▼ ' : '▶ ') + btn.textContent.slice(2);
+}
+
+// Pipe info
+const pipeData = [
+  { t:'Seizure', d:'Prevent changes to digital devices. Photograph, label, register, bag all hardware. Record BIOS time. Decide: live forensics (RAM capture) or power off. Check for hidden devices. Order matters — contamination at this stage ruins everything downstream.' },
+  { t:'Acquisition', d:'Create a forensically-sound bit-for-bit copy using a write blocker + FTK Imager or dd. Compute MD5/SHA-256 hash of original and copy. Make a working copy for analysis. Never work on the original evidence.' },
+  { t:'Analysis', d:'Search the forensic copy using: physical searching (Autopsy, grep, Foremost), whitelist hashing (md5deep), registry examination (RegViewer), browser analysis (Autopsy), EXIF metadata (metacam), and timeline reconstruction (Zeitline/mactime).' },
+  { t:'Report', d:'Produce an objective, court-ready report: job description, list of examined items with hashes, detailed methodology, production list with all evidence found. No personal opinions. Must be reproducible and verifiable.' }
+];
+function showPipeInfo(i) {
+  const box = document.getElementById('pipe-info');
+  const txt = document.getElementById('pipe-info-text');
+  box.style.display = 'block';
+  txt.innerHTML = `<strong style="color:var(--blue)">${pipeData[i].t}:</strong> ${pipeData[i].d}`;
+}
+
+// Quiz
+const scores = {};
+function answer(el, qid, correct) {
+  if (scores[qid] !== undefined) return;
+  scores[qid] = correct ? 1 : 0;
+  const opts = document.querySelectorAll(`#${qid} .quiz-opt`);
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    opts.forEach(o => { if (o.onclick.toString().includes('true')) o.classList.add('correct'); });
+  }
+  const r = document.getElementById(`${qid}-r`);
+  r.className = 'quiz-result show ' + (correct ? 'ok' : 'bad');
+  r.textContent = correct ? '✓ Correct!' : '✗ Incorrect. The correct answer is highlighted in green.';
+}
+function showScore() {
+  const answered = Object.keys(scores).length;
+  const correct = Object.values(scores).reduce((a,b) => a+b, 0);
+  const pct = Math.round((correct/10)*100);
+  const el = document.getElementById('quiz-score');
+  el.style.display = 'block';
+  const grade = pct >= 80 ? '🏆 Excellent!' : pct >= 60 ? '👍 Good effort' : '📚 Keep studying';
+  el.innerHTML = `Score: ${correct}/10 (${pct}%) — ${grade}`;
+}
+
+// Hash demo using Web Crypto API
+async function sha256(msg) {
+  const buf = new TextEncoder().encode(msg);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function updateHash() {
+  const val = document.getElementById('hashIn').value;
+  const h = await sha256(val);
+  document.getElementById('hashOut').textContent = h || '(empty string hash)';
+}
+updateHash();
+
+// Animate pipeline on hover
+document.querySelectorAll('.pipe-step').forEach((el, i) => {
+  el.style.animationDelay = (i * 0.1) + 's';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: GANs | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    <nav class="main-nav">
+        <div class="logo"><a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;"><span class="logo-icon">◈</span><span class="logo-text">DL Tutorial</span></a></div>
+        <div class="nav-links"><a href="index.html#chapters" class="nav-link">All Chapters</a></div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta"><span class="chapter-badge">Chapter 14</span><span class="part-label">Part IV: Generative Models</span></div>
+            <h1>Generative Adversarial <span class="gradient-text">Networks</span></h1>
+            <p class="chapter-description">Two networks in competition—a generator creates fake data while a discriminator tries to detect it. Together they produce stunningly realistic outputs.</p>
+            <div class="chapter-nav">
+                <a href="chapter13.html" class="nav-btn">← Previous</a>
+                <a href="chapter15.html" class="nav-btn">Next →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            <section id="concept" class="content-section">
+                <h2>The GAN Concept</h2>
+                <p>Two networks play a minimax game:</p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 GAN Components</div>
+                    <p>
+                        <strong>Generator G:</strong> Takes random noise z, produces fake data G(z)<br>
+                        <strong>Discriminator D:</strong> Classifies data as real or fake<br><br>
+                        G tries to fool D. D tries not to be fooled.
+                    </p>
+                </div>
+                
+                <div class="math-block"><div class="equation">min_G max_D E[log D(x)] + E[log(1 - D(G(z)))]</div></div>
+            </section>
+            
+            <section id="training" class="content-section">
+                <h2>Training GANs</h2>
+                <p>Alternate between training D and G:</p>
+                
+                <ol>
+                    <li><strong>Train D:</strong> Show real and fake data, update D to classify correctly</li>
+                    <li><strong>Train G:</strong> Generate fake data, update G to fool D</li>
+                    <li>Repeat until equilibrium</li>
+                </ol>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Training Challenges</div>
+                    <p>
+                        <strong>Mode collapse:</strong> G produces limited variety<br>
+                        <strong>Training instability:</strong> D wins too easily or G wins too easily<br>
+                        <strong>Evaluation:</strong> Hard to measure generation quality
+                    </p>
+                </div>
+            </section>
+            
+            <section id="variants" class="content-section">
+                <h2>GAN Variants</h2>
+                <ul>
+                    <li><strong>DCGAN:</strong> Convolutional, stable training techniques</li>
+                    <li><strong>Conditional GAN:</strong> Control generation with labels</li>
+                    <li><strong>StyleGAN:</strong> High-quality face generation with style control</li>
+                    <li><strong>CycleGAN:</strong> Unpaired image-to-image translation</li>
+                    <li><strong>Pix2Pix:</strong> Paired image-to-image translation</li>
+                </ul>
+            </section>
+            
+            <section id="applications" class="content-section">
+                <h2>Applications</h2>
+                <ul>
+                    <li>Photorealistic image synthesis</li>
+                    <li>Image super-resolution</li>
+                    <li>Style transfer and domain adaptation</li>
+                    <li>Data augmentation</li>
+                    <li>Video generation</li>
+                </ul>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="key-points">
+                    <ul>
+                        <li>GANs: Generator vs Discriminator in adversarial game</li>
+                        <li>Generator learns to create realistic data from noise</li>
+                        <li>Training is challenging: mode collapse, instability</li>
+                        <li>StyleGAN achieves remarkable face synthesis quality</li>
+                        <li>Applications: synthesis, translation, super-resolution</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter13.html" class="chapter-footer-link"><span class="footer-link-label">Previous</span><span class="footer-link-title">← Graph Neural Networks</span></a>
+                <a href="chapter15.html" class="chapter-footer-link next"><span class="footer-link-label">Next</span><span class="footer-link-title">Normalizing Flows →</span></a>
+            </footer>
+        </main>
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#concept">GAN Concept</a></li>
+                    <li><a href="#training">Training</a></li>
+                    <li><a href="#variants">Variants</a></li>
+                    <li><a href="#applications">Applications</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer class="main-footer"><div class="container"><div class="footer-content"><div class="footer-brand"><span class="logo-icon">◈</span><span>Understanding Deep Learning Tutorial</span></div></div></div></footer>
+    <script src="main.js"></script>
+</body>
+</html>

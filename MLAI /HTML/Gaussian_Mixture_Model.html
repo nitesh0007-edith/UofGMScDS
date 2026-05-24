@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaussian Mixture Models & EM Algorithm | A Visual Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        :root {
+            --bg-cream: #faf8f5;
+            --bg-card: #ffffff;
+            --bg-dark: #1a1a2e;
+            --accent-teal: #16697a;
+            --accent-coral: #db6400;
+            --accent-green: #489b7a;
+            --accent-purple: #6b5b95;
+            --text-dark: #2d3436;
+            --text-medium: #636e72;
+            --text-light: #b2bec3;
+            --border-light: #e0dcd5;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #16213e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(22, 105, 122, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(219, 100, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(107, 91, 149, 0.2) 0%, transparent 60%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-coral);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: var(--accent-coral);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .hero-visual {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-visual svg {
+            width: 120px;
+            height: 120px;
+            opacity: 0.8;
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot:hover, .nav-dot.active {
+            background: var(--accent-teal);
+            transform: scale(1.3);
+        }
+
+        /* Main Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 8rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-number {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-teal);
+            background: rgba(22, 105, 122, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: var(--text-dark);
+        }
+
+        h3 {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin: 2.5rem 0 1rem;
+        }
+
+        p {
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+        }
+
+        strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--accent-teal);
+        }
+
+        .concept-card.coral {
+            border-left-color: var(--accent-coral);
+        }
+
+        .concept-card.purple {
+            border-left-color: var(--accent-purple);
+        }
+
+        .concept-card.green {
+            border-left-color: var(--accent-green);
+        }
+
+        .concept-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* Formula Cards */
+        .formula-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .formula-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-coral), var(--accent-purple));
+        }
+
+        .formula-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .formula-content {
+            font-size: 1.1rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .formula-explanation {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border-light);
+            font-size: 0.95rem;
+            color: var(--text-medium);
+        }
+
+        /* Visual Diagrams */
+        .diagram-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .diagram-caption {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Interactive Gaussian Visualization */
+        .gaussian-demo {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .gaussian-demo svg {
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Algorithm Steps */
+        .algorithm-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .algorithm-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent-purple);
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: white;
+        }
+
+        .step-number.init { background: var(--accent-purple); }
+        .step-number.e-step { background: var(--accent-teal); }
+        .step-number.m-step { background: var(--accent-coral); }
+        .step-number.repeat { background: var(--accent-green); }
+
+        .step-content h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .step-content p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .comparison-card.kmeans {
+            border-top: 4px solid var(--accent-coral);
+        }
+
+        .comparison-card.gmm {
+            border-top: 4px solid var(--accent-teal);
+        }
+
+        .comparison-card h4 {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-card.kmeans h4 { color: var(--accent-coral); }
+        .comparison-card.gmm h4 { color: var(--accent-teal); }
+
+        /* Intuition Box */
+        .intuition-box {
+            background: linear-gradient(135deg, rgba(22, 105, 122, 0.05) 0%, rgba(107, 91, 149, 0.05) 100%);
+            border: 2px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .intuition-box::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--bg-cream);
+            padding: 0 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .intuition-box p {
+            margin-bottom: 0;
+            font-style: italic;
+            color: var(--text-dark);
+        }
+
+        /* Covariance Matrix Visual */
+        .covariance-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .covariance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cov-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .cov-card svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1rem;
+        }
+
+        .cov-card .matrix {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+
+        /* Animation for EM steps */
+        .em-animation {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .em-animation svg {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+        }
+
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .summary-table th {
+            background: var(--bg-dark);
+            color: white;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 1rem 1.5rem;
+            text-align: left;
+        }
+
+        .summary-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+        }
+
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .summary-table tr:hover td {
+            background: rgba(22, 105, 122, 0.03);
+        }
+
+        /* Code-like styling */
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #f1f3f4;
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent-purple);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--bg-dark);
+            color: rgba(255,255,255,0.6);
+        }
+
+        footer p {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">Unsupervised Learning</span>
+            <h1>Gaussian Mixture Models<br>& The <span>EM Algorithm</span></h1>
+            <p class="hero-subtitle">A beginner-friendly journey into probabilistic clustering — where data points belong to clusters with probabilities, not hard assignments.</p>
+            
+            <div class="hero-visual">
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#db6400" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#db6400" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="50" fill="url(#g1)"/>
+                    <circle cx="60" cy="60" r="30" fill="none" stroke="#db6400" stroke-width="1" opacity="0.5"/>
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#db6400" stroke-width="1" opacity="0.3"/>
+                </svg>
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <radialGradient id="g2" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#16697a" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#16697a" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="50" fill="url(#g2)"/>
+                    <circle cx="60" cy="60" r="30" fill="none" stroke="#16697a" stroke-width="1" opacity="0.5"/>
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#16697a" stroke-width="1" opacity="0.3"/>
+                </svg>
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <radialGradient id="g3" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#6b5b95" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#6b5b95" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="50" fill="url(#g3)"/>
+                    <circle cx="60" cy="60" r="30" fill="none" stroke="#6b5b95" stroke-width="1" opacity="0.5"/>
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#6b5b95" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <main class="content">
+        <!-- Section 1: The Big Picture -->
+        <section class="section" id="intro">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>Thinking Generatively</h2>
+            </div>
+
+            <p>Imagine you're looking at a scatter plot of data points. You notice they seem to form <strong>distinct groups</strong> or clusters. But here's a deeper question: <em>What process could have generated this data?</em></p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 400 250">
+                    <!-- Cluster 1 - Top Right -->
+                    <g fill="#16697a" opacity="0.7">
+                        <circle cx="280" cy="60" r="4"/><circle cx="300" cy="70" r="4"/>
+                        <circle cx="320" cy="55" r="4"/><circle cx="290" cy="80" r="4"/>
+                        <circle cx="310" cy="65" r="4"/><circle cx="275" cy="75" r="4"/>
+                        <circle cx="330" cy="75" r="4"/><circle cx="295" cy="50" r="4"/>
+                        <circle cx="305" cy="85" r="4"/><circle cx="285" cy="65" r="4"/>
+                        <circle cx="315" cy="45" r="4"/><circle cx="340" cy="60" r="4"/>
+                    </g>
+                    <!-- Cluster 2 - Left -->
+                    <g fill="#db6400" opacity="0.7">
+                        <circle cx="80" cy="110" r="4"/><circle cx="100" cy="100" r="4"/>
+                        <circle cx="70" cy="130" r="4"/><circle cx="90" cy="120" r="4"/>
+                        <circle cx="110" cy="115" r="4"/><circle cx="85" cy="95" r="4"/>
+                        <circle cx="75" cy="105" r="4"/><circle cx="95" cy="135" r="4"/>
+                        <circle cx="105" cy="125" r="4"/><circle cx="65" cy="120" r="4"/>
+                    </g>
+                    <!-- Cluster 3 - Bottom -->
+                    <g fill="#6b5b95" opacity="0.7">
+                        <circle cx="180" cy="180" r="4"/><circle cx="200" cy="190" r="4"/>
+                        <circle cx="220" cy="175" r="4"/><circle cx="190" cy="200" r="4"/>
+                        <circle cx="210" cy="185" r="4"/><circle cx="175" cy="195" r="4"/>
+                        <circle cx="230" cy="195" r="4"/><circle cx="195" cy="170" r="4"/>
+                        <circle cx="205" cy="205" r="4"/><circle cx="185" cy="185" r="4"/>
+                        <circle cx="215" cy="165" r="4"/><circle cx="240" cy="180" r="4"/>
+                        <circle cx="165" cy="190" r="4"/><circle cx="225" cy="200" r="4"/>
+                    </g>
+                    <!-- Question mark -->
+                    <text x="200" y="240" text-anchor="middle" fill="#636e72" font-size="14" font-style="italic">Could each cluster come from a different distribution?</text>
+                </svg>
+                <p class="diagram-caption">Data points naturally grouping into three distinct clusters</p>
+            </div>
+
+            <div class="intuition-box">
+                <p><strong>The Generative Idea:</strong> What if each data point was generated by first picking one of several "source" distributions, then sampling from that distribution? If we can figure out what those distributions are, we've essentially discovered the clusters!</p>
+            </div>
+
+            <p>This is the core idea behind <strong>Mixture Models</strong>. Instead of just finding cluster centers (like K-means), we model each cluster as a full probability distribution. The most common choice? The <strong>Gaussian (Normal) distribution</strong>.</p>
+        </section>
+
+        <!-- Section 2: Gaussian Distribution Basics -->
+        <section class="section" id="gaussian">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>The Gaussian Distribution</h2>
+            </div>
+
+            <p>Before diving into mixtures, let's understand the building block: the Gaussian (or Normal) distribution. It's the famous "bell curve" you've probably seen before.</p>
+
+            <h3>1D Gaussian</h3>
+
+            <div class="formula-card">
+                <span class="formula-label">Univariate Gaussian PDF</span>
+                <div class="formula-content">
+                    $$f(X) = \frac{1}{\sigma\sqrt{2\pi}} \exp\left(-\frac{1}{2}\left(\frac{X - \mu}{\sigma}\right)^2\right)$$
+                </div>
+                <div class="formula-explanation">
+                    <strong>What each part means:</strong><br>
+                    • $\mu$ (mu) = <strong>mean</strong> — the center of the bell curve<br>
+                    • $\sigma$ (sigma) = <strong>standard deviation</strong> — how spread out the data is<br>
+                    • $\sigma^2$ = <strong>variance</strong> — the square of standard deviation<br>
+                    • The exponential term creates the bell shape<br>
+                    • The fraction in front ensures the area under the curve equals 1
+                </div>
+            </div>
+
+            <div class="gaussian-demo">
+                <svg viewBox="0 0 500 200">
+                    <!-- Axes -->
+                    <line x1="50" y1="170" x2="450" y2="170" stroke="#636e72" stroke-width="1"/>
+                    <line x1="50" y1="170" x2="50" y2="20" stroke="#636e72" stroke-width="1"/>
+                    
+                    <!-- Narrow Gaussian (small σ) -->
+                    <path d="M100,170 Q150,170 175,150 Q200,130 225,60 Q250,130 275,150 Q300,170 350,170" 
+                          fill="none" stroke="#16697a" stroke-width="3"/>
+                    
+                    <!-- Wide Gaussian (large σ) -->
+                    <path d="M80,170 Q120,168 160,160 Q200,145 250,120 Q300,145 340,160 Q380,168 420,170" 
+                          fill="none" stroke="#db6400" stroke-width="3" stroke-dasharray="8,4"/>
+                    
+                    <!-- Labels -->
+                    <text x="250" y="50" text-anchor="middle" fill="#16697a" font-size="12">σ² = 0.2 (narrow)</text>
+                    <text x="250" y="110" text-anchor="middle" fill="#db6400" font-size="12">σ² = 1.0 (wide)</text>
+                    <text x="250" y="190" text-anchor="middle" fill="#b2bec3" font-size="11">μ = 0</text>
+                </svg>
+            </div>
+
+            <h3>2D (Multivariate) Gaussian</h3>
+
+            <p>In higher dimensions, we need a <strong>covariance matrix Σ</strong> instead of just variance. This matrix captures not only how spread out each dimension is, but also how dimensions are <strong>correlated</strong> with each other.</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Multivariate Gaussian PDF</span>
+                <div class="formula-content">
+                    $$p(\mathbf{X}|\boldsymbol{\mu}, \boldsymbol{\Sigma}) = \frac{1}{(2\pi)^{n/2}|\boldsymbol{\Sigma}|^{1/2}} \exp\left(-\frac{1}{2}(\mathbf{X}-\boldsymbol{\mu})^T\boldsymbol{\Sigma}^{-1}(\mathbf{X}-\boldsymbol{\mu})\right)$$
+                </div>
+                <div class="formula-explanation">
+                    <strong>New elements:</strong><br>
+                    • $\boldsymbol{\mu}$ = mean vector (center point in n-dimensional space)<br>
+                    • $\boldsymbol{\Sigma}$ = covariance matrix (n × n matrix)<br>
+                    • $|\boldsymbol{\Sigma}|$ = determinant of covariance matrix<br>
+                    • $\boldsymbol{\Sigma}^{-1}$ = inverse of covariance matrix<br>
+                    • The exponent now involves a <em>quadratic form</em> (matrix multiplication)
+                </div>
+            </div>
+
+            <h3>How Covariance Shapes the Distribution</h3>
+
+            <div class="covariance-grid">
+                <div class="cov-card">
+                    <svg viewBox="0 0 120 120">
+                        <ellipse cx="60" cy="60" rx="40" ry="25" fill="none" stroke="#16697a" stroke-width="2" transform="rotate(-30 60 60)"/>
+                        <ellipse cx="60" cy="60" rx="30" ry="18" fill="none" stroke="#16697a" stroke-width="1.5" opacity="0.6" transform="rotate(-30 60 60)"/>
+                        <ellipse cx="60" cy="60" rx="20" ry="12" fill="none" stroke="#16697a" stroke-width="1" opacity="0.4" transform="rotate(-30 60 60)"/>
+                        <circle cx="60" cy="60" r="3" fill="#16697a"/>
+                    </svg>
+                    <p><strong>Full Covariance</strong></p>
+                    <div class="matrix">Σ = [Σ₁₁ Σ₁₂]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Σ₂₁ Σ₂₂]</div>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">Tilted ellipse — dimensions are correlated</p>
+                </div>
+                <div class="cov-card">
+                    <svg viewBox="0 0 120 120">
+                        <ellipse cx="60" cy="60" rx="40" ry="20" fill="none" stroke="#db6400" stroke-width="2"/>
+                        <ellipse cx="60" cy="60" rx="30" ry="15" fill="none" stroke="#db6400" stroke-width="1.5" opacity="0.6"/>
+                        <ellipse cx="60" cy="60" rx="20" ry="10" fill="none" stroke="#db6400" stroke-width="1" opacity="0.4"/>
+                        <circle cx="60" cy="60" r="3" fill="#db6400"/>
+                    </svg>
+                    <p><strong>Diagonal Covariance</strong></p>
+                    <div class="matrix">Σ = [Σ₁₁ &nbsp;0 ]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 0 &nbsp;Σ₂₂]</div>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">Axis-aligned — no correlation</p>
+                </div>
+                <div class="cov-card">
+                    <svg viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="35" fill="none" stroke="#6b5b95" stroke-width="2"/>
+                        <circle cx="60" cy="60" r="25" fill="none" stroke="#6b5b95" stroke-width="1.5" opacity="0.6"/>
+                        <circle cx="60" cy="60" r="15" fill="none" stroke="#6b5b95" stroke-width="1" opacity="0.4"/>
+                        <circle cx="60" cy="60" r="3" fill="#6b5b95"/>
+                    </svg>
+                    <p><strong>Spherical (Isotropic)</strong></p>
+                    <div class="matrix">Σ = σ²I = σ²[1 0]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0 1]</div>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">Perfect circle — equal variance</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Gaussian Mixture Model -->
+        <section class="section" id="gmm">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Gaussian Mixture Model (GMM)</h2>
+            </div>
+
+            <p>Now we combine multiple Gaussians! A <strong>Gaussian Mixture Model</strong> assumes our data comes from a <em>mixture</em> of K different Gaussian distributions.</p>
+
+            <div class="concept-card coral">
+                <h4>The Generative Story</h4>
+                <p style="margin-bottom: 0;">For each data point $\mathbf{x}_n$:</p>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Pick a component</strong> k from {1, 2, ..., K} with probability $\pi_k$</li>
+                    <li><strong>Sample</strong> $\mathbf{x}_n$ from the Gaussian $\mathcal{N}(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$</li>
+                </ol>
+            </div>
+
+            <h3>Key Parameters</h3>
+
+            <p>A GMM with K components has the following parameters to learn:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">GMM Parameters (Δ)</span>
+                <div class="formula-content">
+                    $$\Delta = \{\pi_1, ..., \pi_K, \boldsymbol{\mu}_1, ..., \boldsymbol{\mu}_K, \boldsymbol{\Sigma}_1, ..., \boldsymbol{\Sigma}_K\}$$
+                </div>
+                <div class="formula-explanation">
+                    For each component k:<br>
+                    • $\pi_k$ = <strong>mixing coefficient</strong> (probability of choosing this component, $\sum_k \pi_k = 1$)<br>
+                    • $\boldsymbol{\mu}_k$ = <strong>mean</strong> of component k<br>
+                    • $\boldsymbol{\Sigma}_k$ = <strong>covariance matrix</strong> of component k
+                </div>
+            </div>
+
+            <h3>The Latent Variable</h3>
+
+            <p>We introduce a <strong>latent (hidden) variable</strong> $z_{nk}$ that tells us which component generated point $\mathbf{x}_n$:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Latent Variable Indicator</span>
+                <div class="formula-content">
+                    $$z_{nk} = \begin{cases} 1 & \text{if } \mathbf{x}_n \text{ came from component } k \\ 0 & \text{otherwise} \end{cases}$$
+                </div>
+                <div class="formula-explanation">
+                    This is what we <em>want</em> to know but <em>don't observe</em>. The whole point of the algorithm is to estimate these assignments!
+                </div>
+            </div>
+
+            <h3>Posterior Probability (Responsibility)</h3>
+
+            <p>Given a data point, how likely is it to belong to each cluster? This is computed using <strong>Bayes' theorem</strong>:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Responsibility — The Posterior Probability</span>
+                <div class="formula-content">
+                    $$q_{nk} = \frac{\pi_k \cdot p(\mathbf{x}_n | z_{nk}=1, \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)}{\sum_{j=1}^{K} \pi_j \cdot p(\mathbf{x}_n | z_{nj}=1, \boldsymbol{\mu}_j, \boldsymbol{\Sigma}_j)}$$
+                </div>
+                <div class="formula-explanation">
+                    <strong>Reading this formula:</strong><br>
+                    • <strong>Numerator:</strong> (prior probability of cluster k) × (likelihood of data given cluster k)<br>
+                    • <strong>Denominator:</strong> Sum over all clusters — this normalizes so probabilities sum to 1<br>
+                    • $q_{nk}$ is the "responsibility" that cluster k takes for point n
+                </div>
+            </div>
+
+            <div class="intuition-box">
+                <p><strong>Soft vs Hard Assignment:</strong> Unlike K-means which assigns each point to exactly one cluster, GMM gives each point a probability distribution over all clusters. A point might be 70% cluster 1 and 30% cluster 2!</p>
+            </div>
+        </section>
+
+        <!-- Section 4: EM Algorithm -->
+        <section class="section" id="em">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2>The EM Algorithm</h2>
+            </div>
+
+            <p>We can't directly maximize the likelihood because we don't know the cluster assignments. The <strong>Expectation-Maximization (EM)</strong> algorithm solves this by alternating between two steps.</p>
+
+            <div class="algorithm-container">
+                <h4 class="algorithm-title">EM Algorithm for GMM</h4>
+                
+                <div class="step">
+                    <div class="step-number init">1</div>
+                    <div class="step-content">
+                        <h4>Initialize Parameters</h4>
+                        <p>Make initial guesses for $\boldsymbol{\mu}_k$, $\boldsymbol{\Sigma}_k$, and $\pi_k$ for all K components. Random initialization or K-means initialization are common choices.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number e-step">E</div>
+                    <div class="step-content">
+                        <h4>Expectation Step (E-step)</h4>
+                        <p>Compute the responsibilities $q_{nk}$ — the probability that each point belongs to each cluster, given current parameters:</p>
+                        <p style="font-family: 'Fira Code', monospace; font-size: 0.9rem; background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                            $q_{nk} = \frac{\pi_k \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)}{\sum_j \pi_j \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_j, \boldsymbol{\Sigma}_j)}$
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number m-step">M</div>
+                    <div class="step-content">
+                        <h4>Maximization Step (M-step)</h4>
+                        <p>Update parameters to maximize likelihood given current responsibilities:</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number repeat">4</div>
+                    <div class="step-content">
+                        <h4>Repeat Until Convergence</h4>
+                        <p>Go back to E-step. Continue until parameters stop changing significantly or log-likelihood converges.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>M-step Update Formulas</h3>
+
+            <div class="formula-card">
+                <span class="formula-label">Effective Number of Points in Cluster k</span>
+                <div class="formula-content">
+                    $$\hat{N}_k = \sum_{i=1}^{N} q_{ik}$$
+                </div>
+                <div class="formula-explanation">
+                    Sum of all responsibilities for cluster k. This is the "soft count" of how many points belong to cluster k.
+                </div>
+            </div>
+
+            <div class="formula-card">
+                <span class="formula-label">Updated Mean</span>
+                <div class="formula-content">
+                    $$\hat{\boldsymbol{\mu}}_k = \frac{1}{\hat{N}_k} \sum_{i=1}^{N} q_{ik} \mathbf{x}_i$$
+                </div>
+                <div class="formula-explanation">
+                    Weighted average of all points, where weights are the responsibilities. Points more likely to belong to cluster k have more influence on its mean.
+                </div>
+            </div>
+
+            <div class="formula-card">
+                <span class="formula-label">Updated Covariance</span>
+                <div class="formula-content">
+                    $$\hat{\boldsymbol{\Sigma}}_k = \frac{1}{\hat{N}_k} \sum_{i=1}^{N} q_{ik} (\mathbf{x}_i - \hat{\boldsymbol{\mu}}_k)(\mathbf{x}_i - \hat{\boldsymbol{\mu}}_k)^T$$
+                </div>
+                <div class="formula-explanation">
+                    Weighted covariance matrix. Each point's contribution is weighted by how likely it belongs to cluster k.
+                </div>
+            </div>
+
+            <div class="formula-card">
+                <span class="formula-label">Updated Mixing Coefficient</span>
+                <div class="formula-content">
+                    $$\hat{\pi}_k = \frac{\hat{N}_k}{N}$$
+                </div>
+                <div class="formula-explanation">
+                    Fraction of points belonging to cluster k. If cluster k "claims" 30% of the total responsibility, its mixing coefficient becomes 0.3.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: EM in Action -->
+        <section class="section" id="visualization">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2>EM Algorithm in Action</h2>
+            </div>
+
+            <p>Let's visualize how the EM algorithm progressively finds the clusters:</p>
+
+            <div class="em-animation">
+                <svg viewBox="0 0 500 280">
+                    <!-- Initial State -->
+                    <g id="init-state">
+                        <text x="80" y="25" fill="#b2bec3" font-size="12" font-weight="600">Initial Guess</text>
+                        <!-- Data points -->
+                        <circle cx="40" cy="80" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="55" cy="95" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="70" cy="75" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="85" cy="110" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="60" cy="130" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="100" cy="90" r="3" fill="#fff" opacity="0.6"/>
+                        <circle cx="45" cy="115" r="3" fill="#fff" opacity="0.6"/>
+                        <!-- Overlapping Gaussians -->
+                        <ellipse cx="70" cy="100" rx="35" ry="25" fill="none" stroke="#16697a" stroke-width="2" opacity="0.8"/>
+                        <ellipse cx="75" cy="95" rx="30" ry="20" fill="none" stroke="#db6400" stroke-width="2" opacity="0.8"/>
+                        <ellipse cx="68" cy="105" rx="28" ry="22" fill="none" stroke="#6b5b95" stroke-width="2" opacity="0.8"/>
+                    </g>
+                    
+                    <!-- Arrow -->
+                    <path d="M140 100 L175 100" stroke="#636e72" stroke-width="2" marker-end="url(#arrow)"/>
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#636e72"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- After few iterations -->
+                    <g id="mid-state" transform="translate(130, 0)">
+                        <text x="80" y="25" fill="#b2bec3" font-size="12" font-weight="600">After 5 iterations</text>
+                        <!-- Separating Gaussians -->
+                        <ellipse cx="50" cy="70" rx="30" ry="20" fill="none" stroke="#16697a" stroke-width="2"/>
+                        <ellipse cx="90" cy="120" rx="35" ry="25" fill="none" stroke="#db6400" stroke-width="2"/>
+                        <ellipse cx="110" cy="60" rx="25" ry="18" fill="none" stroke="#6b5b95" stroke-width="2"/>
+                        <!-- Data points with colors -->
+                        <circle cx="40" cy="65" r="3" fill="#16697a"/>
+                        <circle cx="55" cy="75" r="3" fill="#16697a"/>
+                        <circle cx="60" cy="60" r="3" fill="#16697a"/>
+                        <circle cx="80" cy="115" r="3" fill="#db6400"/>
+                        <circle cx="95" cy="125" r="3" fill="#db6400"/>
+                        <circle cx="105" cy="55" r="3" fill="#6b5b95"/>
+                        <circle cx="115" cy="65" r="3" fill="#6b5b95"/>
+                    </g>
+                    
+                    <!-- Arrow -->
+                    <path d="M270 100 L305 100" stroke="#636e72" stroke-width="2" marker-end="url(#arrow)"/>
+                    
+                    <!-- Converged -->
+                    <g id="final-state" transform="translate(260, 0)">
+                        <text x="80" y="25" fill="#b2bec3" font-size="12" font-weight="600">Converged</text>
+                        <!-- Well-separated Gaussians -->
+                        <ellipse cx="45" cy="60" rx="28" ry="22" fill="rgba(22,105,122,0.2)" stroke="#16697a" stroke-width="2"/>
+                        <ellipse cx="110" cy="130" rx="40" ry="25" fill="rgba(219,100,0,0.2)" stroke="#db6400" stroke-width="2"/>
+                        <ellipse cx="140" cy="55" rx="30" ry="20" fill="rgba(107,91,149,0.2)" stroke="#6b5b95" stroke-width="2"/>
+                        <!-- Data points -->
+                        <circle cx="35" cy="55" r="4" fill="#16697a"/>
+                        <circle cx="50" cy="65" r="4" fill="#16697a"/>
+                        <circle cx="55" cy="50" r="4" fill="#16697a"/>
+                        <circle cx="40" cy="70" r="4" fill="#16697a"/>
+                        <circle cx="95" cy="125" r="4" fill="#db6400"/>
+                        <circle cx="110" cy="135" r="4" fill="#db6400"/>
+                        <circle cx="125" cy="120" r="4" fill="#db6400"/>
+                        <circle cx="105" cy="140" r="4" fill="#db6400"/>
+                        <circle cx="130" cy="50" r="4" fill="#6b5b95"/>
+                        <circle cx="145" cy="60" r="4" fill="#6b5b95"/>
+                        <circle cx="155" cy="45" r="4" fill="#6b5b95"/>
+                    </g>
+                    
+                    <!-- Labels -->
+                    <text x="250" y="260" text-anchor="middle" fill="#b2bec3" font-size="11">EM iteratively refines Gaussian parameters until convergence</text>
+                </svg>
+            </div>
+
+            <div class="concept-card green">
+                <h4>Convergence Guarantee</h4>
+                <p style="margin-bottom: 0;">EM is guaranteed to converge to a <strong>local maximum</strong> of the likelihood. However, it may not find the global maximum! Running EM multiple times with different initializations helps find better solutions.</p>
+            </div>
+        </section>
+
+        <!-- Section 6: GMM vs K-means -->
+        <section class="section" id="comparison">
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h2>GMM vs K-Means</h2>
+            </div>
+
+            <p>You might notice GMM and K-means have similar iterative structures. Here's how they compare:</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card kmeans">
+                    <h4>K-Means</h4>
+                    <p><strong>Assignment:</strong> Hard (each point belongs to exactly one cluster)</p>
+                    <p><strong>Clusters:</strong> Spherical only</p>
+                    <p><strong>Output:</strong> Cluster labels</p>
+                    <p><strong>Objective:</strong> Minimize within-cluster variance</p>
+                    <p style="margin-bottom: 0;"><strong>Speed:</strong> Faster</p>
+                </div>
+                <div class="comparison-card gmm">
+                    <h4>GMM</h4>
+                    <p><strong>Assignment:</strong> Soft (probabilistic membership)</p>
+                    <p><strong>Clusters:</strong> Elliptical (any shape via covariance)</p>
+                    <p><strong>Output:</strong> Probabilities per cluster</p>
+                    <p><strong>Objective:</strong> Maximize likelihood</p>
+                    <p style="margin-bottom: 0;"><strong>Speed:</strong> Slower but more flexible</p>
+                </div>
+            </div>
+
+            <div class="intuition-box">
+                <p><strong>Fun fact:</strong> K-means is actually a special case of GMM! If you use spherical covariances ($\Sigma_k = \sigma^2 I$) with equal, fixed variances, and take the limit as $\sigma \to 0$, EM for GMM becomes equivalent to K-means.</p>
+            </div>
+        </section>
+
+        <!-- Section 7: Choosing K -->
+        <section class="section" id="model-selection">
+            <div class="section-header">
+                <span class="section-number">07</span>
+                <h2>Choosing the Number of Components K</h2>
+            </div>
+
+            <p>A critical question: <strong>How many Gaussian components should we use?</strong></p>
+
+            <div class="concept-card purple">
+                <h4>The Overfitting Problem</h4>
+                <p>Adding more components always increases the training likelihood! With K = N (one Gaussian per point), you could achieve perfect fit — but this is meaningless overfitting.</p>
+            </div>
+
+            <h3>Solution: Cross-Validation</h3>
+
+            <p>Use <strong>held-out log-likelihood</strong> on validation data:</p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 400 200">
+                    <!-- Axes -->
+                    <line x1="60" y1="160" x2="360" y2="160" stroke="#636e72" stroke-width="1"/>
+                    <line x1="60" y1="160" x2="60" y2="30" stroke="#636e72" stroke-width="1"/>
+                    
+                    <!-- Axis labels -->
+                    <text x="210" y="190" text-anchor="middle" fill="#636e72" font-size="12">Number of Components (K)</text>
+                    <text x="25" y="95" text-anchor="middle" fill="#636e72" font-size="12" transform="rotate(-90 25 95)">Held-out Log-Likelihood</text>
+                    
+                    <!-- K values -->
+                    <text x="100" y="175" text-anchor="middle" fill="#b2bec3" font-size="10">2</text>
+                    <text x="160" y="175" text-anchor="middle" fill="#b2bec3" font-size="10">4</text>
+                    <text x="220" y="175" text-anchor="middle" fill="#b2bec3" font-size="10">6</text>
+                    <text x="280" y="175" text-anchor="middle" fill="#b2bec3" font-size="10">8</text>
+                    <text x="340" y="175" text-anchor="middle" fill="#b2bec3" font-size="10">10</text>
+                    
+                    <!-- Curve -->
+                    <path d="M100,140 Q130,80 160,55 Q190,45 220,40 Q250,42 280,48 Q310,55 340,60" 
+                          fill="none" stroke="#16697a" stroke-width="3"/>
+                    
+                    <!-- Best K marker -->
+                    <circle cx="220" cy="40" r="6" fill="none" stroke="#db6400" stroke-width="2"/>
+                    <text x="220" y="25" text-anchor="middle" fill="#db6400" font-size="11" font-weight="600">Best K ≈ 6</text>
+                    
+                    <!-- Annotation -->
+                    <text x="130" y="120" fill="#636e72" font-size="10">Underfitting</text>
+                    <text x="300" y="75" fill="#636e72" font-size="10">Overfitting</text>
+                </svg>
+                <p class="diagram-caption">Cross-validation helps find the optimal number of components</p>
+            </div>
+
+            <p>Other approaches include <strong>BIC (Bayesian Information Criterion)</strong> and <strong>AIC (Akaike Information Criterion)</strong>, which penalize model complexity.</p>
+        </section>
+
+        <!-- Section 8: Beyond Gaussians -->
+        <section class="section" id="extensions">
+            <div class="section-header">
+                <span class="section-number">08</span>
+                <h2>Beyond Gaussian Components</h2>
+            </div>
+
+            <p>The mixture model framework is very flexible! You can use <strong>any distribution</strong> for the components, as long as you can define $p(\mathbf{x}_n | z_{nk}=1, \Delta_k)$.</p>
+
+            <h3>Example: Binary/Bernoulli Mixture</h3>
+
+            <p>For binary data (0s and 1s), use Bernoulli distributions:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Bernoulli Mixture Component</span>
+                <div class="formula-content">
+                    $$p(\mathbf{x}_n | z_{nk}=1, \Delta_k) = \prod_{d=1}^{D} p_{kd}^{x_{nd}} (1 - p_{kd})^{1-x_{nd}}$$
+                </div>
+                <div class="formula-explanation">
+                    • $x_{nd}$ is the d-th dimension of point n (either 0 or 1)<br>
+                    • $p_{kd}$ is the probability of dimension d being 1 in cluster k<br>
+                    • The M-step update: $p_{kd} = \frac{\sum_n q_{nk} x_{nd}}{\sum_n q_{nk}}$ (weighted average)
+                </div>
+            </div>
+
+            <p>This is useful for document clustering, survey data, or any binary feature vectors!</p>
+        </section>
+
+        <!-- Section 9: Summary -->
+        <section class="section" id="summary">
+            <div class="section-header">
+                <span class="section-number">09</span>
+                <h2>Summary</h2>
+            </div>
+
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Key Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Generative Model</strong></td>
+                        <td>Data is generated by first picking a component, then sampling from its distribution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GMM Parameters</strong></td>
+                        <td>Mixing coefficients $\pi_k$, means $\mu_k$, covariances $\Sigma_k$ for each component</td>
+                    </tr>
+                    <tr>
+                        <td><strong>E-step</strong></td>
+                        <td>Compute responsibilities $q_{nk}$ (soft assignments) using current parameters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M-step</strong></td>
+                        <td>Update $\mu_k$, $\Sigma_k$, $\pi_k$ using weighted statistics from responsibilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Convergence</strong></td>
+                        <td>Guaranteed to reach local maximum; use multiple restarts for better solutions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Model Selection</strong></td>
+                        <td>Use cross-validation, BIC, or AIC to choose K</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flexibility</strong></td>
+                        <td>Can use any distribution — Gaussian, Bernoulli, Poisson, etc.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="intuition-box">
+                <p><strong>The Big Picture:</strong> GMM gives you a probabilistic view of clustering. Instead of asking "which cluster does this point belong to?", you ask "what's the probability this point came from each cluster?" This uncertainty quantification is valuable in many real-world applications!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Gaussian Mixture Models & EM Algorithm — A Visual Guide for Beginners</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Based on MLAI4DS Clustering Lecture by Fani Deligianni, University of Glasgow</p>
+    </footer>
+
+    <script>
+        // Simple scroll animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('fade-in');
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

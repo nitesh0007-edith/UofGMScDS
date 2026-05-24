@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2019-2020 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        .subquestion {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2019-2020 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL questions. Write your answers clearly and show your working.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Polynomial Rescaling <span class="marks">[4 marks]</span></h3>
+            <p>In the Olympic example, why did we do rescaling in polynomial regression?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>In the Olympic data, high polynomials could make the value of \(x^d\) very big. <strong>[2 marks]</strong></p>
+            <p>As a result, the computation of parameters becomes unstable. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Note:</strong> When using high-degree polynomials, the input features raised to high powers can become extremely large values. This causes numerical instability during computation and makes it difficult to optimize the model parameters accurately. Rescaling helps keep values in a manageable range.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) RBF Basis Function Number <span class="marks">[4 marks]</span></h3>
+            <p>When the number of RBF basis function increases, will the model be more complex or simpler?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>The model will be more complex. <strong>[2 marks]</strong></p>
+            <p>There are more parameters. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Note:</strong> Each RBF basis function adds a new feature dimension to the model. More basis functions mean more parameters need to be learned, increasing the model's capacity to fit complex patterns but also increasing the risk of overfitting.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Ridge vs Lasso Regularization <span class="marks">[6 marks]</span></h3>
+            <p>Please explain the difference between Ridge and Lasso for regularization.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Ridge Regression:</strong></p>
+            <ul>
+                <li>Uses L2 penalty term: \(\lambda \sum_{j=1}^{D} w_j^2\) <strong>[1 mark]</strong></li>
+                <li>Shrinks coefficients but keeps all features (coefficients approach zero but don't become exactly zero) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Lasso Regression:</strong></p>
+            <ul>
+                <li>Uses L1 penalty term: \(\lambda \sum_{j=1}^{D} |w_j|\) <strong>[1 mark]</strong></li>
+                <li>Can shrink some coefficients to exactly zero, performing feature selection <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Key Difference:</strong></p>
+            <p>Lasso can perform automatic feature selection by setting some weights to zero, while Ridge only shrinks weights towards zero without eliminating them. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Practical Tip:</strong> Use Lasso when you suspect some features are irrelevant and want automatic feature selection. Use Ridge when you want to keep all features but reduce their influence.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Training vs Test Error <span class="marks">[6 marks]</span></h3>
+            <p>Please define training error and test error.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Training Error:</strong></p>
+            <p>The error calculated on the training dataset that was used to fit/train the model. <strong>[3 marks]</strong></p>
+            <p>Formula: \(E_{train} = \frac{1}{N_{train}} \sum_{i=1}^{N_{train}} (y_i - \hat{y}_i)^2\)</p>
+
+            <p><strong>Test Error:</strong></p>
+            <p>The error calculated on a separate test dataset that was not used during training. It measures how well the model generalizes to new, unseen data. <strong>[3 marks]</strong></p>
+            <p>Formula: \(E_{test} = \frac{1}{N_{test}} \sum_{i=1}^{N_{test}} (y_i - \hat{y}_i)^2\)</p>
+
+            <div class="note">
+                <strong>Important:</strong> Test error is a better indicator of model performance on real-world data. Training error can be misleadingly low if the model overfits the training data.
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) k-NN Decision Boundary <span class="marks">[4 marks]</span></h3>
+            <p>Does the decision boundary have to be linear in k-NN?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>No, the decision boundary does not have to be linear. <strong>[2 marks]</strong></p>
+            <p>k-NN can produce non-linear decision boundaries because it makes predictions based on the majority class of the k nearest neighbors, which can create complex, curved boundaries. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Note:</strong> This is one of the advantages of k-NN - it can capture complex, non-linear relationships in the data without assuming any particular functional form.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) SVM Kernel Trick <span class="marks">[6 marks]</span></h3>
+            <p>Why is the kernel trick important for SVM?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>The kernel trick allows SVM to work in high-dimensional feature spaces without explicitly computing the transformation. <strong>[3 marks]</strong></p>
+            <p>This makes it computationally efficient to find non-linear decision boundaries by implicitly mapping data to higher dimensions where it becomes linearly separable. <strong>[3 marks]</strong></p>
+
+            <div class="note">
+                <strong>Example:</strong> Instead of computing \(\phi(x_i) \cdot \phi(x_j)\) directly (which could be expensive in high dimensions), we compute \(K(x_i, x_j)\) directly, such as the RBF kernel: \(K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)\)
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) AUC Calculation <span class="marks">[10 marks]</span></h3>
+            <p>Given the following data, please calculate the AUC (Area Under the ROC Curve) for two different threshold scenarios.</p>
+
+            <table>
+                <tr>
+                    <th>Class label</th>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>Output</th>
+                    <td>0.8</td>
+                    <td>0.7</td>
+                    <td>0.6</td>
+                    <td>0.4</td>
+                    <td>0.1</td>
+                </tr>
+            </table>
+
+            <p>(i) When the threshold is between 0.4 and 1.0</p>
+            <p>(ii) When the threshold is less than 0.4</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Threshold between 0.4 and 1.0: AUC = 1</strong> <strong>[5 marks]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+            <p>When threshold is in the range [0.4, 1.0], we need to check different threshold values:</p>
+            <ul>
+                <li>Threshold = 0.8: Only output 0.8 is classified as positive (class 1), which is correct (TP=1, FP=0)</li>
+                <li>Threshold = 0.7: Outputs 0.8 classified as positive, both are class 1 (TP=1, FP=0)</li>
+                <li>Threshold = 0.6: Outputs 0.8, 0.7, 0.6 classified as positive. We get TP=2, FP=1</li>
+                <li>Threshold = 0.4: Outputs 0.8, 0.7, 0.6, 0.4 classified as positive. We get TP=3, FP=1</li>
+            </ul>
+            <p>For this range, the ROC curve achieves perfect classification at certain thresholds, giving AUC = 1.</p>
+
+            <p><strong>(ii) Threshold less than 0.4: AUC < 1</strong> <strong>[5 marks]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+            <p>When threshold is less than 0.4 (e.g., threshold = 0.1):</p>
+            <ul>
+                <li>All outputs (0.8, 0.7, 0.6, 0.4, 0.1) are classified as positive</li>
+                <li>True Positives (TP) = 3 (all actual class 1 instances)</li>
+                <li>False Positives (FP) = 2 (all actual class 0 instances)</li>
+                <li>The classifier now misclassifies the negative examples, reducing performance</li>
+            </ul>
+            <p>This gives us less than perfect classification, so AUC < 1.</p>
+
+            <div class="note">
+                <strong>Key Concept:</strong> AUC measures the classifier's ability to distinguish between classes across all possible thresholds. An AUC of 1 means perfect classification, while 0.5 means random guessing.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Centroids <span class="marks">[4 marks]</span></h3>
+            <p>In K-means clustering, how do we update the centroids?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>We update each centroid by calculating the mean (average) of all data points assigned to that cluster. <strong>[2 marks]</strong></p>
+            <p>Formula: \(\mu_k = \frac{1}{|C_k|} \sum_{x_i \in C_k} x_i\), where \(C_k\) is the set of points assigned to cluster \(k\). <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Algorithm Step:</strong> After assigning each point to its nearest centroid, we recalculate each centroid as the mean of all points in that cluster. This process repeats until convergence.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means Distance <span class="marks">[6 marks]</span></h3>
+            <p>How do we calculate the distance in Kernel K-means?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>In Kernel K-means, we use the kernel trick to compute distances in the feature space without explicitly computing the transformation. <strong>[2 marks]</strong></p>
+
+            <p>The squared distance from a point \(x_i\) to cluster \(k\) is:</p>
+            <p>\[\|\phi(x_i) - \mu_k\|^2 = K(x_i, x_i) - \frac{2}{|C_k|}\sum_{x_j \in C_k} K(x_i, x_j) + \frac{1}{|C_k|^2}\sum_{x_j, x_l \in C_k} K(x_j, x_l)\]</p>
+            <strong>[4 marks]</strong>
+
+            <div class="note">
+                <strong>Key Point:</strong> We never need to compute \(\phi(x)\) explicitly. All computations are done using the kernel function \(K(x_i, x_j)\), which makes it efficient even for high-dimensional or infinite-dimensional feature spaces.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) GMM vs K-means <span class="marks">[6 marks]</span></h3>
+            <p>What are the main differences between Gaussian Mixture Models (GMM) and K-means?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Assignment Type:</strong></p>
+            <ul>
+                <li>K-means: Hard assignment - each point belongs to exactly one cluster <strong>[1 mark]</strong></li>
+                <li>GMM: Soft assignment - each point has a probability of belonging to each cluster <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Cluster Shape:</strong></p>
+            <ul>
+                <li>K-means: Assumes spherical clusters with equal size <strong>[1 mark]</strong></li>
+                <li>GMM: Can model elliptical clusters with different sizes and orientations (due to covariance matrices) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>Mathematical Foundation:</strong></p>
+            <ul>
+                <li>K-means: Distance-based (minimizes within-cluster sum of squares) <strong>[1 mark]</strong></li>
+                <li>GMM: Probabilistic model (maximizes likelihood using EM algorithm) <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>When to Use:</strong> Use K-means for quick clustering of well-separated, spherical clusters. Use GMM when clusters have different shapes/sizes or when you need probability estimates for cluster membership.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) PCA Variance <span class="marks">[4 marks]</span></h3>
+            <p>In PCA, what does the eigenvalue represent?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p>The eigenvalue represents the amount of variance explained by the corresponding principal component (eigenvector). <strong>[2 marks]</strong></p>
+            <p>Larger eigenvalues indicate directions in the data with more variance, which are more important for capturing the structure of the data. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Practical Use:</strong> We typically select principal components with the largest eigenvalues to retain most of the variance while reducing dimensionality. For example, if the first 3 eigenvalues account for 95% of total variance, we can use just 3 components instead of all features.
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Remember to show all working in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSF Lec 2 – Cyber Attacks & Security Protocols</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;
+  --green:#3fb950;--red:#f85149;--yellow:#d29922;--purple:#bc8cff;
+  --orange:#f0883e;--text:#c9d1d9;--muted:#8b949e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:#0d1117ee;backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+nav span{color:var(--accent);font-weight:700;margin-right:8px;font-size:16px}
+nav a{color:var(--muted);text-decoration:none;font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+nav a:hover{color:var(--accent);border-color:var(--accent);background:#58a6ff11}
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:30px 20px}
+h1{font-size:2.2em;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.subtitle{color:var(--muted);margin-bottom:40px;font-size:1em}
+h2{font-size:1.5em;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px}
+h3{font-size:1.1em;color:var(--yellow);margin:24px 0 10px}
+h4{color:var(--green);margin:16px 0 8px}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0}
+.highlight{border-left:4px solid var(--accent);padding:12px 16px;background:#58a6ff0d;border-radius:0 8px 8px 0;margin:12px 0}
+.warning{border-left:4px solid var(--red);padding:12px 16px;background:#f8514911;border-radius:0 8px 8px 0;margin:12px 0}
+.success{border-left:4px solid var(--green);padding:12px 16px;background:#3fb95011;border-radius:0 8px 8px 0;margin:12px 0}
+.info{border-left:4px solid var(--yellow);padding:12px 16px;background:#d2992211;border-radius:0 8px 8px 0;margin:12px 0}
+/* TAGS */
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-red{background:#f8514922;color:var(--red);border:1px solid var(--red)}
+.tag-green{background:#3fb95022;color:var(--green);border:1px solid var(--green)}
+.tag-blue{background:#58a6ff22;color:var(--accent);border:1px solid var(--accent)}
+.tag-yellow{background:#d2992222;color:var(--yellow);border:1px solid var(--yellow)}
+.tag-purple{background:#bc8cff22;color:var(--purple);border:1px solid var(--purple)}
+/* CODE */
+pre{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-size:13px;line-height:1.5;margin:12px 0}
+code{font-family:'Fira Code','Cascadia Code',monospace}
+.inline-code{background:#161b22;border:1px solid var(--border);padding:2px 6px;border-radius:4px;font-size:12px;font-family:monospace}
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#21262d;color:var(--accent);padding:10px 12px;text-align:left;border:1px solid var(--border)}
+td{padding:9px 12px;border:1px solid var(--border)}
+tr:nth-child(even){background:#161b22}
+tr:hover{background:#21262d}
+/* QUIZ */
+.quiz-section{background:#0d1117;border:2px solid var(--purple);border-radius:12px;padding:24px;margin:24px 0}
+.quiz-section h3{color:var(--purple);margin-top:0}
+.question-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin:16px 0}
+.question-block .q{font-weight:600;color:var(--text);margin-bottom:12px}
+.options label{display:block;padding:8px 12px;margin:6px 0;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s}
+.options label:hover{border-color:var(--accent);background:#58a6ff11}
+.options input[type=radio]{margin-right:8px}
+.check-btn{background:var(--accent);color:#0d1117;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:10px;font-size:13px;transition:all .2s}
+.check-btn:hover{background:#79c0ff}
+.answer-reveal{margin-top:12px;padding:12px;border-radius:8px;display:none;font-size:13px}
+.correct-answer{background:#3fb95022;border:1px solid var(--green);color:var(--green)}
+.wrong-answer{background:#f8514922;border:1px solid var(--red);color:var(--red)}
+/* EXAM Q */
+.exam-q{background:var(--card);border:2px solid var(--yellow);border-radius:12px;padding:20px;margin:20px 0}
+.exam-q .qnum{color:var(--yellow);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.exam-q .marks{float:right;background:#d2992222;color:var(--yellow);padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700}
+.solution{background:#0d1117;border:1px solid var(--green);border-radius:8px;padding:16px;margin-top:12px;display:none}
+.solution-btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:6px 16px;border-radius:8px;cursor:pointer;font-size:12px;margin-top:10px;transition:all .2s}
+.solution-btn:hover{background:#3fb95022}
+/* ANIMATION */
+.osi-layer{transition:all .3s;cursor:pointer;border-radius:8px;padding:10px 16px;margin:4px 0;display:flex;align-items:center;gap:12px;border:1px solid var(--border)}
+.osi-layer:hover{transform:translateX(8px);border-color:var(--accent)}
+.layer-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+/* ATTACK DIAGRAM */
+.attack-diagram{display:flex;align-items:center;justify-content:center;gap:0;margin:20px 0;flex-wrap:wrap}
+.actor{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;min-width:100px}
+.actor.alice{border-color:var(--green)}
+.actor.bob{border-color:var(--accent)}
+.actor.eve{border-color:var(--red)}
+.arrow{display:flex;align-items:center;color:var(--muted);font-size:20px;padding:0 8px;flex-direction:column;font-size:11px;gap:4px}
+.arrow-line{width:80px;height:2px;background:var(--muted);position:relative}
+.arrow-line::after{content:'▶';position:absolute;right:-8px;top:-8px;font-size:14px}
+.arrow-line.red-line{background:var(--red)}
+.arrow-line.red-line::after{color:var(--red)}
+/* TCP */
+.tcp-step{display:flex;align-items:center;gap:16px;margin:8px 0;padding:10px 16px;background:var(--card);border-radius:8px;border-left:3px solid var(--accent)}
+/* ACCORDION */
+.accordion-header{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin:6px 0;transition:all .2s}
+.accordion-header:hover{border-color:var(--accent);background:#58a6ff08}
+.accordion-content{display:none;background:#0d1117;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:16px}
+/* CIPHER TABLE */
+.cipher-table-wrap{overflow-x:auto}
+.cipher-cell{width:36px;text-align:center;font-family:monospace;font-weight:700}
+.highlight-cell{background:#58a6ff33;color:var(--accent)}
+/* PROGRESS */
+.progress-bar{background:var(--border);border-radius:10px;height:8px;margin:8px 0;overflow:hidden}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--purple));transition:width 1s ease}
+/* SECTION NAV */
+section{scroll-margin-top:60px}
+/* RSA STEPS */
+.rsa-step{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0;position:relative;padding-left:52px}
+.rsa-step::before{content:attr(data-step);position:absolute;left:14px;top:50%;transform:translateY(-50%);width:26px;height:26px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#0d1117;line-height:26px;text-align:center}
+/* FLIPCARD */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin:16px 0}
+.flip-card{height:130px;perspective:600px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.flip-card:hover .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;font-size:13px}
+.flip-front{background:var(--card);border:1px solid var(--border)}
+.flip-back{background:#161b22;border:1px solid var(--accent);transform:rotateY(180deg);color:var(--text);font-size:12px}
+.flip-front strong{color:var(--yellow)}
+/* ANIMATED BADGE */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #58a6ff44}50%{box-shadow:0 0 0 8px #58a6ff00}}
+.badge-pulse{animation:pulse 2s infinite;border-radius:8px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .5s ease forwards}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+/* SCORE */
+#score-display{position:fixed;bottom:20px;right:20px;background:var(--card);border:2px solid var(--purple);border-radius:12px;padding:12px 18px;font-size:13px;z-index:200;display:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <span>CSF Lec 2</span>
+  <a href="#networks">Networks</a>
+  <a href="#osi">OSI</a>
+  <a href="#attacks">Attacks</a>
+  <a href="#dos">DoS/DDoS</a>
+  <a href="#mitm">MITM</a>
+  <a href="#protocols">Protocols</a>
+  <a href="#crypto">Crypto</a>
+  <a href="#cbc-ecb">ECB/CBC</a>
+  <a href="#rsa">RSA</a>
+  <a href="#auth">Auth</a>
+  <a href="#flashcards">Flashcards</a>
+  <a href="#exam">Exam Q&A</a>
+</nav>
+
+<div id="score-display">Quiz Score: <span id="score-val">0</span> / <span id="score-total">0</span></div>
+
+<div class="container">
+<h1>Cyber Attacks & Security Protocols</h1>
+<p class="subtitle">COMPSCI4062/5063 Cyber Security Fundamentals — Lecture 2 &amp; Full Course Revision</p>
+
+<!-- ==================== SECTION 1: NETWORKS ==================== -->
+<section id="networks">
+<h2>🌐 Network Structures</h2>
+<div class="card-grid">
+  <div class="card">
+    <h4>PAN</h4><p>Personal Area Network — Bluetooth, USB. Range: ~10m</p>
+  </div>
+  <div class="card">
+    <h4>LAN</h4><p>Local Area Network — Office/Home. Ethernet, Wi-Fi. Range: Building</p>
+  </div>
+  <div class="card">
+    <h4>WLAN</h4><p>Wireless LAN — IEEE 802.11. Vulnerable to eavesdropping</p>
+  </div>
+  <div class="card">
+    <h4>MAN</h4><p>Metropolitan Area Network — City-wide (e.g., university campus)</p>
+  </div>
+  <div class="card">
+    <h4>WAN</h4><p>Wide Area Network — The Internet. Spans countries/continents</p>
+  </div>
+  <div class="card">
+    <h4>VPN</h4><p>Virtual Private Network — Encrypted tunnel over public network</p>
+  </div>
+</div>
+</section>
+
+<!-- ==================== SECTION 2: OSI ==================== -->
+<section id="osi">
+<h2>📶 OSI Model — 7 Layers</h2>
+<p style="color:var(--muted);margin-bottom:16px">Hover over each layer to see details. Mnemonic: <strong style="color:var(--yellow)">"Please Do Not Throw Sausage Pizza Away"</strong></p>
+
+<div id="osi-container"></div>
+
+<div class="card" style="margin-top:20px">
+<h3>Layer Mnemonic (Bottom→Top)</h3>
+<p><strong style="color:var(--accent)">P</strong>hysical &nbsp;→&nbsp; <strong style="color:var(--accent)">D</strong>ata Link &nbsp;→&nbsp; <strong style="color:var(--accent)">N</strong>etwork &nbsp;→&nbsp; <strong style="color:var(--accent)">T</strong>ransport &nbsp;→&nbsp; <strong style="color:var(--accent)">S</strong>ession &nbsp;→&nbsp; <strong style="color:var(--accent)">P</strong>resentation &nbsp;→&nbsp; <strong style="color:var(--accent)">A</strong>pplication</p>
+<p style="margin-top:8px;color:var(--muted)">"<strong>Please Do Not Throw Sausage Pizza Away</strong>"</p>
+</div>
+
+<div class="card">
+<h3>Which Layer is an Attack On?</h3>
+<table>
+<tr><th>Attack</th><th>OSI Layer</th><th>Why</th></tr>
+<tr><td>ARP Poisoning</td><td><span class="tag tag-red">Layer 2 (Data Link)</span></td><td>ARP operates at Data Link layer</td></tr>
+<tr><td>IP Spoofing</td><td><span class="tag tag-yellow">Layer 3 (Network)</span></td><td>Forges IP addresses</td></tr>
+<tr><td>TCP SYN Flood</td><td><span class="tag tag-blue">Layer 4 (Transport)</span></td><td>Exploits TCP handshake</td></tr>
+<tr><td>DNS Spoofing</td><td><span class="tag tag-purple">Layer 7 (Application)</span></td><td>DNS is an application protocol</td></tr>
+<tr><td>SSL Stripping</td><td><span class="tag tag-purple">Layer 6 (Presentation)</span></td><td>Attacks encryption/decryption</td></tr>
+<tr><td>Phishing</td><td><span class="tag tag-purple">Layer 7 (Application)</span></td><td>Targets user-facing apps</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== SECTION 3: ATTACKS ==================== -->
+<section id="attacks">
+<h2>⚔️ Cyber Attacks</h2>
+
+<div class="card-grid">
+  <div class="card badge-pulse" style="border-color:var(--red)">
+    <h4 style="color:var(--red)">Active Attack</h4>
+    <p>Attempts to <strong>alter</strong> system resources or operations</p>
+    <p style="margin-top:8px;font-size:12px;color:var(--muted)">Examples: DoS, Spoofing, MITM, ARP poisoning</p>
+  </div>
+  <div class="card" style="border-color:var(--yellow)">
+    <h4 style="color:var(--yellow)">Passive Attack</h4>
+    <p>Attempts to <strong>learn information</strong> without affecting resources</p>
+    <p style="margin-top:8px;font-size:12px;color:var(--muted)">Examples: Wiretapping, fiber tapping</p>
+  </div>
+</div>
+
+<h3>Common Security Problems</h3>
+<div class="flip-grid">
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Snooping</strong></div>
+    <div class="flip-back">Unauthorized reading/interception of information. <br><em>Example: Packet sniffing on a WiFi network</em></div>
+  </div></div>
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Modification</strong></div>
+    <div class="flip-back">Unauthorized change of information in transit. <br><em>Example: MITM alters bank transfer amount</em></div>
+  </div></div>
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Masquerading / Spoofing</strong></div>
+    <div class="flip-back">Impersonation of one entity by another. <br><em>Example: Attacker pretends to be your bank</em></div>
+  </div></div>
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Repudiation</strong></div>
+    <div class="flip-back">False denial of sending/creating information. <br><em>Example: "I never sent that email"</em></div>
+  </div></div>
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Denial of Receipt</strong></div>
+    <div class="flip-back">False denial of <em>receiving</em> information. <br><em>Example: "I never got that contract"</em></div>
+  </div></div>
+  <div class="flip-card"><div class="flip-inner">
+    <div class="flip-front"><strong>Denial of Service</strong></div>
+    <div class="flip-back">Long-term inhibition of access to services. <br><em>Example: Flooding a server with requests</em></div>
+  </div></div>
+</div>
+<p style="color:var(--muted);font-size:12px;text-align:center">↑ Hover over cards to flip and see details</p>
+
+<h3>Threat vs Vulnerability vs Risk</h3>
+<div class="card-grid">
+  <div class="card" style="border-color:var(--red)">
+    <h4 style="color:var(--red)">Threat</h4>
+    <p>Someone/something with potential to cause harm</p>
+    <p class="tag tag-red">Example: Phishing attack</p>
+  </div>
+  <div class="card" style="border-color:var(--yellow)">
+    <h4 style="color:var(--yellow)">Vulnerability</h4>
+    <p>Weakness that makes threat outcomes more likely or dangerous</p>
+    <p class="tag tag-yellow">Example: SQL injection flaw, unpatched software</p>
+  </div>
+  <div class="card" style="border-color:var(--purple)">
+    <h4 style="color:var(--purple)">Risk</h4>
+    <p>Probability of threat × Impact / Loss</p>
+    <div class="highlight" style="margin-top:8px">
+      \[ \text{Risk} = \text{Threat Probability} \times \text{Impact} \]
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== SECTION 4: DoS/DDoS ==================== -->
+<section id="dos">
+<h2>💥 DoS &amp; DDoS Attacks</h2>
+
+<div class="card" style="border-color:var(--red)">
+<h3>Denial of Service (DoS)</h3>
+<p>Compromises <strong>availability</strong> by exhausting critical resources:</p>
+<ul style="margin:12px 0 0 20px;line-height:2">
+  <li><strong>Network bandwidth</strong> — Flood with traffic</li>
+  <li><strong>System resources</strong> — CPU, RAM exhaustion</li>
+  <li><strong>Application resources</strong> — Connection pools, threads</li>
+</ul>
+</div>
+
+<h3>TCP SYN Spoofing (Classic DoS)</h3>
+<div class="card">
+<p>Attacker sends many SYN packets with <strong>spoofed source IPs</strong>. Server allocates memory for half-open connections, becomes overwhelmed.</p>
+<pre><code>Attacker (spoofed IPs)          Server
+    SYN (IP=1.2.3.4)  ──────►  Allocates slot, sends SYN+ACK
+    SYN (IP=5.6.7.8)  ──────►  Allocates slot, sends SYN+ACK
+    SYN (IP=9.0.1.2)  ──────►  Allocates slot...
+    ...×10000         ──────►  ⚠️ Memory exhausted! Legit users denied</code></pre>
+</div>
+
+<h3>Normal TCP Three-Way Handshake</h3>
+<div class="card">
+<div class="tcp-step"><span style="color:var(--green);font-weight:700;width:60px">Step 1</span><span><strong>SYN</strong> — Client sends synchronize request to server</span></div>
+<div class="tcp-step"><span style="color:var(--yellow);font-weight:700;width:60px">Step 2</span><span><strong>SYN+ACK</strong> — Server acknowledges and responds with its own SYN</span></div>
+<div class="tcp-step"><span style="color:var(--accent);font-weight:700;width:60px">Step 3</span><span><strong>ACK</strong> — Client acknowledges server response. Connection established!</span></div>
+<div class="success" style="margin-top:12px">Purpose: Reliable connection establishment. Used by TCP only (not UDP).</div>
+</div>
+
+<h3>DDoS — Distributed DoS</h3>
+<div class="card-grid">
+  <div class="card" style="border-color:var(--red)">
+    <h4>Volumetric Attacks</h4>
+    <p>Saturate bandwidth with massive traffic (UDP flood, ICMP flood)</p>
+    <p style="margin-top:8px"><strong>Measured in:</strong> Gbps</p>
+  </div>
+  <div class="card" style="border-color:var(--yellow)">
+    <h4>Protocol Attacks</h4>
+    <p>Exploit Layer 3/4 weaknesses (SYN flood, Smurf attack)</p>
+    <p style="margin-top:8px"><strong>Measured in:</strong> PPS (packets/sec)</p>
+  </div>
+  <div class="card" style="border-color:var(--purple)">
+    <h4>Application Layer</h4>
+    <p>Target Layer 7 — HTTP GET/POST floods, Slowloris</p>
+    <p style="margin-top:8px"><strong>Measured in:</strong> RPS (requests/sec)</p>
+  </div>
+</div>
+
+<div class="warning">
+  <strong>Key Exam Point:</strong> DoS/DDoS attacks <em>cannot be entirely prevented</em>. You can only mitigate, detect, and respond.
+</div>
+
+<h3>DDoS Defence Strategies</h3>
+<div class="accordion-header" onclick="toggleAcc(this)">Build a Response Plan <span>▼</span></div>
+<div class="accordion-content"><p>Document roles, responsibilities, escalation paths. Have runbooks ready before an attack occurs.</p></div>
+<div class="accordion-header" onclick="toggleAcc(this)">Protect Network Infrastructure <span>▼</span></div>
+<div class="accordion-content"><p>Use firewalls, IDS/IPS, rate limiting, and traffic scrubbing centers (e.g., Cloudflare, Akamai).</p></div>
+<div class="accordion-header" onclick="toggleAcc(this)">Attack Prevention / Preemption <span>▼</span></div>
+<div class="accordion-content"><p>SYN cookies, connection limits, ingress/egress filtering (BCP38).</p></div>
+<div class="accordion-header" onclick="toggleAcc(this)">Detection and Filtering <span>▼</span></div>
+<div class="accordion-content"><p>Anomaly detection, rate-based triggers, blackholing suspicious IPs.</p></div>
+<div class="accordion-header" onclick="toggleAcc(this)">Traceback and Identification <span>▼</span></div>
+<div class="accordion-content"><p>IP traceback, network forensics, co-operation with ISPs to trace attack origin.</p></div>
+</section>
+
+<!-- ==================== SECTION 5: MITM ==================== -->
+<section id="mitm">
+<h2>🕵️ Man-in-the-Middle (MITM) Attack</h2>
+
+<div class="attack-diagram">
+  <div class="actor alice"><div style="font-size:24px">👩</div><div style="color:var(--green);font-weight:700">Alice</div><div style="font-size:11px;color:var(--muted)">Sender</div></div>
+  <div class="arrow"><span>────►</span><span style="color:var(--muted);font-size:10px">thinks talking to Bob</span></div>
+  <div class="actor eve" style="background:#f8514911"><div style="font-size:24px">😈</div><div style="color:var(--red);font-weight:700">Eve</div><div style="font-size:11px;color:var(--muted)">MITM Attacker</div></div>
+  <div class="arrow"><span>────►</span><span style="color:var(--muted);font-size:10px">relays to Bob</span></div>
+  <div class="actor bob"><div style="font-size:24px">👨</div><div style="color:var(--accent);font-weight:700">Bob</div><div style="font-size:11px;color:var(--muted)">Receiver</div></div>
+</div>
+
+<div class="card">
+<p>Eve <strong>intercepts, monitors, and/or alters</strong> communication between Alice and Bob. Neither party knows Eve exists.</p>
+</div>
+
+<h3>Types of MITM Attacks</h3>
+<table>
+<tr><th>Attack Type</th><th>How It Works</th><th>Layer</th></tr>
+<tr><td>WiFi Eavesdropping</td><td>Attacker on same (or rogue) WiFi network sniffs unencrypted traffic</td><td>2/3</td></tr>
+<tr><td>ARP Spoofing</td><td>Attacker sends fake ARP replies to associate their MAC with victim's IP</td><td>2</td></tr>
+<tr><td>DNS Spoofing</td><td>Poisoned DNS cache redirects domain to attacker's IP</td><td>7</td></tr>
+<tr><td>IP Spoofing</td><td>Forge source IP to impersonate trusted host</td><td>3</td></tr>
+<tr><td>SSL Stripping</td><td>Downgrade HTTPS to HTTP to intercept plaintext</td><td>6/7</td></tr>
+<tr><td>Email Hijacking</td><td>Intercept email communications via compromised mail server</td><td>7</td></tr>
+</table>
+
+<h3>MITM Defences</h3>
+<div class="card-grid">
+  <div class="card success">
+    <h4>Wireless Encryption</h4>
+    <p>Use WPA3 (not WEP/WPA) for wireless networks</p>
+  </div>
+  <div class="card success">
+    <h4>VPN</h4>
+    <p>Encrypted tunnel prevents eavesdropping on public networks</p>
+  </div>
+  <div class="card success">
+    <h4>Strong Credentials</h4>
+    <p>MFA, certificate pinning, HSTS for web</p>
+  </div>
+  <div class="card success">
+    <h4>Public Key Authentication</h4>
+    <p>Certificate-based auth at various stack layers</p>
+  </div>
+</div>
+</section>
+
+<!-- ==================== SECTION 6: SECURITY PROTOCOLS ==================== -->
+<section id="protocols">
+<h2>🔒 Security Protocols</h2>
+
+<h3>Part A — Keeping a Secret</h3>
+<div class="card-grid">
+  <div class="card">
+    <h4>Protocol 1: Memorize</h4>
+    <p><span class="tag tag-green">Suitable for</span> Short secrets (passwords, keys)</p>
+    <p><span class="tag tag-red">Limitation</span> Not for long secrets</p>
+  </div>
+  <div class="card">
+    <h4>Protocol 2: Paper</h4>
+    <p><span class="tag tag-yellow">Threat</span> Physical access by attacker</p>
+    <p><span class="tag tag-red">Risk</span> Loss of paper → loss of secret</p>
+    <p><span class="tag tag-blue">Mitigation</span> Backups (but need secure tracking)</p>
+  </div>
+  <div class="card">
+    <h4>Protocol 3: Computer File</h4>
+    <p><span class="tag tag-red">Vulnerabilities</span></p>
+    <ul style="margin-top:8px;margin-left:16px;font-size:13px;line-height:1.8">
+      <li>Periodic backups made automatically</li>
+      <li>Easy file copying</li>
+      <li>Deleted files can be recovered</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Protocol 4: File Encryption</h4>
+    <p>Encrypt plaintext → ciphertext. Must erase original plaintext <em>including all copies and backups</em></p>
+    <p><span class="tag tag-yellow">Time-limited vulnerability</span> While plaintext is in filesystem</p>
+  </div>
+  <div class="card">
+    <h4>Protocol 5: Secret Algorithm</h4>
+    <p><span class="tag tag-red">Threat</span> Algorithm discovery</p>
+    <p><span class="tag tag-red">Problem</span> Algorithms are computer programs — cannot be encrypted</p>
+    <p><span class="tag tag-red">Risk</span> Designers at physical risk (coercion)</p>
+  </div>
+</div>
+
+<h3>Part B — Communicating a Secret (Alice → Bob, Eve eavesdropping)</h3>
+<div class="highlight">The fundamental problem: Alice wants to send secret info to Bob without Eve finding out.</div>
+
+<div class="card-grid">
+  <div class="card">
+    <h4>Protocol 1: Secure Transmission Medium</h4>
+    <p>Meet in secure room. Electronic transmissions easily intercepted. Email can be stored.</p>
+    <p><span class="tag tag-red">Impractical</span> Cannot always meet physically</p>
+  </div>
+  <div class="card">
+    <h4>Protocol 2: Secure Preparation</h4>
+    <p>Alice encrypts in secure area → sends via insecure medium → Bob decrypts in secure area</p>
+    <p><span class="tag tag-yellow">Assumption</span> Eve can intercept AND replace messages</p>
+  </div>
+  <div class="card">
+    <h4>Protocol 3: Secret Algorithm</h4>
+    <p>Keep algorithm details secret</p>
+    <p><span class="tag tag-red">Problems</span> No peer review → more flaws. Designers at risk.</p>
+  </div>
+  <div class="card badge-pulse">
+    <h4>Protocol 4: Public Algorithm, Secret Key</h4>
+    <p>Algorithm is <strong>public</strong>. Parameter (key) is <strong>secret</strong>.</p>
+    <p>Knowledge of algorithm is <em>useless</em> without the key.</p>
+    <p><span class="tag tag-green">Also called</span> One-key / Symmetric Encryption</p>
+  </div>
+</div>
+
+<h3>CIA Triad</h3>
+<div class="card-grid">
+  <div class="card" style="border-color:var(--accent);text-align:center">
+    <div style="font-size:40px">🔏</div>
+    <h4 style="color:var(--accent)">Confidentiality</h4>
+    <p>Only authorized people can access information</p>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">NHS Example: Patient records accessible only to authorized doctors</p>
+  </div>
+  <div class="card" style="border-color:var(--green);text-align:center">
+    <div style="font-size:40px">✅</div>
+    <h4 style="color:var(--green)">Integrity</h4>
+    <p>Information is not changed without authorization</p>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">NHS Example: Patient records cannot be altered without permission</p>
+  </div>
+  <div class="card" style="border-color:var(--yellow);text-align:center">
+    <div style="font-size:40px">⚡</div>
+    <h4 style="color:var(--yellow)">Availability</h4>
+    <p>Authorized users can access information when needed</p>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">NHS Example: Doctors can access records 24/7</p>
+  </div>
+</div>
+</section>
+
+<!-- ==================== SECTION 7: CRYPTOGRAPHY ==================== -->
+<section id="crypto">
+<h2>🔐 Cryptography Fundamentals</h2>
+
+<h3>Symmetric vs Asymmetric Encryption</h3>
+<table>
+<tr><th>Feature</th><th>Symmetric</th><th>Asymmetric (Public Key)</th></tr>
+<tr><td>Keys used</td><td>1 shared secret key</td><td>2 keys: public + private</td></tr>
+<tr><td>Speed</td><td>Fast</td><td>Slow</td></tr>
+<tr><td>Key distribution problem</td><td>Yes — how to share key securely?</td><td>No — public key can be shared openly</td></tr>
+<tr><td>Examples</td><td>AES, DES, 3DES</td><td>RSA, ECC, Diffie-Hellman</td></tr>
+<tr><td>Use case</td><td>Bulk data encryption</td><td>Key exchange, digital signatures</td></tr>
+</table>
+
+<h3>Block Cipher Modes</h3>
+<div class="highlight">A block cipher encrypts fixed-size blocks (e.g., 128-bit for AES). The <em>mode of operation</em> determines how multiple blocks are chained together.</div>
+
+<div class="card-grid">
+  <div class="card" style="border-color:var(--red)">
+    <h4 style="color:var(--red)">ECB — Electronic Codebook</h4>
+    <p>Each block encrypted <strong>independently</strong> with the same key</p>
+    <pre><code>C_i = E_K(P_i)</code></pre>
+    <p style="color:var(--red);margin-top:8px">⚠️ INSECURE: Identical plaintext blocks → identical ciphertext blocks</p>
+  </div>
+  <div class="card" style="border-color:var(--green)">
+    <h4 style="color:var(--green)">CBC — Cipher Block Chaining</h4>
+    <p>Each block XORed with previous ciphertext before encryption</p>
+    <pre><code>C_i = E_K(P_i ⊕ C_{i-1})
+C_0 = IV (Initialization Vector)</code></pre>
+    <p style="color:var(--green);margin-top:8px">✅ Identical plaintexts → different ciphertexts (due to IV)</p>
+  </div>
+</div>
+</section>
+
+<!-- ==================== SECTION 8: ECB/CBC DEEP DIVE ==================== -->
+<section id="cbc-ecb">
+<h2>🧮 ECB &amp; CBC — Worked Examples</h2>
+
+<div class="card">
+<h3>Cipher Lookup Table (4-bit blocks, hex)</h3>
+<p style="color:var(--muted);margin-bottom:12px">From 2025 Exam Paper — E<sub>K</sub>(m):</p>
+<div class="cipher-table-wrap">
+<table>
+<tr><th>m</th><td class="cipher-cell">0</td><td class="cipher-cell">1</td><td class="cipher-cell">2</td><td class="cipher-cell">3</td><td class="cipher-cell">4</td><td class="cipher-cell">5</td><td class="cipher-cell">6</td><td class="cipher-cell">7</td><td class="cipher-cell">8</td><td class="cipher-cell">9</td><td class="cipher-cell">a</td><td class="cipher-cell">b</td><td class="cipher-cell">c</td><td class="cipher-cell">d</td><td class="cipher-cell">e</td><td class="cipher-cell">f</td></tr>
+<tr><th>E<sub>K</sub>(m)</th><td class="cipher-cell">1</td><td class="cipher-cell">b</td><td class="cipher-cell">5</td><td class="cipher-cell">c</td><td class="cipher-cell">7</td><td class="cipher-cell">e</td><td class="cipher-cell">2</td><td class="cipher-cell">a</td><td class="cipher-cell">4</td><td class="cipher-cell">9</td><td class="cipher-cell">f</td><td class="cipher-cell">d</td><td class="cipher-cell">0</td><td class="cipher-cell">3</td><td class="cipher-cell">6</td><td class="cipher-cell">8</td></tr>
+</table>
+</div>
+<p style="margin-top:12px;color:var(--muted);font-size:13px">To <strong>decrypt</strong> (find D<sub>K</sub>): look up the ciphertext value in the E<sub>K</sub>(m) row, then read the corresponding m value.</p>
+
+<h4 style="margin-top:20px">Inverse Table — D<sub>K</sub>(c):</h4>
+<div class="cipher-table-wrap">
+<table>
+<tr><th>c</th><td class="cipher-cell">0</td><td class="cipher-cell">1</td><td class="cipher-cell">2</td><td class="cipher-cell">3</td><td class="cipher-cell">4</td><td class="cipher-cell">5</td><td class="cipher-cell">6</td><td class="cipher-cell">7</td><td class="cipher-cell">8</td><td class="cipher-cell">9</td><td class="cipher-cell">a</td><td class="cipher-cell">b</td><td class="cipher-cell">c</td><td class="cipher-cell">d</td><td class="cipher-cell">e</td><td class="cipher-cell">f</td></tr>
+<tr><th>D<sub>K</sub>(c)</th><td class="cipher-cell">c</td><td class="cipher-cell">0</td><td class="cipher-cell">6</td><td class="cipher-cell">d</td><td class="cipher-cell">8</td><td class="cipher-cell">2</td><td class="cipher-cell">e</td><td class="cipher-cell">4</td><td class="cipher-cell">f</td><td class="cipher-cell">9</td><td class="cipher-cell">7</td><td class="cipher-cell">1</td><td class="cipher-cell">3</td><td class="cipher-cell">b</td><td class="cipher-cell">5</td><td class="cipher-cell">a</td></tr>
+</table>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q3(a) <span class="marks">2 marks</span></div>
+<p class="q">Decrypt the ciphertext <strong>187b06</strong> using ECB mode.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+<div class="solution">
+<p><strong>ECB Decryption:</strong> Each nibble (4-bit hex digit) decrypted independently using D<sub>K</sub></p>
+<table style="margin-top:12px">
+<tr><th>Ciphertext nibble</th><th>D<sub>K</sub>(c)</th></tr>
+<tr><td>1</td><td>0</td></tr>
+<tr><td>8</td><td>f</td></tr>
+<tr><td>7</td><td>4</td></tr>
+<tr><td>b</td><td>1</td></tr>
+<tr><td>0</td><td>c</td></tr>
+<tr><td>6</td><td>e</td></tr>
+</table>
+<div class="success" style="margin-top:12px">
+  <strong>Plaintext = 0f41ce</strong>
+</div>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q3(b) <span class="marks">4 marks</span></div>
+<p class="q">Decrypt the ciphertext <strong>301be</strong> using CBC mode with initialization vector (IV) = 1.</p>
+<p style="font-size:12px;color:var(--muted);margin-top:4px">Note: Each ciphertext block is one nibble (4-bit). Ciphertext blocks: C0=3, C1=0, C2=1, C3=b, C4=e</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+<div class="solution">
+<p><strong>CBC Decryption formula:</strong></p>
+<p style="font-family:monospace;background:#0d1117;padding:8px;border-radius:4px;margin:8px 0">P_i = D_K(C_i) ⊕ C_{i-1}</p>
+<p>where C_{-1} = IV = 1</p>
+<table style="margin-top:12px">
+<tr><th>i</th><th>C<sub>i</sub></th><th>D<sub>K</sub>(C<sub>i</sub>)</th><th>C<sub>i-1</sub> (or IV)</th><th>P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) ⊕ C<sub>i-1</sub></th></tr>
+<tr><td>0</td><td>3</td><td>d</td><td>1 (IV)</td><td>d ⊕ 1 = c</td></tr>
+<tr><td>1</td><td>0</td><td>c</td><td>3</td><td>c ⊕ 3 = f</td></tr>
+<tr><td>2</td><td>1</td><td>0</td><td>0</td><td>0 ⊕ 0 = 0</td></tr>
+<tr><td>3</td><td>b</td><td>1</td><td>1</td><td>1 ⊕ 1 = 0</td></tr>
+<tr><td>4</td><td>e</td><td>5</td><td>b</td><td>5 ⊕ b = e</td></tr>
+</table>
+<div class="success" style="margin-top:12px">
+  <strong>Plaintext = cf00e</strong>
+</div>
+<p style="color:var(--muted);font-size:12px;margin-top:8px">XOR reminder: d=1101, 1=0001 → XOR → 1100 = c ✓</p>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q3(c) <span class="marks">7 marks</span></div>
+<p class="q">Why is ECB mode insecure? If Eve observes repeating ciphertext blocks, what can she infer? Suggest a secure alternative and explain.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+<div class="solution">
+<h4>Why ECB is Insecure:</h4>
+<p>In ECB mode, each plaintext block is encrypted <strong>independently</strong> with the same key:</p>
+<pre><code>C_i = E_K(P_i)</code></pre>
+<p>This means: <strong>identical plaintext blocks → identical ciphertext blocks</strong></p>
+<h4 style="margin-top:12px">What Eve Can Infer:</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li>If Eve sees repeated ciphertext blocks, she knows the <strong>corresponding plaintext blocks are identical</strong></li>
+  <li>She can learn the <strong>structure and patterns</strong> of the plaintext without knowing the key</li>
+  <li>Classic example: Encrypting a bitmap image in ECB reveals the image's visual structure</li>
+  <li>Eve can perform <strong>frequency analysis</strong> on blocks, just like classical cryptanalysis</li>
+</ul>
+<h4 style="margin-top:12px">Secure Alternative — CBC Mode:</h4>
+<pre><code>C_i = E_K(P_i ⊕ C_{i-1}),  C_0 = IV</code></pre>
+<ul style="margin-left:20px;line-height:2">
+  <li>Each plaintext block is XORed with the <strong>previous ciphertext block</strong> before encryption</li>
+  <li>Identical plaintext blocks produce <strong>different ciphertext blocks</strong></li>
+  <li>A random IV ensures even the first block is unpredictable</li>
+  <li>Patterns in plaintext are <strong>hidden</strong></li>
+</ul>
+<div class="success">CBC is the secure alternative; CTR and GCM modes are also acceptable answers.</div>
+</div>
+</div>
+
+<h3>CBC Error Propagation</h3>
+<div class="card">
+<p>If an error occurs in ciphertext block <strong>C<sub>i</sub></strong> during transmission:</p>
+<ul style="margin:12px 0 0 20px;line-height:2">
+  <li>Plaintext block <strong>P<sub>i</sub></strong> is corrupted (decryption of C<sub>i</sub> itself fails)</li>
+  <li>Plaintext block <strong>P<sub>i+1</sub></strong> is corrupted (because C<sub>i</sub> is used as XOR input)</li>
+  <li>Plaintext block <strong>P<sub>i+2</sub></strong> onwards is <strong>fine</strong> (self-synchronizing after 2 blocks)</li>
+</ul>
+<div class="info">Self-synchronizing property: error affects exactly 2 blocks, then recovery. ECB only corrupts the single affected block.</div>
+</div>
+</section>
+
+<!-- ==================== SECTION 9: RSA ==================== -->
+<section id="rsa">
+<h2>🔑 RSA Cryptography</h2>
+
+<div class="highlight">RSA is an <strong>asymmetric</strong> encryption algorithm based on the mathematical difficulty of factoring large numbers.</div>
+
+<h3>RSA Key Generation Algorithm</h3>
+<div class="rsa-step" data-step="1">
+  <strong>Choose two distinct primes p and q</strong>
+  <p style="color:var(--muted);margin-top:4px;font-size:13px">They must be kept secret</p>
+</div>
+<div class="rsa-step" data-step="2">
+  <strong>Compute n = p × q</strong>
+  <p style="color:var(--muted);margin-top:4px;font-size:13px">n is the modulus (public)</p>
+  <div style="margin-top:8px">\[ n = p \times q \]</div>
+</div>
+<div class="rsa-step" data-step="3">
+  <strong>Compute Euler's Totient φ(n) = (p−1)(q−1)</strong>
+  <div style="margin-top:8px">\[ \phi(n) = (p-1)(q-1) \]</div>
+</div>
+<div class="rsa-step" data-step="4">
+  <strong>Choose public exponent e</strong>
+  <p style="color:var(--muted);margin-top:4px;font-size:13px">Must satisfy: 1 &lt; e &lt; φ(n) and gcd(e, φ(n)) = 1</p>
+  <div style="margin-top:8px">\[ \gcd(e, \phi(n)) = 1 \]</div>
+</div>
+<div class="rsa-step" data-step="5">
+  <strong>Find private key d = e⁻¹ mod φ(n)</strong>
+  <p style="color:var(--muted);margin-top:4px;font-size:13px">Using Extended Euclidean Algorithm</p>
+  <div style="margin-top:8px">\[ d \times e \equiv 1 \pmod{\phi(n)} \]</div>
+</div>
+<div class="success" style="margin-top:16px">
+  <strong>Public Key:</strong> (e, n) &nbsp;|&nbsp; <strong>Private Key:</strong> (d, n)
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q4(a) <span class="marks">10 marks</span></div>
+<p class="q">Given public key <strong>e = 17, n = 1763</strong>, find the private key d. Show all steps.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Full Solution ▼</button>
+<div class="solution">
+
+<h4>Step 1: Factorise n = 1763</h4>
+<p>We need to find primes p and q such that p × q = 1763</p>
+<pre><code>Test divisibility:
+1763 ÷ 41 = 43  ✓
+So p = 41, q = 43</code></pre>
+<div class="success">p = 41, q = 43 (both prime ✓)</div>
+
+<h4 style="margin-top:16px">Step 2: Compute φ(n)</h4>
+<div>\[ \phi(n) = (p-1)(q-1) = (41-1)(43-1) = 40 \times 42 = 1680 \]</div>
+
+<h4 style="margin-top:16px">Step 3: Find d = e⁻¹ mod φ(n)</h4>
+<p>We need d such that <strong>17d ≡ 1 (mod 1680)</strong></p>
+<p>Use the Extended Euclidean Algorithm:</p>
+<pre><code>Apply extended Euclidean to gcd(17, 1680):
+
+1680 = 98 × 17 + 14      →  14 = 1680 − 98×17
+17   = 1  × 14 + 3       →   3 = 17 − 1×14
+14   = 4  × 3  + 2       →   2 = 14 − 4×3
+3    = 1  × 2  + 1       →   1 = 3 − 1×2
+2    = 2  × 1  + 0       → GCD = 1 ✓
+
+Back-substitution:
+1 = 3 − 1×2
+  = 3 − 1×(14 − 4×3)            = 5×3 − 1×14
+  = 5×(17 − 1×14) − 1×14        = 5×17 − 6×14
+  = 5×17 − 6×(1680 − 98×17)     = 5×17 − 6×1680 + 588×17
+  = 593×17 − 6×1680</code></pre>
+<div>\[ d \equiv 593 \pmod{1680} \]</div>
+<div class="success">
+  <strong>Private key d = 593</strong><br>
+  Verification: 17 × 593 = 10081 = 6 × 1680 + 1 ✓
+</div>
+
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q4(b) <span class="marks">5 marks</span></div>
+<p class="q">Assume 2<sup>8</sup> encryptions/second and 16-bit key size. How long for a brute-force attack? What happens if key size is doubled?</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+<div class="solution">
+
+<h4>Time to Brute-Force 16-bit Key:</h4>
+<div>\[ \text{Keys to try} = 2^{16} = 65{,}536 \]</div>
+<div>\[ \text{Time} = \frac{2^{16}}{2^8} = 2^{16-8} = 2^8 = 256 \text{ seconds} \approx 4.3 \text{ minutes} \]</div>
+
+<h4 style="margin-top:16px">Worst case vs Average case:</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li><strong>Worst case:</strong> 256 seconds (try all 65,536 keys)</li>
+  <li><strong>Average case:</strong> 128 seconds (find key halfway through)</li>
+</ul>
+
+<h4 style="margin-top:16px">Practical vs Not Practical:</h4>
+<table>
+<tr><th>Scenario</th><th>Practical?</th></tr>
+<tr><td>Encrypting a low-value message (e.g., a tweet)</td><td style="color:var(--red)">NOT worth brute-forcing (message has no value after 4 min)</td></tr>
+<tr><td>Encrypting a time-sensitive bank transfer</td><td style="color:var(--green)">PRACTICAL to attack (256 sec is fast enough)</td></tr>
+</table>
+
+<h4 style="margin-top:16px">Doubling Key Size (16-bit → 32-bit):</h4>
+<div>\[ \text{Keys} = 2^{32} = 4{,}294{,}967{,}296 \]</div>
+<div>\[ \text{Time} = \frac{2^{32}}{2^8} = 2^{24} \approx 16.7 \text{ million seconds} \approx 194 \text{ days} \]</div>
+<div class="success">
+  Doubling key size <strong>squares the search space</strong>. This is why modern systems use 128-bit or 256-bit keys — brute force becomes computationally infeasible.
+</div>
+</div>
+</div>
+
+<h3>Interactive Brute-Force Calculator</h3>
+<div class="card">
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end">
+  <div>
+    <label style="font-size:12px;color:var(--muted)">Key size (bits)</label>
+    <input type="number" id="keyBits" value="16" min="1" max="256" style="display:block;background:#0d1117;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;width:120px;margin-top:4px">
+  </div>
+  <div>
+    <label style="font-size:12px;color:var(--muted)">Encryptions/second (2^n, where n=)</label>
+    <input type="number" id="encPow" value="8" min="0" max="60" style="display:block;background:#0d1117;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;width:120px;margin-top:4px">
+  </div>
+  <button onclick="calcBrute()" style="background:var(--accent);color:#0d1117;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:700">Calculate</button>
+</div>
+<div id="brute-result" style="margin-top:16px;display:none"></div>
+</div>
+</section>
+
+<!-- ==================== SECTION 10: AUTH ==================== -->
+<section id="auth">
+<h2>🔑 Authentication &amp; Web Security</h2>
+
+<h3>SSO — Single Sign-On</h3>
+<div class="card">
+<p>User authenticates <strong>once</strong> and gains access to multiple related systems without re-authenticating.</p>
+</div>
+<table>
+<tr><th>Aspect</th><th>Traditional Login</th><th>SSO</th></tr>
+<tr><td>Number of passwords</td><td>One per service</td><td>One master credential</td></tr>
+<tr><td>User experience</td><td>Multiple login prompts</td><td>Seamless access</td></tr>
+<tr><td>Single point of failure</td><td>Limited (per service)</td><td>Yes — if SSO compromised, all services compromised</td></tr>
+<tr><td>Management overhead</td><td>High (many passwords)</td><td>Low (centralised)</td></tr>
+<tr><td>Audit trail</td><td>Distributed logs</td><td>Centralised logs</td></tr>
+</table>
+
+<h3>SSO Security Properties</h3>
+<div class="card-grid">
+  <div class="card"><h4>Confidentiality</h4><p>Encryption protects credentials and tokens during transmission</p></div>
+  <div class="card"><h4>Integrity</h4><p>Cryptographic methods verify integrity of tokens/messages</p></div>
+  <div class="card"><h4>Authenticity</h4><p>Verifies legitimate users; prevents identity theft</p></div>
+  <div class="card"><h4>Accountability</h4><p>Maintains logs and audit trails of authentication events</p></div>
+  <div class="card"><h4>Non-repudiation</h4><p>Associates auth events with specific users and timestamps</p></div>
+</div>
+
+<h3>Password Threat Models &amp; Mitigations</h3>
+<table>
+<tr><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+<tr><td><span class="tag tag-red">Brute Force</span></td><td>Try every possible password combination</td><td>Account lockout after N failed attempts</td></tr>
+<tr><td><span class="tag tag-red">Dictionary Attack</span></td><td>Try common passwords from a list</td><td>Require long, complex passwords with special chars</td></tr>
+<tr><td><span class="tag tag-red">Keylogging/Malware</span></td><td>Record keystrokes on device</td><td>Avoid plaintext storage; implement auditing</td></tr>
+<tr><td><span class="tag tag-red">Phishing</span></td><td>Trick user into entering password on fake site</td><td>Multi-Factor Authentication (MFA)</td></tr>
+<tr><td><span class="tag tag-red">Shoulder Surfing</span></td><td>Observe password being typed</td><td>Privacy screens, mask password field, secure environment</td></tr>
+</table>
+
+<h3>Web App Security — Login Flow</h3>
+<div class="card">
+<pre><code>User enters username + password
+        │
+        ▼
+  Server hashes password (bcrypt/Argon2)
+  Compare with stored hash
+        │
+        ▼
+  2FA verification (optional but recommended)
+        │
+        ▼
+  Session ID generated → stored in browser cookie
+        │
+        ▼
+  Subsequent requests: Session ID sent in cookie
+  Server validates session ID
+        │
+        ▼
+  Session timeout after inactivity
+  New session ID generated after re-login</code></pre>
+</div>
+
+<h3>Session Management Best Practices</h3>
+<div class="card-grid">
+  <div class="card success"><h4>Secure Cookies</h4><p>HttpOnly flag (prevents JS access) + Secure flag (HTTPS only)</p></div>
+  <div class="card success"><h4>Session Timeout</h4><p>Invalidate inactive sessions after a timeout period</p></div>
+  <div class="card success"><h4>Session Regeneration</h4><p>Generate new session ID after login to prevent fixation attacks</p></div>
+  <div class="card warning"><h4>Session in URL</h4><p>NEVER put session IDs in URLs — stored in logs, referrer headers, browser history!</p></div>
+</div>
+
+<h3>URL Session ID Vulnerability (Exam Q1)</h3>
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q1 <span class="marks">5 marks</span></div>
+<p class="q">Travelsafe website stores session IDs in URLs (e.g., website.com/page?sessionid=abc123). What is the potential vulnerability and defence mechanisms?</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Solution ▼</button>
+<div class="solution">
+<h4>Vulnerability: Session Hijacking via URL Exposure</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li><strong>Browser history:</strong> URL with session ID stored in browser history — accessible to anyone using the device</li>
+  <li><strong>Server logs:</strong> Web server logs record full URLs including session ID</li>
+  <li><strong>Referrer header:</strong> If user clicks a link to external site, session ID sent in HTTP Referer header</li>
+  <li><strong>Shoulder surfing:</strong> Anyone watching screen can read session ID from address bar</li>
+  <li><strong>Bookmarks:</strong> User may bookmark URL containing session ID</li>
+  <li><strong>Session fixation:</strong> Attacker can craft a URL with known session ID and trick user into using it</li>
+</ul>
+<h4 style="margin-top:16px">Defence Mechanisms:</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li>Store session IDs in <strong>cookies</strong> (not URLs) with HttpOnly and Secure flags</li>
+  <li>Use <strong>short-lived session IDs</strong> with automatic expiry</li>
+  <li>Implement <strong>session regeneration</strong> on authentication</li>
+  <li>Use <strong>HTTPS</strong> to prevent interception in transit</li>
+  <li>Validate session against <strong>IP address and User-Agent</strong></li>
+</ul>
+</div>
+</div>
+
+<h3>Phishing Analysis</h3>
+<div class="card" style="border-color:var(--red)">
+<h4>Red Flags in Suspicious Email</h4>
+<ul style="margin-left:20px;line-height:2;margin-top:8px">
+  <li>Suspicious sender email address (e.g., hr@company.net vs hr@company.com)</li>
+  <li>Grammar mistakes or unusual language</li>
+  <li>Urgency: "Act now!", "Your account will be suspended"</li>
+  <li>Requests for personal details / credentials</li>
+  <li>Links that don't match the displayed text</li>
+  <li>Unexpected attachments</li>
+</ul>
+</div>
+
+<div class="card success">
+<h4>What Information Risk Management Can Identify</h4>
+<ul style="margin-left:20px;line-height:2;margin-top:8px">
+  <li><strong>Sender IP Address</strong> — from email headers</li>
+  <li><strong>Sender Domain Reputation</strong> — using tools like ipvoid, VirusTotal</li>
+  <li><strong>Attachment Maliciousness</strong> — sandbox analysis of attachments</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== FLASHCARDS ==================== -->
+<section id="flashcards">
+<h2>🃏 Flashcards — Hover to Reveal</h2>
+<div class="flip-grid">
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>What is a passive attack?</strong></div><div class="flip-back">Attempts to learn/use information without affecting system resources. Example: wiretapping, eavesdropping.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>What is an active attack?</strong></div><div class="flip-back">Attempts to alter system resources or operations. Examples: DoS, Spoofing, MITM, ARP poisoning.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>TCP 3-way handshake steps?</strong></div><div class="flip-back">1. SYN (client→server) 2. SYN+ACK (server→client) 3. ACK (client→server)</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>Why is ECB insecure?</strong></div><div class="flip-back">Identical plaintext blocks → identical ciphertext blocks. Patterns in plaintext are revealed in ciphertext.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>CBC formula?</strong></div><div class="flip-back">C_i = E_K(P_i ⊕ C_{i-1}), C_0 = IV. Each block XORed with previous ciphertext before encryption.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>RSA private key relation?</strong></div><div class="flip-back">d × e ≡ 1 (mod φ(n)), where φ(n)=(p-1)(q-1). Found using Extended Euclidean Algorithm.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>What is non-repudiation?</strong></div><div class="flip-back">Cannot deny having sent/received a message. Achieved via digital signatures + timestamps.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>SSO single point of failure?</strong></div><div class="flip-back">If the SSO provider is compromised, ALL linked services are compromised simultaneously.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>Threat vs Risk?</strong></div><div class="flip-back">Threat = potential harm agent. Risk = Threat Probability × Impact. Risk is quantified; threat is identified.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>CBC error propagation?</strong></div><div class="flip-back">Error in C_i corrupts P_i and P_i+1 only. Blocks P_i+2 onwards are fine (self-synchronizing after 2 blocks).</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>Doubling key size effect?</strong></div><div class="flip-back">Search space is squared (2^n → 2^2n). Brute force time increases exponentially, not linearly.</div></div></div>
+  <div class="flip-card"><div class="flip-inner"><div class="flip-front"><strong>ARP Spoofing layer?</strong></div><div class="flip-back">Layer 2 (Data Link). ARP operates at this layer — attacker sends fake ARP replies associating their MAC with victim IP.</div></div></div>
+</div>
+</section>
+
+<!-- ==================== EXAM QUESTIONS ==================== -->
+<section id="exam">
+<h2>📝 Practice Exam Questions</h2>
+
+<!-- MULTIPLE CHOICE QUIZ -->
+<div class="quiz-section">
+<h3>Multiple Choice Quiz</h3>
+
+<div class="question-block">
+  <div class="q">Q1. Which OSI layer does ARP (Address Resolution Protocol) operate at?</div>
+  <div class="options" id="q1">
+    <label><input type="radio" name="q1" value="a"> (a) Layer 1 — Physical</label>
+    <label><input type="radio" name="q1" value="b"> (b) Layer 2 — Data Link</label>
+    <label><input type="radio" name="q1" value="c"> (c) Layer 3 — Network</label>
+    <label><input type="radio" name="q1" value="d"> (d) Layer 4 — Transport</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q1','b','ARP operates at Layer 2 (Data Link). It maps IP addresses to MAC addresses within a local network segment.')">Check Answer</button>
+  <div class="answer-reveal" id="q1-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q2. In ECB mode encryption, what happens when two identical plaintext blocks are encrypted?</div>
+  <div class="options" id="q2">
+    <label><input type="radio" name="q2" value="a"> (a) They produce different ciphertexts due to randomness</label>
+    <label><input type="radio" name="q2" value="b"> (b) They produce identical ciphertexts — revealing patterns</label>
+    <label><input type="radio" name="q2" value="c"> (c) An error is thrown</label>
+    <label><input type="radio" name="q2" value="d"> (d) The second block is skipped</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q2','b','ECB encrypts each block independently with the same key. Same plaintext → same ciphertext. This reveals patterns and makes ECB insecure.')">Check Answer</button>
+  <div class="answer-reveal" id="q2-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q3. In CBC mode, an error occurs in ciphertext block C_5. Which plaintext blocks are corrupted during decryption?</div>
+  <div class="options" id="q3">
+    <label><input type="radio" name="q3" value="a"> (a) Only P_5</label>
+    <label><input type="radio" name="q3" value="b"> (b) P_5 and all subsequent blocks</label>
+    <label><input type="radio" name="q3" value="c"> (c) P_5 and P_6 only</label>
+    <label><input type="radio" name="q3" value="d"> (d) P_4 and P_5</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q3','c','In CBC decryption: P_i = D_K(C_i) ⊕ C_{i-1}. An error in C_5 affects P_5 (direct decryption) and P_6 (C_5 used as XOR input). P_7 onwards is fine — self-synchronizing.')">Check Answer</button>
+  <div class="answer-reveal" id="q3-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q4. Which is NOT a type of DDoS attack?</div>
+  <div class="options" id="q4">
+    <label><input type="radio" name="q4" value="a"> (a) Volumetric Attack</label>
+    <label><input type="radio" name="q4" value="b"> (b) Protocol Attack</label>
+    <label><input type="radio" name="q4" value="c"> (c) Application Layer Attack</label>
+    <label><input type="radio" name="q4" value="d"> (d) Symmetric Key Attack</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q4','d','The 3 types of DDoS attacks are: Volumetric, Protocol, and Application Layer. \"Symmetric Key Attack\" is not a DDoS category — it relates to cryptography.')">Check Answer</button>
+  <div class="answer-reveal" id="q4-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q5. A system uses the best encryption. An employee uses the password "password123". The system is still insecure. This is an example of:</div>
+  <div class="options" id="q5">
+    <label><input type="radio" name="q5" value="a"> (a) A vulnerability in the encryption algorithm</label>
+    <label><input type="radio" name="q5" value="b"> (b) The system being secure — encryption is what matters</label>
+    <label><input type="radio" name="q5" value="c"> (c) System-level design failure: strong crypto does not compensate for weak human-layer security</label>
+    <label><input type="radio" name="q5" value="d"> (d) A DoS attack</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q5','c','Even the best encryption is useless if users choose weak passwords. Security is a chain — the weakest link (human/password layer) determines overall security.')">Check Answer</button>
+  <div class="answer-reveal" id="q5-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q6. Given public key e=17, n=1763. What is φ(n) if p=41, q=43?</div>
+  <div class="options" id="q6">
+    <label><input type="radio" name="q6" value="a"> (a) 1762</label>
+    <label><input type="radio" name="q6" value="b"> (b) 1680</label>
+    <label><input type="radio" name="q6" value="c"> (c) 1763</label>
+    <label><input type="radio" name="q6" value="d"> (d) 84</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q6','b','φ(n) = (p-1)(q-1) = (41-1)(43-1) = 40 × 42 = 1680')">Check Answer</button>
+  <div class="answer-reveal" id="q6-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q7. TCP SYN Spoofing is classified as which type of DoS attack?</div>
+  <div class="options" id="q7">
+    <label><input type="radio" name="q7" value="a"> (a) Application layer attack</label>
+    <label><input type="radio" name="q7" value="b"> (b) Volumetric attack</label>
+    <label><input type="radio" name="q7" value="c"> (c) Protocol attack exploiting TCP handshake</label>
+    <label><input type="radio" name="q7" value="d"> (d) Physical layer attack</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q7','c','SYN Spoofing exploits the TCP 3-way handshake. It is a protocol attack at Layer 4 (Transport) that exhausts server connection state.')">Check Answer</button>
+  <div class="answer-reveal" id="q7-reveal"></div>
+</div>
+
+<div class="question-block">
+  <div class="q">Q8. Which protocol keeps the algorithm public but the key secret?</div>
+  <div class="options" id="q8">
+    <label><input type="radio" name="q8" value="a"> (a) Protocol 3 (Secret Algorithm)</label>
+    <label><input type="radio" name="q8" value="b"> (b) Protocol 4 (Public Algorithm, Secret Key)</label>
+    <label><input type="radio" name="q8" value="c"> (c) Protocol 1 (Memorize)</label>
+    <label><input type="radio" name="q8" value="d"> (d) Protocol 2 (Paper)</label>
+  </div>
+  <button class="check-btn" onclick="checkAnswer('q8','b','Protocol 4 (Symmetric Encryption) uses a public algorithm but keeps the parameter (key) secret. Kerckhoffs principle: security should not depend on algorithm secrecy.')">Check Answer</button>
+  <div class="answer-reveal" id="q8-reveal"></div>
+</div>
+
+</div><!-- end quiz-section -->
+
+<!-- SHORT ANSWER EXAM QUESTIONS -->
+<h3 style="margin-top:32px">Short Answer / Essay Questions</h3>
+
+<div class="exam-q">
+<div class="qnum">Tutorial W2 Q2 <span class="marks">Essay</span></div>
+<p class="q">Explain, with examples, the terms Confidentiality, Integrity and Availability (CIA triad).</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Model Answer ▼</button>
+<div class="solution">
+<p><strong>Confidentiality:</strong> Only authorised parties can access information. Example: NHS patient records accessible only to authorised doctors and administrators — not accessible to random staff or public.</p>
+<p style="margin-top:10px"><strong>Integrity:</strong> Information cannot be modified without authorisation. Example: NHS patient records cannot be changed without permission from an authorised clinician — ensures data accuracy and trustworthiness.</p>
+<p style="margin-top:10px"><strong>Availability:</strong> Authorised users can access information when needed. Example: Doctors must be able to access patient records 24/7, so servers and network infrastructure are designed for high availability and redundancy.</p>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Tutorial W3 Q1 <span class="marks">Essay</span></div>
+<p class="q">What is the difference between Threat, Vulnerability, and Risk? Provide examples.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Model Answer ▼</button>
+<div class="solution">
+<p><strong>Threat:</strong> An entity or event with the potential to cause harm. Example: A hacker launching a phishing campaign. Threats are identified, not calculated.</p>
+<p style="margin-top:10px"><strong>Vulnerability:</strong> A weakness in a system that a threat can exploit, making harm more likely or severe. Example: Unpatched SQL injection vulnerability in a web application. Vulnerabilities increase the probability or impact of a threat.</p>
+<p style="margin-top:10px"><strong>Risk:</strong> The potential for harm when a threat successfully exploits a vulnerability. Calculated as: Risk = Threat Probability × Impact. Example: If a phishing attack has 30% success probability and would cause £10,000 damage, Risk = £3,000 expected loss.</p>
+<p style="margin-top:10px"><strong>Relationship:</strong> Risk can be reduced by eliminating threats (hard), patching vulnerabilities (practical), or reducing impact through controls.</p>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Tutorial W3 Q3 <span class="marks">Essay</span></div>
+<p class="q">What is a Man-in-the-Middle attack? How can it be prevented?</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Model Answer ▼</button>
+<div class="solution">
+<p><strong>MITM Definition:</strong> An attacker secretly interposes themselves between two communicating parties, intercepting, monitoring, and/or modifying the communication without either party's knowledge.</p>
+<p style="margin-top:10px"><strong>How it works:</strong> Alice believes she is communicating directly with Bob, but all messages pass through Eve, who can read them, modify them, or inject new messages.</p>
+<p style="margin-top:10px"><strong>Prevention methods:</strong></p>
+<ul style="margin-left:20px;line-height:2">
+  <li><strong>Stronger WAP encryption</strong> (WPA3) on wireless access points</li>
+  <li><strong>VPN</strong> with key-based encryption creates an encrypted tunnel</li>
+  <li><strong>Public key authentication</strong> (PKI/certificates) verifies server identity</li>
+  <li><strong>HTTPS with certificate pinning</strong> prevents SSL stripping</li>
+  <li><strong>HSTS</strong> (HTTP Strict Transport Security) forces HTTPS connections</li>
+</ul>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Tutorial W10 Q1 <span class="marks">Essay</span></div>
+<p class="q">What are the threat models for password-based user authentication? Describe mitigation methods for each.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Model Answer ▼</button>
+<div class="solution">
+<table>
+<tr><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+<tr><td>Brute Force</td><td>Try all possible password combinations</td><td>Account lockout after N failed attempts; CAPTCHA</td></tr>
+<tr><td>Dictionary Attack</td><td>Try common passwords from a wordlist</td><td>Require complex passwords (length, special chars, no dictionary words)</td></tr>
+<tr><td>Keylogging/Malware</td><td>Software records keystrokes</td><td>Never store plaintext passwords; implement anomaly detection; use MFA</td></tr>
+<tr><td>Phishing</td><td>Trick user into entering credentials on fake site</td><td>MFA so stolen password alone is insufficient; user education</td></tr>
+<tr><td>Shoulder Surfing</td><td>Observe password being entered in public</td><td>Privacy screens; mask password characters; user awareness</td></tr>
+<tr><td>Password Spraying</td><td>Try few common passwords across many accounts</td><td>Account lockout; anomaly detection for distributed failures</td></tr>
+<tr><td>Credential Stuffing</td><td>Use leaked credentials from other breaches</td><td>Unique passwords per service; breached password checks; MFA</td></tr>
+</table>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">2025 Exam — Q2 <span class="marks">7 marks</span></div>
+<p class="q">Compare SSO with traditional login approaches (advantages and disadvantages). Then explain SSO in terms of: Confidentiality, Integrity, Authenticity, Accountability, Non-repudiation.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Model Answer ▼</button>
+<div class="solution">
+<h4>SSO Advantages:</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li>Single password to remember → reduces password fatigue → stronger password choices</li>
+  <li>Reduced login friction → better user experience</li>
+  <li>Centralised access control and auditing</li>
+  <li>IT teams manage one credential system → easier deprovisioning</li>
+</ul>
+<h4 style="margin-top:12px">SSO Disadvantages:</h4>
+<ul style="margin-left:20px;line-height:2">
+  <li><strong>Single point of failure:</strong> SSO breach compromises all linked services simultaneously</li>
+  <li>Dependence on SSO provider availability</li>
+  <li>Initial setup complexity</li>
+</ul>
+<h4 style="margin-top:12px">Security Properties:</h4>
+<table>
+<tr><th>Property</th><th>How SSO Provides It</th></tr>
+<tr><td>Confidentiality</td><td>Encryption (TLS) protects credentials and tokens during transmission</td></tr>
+<tr><td>Integrity</td><td>Cryptographic signing of tokens verifies they haven't been tampered with</td></tr>
+<tr><td>Authenticity</td><td>Verifies the user is who they claim to be; prevents identity theft/impersonation</td></tr>
+<tr><td>Accountability</td><td>Centralised audit logs record all authentication events with user identity</td></tr>
+<tr><td>Non-repudiation</td><td>Signed tokens with timestamps associate auth events with specific users — cannot be denied</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ADDITIONAL PRACTICE QUESTIONS -->
+<h3 style="margin-top:32px">Additional Practice Questions</h3>
+
+<div class="exam-q">
+<div class="qnum">Practice Q1 <span class="marks">5 marks</span></div>
+<p class="q">Explain why a system using the "best encryption techniques" can still be insecure. Give at least three examples.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Answer ▼</button>
+<div class="solution">
+<p>Encryption addresses only <strong>one aspect</strong> of security (confidentiality in transit). Many other attack vectors exist:</p>
+<ul style="margin-left:20px;line-height:2.2;margin-top:8px">
+  <li><strong>Weak passwords:</strong> If users choose "password123", encryption of that password over the network is irrelevant — it will be guessed or dictionary-attacked</li>
+  <li><strong>Key management failures:</strong> If the encryption key is stored unprotected in a plaintext file, the attacker bypasses encryption entirely</li>
+  <li><strong>Endpoint compromise:</strong> If the user's device has malware/keylogger, the plaintext is captured before encryption</li>
+  <li><strong>Social engineering/phishing:</strong> Users tricked into revealing credentials — no encryption prevents this</li>
+  <li><strong>Misconfiguration:</strong> Correct algorithm, but cipher suite allows downgrade attacks (e.g., BEAST, POODLE on SSL)</li>
+  <li><strong>Physical access:</strong> An attacker with physical access to device can bypass all software encryption</li>
+</ul>
+<p style="margin-top:10px">Security is a holistic discipline — all layers must be secured. Strong encryption is necessary but not sufficient.</p>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Practice Q2 <span class="marks">6 marks</span></div>
+<p class="q">Using the cipher table (m: 0-f, E_K(m): 1 b 5 c 7 e 2 a 4 9 f d 0 3 6 8), encrypt the plaintext "cafe" in ECB mode, then in CBC mode with IV=a.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Answer ▼</button>
+<div class="solution">
+<h4>ECB Mode:</h4>
+<table>
+<tr><th>Plaintext nibble</th><th>E_K(m)</th></tr>
+<tr><td>c</td><td>0</td></tr>
+<tr><td>a</td><td>f</td></tr>
+<tr><td>f</td><td>8</td></tr>
+<tr><td>e</td><td>6</td></tr>
+</table>
+<div class="success">ECB Ciphertext: <strong>0f86</strong></div>
+
+<h4 style="margin-top:16px">CBC Mode (IV = a):</h4>
+<pre><code>C_i = E_K(P_i ⊕ C_{i-1}), C_{-1} = IV = a
+
+i=0: P_0=c, C_{-1}=a(10). c(12) ⊕ a(10) = 6. E_K(6) = 2. C_0 = 2
+i=1: P_1=a, C_0=2.   a(10) ⊕ 2(2) = 8.    E_K(8) = 4. C_1 = 4
+i=2: P_2=f, C_1=4.   f(15) ⊕ 4(4) = b(11). E_K(b) = d. C_2 = d
+i=3: P_3=e, C_2=d.   e(14) ⊕ d(13) = 3.   E_K(3) = c. C_3 = c</code></pre>
+<div class="success">CBC Ciphertext: <strong>24dc</strong></div>
+<p style="color:var(--muted);font-size:12px;margin-top:8px">Note: XOR is done on the hex values (convert to decimal/binary for XOR, then back to hex).</p>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Practice Q3 <span class="marks">8 marks</span></div>
+<p class="q">Perform RSA key generation with p=3, q=11. Then encrypt m=5 and decrypt back to verify.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Answer ▼</button>
+<div class="solution">
+<h4>Step 1: n = p × q = 3 × 11 = 33</h4>
+<h4>Step 2: φ(n) = (3-1)(11-1) = 2 × 10 = 20</h4>
+<h4>Step 3: Choose e</h4>
+<p>e must: 1 &lt; e &lt; 20, gcd(e,20)=1. Choose e=3 (gcd(3,20)=1 ✓)</p>
+<h4>Step 4: Find d = e⁻¹ mod 20</h4>
+<p>Need d: 3d ≡ 1 (mod 20). Try d=7: 3×7=21=1×20+1 ✓</p>
+<div>\[ d = 7 \]</div>
+<div class="info">Public key: (e=3, n=33). Private key: (d=7, n=33)</div>
+
+<h4 style="margin-top:16px">Encryption: C = m^e mod n</h4>
+<div>\[ C = 5^3 \mod 33 = 125 \mod 33 = 125 - 3\times33 = 125-99 = 26 \]</div>
+
+<h4>Decryption: m = C^d mod n</h4>
+<div>\[ m = 26^7 \mod 33 \]</div>
+<pre><code>26^2 = 676 = 20×33 + 16 → 26^2 mod 33 = 16
+26^4 = 16^2 = 256 = 7×33 + 25 → 26^4 mod 33 = 25
+26^7 = 26^4 × 26^2 × 26^1 mod 33
+     = 25 × 16 × 26 mod 33
+     = 400 × 26 mod 33
+     400 mod 33 = 400 - 12×33 = 400-396 = 4
+     = 4 × 26 mod 33 = 104 mod 33 = 104 - 3×33 = 5</code></pre>
+<div class="success">Decrypted: m = 5 ✓ (matches original plaintext)</div>
+</div>
+</div>
+
+<div class="exam-q">
+<div class="qnum">Practice Q4 <span class="marks">4 marks</span></div>
+<p class="q">Give examples of how each OSI layer can be attacked, with one specific attack per layer for layers 2, 3, 4, and 7.</p>
+<button class="solution-btn" onclick="toggleSolution(this)">Show Answer ▼</button>
+<div class="solution">
+<table>
+<tr><th>Layer</th><th>Attack</th><th>How</th></tr>
+<tr><td>Layer 2 — Data Link</td><td>ARP Spoofing</td><td>Attacker broadcasts fake ARP replies, associates their MAC with legitimate IP, intercepts traffic (MITM)</td></tr>
+<tr><td>Layer 3 — Network</td><td>IP Spoofing</td><td>Forge source IP address in packet headers to impersonate trusted host or mask identity in DoS attacks</td></tr>
+<tr><td>Layer 4 — Transport</td><td>TCP SYN Flood</td><td>Send many SYN packets with fake source IPs; server allocates memory for half-open connections until exhausted</td></tr>
+<tr><td>Layer 7 — Application</td><td>HTTP Flood (DDoS)</td><td>Send massive HTTP GET/POST requests to overwhelm web server, denying service to legitimate users</td></tr>
+</table>
+</div>
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:40px 0 20px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:60px">
+  COMPSCI4062/5063 Cyber Security Fundamentals — Lec 2 Interactive Notes<br>
+  Generated for exam preparation — covers all lecture, lab, and exam content
+</div>
+
+</div><!-- container -->
+
+<script>
+// OSI Layer data
+const osiLayers=[
+  {num:7,name:"Application",color:"#bc8cff",desc:"User-facing network services. HTTP, FTP, DNS, SMTP.",attacks:"Phishing, HTTP Flood, DNS Spoofing"},
+  {num:6,name:"Presentation",color:"#f0883e",desc:"Data format, encryption/decryption, compression.",attacks:"SSL Stripping, Data Interception"},
+  {num:5,name:"Session",color:"#58a6ff",desc:"Establish, manage, terminate sessions.",attacks:"Session Hijacking, Session Fixation"},
+  {num:4,name:"Transport",color:"#3fb950",desc:"End-to-end reliability, TCP (connection-oriented), UDP (connectionless).",attacks:"TCP SYN Flood, UDP Flood"},
+  {num:3,name:"Network",color:"#d29922",desc:"Routing and forwarding packets. IP addresses. Routers.",attacks:"IP Spoofing, Routing Attacks"},
+  {num:2,name:"Data Link",color:"#f85149",desc:"MAC addresses. Frames. Switches. Error detection.",attacks:"ARP Spoofing, MAC Flooding"},
+  {num:1,name:"Physical",color:"#8b949e",desc:"Bits over physical medium: fiber, copper, radio.",attacks:"Wire Tapping, Physical Interception"},
+];
+const osiContainer=document.getElementById('osi-container');
+osiLayers.forEach(l=>{
+  const d=document.createElement('div');
+  d.className='osi-layer';
+  d.style.borderLeftColor=l.color;
+  d.style.borderLeftWidth='4px';
+  d.innerHTML=`<div class="layer-num" style="background:${l.color};color:#0d1117">${l.num}</div>
+  <div style="flex:1"><strong style="color:${l.color}">Layer ${l.num}: ${l.name}</strong><br>
+  <span style="font-size:12px;color:#8b949e">${l.desc}</span></div>
+  <div style="font-size:11px;color:#f85149;text-align:right;max-width:180px">${l.attacks}</div>`;
+  osiContainer.appendChild(d);
+});
+
+// Accordion
+function toggleAcc(el){
+  const c=el.nextElementSibling;
+  const span=el.querySelector('span');
+  if(c.style.display==='block'){c.style.display='none';span.textContent='▼';}
+  else{c.style.display='block';span.textContent='▲';}
+}
+
+// Solution toggle
+function toggleSolution(btn){
+  const s=btn.nextElementSibling;
+  if(s.style.display==='block'){s.style.display='none';btn.textContent='Show Solution ▼';}
+  else{s.style.display='block';btn.textContent='Hide Solution ▲';}
+}
+
+// Quiz
+let totalAnswered=0,totalCorrect=0;
+function checkAnswer(qid,correct,explanation){
+  const sel=document.querySelector(`input[name="${qid}"]:checked`);
+  const reveal=document.getElementById(`${qid}-reveal`);
+  if(!sel){reveal.style.display='block';reveal.className='answer-reveal wrong-answer';reveal.textContent='Please select an answer first!';return;}
+  totalAnswered++;
+  if(sel.value===correct){
+    totalCorrect++;
+    reveal.className='answer-reveal correct-answer';
+    reveal.innerHTML=`✅ Correct! ${explanation}`;
+  } else {
+    reveal.className='answer-reveal wrong-answer';
+    reveal.innerHTML=`❌ Incorrect. Correct answer: <strong>${correct.toUpperCase()}</strong>. ${explanation}`;
+  }
+  reveal.style.display='block';
+  updateScore();
+}
+function updateScore(){
+  const sd=document.getElementById('score-display');
+  sd.style.display='block';
+  document.getElementById('score-val').textContent=totalCorrect;
+  document.getElementById('score-total').textContent=totalAnswered;
+}
+
+// Brute force calculator
+function calcBrute(){
+  const bits=parseInt(document.getElementById('keyBits').value);
+  const encPow=parseInt(document.getElementById('encPow').value);
+  const keys=Math.pow(2,bits);
+  const speed=Math.pow(2,encPow);
+  const secs=keys/speed;
+  const div=document.getElementById('brute-result');
+  div.style.display='block';
+  let timeStr='';
+  if(secs<60)timeStr=`${secs.toFixed(2)} seconds`;
+  else if(secs<3600)timeStr=`${(secs/60).toFixed(2)} minutes`;
+  else if(secs<86400)timeStr=`${(secs/3600).toFixed(2)} hours`;
+  else if(secs<31536000)timeStr=`${(secs/86400).toFixed(2)} days`;
+  else timeStr=`${(secs/31536000).toExponential(2)} years`;
+  div.innerHTML=`<div class="highlight">
+    <strong>Key space:</strong> 2<sup>${bits}</sup> = ${keys.toExponential(4)} keys<br>
+    <strong>Speed:</strong> 2<sup>${encPow}</sup> = ${speed.toExponential(4)} encryptions/sec<br>
+    <strong>Worst-case time:</strong> ${timeStr}<br>
+    <strong>Average time:</strong> ~half of worst case<br>
+    <strong>Verdict:</strong> ${secs<3600?'<span style="color:var(--red)">⚠️ BREAKABLE in reasonable time</span>':'<span style="color:var(--green)">✅ Computationally infeasible</span>'}
+  </div>`;
+}
+
+// MathJax
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+</body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2023-2024 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .formula-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning and Artificial Intelligence for Data Science</h1>
+        <h2>Past Paper 2023-2024 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer ALL THREE questions. Show all working.
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Regression (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Linear Regression Assumptions <span class="marks">[6 marks]</span></h3>
+            <p>(i) State two key assumptions made in linear regression. [4 marks]</p>
+            <p>(ii) What happens if these assumptions are violated? [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Key Assumptions:</strong> <strong>[4 marks]</strong></p>
+            <ol>
+                <li><strong>Linearity:</strong> The relationship between features and the target is linear (or can be made linear through basis function transformation). <strong>[2 marks]</strong></li>
+                <li><strong>Gaussian Noise:</strong> The errors (residuals) are normally distributed with mean zero and constant variance: ε ~ N(0, σ²) (homoscedasticity). <strong>[2 marks]</strong></li>
+            </ol>
+
+            <p><strong>Other valid assumptions include:</strong></p>
+            <ul>
+                <li>Independence of errors (no autocorrelation)</li>
+                <li>No multicollinearity (features are not perfectly correlated)</li>
+                <li>Errors have constant variance across all levels of predictors</li>
+            </ul>
+
+            <p><strong>(ii) Consequences of Violation:</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>If linearity is violated: The model will have high bias and poor predictions</li>
+                <li>If noise assumptions are violated: Parameter estimates may be inefficient, and confidence intervals/hypothesis tests may be invalid</li>
+                <li>The model may produce biased or unreliable predictions</li>
+            </ul>
+
+            <div class="note">
+                <strong>Diagnostic Tools:</strong> Use residual plots to check assumptions. Plot residuals vs. fitted values (should show random scatter for homoscedasticity), and Q-Q plots to check normality of residuals.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) RBF Basis Functions <span class="marks">[7 marks]</span></h3>
+            <p>Consider RBF (Radial Basis Function) regression with basis functions:</p>
+            <p>\[\phi_j(x) = \exp\left(-\frac{(x-\mu_j)^2}{2s^2}\right)\]</p>
+            <p>(i) What do the parameters μ_j and s represent? [4 marks]</p>
+            <p>(ii) How would you choose the number of basis functions? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Parameter Meanings:</strong> <strong>[4 marks]</strong></p>
+
+            <p><strong>μ_j (centers):</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Represents the center/location of the j-th basis function</li>
+                <li>Each RBF is centered at a specific point μ_j in the input space</li>
+                <li>Typically chosen as evenly spaced points across the range of training data, or using clustering (e.g., K-means)</li>
+            </ul>
+
+            <p><strong>s (width/scale):</strong> <strong>[2 marks]</strong></p>
+            <ul>
+                <li>Controls the width or spread of each basis function</li>
+                <li>Larger s means wider, smoother basis functions (more global influence)</li>
+                <li>Smaller s means narrower, more localized basis functions</li>
+                <li>Often chosen as the average distance between centers</li>
+            </ul>
+
+            <p><strong>(ii) Choosing Number of Basis Functions:</strong> <strong>[3 marks]</strong></p>
+            <ul>
+                <li>Use <strong>cross-validation</strong> to select the number that gives best validation performance <strong>[1 mark]</strong></li>
+                <li>More basis functions = more complex model (risk of overfitting) <strong>[1 mark]</strong></li>
+                <li>Fewer basis functions = simpler model (risk of underfitting) <strong>[1 mark]</strong></li>
+                <li>Can also use regularization to allow more basis functions while controlling complexity</li>
+            </ul>
+
+            <div class="note">
+                <strong>Practical Approach:</strong> Start with M = √N basis functions where N is the number of training samples. Then tune using cross-validation. Place centers using K-means clustering on the training data.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Lasso Feature Selection <span class="marks">[7 marks]</span></h3>
+            <p>Consider a dataset with 20 features. After applying Lasso regression with λ=0.5:</p>
+            <ul>
+                <li>12 features have weights equal to zero</li>
+                <li>8 features have non-zero weights</li>
+            </ul>
+            <p>(i) Explain what happened during the Lasso optimization. [4 marks]</p>
+            <p>(ii) How does this compare to Ridge regression? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Lasso Optimization Process:</strong> <strong>[4 marks]</strong></p>
+            <p>Lasso performed automatic feature selection by shrinking 12 feature weights to exactly zero. <strong>[2 marks]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>Lasso minimizes: Sum of squared errors + λ × (sum of absolute values of weights)</li>
+                <li>The L1 penalty (|w_j|) has a "corner" at zero that encourages sparse solutions</li>
+                <li>As λ increases, more weights are pushed to exactly zero</li>
+                <li>The 8 remaining features are the most important for prediction</li>
+            </ul>
+            <strong>[2 marks]</strong>
+
+            <p><strong>(ii) Comparison with Ridge:</strong> <strong>[3 marks]</strong></p>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Lasso (L1)</th>
+                    <th>Ridge (L2)</th>
+                </tr>
+                <tr>
+                    <td><strong>Penalty</strong></td>
+                    <td>λΣ|w_j|</td>
+                    <td>λΣw_j²</td>
+                </tr>
+                <tr>
+                    <td><strong>Feature Selection</strong></td>
+                    <td>Yes (sets weights to 0)</td>
+                    <td>No (only shrinks weights)</td>
+                </tr>
+                <tr>
+                    <td><strong>Result</strong></td>
+                    <td>Sparse solution (8/20 features)</td>
+                    <td>All 20 features kept with small weights</td>
+                </tr>
+            </table>
+            <strong>[3 marks]</strong>
+
+            <div class="note">
+                <strong>When to Use:</strong> Use Lasso when you believe only a subset of features are truly relevant. Use Ridge when all features contribute but you want to prevent any single feature from dominating. Elastic Net combines both L1 and L2 penalties.
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) k-NN Algorithm <span class="marks">[7 marks]</span></h3>
+            <p>Consider a 2D dataset with the following points:</p>
+            <ul>
+                <li>Class A: (1,1), (2,2), (2,3)</li>
+                <li>Class B: (6,6), (7,7), (8,8)</li>
+            </ul>
+            <p>Using k-NN with k=3 and Euclidean distance:</p>
+            <p>(i) Classify the test point (3,3). Show your working. [5 marks]</p>
+            <p>(ii) What would happen if we used k=1? [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Classification with k=3:</strong> <strong>[5 marks]</strong></p>
+
+            <p><strong>Step 1: Calculate distances from (3,3) to all training points:</strong> <strong>[3 marks]</strong></p>
+
+            <div class="formula-box">
+                <p><strong>Class A points:</strong></p>
+                <p>d((3,3), (1,1)) = √[(3-1)² + (3-1)²] = √[4+4] = √8 ≈ 2.83</p>
+                <p>d((3,3), (2,2)) = √[(3-2)² + (3-2)²] = √[1+1] = √2 ≈ 1.41</p>
+                <p>d((3,3), (2,3)) = √[(3-2)² + (3-3)²] = √[1+0] = 1.0</p>
+
+                <p><strong>Class B points:</strong></p>
+                <p>d((3,3), (6,6)) = √[(3-6)² + (3-6)²] = √[9+9] = √18 ≈ 4.24</p>
+                <p>d((3,3), (7,7)) = √[(3-7)² + (3-7)²] = √[16+16] = √32 ≈ 5.66</p>
+                <p>d((3,3), (8,8)) = √[(3-8)² + (3-8)²] = √[25+25] = √50 ≈ 7.07</p>
+            </div>
+
+            <p><strong>Step 2: Find 3 nearest neighbors:</strong> <strong>[1 mark]</strong></p>
+            <ol>
+                <li>(2,3) from Class A: distance = 1.0</li>
+                <li>(2,2) from Class A: distance = 1.41</li>
+                <li>(1,1) from Class A: distance = 2.83</li>
+            </ol>
+
+            <p><strong>Step 3: Majority vote:</strong> <strong>[1 mark]</strong></p>
+            <p>All 3 nearest neighbors belong to <strong>Class A</strong></p>
+            <p><strong>Prediction: Class A</strong></p>
+
+            <p><strong>(ii) With k=1:</strong> <strong>[2 marks]</strong></p>
+            <p>The nearest neighbor is (2,3) from Class A (distance = 1.0), so the prediction would still be <strong>Class A</strong>. <strong>[1 mark]</strong></p>
+            <p>However, k=1 is more sensitive to noise and outliers. A single mislabeled training point could cause incorrect predictions. Using k=3 provides more robust predictions through majority voting. <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Choosing k:</strong> Odd values of k avoid ties in binary classification. Small k (e.g., 1, 3) captures local structure but is sensitive to noise. Large k creates smoother decision boundaries but may oversmooth. Use cross-validation to find optimal k.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) SVM Decision Boundary <span class="marks">[6 marks]</span></h3>
+            <p>For a linear SVM:</p>
+            <p>(i) Write the equation of the decision boundary. [2 marks]</p>
+            <p>(ii) What are support vectors? [2 marks]</p>
+            <p>(iii) If we remove a non-support vector from the training set, what happens to the decision boundary? [2 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Decision Boundary Equation:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[w^Tx + b = 0\]</p>
+            </div>
+            <p>where w is the weight vector (perpendicular to the boundary) and b is the bias term.</p>
+
+            <p><strong>(ii) Support Vectors:</strong> <strong>[2 marks]</strong></p>
+            <p>Support vectors are the training data points that lie closest to the decision boundary (on the margin boundaries). <strong>[1 mark]</strong></p>
+            <p>These points are critical for defining the decision boundary - they "support" the maximum margin hyperplane. They satisfy |w^Tx_i + b| = 1. <strong>[1 mark]</strong></p>
+
+            <p><strong>(iii) Removing a Non-Support Vector:</strong> <strong>[2 marks]</strong></p>
+            <p><strong>The decision boundary remains unchanged.</strong> <strong>[1 mark]</strong></p>
+            <p>Only support vectors determine the decision boundary. Non-support vectors lie outside the margin and do not affect the optimization. Removing them does not change w or b. <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Key Property:</strong> This is a major advantage of SVM - the model depends only on a subset of training points (support vectors), making it memory-efficient for prediction and robust to non-support vectors that might be noisy.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) ROC Analysis <span class="marks">[7 marks]</span></h3>
+            <p>Given two classifiers with the following performance:</p>
+            <ul>
+                <li><strong>Classifier 1:</strong> AUC = 0.95, operates at TPR=0.90, FPR=0.10</li>
+                <li><strong>Classifier 2:</strong> AUC = 0.85, operates at TPR=0.95, FPR=0.20</li>
+            </ul>
+            <p>(i) Which classifier has better overall performance? Explain. [3 marks]</p>
+            <p>(ii) In which scenario might you prefer Classifier 2? [4 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Better Overall Performance:</strong> <strong>[3 marks]</strong></p>
+            <p><strong>Classifier 1 has better overall performance</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Reasoning:</strong></p>
+            <ul>
+                <li>Higher AUC (0.95 vs 0.85) indicates better discrimination ability across all thresholds <strong>[1 mark]</strong></li>
+                <li>AUC represents the probability that a randomly chosen positive example is ranked higher than a randomly chosen negative example</li>
+                <li>AUC = 0.95 is considered excellent performance, while 0.85 is good but not as strong <strong>[1 mark]</strong></li>
+            </ul>
+
+            <p><strong>(ii) Scenario Preferring Classifier 2:</strong> <strong>[4 marks]</strong></p>
+            <p>You might prefer Classifier 2 in applications where <strong>high recall (TPR) is critical</strong>: <strong>[2 marks]</strong></p>
+
+            <p><strong>Examples:</strong></p>
+            <ul>
+                <li><strong>Medical screening:</strong> Missing a disease (false negative) is more costly than a false alarm. Classifier 2 catches 95% of positive cases vs. 90% for Classifier 1 <strong>[1 mark]</strong></li>
+                <li><strong>Fraud detection:</strong> Better to flag more transactions for review (higher FPR) than miss fraudulent transactions</li>
+                <li><strong>Security screening:</strong> Missing a threat is more dangerous than extra security checks</li>
+            </ul>
+            <strong>[1 mark]</strong>
+
+            <div class="note">
+                <strong>Trade-off:</strong> Classifier 2 achieves higher recall (95% vs 90%) at the cost of higher false positive rate (20% vs 10%). Whether this trade-off is worthwhile depends on the relative costs of false negatives vs false positives in your application.
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) K-means Convergence <span class="marks">[5 marks]</span></h3>
+            <p>(i) How do you know when K-means has converged? [2 marks]</p>
+            <p>(ii) Is K-means guaranteed to converge? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Convergence Criteria:</strong> <strong>[2 marks]</strong></p>
+            <p>K-means has converged when:</p>
+            <ul>
+                <li>The cluster assignments no longer change between iterations, OR <strong>[1 mark]</strong></li>
+                <li>The centroids no longer move (or move less than a small threshold ε), OR <strong>[0.5 marks]</strong></li>
+                <li>The objective function (within-cluster sum of squares) stops decreasing <strong>[0.5 marks]</strong></li>
+            </ul>
+
+            <p><strong>(ii) Convergence Guarantee:</strong> <strong>[3 marks]</strong></p>
+            <p><strong>Yes, K-means is guaranteed to converge.</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Reasoning:</strong></p>
+            <ul>
+                <li>Each iteration (assignment + update) decreases or maintains the objective function value <strong>[1 mark]</strong></li>
+                <li>There are only a finite number of possible cluster assignments</li>
+                <li>The algorithm must eventually reach a state where no improvement is possible <strong>[1 mark]</strong></li>
+            </ul>
+
+            <div class="note">
+                <strong>Important Caveat:</strong> While convergence is guaranteed, it only converges to a local minimum, not necessarily the global minimum. The final result depends on initialization. This is why we run K-means multiple times with different initializations and choose the best result.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Gaussian Mixture Model Properties <span class="marks">[8 marks]</span></h3>
+            <p>Compare K-means and GMM:</p>
+            <p>(i) What type of assignment does each method use? [4 marks]</p>
+            <p>(ii) Which method is more flexible for modeling different cluster shapes? Explain. [4 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) Assignment Types:</strong> <strong>[4 marks]</strong></p>
+
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Assignment Type</th>
+                    <th>Explanation</th>
+                </tr>
+                <tr>
+                    <td><strong>K-means</strong></td>
+                    <td>Hard Assignment</td>
+                    <td>Each point is assigned to exactly one cluster (binary: belongs or doesn't belong)</td>
+                </tr>
+                <tr>
+                    <td><strong>GMM</strong></td>
+                    <td>Soft Assignment</td>
+                    <td>Each point has a probability of belonging to each cluster (values between 0 and 1)</td>
+                </tr>
+            </table>
+            <strong>[4 marks: 2 marks per method]</strong>
+
+            <p><strong>Example:</strong></p>
+            <ul>
+                <li>K-means: Point x belongs to cluster 2 (100% assignment)</li>
+                <li>GMM: Point x has 70% probability of cluster 1, 25% cluster 2, 5% cluster 3</li>
+            </ul>
+
+            <p><strong>(ii) Flexibility for Cluster Shapes:</strong> <strong>[4 marks]</strong></p>
+            <p><strong>GMM is more flexible</strong> <strong>[1 mark]</strong></p>
+
+            <p><strong>Explanation:</strong></p>
+
+            <p><strong>K-means limitations:</strong></p>
+            <ul>
+                <li>Assumes spherical clusters of roughly equal size <strong>[1 mark]</strong></li>
+                <li>Uses Euclidean distance, which creates circular/spherical boundaries</li>
+                <li>Cannot handle elongated or elliptical clusters well</li>
+            </ul>
+
+            <p><strong>GMM advantages:</strong></p>
+            <ul>
+                <li>Each component has its own covariance matrix Σ_k <strong>[1 mark]</strong></li>
+                <li>Can model elliptical clusters with different orientations and sizes <strong>[1 mark]</strong></li>
+                <li>Covariance matrix determines the shape and orientation of each cluster</li>
+            </ul>
+
+            <div class="formula-box">
+                <p><strong>GMM allows:</strong></p>
+                <ul>
+                    <li>Diagonal Σ: Elliptical clusters aligned with axes</li>
+                    <li>Full Σ: Elliptical clusters at any orientation</li>
+                    <li>Different Σ for each component: Each cluster can have unique shape</li>
+                </ul>
+            </div>
+
+            <div class="note">
+                <strong>Practical Consideration:</strong> GMM is more flexible but also more computationally expensive and requires more data to estimate parameters reliably. Use K-means for quick clustering of well-separated spherical clusters; use GMM when clusters have different shapes or sizes.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) PCA for Visualization <span class="marks">[7 marks]</span></h3>
+            <p>You have a dataset with 50 features and want to visualize it in 2D using PCA.</p>
+            <p>(i) Describe the steps to perform PCA. [4 marks]</p>
+            <p>(ii) How do you determine if 2 principal components are sufficient? [3 marks]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) PCA Steps:</strong> <strong>[4 marks]</strong></p>
+
+            <ol>
+                <li><strong>Center the data:</strong> Subtract the mean from each feature to center the data at the origin
+                    <div class="formula-box">
+                        <p>\[X_{centered} = X - \bar{X}\]</p>
+                    </div>
+                    <strong>[1 mark]</strong>
+                </li>
+
+                <li><strong>Compute covariance matrix:</strong> Calculate C = (1/N)X^T X (for centered data)
+                    <strong>[1 mark]</strong>
+                </li>
+
+                <li><strong>Eigendecomposition:</strong> Find eigenvalues λ and eigenvectors v of the covariance matrix. The eigenvectors are the principal components (directions of maximum variance)
+                    <strong>[1 mark]</strong>
+                </li>
+
+                <li><strong>Project data:</strong> Select the 2 eigenvectors with largest eigenvalues, form matrix U (50×2), and project: Z = XU to get 2D representation
+                    <strong>[1 mark]</strong>
+                </li>
+            </ol>
+
+            <p><strong>(ii) Determining if 2 Components are Sufficient:</strong> <strong>[3 marks]</strong></p>
+
+            <p><strong>Calculate the proportion of variance explained:</strong> <strong>[2 marks]</strong></p>
+            <div class="formula-box">
+                <p>\[\text{Proportion of variance} = \frac{\lambda_1 + \lambda_2}{\sum_{i=1}^{50} \lambda_i}\]</p>
+            </div>
+
+            <p><strong>Decision criteria:</strong></p>
+            <ul>
+                <li>If the proportion is ≥ 0.8 (80%), 2 components capture most information <strong>[1 mark]</strong></li>
+                <li>Can also use a scree plot: plot eigenvalues and look for an "elbow" where adding more components gives diminishing returns</li>
+                <li>For visualization specifically, 2 or 3 components are standard even if variance explained is lower</li>
+            </ul>
+
+            <div class="note">
+                <strong>Example Interpretation:</strong> If λ₁=15, λ₂=10, and sum of all 50 eigenvalues is 40, then variance explained = (15+10)/40 = 0.625 or 62.5%. This means 2 PCs capture about 63% of the original information - reasonable for visualization but might lose important structure.
+            </div>
+
+            <div class="note">
+                <strong>Visualization Trade-off:</strong> For visualization purposes, 2D or 3D is necessary even if variance explained is lower (e.g., 60-70%). The goal is to gain insights and identify patterns, not perfect reconstruction. Higher variance explained is better but not always achievable in 2D.
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Remember to explain your reasoning clearly in the exam!</p>
+        </div>
+    </div>
+</body>
+</html>

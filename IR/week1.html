@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Retrieval - Interactive Tutorial for Beginners</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 600;
+            border: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.6em;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        .lecture-ref {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .lecture-ref h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border: 2px solid #667eea;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .concept-box h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .key-point {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .key-point h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 25px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .example-box h4 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .interactive-demo {
+            background: white;
+            border: 3px solid #667eea;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .interactive-demo h4 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 15px 35px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .results-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            min-height: 100px;
+        }
+
+        .document-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        table tr:hover {
+            background: #f0f0f0;
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .quiz-container h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #28a745;
+            color: white;
+        }
+
+        .quiz-option.wrong {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .badge-week1 {
+            background: #007bff;
+            color: white;
+        }
+
+        .badge-week2 {
+            background: #6610f2;
+            color: white;
+        }
+
+        .badge-core {
+            background: #28a745;
+            color: white;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .comparison-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .vs-badge {
+            text-align: center;
+            font-size: 2em;
+            color: #764ba2;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .diagram-box {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            padding: 30px;
+            margin: 25px 0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .process-step {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .arrow {
+            display: inline-block;
+            font-size: 2em;
+            color: #764ba2;
+            margin: 0 10px;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .progress-indicator {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Information Retrieval</h1>
+            <p>The Science of Search Engines - Interactive Tutorial for Beginners</p>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.9;">Master the fundamentals of how search engines work</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#what-is-ir">What is IR?</a></li>
+                <li><a href="#ir-vs-db">IR vs Databases</a></li>
+                <li><a href="#architecture">System Architecture</a></li>
+                <li><a href="#text-processing">Text Processing</a></li>
+                <li><a href="#indexing">Indexing</a></li>
+                <li><a href="#retrieval">Retrieval Process</a></li>
+                <li><a href="#relevance">Relevance</a></li>
+                <li><a href="#quiz">Test Your Knowledge</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- WHAT IS IR SECTION -->
+            <section id="what-is-ir">
+                <h2>🎯 What is Information Retrieval?</h2>
+                <span class="badge badge-week1">Week 1</span>
+                <span class="badge badge-core">Core Concept</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L01-Intro.pdf - Pages 2-3</h4>
+                    <p><strong>Lecture:</strong> Introduction to Information Retrieval</p>
+                    <p><strong>Instructor:</strong> Craig Macdonald, 2026</p>
+                </div>
+
+                <div class="concept-box">
+                    <h4>Definition</h4>
+                    <p style="font-size: 1.2em; line-height: 1.8;">
+                        <strong>Information Retrieval is the science of search engines.</strong>
+                    </p>
+                    <p style="margin-top: 15px;">
+                        It focuses on how to best address the <strong>information needs</strong> of users by:
+                    </p>
+                    <ul style="margin-top: 10px; margin-left: 25px;">
+                        <li><strong>Effectively:</strong> Get the right information to a user!</li>
+                        <li><strong>Efficiently:</strong> Get it to users quickly!</li>
+                    </ul>
+                </div>
+
+                <h3>Real-World Examples</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>🌐 Web Search</h4>
+                        <p>Google, Bing processing billions of queries daily</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Search the entire web</li>
+                            <li>Rank billions of pages</li>
+                            <li>Return results in milliseconds</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>📧 Email Search</h4>
+                        <p>Finding messages in Gmail, Outlook</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Search your personal emails</li>
+                            <li>Filter by date, sender, attachments</li>
+                            <li>Full-text search across content</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>📚 Academic Search</h4>
+                        <p>ACM Digital Library, IEEE Xplore</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Search scholarly papers</li>
+                            <li>Filter by field, year, citations</li>
+                            <li>Find relevant research</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>🤖 AI Assistants</h4>
+                        <p>ChatGPT, Claude using RAG (Retrieval-Augmented Generation)</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Combine IR with LLMs</li>
+                            <li>Retrieve relevant documents</li>
+                            <li>Generate informed responses</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L01-Intro.pdf - Page 10</h4>
+                    <p><strong>Topic:</strong> The role of IR in AI Assistants and RAG systems</p>
+                    <p>IR is experiencing a renaissance in the AI era - it's the "R" in RAG!</p>
+                </div>
+
+                <h3>Information Need → Query → Results</h3>
+                <div class="example-box">
+                    <h4>🔍 Example: Planning a Trip</h4>
+                    <p><strong>Information Need:</strong> "I want to know what buildings to see in Glasgow"</p>
+                    <p><strong>Initial Query:</strong> "Glasgow buildings"</p>
+                    <p><strong>Refined Query:</strong> "Glasgow West end buildings"</p>
+                    <p style="margin-top: 15px;"><em>Reference: L01-Intro.pdf, Page 4</em></p>
+                </div>
+
+                <div class="key-point">
+                    <h4>💡 Key Insight</h4>
+                    <p><strong>User need can be vague!</strong> A major challenge in IR is understanding what users really want from just a few query words.</p>
+                </div>
+            </section>
+
+            <!-- IR VS DATABASE SECTION -->
+            <section id="ir-vs-db">
+                <h2>🔄 Information Retrieval vs. Databases</h2>
+                <span class="badge badge-week1">Week 1</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L01-Intro.pdf - Pages 7, 13-14</h4>
+                    <p><strong>Topics:</strong> Documents vs. Database Records, Imprecision in IR</p>
+                </div>
+
+                <h3>The Fundamental Difference</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card" style="border-color: #28a745;">
+                        <h4>💾 Database Query</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Structured Query:</strong> SQL, precise syntax</li>
+                            <li><strong>Structured Data:</strong> Well-defined fields</li>
+                            <li><strong>Exact Match:</strong> Find all records meeting criteria</li>
+                            <li><strong>Accuracy:</strong> Results are verified and complete</li>
+                            <li><strong>Example:</strong> SELECT * FROM trains WHERE destination='Edinburgh'</li>
+                        </ul>
+                    </div>
+
+                    <div class="vs-badge">VS</div>
+
+                    <div class="comparison-card" style="border-color: #667eea;">
+                        <h4>🔍 Information Retrieval</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Natural Language:</strong> Keywords, phrases</li>
+                            <li><strong>Unstructured Data:</strong> Free text, documents</li>
+                            <li><strong>Best Match:</strong> Ranked list of relevant docs</li>
+                            <li><strong>Heuristics:</strong> Estimate relevance</li>
+                            <li><strong>Example:</strong> "Glasgow buildings architecture"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h4>Database Records vs. Documents</h4>
+                    <table>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Database Records</th>
+                            <th>Documents (IR)</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Structure</strong></td>
+                            <td>Well-defined fields (attributes)</td>
+                            <td>Unstructured text</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Example</strong></td>
+                            <td>Bank record: account number, balance, name, address</td>
+                            <td>News article, email, web page</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Matching</strong></td>
+                            <td>Easy to compare fields</td>
+                            <td>Complex - need to understand content</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Result</strong></td>
+                            <td>"Right" answer exists</td>
+                            <td>Relevance is subjective</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="key-point">
+                    <h4>💡 IR Techniques are Essentially Heuristics</h4>
+                    <p>Most Computer Science algorithms have a "right" answer. A heuristic tries to <strong>guess</strong> something close to the right answer.</p>
+                    <p style="margin-top: 10px;"><strong>Consider these problems:</strong></p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>✓ Sort 10 integers - <em>Has a correct answer</em></li>
+                        <li>✓ Find the highest integer - <em>Has a correct answer</em></li>
+                        <li>✓ SELECT beers WHERE maker='X' - <em>Has a correct answer</em></li>
+                        <li>❓ Find documents most relevant to "hippos in the zoo" - <em>No single "right" answer!</em></li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L01-Intro.pdf, Page 14</em></p>
+                </div>
+
+                <h3>What Makes a Document Relevant?</h3>
+                <div class="example-box">
+                    <h4>🤔 Many Factors to Consider</h4>
+                    <ul style="margin-left: 25px;">
+                        <li>It contains the query terms?</li>
+                        <li>It contains ALL of the query terms?</li>
+                        <li>It contains the query terms many times?</li>
+                        <li>It contains the query terms in a short document?</li>
+                        <li>It contains the query terms close together?</li>
+                        <li>It is fresh/recent?</li>
+                        <li>It contains terms similar to the query terms?</li>
+                        <li>It is authoritative (has many links)?</li>
+                        <li>It has been clicked by many other people for the same query?</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>ALL of these are heuristics. They are not guaranteed to get a correct, relevant document for all users.</strong></p>
+                    <p style="margin-top: 10px;"><em>Reference: L01-Intro.pdf, Page 15</em></p>
+                </div>
+            </section>
+
+            <!-- ARCHITECTURE SECTION -->
+            <section id="architecture">
+                <h2>🏗️ IR System Architecture</h2>
+                <span class="badge badge-week2">Week 2</span>
+                <span class="badge badge-core">Core Concept</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Complete Lecture</h4>
+                    <p><strong>Lecture:</strong> Architecture of Retrieval Systems</p>
+                    <p><strong>Key Topics:</strong> Text Processing, Indexing, Retrieval Process</p>
+                </div>
+
+                <h3>The Three Main Components</h3>
+
+                <div class="diagram-box">
+                    <div class="process-step">1️⃣ Text Processing</div>
+                    <span class="arrow">→</span>
+                    <div class="process-step">2️⃣ Indexing</div>
+                    <span class="arrow">→</span>
+                    <div class="process-step">3️⃣ Retrieval</div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>1️⃣ Text Processing</h4>
+                        <p><strong>Purpose:</strong> Convert raw text into structured format</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>Tokenization:</strong> Break text into words</li>
+                            <li><strong>Stopword Removal:</strong> Remove common words (the, and, is)</li>
+                            <li><strong>Stemming:</strong> Reduce words to root form</li>
+                            <li><strong>Output:</strong> Bag of words representation</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 7-18</em></p>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>2️⃣ Indexing</h4>
+                        <p><strong>Purpose:</strong> Store documents for fast retrieval</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>Inverted Index:</strong> Term → Document mapping</li>
+                            <li><strong>Dictionary:</strong> List of all unique terms</li>
+                            <li><strong>Postings:</strong> Documents containing each term</li>
+                            <li><strong>Speed:</strong> Query billions of docs in milliseconds</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 20-32</em></p>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>3️⃣ Retrieval</h4>
+                        <p><strong>Purpose:</strong> Match queries to relevant documents</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>Query Processing:</strong> Apply same text processing</li>
+                            <li><strong>Matching:</strong> Find documents with query terms</li>
+                            <li><strong>Ranking:</strong> Order by relevance score</li>
+                            <li><strong>Output:</strong> Sorted list of documents</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 33-41</em></p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h4>Building a Basic IR System</h4>
+                    <p><strong>Key Requirements:</strong></p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>📝 Understand what is in the documents</li>
+                        <li>🎯 Determine what each document is about</li>
+                        <li>⚡ Use data structures to ensure efficiency</li>
+                        <li>✅ Ensure quality (effectiveness) of results</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Page 2</em></p>
+                </div>
+            </section>
+
+            <!-- TEXT PROCESSING SECTION -->
+            <section id="text-processing">
+                <h2>📝 Text Processing (Part 1)</h2>
+                <span class="badge badge-week2">Week 2</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Pages 7-19</h4>
+                    <p><strong>Section:</strong> PART 1: TEXT PROCESSING</p>
+                </div>
+
+                <h3>The "Bag of Words" Model</h3>
+                <div class="concept-box">
+                    <h4>Fundamental Assumption</h4>
+                    <p>We treat all words in a document as <strong>independent</strong> index terms, disregarding:</p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>❌ Order of words</li>
+                        <li>❌ Structure (sentences, paragraphs)</li>
+                        <li>❌ Meaning and context</li>
+                        <li>❌ Relationships between words</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Why?</strong> It's simple, yet surprisingly effective!</p>
+                    <p style="margin-top: 10px;"><em>Reference: L02-Architecture.pdf, Page 8</em></p>
+                </div>
+
+                <h3>Step 1: Tokenization (Lexical Analysis)</h3>
+                <div class="example-box">
+                    <h4>Breaking Text into Words</h4>
+                    <p><strong>Input:</strong> "McDonald's slims down spuds. Fast-food chain to reduce certain types of fat."</p>
+                    <p style="margin-top: 10px;"><strong>Output:</strong> [McDonald's, slims, down, spuds, Fast-food, chain, to, reduce, certain, types, of, fat]</p>
+
+                    <p style="margin-top: 20px;"><strong>Challenges:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>Numbers: 1999 vs. 510B.C</li>
+                        <li>Hyphens: state-of-the-art vs. B-49</li>
+                        <li>Punctuation: 510B.C vs. list.id</li>
+                        <li>Case: Bank vs. bank</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Small decisions can have major impact on effectiveness!</em></p>
+                    <p style="margin-top: 10px;"><em>Reference: L02-Architecture.pdf, Pages 11-12</em></p>
+                </div>
+
+                <h3>Step 2: Stopword Removal</h3>
+                <div class="concept-box">
+                    <h4>Removing Common Words</h4>
+                    <p><strong>Stopwords</strong> are words that are too frequent and don't help discriminate between documents.</p>
+                    <p style="margin-top: 15px;"><strong>Examples:</strong> the, am, and, is, are, of, at, in, to</p>
+
+                    <p style="margin-top: 20px;"><strong>Strategies:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>List lookup:</strong> Negative dictionary/stopword list</li>
+                        <li><strong>Frequency analysis:</strong> Remove terms in >80% of documents</li>
+                        <li><strong>Collection-based:</strong> Use frequency info from other collections</li>
+                    </ul>
+
+                    <p style="margin-top: 15px;"><strong>⚠️ Caution:</strong> Some phrases need stopwords: "to be or not to be"</p>
+                    <p style="margin-top: 10px;"><em>Reference: L02-Architecture.pdf, Page 13</em></p>
+                </div>
+
+                <h3>Step 3: Stemming</h3>
+                <div class="example-box">
+                    <h4>Reducing Words to Root Form</h4>
+                    <p><strong>Goal:</strong> Conflate word variants into a single form</p>
+
+                    <p style="margin-top: 15px;"><strong>Examples:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>connect → connect (root)</li>
+                        <li>connected → connect</li>
+                        <li>connecting → connect</li>
+                        <li>connections → connect</li>
+                    </ul>
+
+                    <p style="margin-top: 20px;"><strong>Benefits:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>✓ Increases recall - find more relevant documents</li>
+                        <li>✓ Reduces index size by 10-50%</li>
+                        <li>✓ Makes system more robust to user query variants</li>
+                    </ul>
+
+                    <p style="margin-top: 20px;"><strong>Problems:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>❌ GRAVITY has two meanings</li>
+                        <li>❌ GRAVITATION → GRAVITY (loses meaning distinction)</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 14-17</em></p>
+                </div>
+
+                <div class="interactive-demo">
+                    <h4>🧪 Interactive Demo: Text Processing Pipeline</h4>
+                    <p>Enter text and see how it's processed through each step:</p>
+
+                    <textarea id="input-text" style="width: 100%; padding: 15px; border: 2px solid #667eea; border-radius: 10px; font-size: 16px; min-height: 100px; font-family: Arial;">Twinkle, twinkle, little bat. How I wonder what you're at! Up above the world you fly. Like a tea-tray in the sky.</textarea>
+
+                    <button onclick="processText()" style="margin-top: 15px; padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px;">Process Text</button>
+
+                    <div id="processing-results" style="margin-top: 25px;"></div>
+                </div>
+
+                <div class="lecture-ref">
+                    <h4>📚 Complete Example: L02-Architecture.pdf - Page 18</h4>
+                    <p>See the full text processing example with "Twinkle, twinkle, little bat" poem</p>
+                </div>
+            </section>
+
+            <!-- INDEXING SECTION -->
+            <section id="indexing">
+                <h2>📚 Indexing (Part 2)</h2>
+                <span class="badge badge-week2">Week 2</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Pages 20-32</h4>
+                    <p><strong>Section:</strong> PART 2: INDEXING</p>
+                </div>
+
+                <h3>The Challenge</h3>
+                <div class="key-point">
+                    <h4>⚡ Speed is Critical</h4>
+                    <p>The English web has <strong>billions of documents</strong>. When a query is received:</p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>❌ Can't fetch all billions of pages and search them</li>
+                        <li>❌ Too slow to scan each document sequentially</li>
+                        <li>✅ Need a specialized data structure: <strong>The Index</strong></li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Page 21</em></p>
+                </div>
+
+                <h3>The Inverted Index</h3>
+                <div class="concept-box">
+                    <h4>Main Idea</h4>
+                    <p>Invert the 'Document → Term' relationship to create a 'Term → Document' index</p>
+
+                    <p style="margin-top: 20px;"><strong>Components:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>Lexicon (Dictionary):</strong> All unique terms in the collection</li>
+                        <li><strong>Postings List:</strong> For each term, list of documents containing it</li>
+                        <li><strong>Document Index:</strong> Metadata about each document</li>
+                    </ul>
+
+                    <p style="margin-top: 20px;"><strong>Benefits:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>✓ Maximize retrieval speed - only examine relevant documents</li>
+                        <li>✓ Enable ranking - store term frequencies</li>
+                    </ul>
+
+                    <p style="margin-top: 20px;"><strong>Costs:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>❌ Substantial storage overhead</li>
+                        <li>❌ Processing overhead to build and maintain</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 24-25</em></p>
+                </div>
+
+                <h3>Building an Inverted Index</h3>
+                <div class="example-box">
+                    <h4>📖 Step-by-Step Process</h4>
+
+                    <p><strong>Example Documents:</strong></p>
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Doc ID</th>
+                            <th>Content</th>
+                        </tr>
+                        <tr>
+                            <td>Doc 1</td>
+                            <td>Now is the time for all good men to come to the aid of their country</td>
+                        </tr>
+                        <tr>
+                            <td>Doc 2</td>
+                            <td>It was a dark and stormy night in the country manor. The time was past midnight</td>
+                        </tr>
+                    </table>
+
+                    <p style="margin-top: 20px;"><strong>Step 1:</strong> Parse documents and extract tokens with Doc ID</p>
+                    <p style="margin-top: 10px;"><strong>Step 2:</strong> Sort alphabetically</p>
+                    <p style="margin-top: 10px;"><strong>Step 3:</strong> Merge entries for same term in same document</p>
+                    <p style="margin-top: 10px;"><strong>Step 4:</strong> Count frequencies</p>
+
+                    <p style="margin-top: 20px;"><strong>Final Index:</strong></p>
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc #</th>
+                            <th>Frequency</th>
+                        </tr>
+                        <tr>
+                            <td>time</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>time</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>dark</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>country</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>country</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 26-29</em></p>
+                </div>
+
+                <div class="interactive-demo">
+                    <h4>🔍 Interactive Demo: Search Using Inverted Index</h4>
+                    <p>Search our sample collection:</p>
+
+                    <div class="search-box">
+                        <input type="text" id="search-query" placeholder="Try: time, dark, time AND dark">
+                        <button onclick="searchIndex()">Search</button>
+                    </div>
+
+                    <div id="search-results" class="results-area">
+                        <p style="color: #666;">Enter a query to search the indexed documents...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RETRIEVAL SECTION -->
+            <section id="retrieval">
+                <h2>🎯 Retrieval Process (Part 3)</h2>
+                <span class="badge badge-week2">Week 2</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Pages 33-41</h4>
+                    <p><strong>Section:</strong> PART 3: RETRIEVAL</p>
+                </div>
+
+                <h3>The Retrieval Algorithm</h3>
+                <div class="concept-box">
+                    <h4>Basic Search Process</h4>
+                    <ol style="margin-left: 25px; margin-top: 10px;">
+                        <li><strong>Lexicon Search:</strong> Find query terms in dictionary</li>
+                        <li><strong>Fetch Occurrences:</strong> Pull out postings lists</li>
+                        <li><strong>Manipulate Occurrences:</strong> Compute relevance scores</li>
+                        <li><strong>Rank Documents:</strong> Sort by score (highest first)</li>
+                        <li><strong>Return Results:</strong> Show top-ranked documents to user</li>
+                    </ol>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Page 36</em></p>
+                </div>
+
+                <h3>Best-Match Retrieval</h3>
+                <div class="example-box">
+                    <h4>Simple Ranking Algorithm</h4>
+                    <div style="background: #f0f0f0; padding: 20px; border-radius: 10px; margin-top: 15px; font-family: monospace;">
+For each document I, Score(I) = 0<br>
+For each query term:<br>
+&nbsp;&nbsp;Search the lexicon list<br>
+&nbsp;&nbsp;Pull out the postings list<br>
+&nbsp;&nbsp;For each document J in the list:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Score(J) = Score(J) + 1
+                    </div>
+
+                    <p style="margin-top: 20px;"><strong>This simple algorithm:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>Counts how many query terms appear in each document</li>
+                        <li>Documents with more query terms rank higher</li>
+                        <li>Better than binary AND (which requires ALL terms)</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Pages 39-40</em></p>
+                </div>
+
+                <h3>Comparison: Binary AND vs. Best-Match</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Binary AND Search</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Requires ALL query terms</li>
+                            <li>All terms equally important</li>
+                            <li>Returns: documents that match exactly</li>
+                            <li>Problem: May return nothing!</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>Best-Match Ranking</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Matches any query terms</li>
+                            <li>More terms = higher score</li>
+                            <li>Returns: ranked list of documents</li>
+                            <li>Always returns something!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="key-point">
+                    <h4>💡 The Power of Ranking</h4>
+                    <p>Modern search engines rank documents by estimated relevance. The output is a <strong>ranked list</strong> where:</p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>Top documents are more likely to be relevant</li>
+                        <li>Users typically only look at top 10 results</li>
+                        <li>Ranking algorithms use many features (we'll learn more later!)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RELEVANCE SECTION -->
+            <section id="relevance">
+                <h2>✨ Relevance & Effectiveness</h2>
+                <span class="badge badge-core">Core Concept</span>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Pages 3-4, 23</h4>
+                    <p>Also: L01-Intro.pdf - Pages 15, 23</p>
+                </div>
+
+                <h3>What is Relevance?</h3>
+                <div class="concept-box">
+                    <h4>Task Statement</h4>
+                    <p style="font-size: 1.2em; background: linear-gradient(135deg, #667eea20, #764ba220); padding: 20px; border-radius: 10px; margin-top: 15px;">
+                        Build a system that retrieves documents that users are likely to find <strong>relevant</strong> to their queries.
+                    </p>
+
+                    <p style="margin-top: 20px;"><strong>Simple Definition:</strong></p>
+                    <p style="margin-left: 25px;">A relevant document contains the information that a person was looking for when they submitted a query to the search engine.</p>
+
+                    <p style="margin-top: 20px;"><strong>Types of Relevance:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>Topical Relevance:</strong> Document is about the same topic</li>
+                        <li><strong>User Relevance:</strong> Everything else (task, context, novelty, authority)</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Page 3</em></p>
+                </div>
+
+                <h3>Retrieval Models Define Relevance</h3>
+                <div class="example-box">
+                    <h4>How Systems Estimate Relevance</h4>
+                    <p>Ranking algorithms are based on <strong>retrieval models</strong> that:</p>
+                    <ul style="margin-left: 25px; margin-top: 10px;">
+                        <li>Use <strong>statistical properties</strong> of text (not linguistic analysis)</li>
+                        <li>Count simple features like words (not parse sentences)</li>
+                        <li>Focus on <strong>topical relevance</strong> primarily</li>
+                    </ul>
+
+                    <p style="margin-top: 20px;"><strong>We'll cover these models in later weeks:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>Vector Space Model (TF-IDF)</li>
+                        <li>Probabilistic Models (BM25)</li>
+                        <li>Language Models</li>
+                        <li>Learning to Rank</li>
+                        <li>Neural IR Models</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Reference: L02-Architecture.pdf, Page 4</em></p>
+                </div>
+
+                <h3>The Three Pillars of IR</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>⭐ Relevance</h4>
+                        <p>If the query and document are about the same topic</p>
+                        <p style="margin-top: 10px; font-style: italic;">(Topical Relevance)</p>
+                        <p style="margin-top: 10px;">Remember: user's query can be vague!</p>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>✅ Effectiveness</h4>
+                        <p>Quality of the retrieved set</p>
+                        <p style="margin-top: 10px;">Do they largely contain relevant documents?</p>
+                        <p style="margin-top: 10px; font-style: italic;">(Role of Retrieval Models)</p>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>⚡ Efficiency</h4>
+                        <p>Return results as fast as possible</p>
+                        <p style="margin-top: 10px; font-style: italic;">(Role of search engine architecture - indexes)</p>
+                        <p style="margin-top: 10px;">Distribute computation, update indexes efficiently</p>
+                    </div>
+                </div>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: L02-Architecture.pdf - Page 23</h4>
+                    <p>The three pillars: Relevance, Effectiveness, Efficiency</p>
+                </div>
+            </section>
+
+            <!-- QUIZ SECTION -->
+            <section id="quiz">
+                <h2>🎓 Test Your Knowledge</h2>
+
+                <div class="quiz-container">
+                    <h4>📝 Interactive Quiz: Check Your Understanding</h4>
+
+                    <div class="quiz-question">
+                        <p style="font-weight: 600; margin-bottom: 15px;">1. What is the main difference between IR and database queries?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) IR is faster than databases</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) IR uses heuristics to estimate relevance, databases find exact matches</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) IR only works with numbers, databases work with text</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) There is no difference</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p style="font-weight: 600; margin-bottom: 15px;">2. What are the three main components of an IR system architecture?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Input, Processing, Output</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Text Processing, Indexing, Retrieval</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Search, Rank, Display</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Query, Match, Result</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p style="font-weight: 600; margin-bottom: 15px;">3. What is the purpose of stemming in text processing?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) To remove stopwords from documents</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) To reduce word variants to a common root form</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) To break text into individual words</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) To capitalize all words in a document</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p style="font-weight: 600; margin-bottom: 15px;">4. What is an inverted index?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) A list of documents sorted by date</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) A database of user queries</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">C) A data structure mapping terms to documents containing them</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) A reversed alphabetical list of words</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p style="font-weight: 600; margin-bottom: 15px;">5. What does "bag of words" mean in IR?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) A collection of important documents</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Treating words independently, ignoring order and structure</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) A dictionary of all words in a language</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) A technique for storing compressed text</div>
+                    </div>
+                </div>
+
+                <div class="progress-indicator">
+                    <h4 style="margin-bottom: 10px;">Your Learning Progress</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%;">0%</div>
+                    </div>
+                    <p style="margin-top: 10px; text-align: center; color: #666;">Complete sections to track your progress!</p>
+                </div>
+            </section>
+
+            <!-- NEXT STEPS SECTION -->
+            <section>
+                <h2>🚀 What's Next?</h2>
+
+                <div class="concept-box" style="background: linear-gradient(135deg, #667eea10, #764ba210);">
+                    <h4>You've completed the foundation! Here's what comes next in the course:</h4>
+
+                    <h3 style="margin-top: 25px;">Week 2-3: Term Weighting & Evaluation</h3>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>Vector Space Model:</strong> TF-IDF weighting</li>
+                        <li><strong>Cosine Similarity:</strong> Measuring document similarity</li>
+                        <li><strong>Evaluation Metrics:</strong> Precision, Recall, F-measure, MAP</li>
+                        <li><strong>PyTerrier Platform:</strong> Hands-on IR experiments</li>
+                    </ul>
+
+                    <h3 style="margin-top: 25px;">Week 4-5: Advanced Retrieval Models</h3>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>BM25:</strong> Probabilistic ranking function</li>
+                        <li><strong>Language Models:</strong> Query likelihood approach</li>
+                        <li><strong>Relevance Feedback:</strong> Improving queries</li>
+                    </ul>
+
+                    <h3 style="margin-top: 25px;">Week 6-8: Machine Learning & Web Search</h3>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>Learning to Rank:</strong> ML approaches to ranking</li>
+                        <li><strong>PageRank:</strong> Link analysis algorithms</li>
+                        <li><strong>Neural IR:</strong> Deep learning for retrieval</li>
+                    </ul>
+
+                    <h3 style="margin-top: 25px;">Week 9-10: Efficiency & Advanced Topics</h3>
+                    <ul style="margin-left: 25px;">
+                        <li><strong>Index Compression:</strong> VByte, Gamma coding</li>
+                        <li><strong>Query Processing:</strong> DAAT, TAAT, WAND</li>
+                        <li><strong>Web Search Evaluation:</strong> Real-world metrics</li>
+                    </ul>
+                </div>
+
+                <div class="lecture-ref">
+                    <h4>📚 Reference: IR_Course_Study_Guide.html - Weekly Schedule</h4>
+                    <p>See the complete 10-week syllabus with detailed reading lists for each topic</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                    <h3 style="color: white; margin-bottom: 15px;">🎉 Congratulations!</h3>
+                    <p style="font-size: 1.2em;">You now understand the fundamental concepts of Information Retrieval!</p>
+                    <p style="margin-top: 20px; font-size: 1.1em;">Continue learning through the lecture materials and hands-on PyTerrier labs.</p>
+                    <p style="margin-top: 20px; opacity: 0.9;">The best way to master IR is through practice - build search engines, experiment with different models, and evaluate their performance!</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Information Retrieval - Interactive Tutorial</strong></p>
+            <p>Based on Lecture Notes by Craig Macdonald & Sean MacAvaney</p>
+            <p style="margin-top: 15px;">University of Glasgow - School of Computing Science - Spring 2026</p>
+            <p style="margin-top: 15px; opacity: 0.8;">📚 Keep learning, keep searching!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Text Processing Demo
+        function processText() {
+            const input = document.getElementById('input-text').value;
+            const resultsDiv = document.getElementById('processing-results');
+
+            // Step 1: Tokenization
+            let tokens = input.toLowerCase()
+                .replace(/[.,!?]/g, '')
+                .split(/\s+/);
+
+            // Step 2: Stopword removal
+            const stopwords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'i', 'you', 'he', 'she', 'it', 'they', 'what', 'how', 'is', 'are', 'was', 'were', 'be', 'been', 'being'];
+            let afterStopwords = tokens.filter(word => !stopwords.includes(word));
+
+            // Step 3: Simple stemming (Porter-like rules)
+            let stemmed = afterStopwords.map(word => {
+                // Very simplified stemming
+                if (word.endsWith('ing')) return word.slice(0, -3);
+                if (word.endsWith('ed')) return word.slice(0, -2);
+                if (word.endsWith('s') && word.length > 3) return word.slice(0, -1);
+                return word;
+            });
+
+            // Count frequencies
+            let freqMap = {};
+            stemmed.forEach(word => {
+                freqMap[word] = (freqMap[word] || 0) + 1;
+            });
+
+            // Display results
+            resultsDiv.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">Step 1: Tokenization</h4>
+                    <p style="background: white; padding: 15px; border-radius: 5px;">${tokens.join(', ')}</p>
+                    <p style="color: #666; margin-top: 5px;">Total tokens: ${tokens.length}</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">Step 2: After Stopword Removal</h4>
+                    <p style="background: white; padding: 15px; border-radius: 5px;">${afterStopwords.join(', ')}</p>
+                    <p style="color: #666; margin-top: 5px;">Remaining tokens: ${afterStopwords.length} (removed ${tokens.length - afterStopwords.length} stopwords)</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">Step 3: After Stemming</h4>
+                    <p style="background: white; padding: 15px; border-radius: 5px;">${stemmed.join(', ')}</p>
+                </div>
+
+                <div>
+                    <h4 style="color: #667eea;">Final: Term Frequencies</h4>
+                    <div style="background: white; padding: 15px; border-radius: 5px;">
+                        ${Object.entries(freqMap)
+                            .sort((a, b) => b[1] - a[1])
+                            .map(([term, freq]) => `<span style="display: inline-block; margin: 5px; padding: 8px 12px; background: #667eea; color: white; border-radius: 15px;">${term}: ${freq}</span>`)
+                            .join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search Demo
+        const sampleIndex = {
+            'time': [{doc: 1, freq: 1}, {doc: 2, freq: 2}],
+            'dark': [{doc: 2, freq: 1}],
+            'country': [{doc: 1, freq: 1}, {doc: 2, freq: 1}],
+            'good': [{doc: 1, freq: 1}],
+            'men': [{doc: 1, freq: 1}],
+            'stormy': [{doc: 2, freq: 1}],
+            'night': [{doc: 2, freq: 1}],
+            'manor': [{doc: 2, freq: 1}],
+            'midnight': [{doc: 2, freq: 1}]
+        };
+
+        const documents = {
+            1: "Now is the time for all good men to come to the aid of their country",
+            2: "It was a dark and stormy night in the country manor. The time was past midnight"
+        };
+
+        function searchIndex() {
+            const query = document.getElementById('search-query').value.toLowerCase().trim();
+            const resultsDiv = document.getElementById('search-results');
+
+            if (!query) {
+                resultsDiv.innerHTML = '<p style="color: #666;">Please enter a search query</p>';
+                return;
+            }
+
+            // Handle AND queries
+            const isAnd = query.includes(' and ');
+            const terms = isAnd ? query.split(' and ').map(t => t.trim()) : query.split(' ');
+
+            // Calculate scores
+            let scores = {};
+            let docSets = [];
+
+            terms.forEach(term => {
+                if (sampleIndex[term]) {
+                    sampleIndex[term].forEach(posting => {
+                        scores[posting.doc] = (scores[posting.doc] || 0) + 1;
+                    });
+                    docSets.push(new Set(sampleIndex[term].map(p => p.doc)));
+                }
+            });
+
+            // For AND queries, only keep docs that have all terms
+            if (isAnd && docSets.length > 0) {
+                let intersection = docSets[0];
+                for (let i = 1; i < docSets.length; i++) {
+                    intersection = new Set([...intersection].filter(x => docSets[i].has(x)));
+                }
+                // Filter scores to only include intersection
+                Object.keys(scores).forEach(doc => {
+                    if (!intersection.has(parseInt(doc))) {
+                        delete scores[doc];
+                    }
+                });
+            }
+
+            // Sort by score
+            const ranked = Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .map(([doc, score]) => ({doc: parseInt(doc), score}));
+
+            if (ranked.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #dc3545; font-weight: 600;">No documents found matching your query.</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Found ${ranked.length} document(s):</h4>
+                ${ranked.map((result, index) => `
+                    <div class="document-card">
+                        <p style="color: #667eea; font-weight: 600; margin-bottom: 5px;">
+                            Rank ${index + 1}: Document ${result.doc} (Score: ${result.score})
+                        </p>
+                        <p style="color: #666; font-size: 0.95em;">${documents[result.doc]}</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Quiz functionality
+        let correctAnswers = 0;
+        let totalQuestions = 5;
+
+        function checkAnswer(element, isCorrect) {
+            if (element.classList.contains('correct') || element.classList.contains('wrong')) {
+                return; // Already answered
+            }
+
+            if (isCorrect) {
+                element.classList.add('correct');
+                correctAnswers++;
+                updateProgress();
+            } else {
+                element.classList.add('wrong');
+            }
+
+            // Disable other options in this question
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                if (opt !== element) {
+                    opt.style.opacity = '0.5';
+                    opt.style.cursor = 'not-allowed';
+                }
+            });
+        }
+
+        function updateProgress() {
+            const percentage = (correctAnswers / totalQuestions) * 100;
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = Math.round(percentage) + '%';
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Track section viewing for progress
+        let sectionsViewed = new Set();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    sectionsViewed.add(entry.target.id);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Search on Enter key
+        document.getElementById('search-query')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchIndex();
+            }
+        });
+    </script>
+</body>
+</html>

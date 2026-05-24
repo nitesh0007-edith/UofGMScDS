@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS Sample Exam Paper with Complete Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .exam-info {
+            font-size: 1.2em;
+            margin: 10px 0;
+            opacity: 0.95;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 25px;
+            margin: 30px 50px;
+            border-radius: 10px;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 3px solid #1e3c72;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.6s;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-block {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 6px solid #1e3c72;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .marks-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .question-text strong {
+            color: #1e3c72;
+        }
+
+        .answer-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 6px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .answer-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .answer-header::before {
+            content: "✓";
+            font-size: 1.5em;
+        }
+
+        .answer-content {
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .answer-content ul, .answer-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .answer-content li {
+            margin: 10px 0;
+        }
+
+        .marking-scheme {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .marking-scheme h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .mark-point {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .mark-allocation {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+
+        .time-guide {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .example-box {
+            background: #e8f4f8;
+            border: 2px solid #17a2b8;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h5 {
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .sub-question {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .sub-question-header {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .pro-tip {
+            background: linear-gradient(135deg, #e8daef 0%, #d7bde2 100%);
+            border-left: 6px solid #8e44ad;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .pro-tip h4 {
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #1e3c72;
+        }
+
+        .summary-card h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        @media print {
+            .nav-buttons, nav {
+                display: none;
+            }
+
+            .answer-section {
+                page-break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 RPS Sample Examination Paper</h1>
+            <p class="exam-info"><strong>Research and Professional Skills (COMPSCI5092)</strong></p>
+            <p class="exam-info">Duration: 90 Minutes | Total Marks: 34</p>
+            <p class="exam-info">Sample Paper - Winter Diet Format</p>
+        </header>
+
+        <div class="instructions">
+            <h3 style="margin-bottom: 15px;">📋 Examination Instructions</h3>
+            <ul style="list-style-position: inside;">
+                <li>Answer <strong>ALL</strong> questions</li>
+                <li>Total time: <strong>90 minutes</strong></li>
+                <li>Total marks available: <strong>34 marks</strong></li>
+                <li>Write clearly and legibly</li>
+                <li>Show all working where appropriate</li>
+                <li>Marks for each question are shown in square brackets [X]</li>
+            </ul>
+        </div>
+
+        <nav>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showView('questions')">📄 Question Paper</button>
+                <button class="nav-btn" onclick="showView('answers')">✅ Complete Solutions</button>
+                <button class="nav-btn" onclick="showView('marking')">📊 Marking Guide</button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- QUESTIONS ONLY VIEW -->
+            <div id="questions" class="view active">
+                <h2 style="color: #1e3c72; margin-bottom: 30px;">Question Paper</h2>
+
+                <div class="question-block">
+                    <div class="question-header">
+                        <span class="question-number">Question 1</span>
+                        <span class="marks-badge">13 Marks Total</span>
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(a) Computer Misuse Act [3 marks]</div>
+                        <div class="question-text">
+                            Discuss how the creation and use of computer viruses is prohibited under the Computer Misuse Act.
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 3-4 minutes</div>
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(b) Database Copyright [4 marks]</div>
+                        <div class="question-text">
+                            A company has applied to copyright a database they have created. Their database contains a simple ordering of 10,000 novels alphabetically by title.
+                            <br><br>
+                            Discuss whether the company is likely to succeed in their attempt to copyright the database described above.
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 4-5 minutes</div>
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(c) Research Ethics [4 marks]</div>
+                        <div class="question-text">
+                            A researcher is planning to conduct an experiment to investigate if a chatbot they have developed helps novice Java programmers solve lab exercises during a programming course.
+                            <br><br>
+                            The researcher plans to conduct the experiment on a Java Programming course they will teach next year during the mandatory tutorial sessions within the course.
+                            <br><br>
+                            <strong>Identify two potential ethical concerns with this research.</strong>
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 4-5 minutes</div>
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(d) Survey Design [2 marks]</div>
+                        <div class="question-text">
+                            You have been tasked with creating a survey to investigate consumers' frustration using a new virtual reality application, "MBP VR".
+                            <br><br>
+                            <strong>Describe one closed and one open-ended question that you could use in the survey to capture this.</strong>
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 2-3 minutes</div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-header">
+                        <span class="question-number">Question 2</span>
+                        <span class="marks-badge">21 Marks Total</span>
+                    </div>
+
+                    <div class="question-text">
+                        <strong>Context:</strong> Locomotion systems in VR games provide ways for a player to navigate around a virtual environment presented by the VR system.
+                        <br><br>
+                        You have designed a new locomotion technique for a VR game you have made.
+                        <br><br>
+                        You believe your new locomotion system (<strong>"LocoPro"</strong>) will provide a better player experience by being easier to control and more immersive experience than the current locomotion system (<strong>"LocoOriginal"</strong>).
+                        <br><br>
+                        You plan to conduct a research project with an experiment (with human participants) to investigate this belief.
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">2(a) Hypothesis Development [2 marks]</div>
+                        <div class="question-text">
+                            Propose a hypothesis for an experiment to investigate this belief.
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 2-3 minutes</div>
+                    </div>
+
+                    <div class="sub-question">
+                        <div class="sub-question-header">2(b) Experimental Design [19 marks]</div>
+                        <div class="question-text">
+                            Propose an experiment to investigate this hypothesis.
+                            <br><br>
+                            <strong>You should cover all aspects of a research project, except performing a literature survey and writing a research proposal.</strong>
+                            <br><br>
+                            Your answer should include:
+                            <ul style="margin-top: 15px;">
+                                <li>Assumptions/Constraints</li>
+                                <li>Experimental Design (variables, design type, tasks, etc.)</li>
+                                <li>Data Collection Methods</li>
+                                <li>Analysis Methodology</li>
+                                <li>Ethical Considerations</li>
+                            </ul>
+                        </div>
+                        <div class="time-guide">⏱ Recommended time: 25-30 minutes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPLETE SOLUTIONS VIEW -->
+            <div id="answers" class="view">
+                <h2 style="color: #1e3c72; margin-bottom: 30px;">Complete Solutions with Model Answers</h2>
+
+                <!-- QUESTION 1 SOLUTIONS -->
+                <div class="question-block">
+                    <div class="question-header">
+                        <span class="question-number">Question 1 - Solutions</span>
+                        <span class="marks-badge">13 Marks Total</span>
+                    </div>
+
+                    <!-- 1(a) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(a) Computer Misuse Act [3 marks]</div>
+                        <div class="question-text">
+                            Discuss how the creation and use of computer viruses is prohibited under the Computer Misuse Act.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Model Answer</div>
+                            <div class="answer-content">
+                                <p><strong>Key Point 1 (1 mark):</strong> The Computer Misuse Act does <strong>NOT</strong> prohibit the act of creating viruses in itself. Simply writing virus code is not illegal under the Act.</p>
+
+                                <p><strong>Key Point 2 (1 mark):</strong> Viruses can be used on equipment or data under the Computer Misuse Act if the owner's permission is first obtained. For example, security researchers can legally test viruses on their own systems or with explicit authorization.</p>
+
+                                <p><strong>Key Point 3 (1 mark):</strong> The creation or use of viruses is only prohibited if the virus is created or used to access or modify data or impair a computer <strong>without authorization</strong> to do so. The key element is unauthorized access or damage.</p>
+
+                                <div class="example-box">
+                                    <h5>💡 Example to Illustrate:</h5>
+                                    <p><strong>Legal:</strong> A cybersecurity company creating a test virus to evaluate their antivirus software on their own systems.</p>
+                                    <p><strong>Illegal:</strong> Creating and deploying a virus to access or damage another person's or organization's computer systems without their permission.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Marking Breakdown:</h4>
+                            <div class="mark-point">✓ Stating that creating viruses is NOT inherently prohibited <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Stating viruses can be used with owner's permission <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Stating prohibition only applies to unauthorized access/modification/impairment <span class="mark-allocation">[1]</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 1(b) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(b) Database Copyright [4 marks]</div>
+                        <div class="question-text">
+                            A company has applied to copyright a database they have created. Their database contains a simple ordering of 10,000 novels alphabetically by title. Discuss whether the company is likely to succeed in their attempt to copyright the database described above.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Model Answer</div>
+                            <div class="answer-content">
+                                <p><strong>Conclusion (1 mark):</strong> The company is <strong>unlikely to gain copyright protection</strong> for the database as described.</p>
+
+                                <p><strong>Justification:</strong></p>
+
+                                <p><strong>Reason 1 - Lack of Substantial Investment (1 mark):</strong> For database copyright, there must be a substantial investment in obtaining, verifying, or presenting the contents of the database. Simply ordering 10,000 novels alphabetically does not represent substantial investment - alphabetical sorting can be done automatically with minimal effort.</p>
+
+                                <p><strong>Reason 2 - Lack of Originality (1 mark):</strong> The contents of the database must be original and the selection/arrangement must constitute the author's own intellectual creation. An alphabetical ordering is a standard, mechanical process that lacks the creativity or originality required for copyright protection.</p>
+
+                                <p><strong>Reason 3 - Insufficient Complexity (1 mark):</strong> Ordering alphabetically does not have sufficient complexity or depth to qualify for copyright protection. In contrast, a more sophisticated ordering system would be more likely to qualify - for example:</p>
+                                <ul>
+                                    <li>A unique clustering by novel themes over time across different genres</li>
+                                    <li>A custom categorization system based on literary analysis</li>
+                                    <li>A complex recommendation system based on reader preferences and connections</li>
+                                </ul>
+
+                                <div class="example-box">
+                                    <h5>📚 Comparison:</h5>
+                                    <p><strong>Not Copyrightable:</strong> Phone directory sorted alphabetically by surname</p>
+                                    <p><strong>Potentially Copyrightable:</strong> A curated collection of novels organized by a unique thematic framework analyzing post-modern narrative techniques across cultures and time periods</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Marking Breakdown:</h4>
+                            <div class="mark-point">✓ Stating the company is unlikely to succeed <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Explaining lack of substantial investment <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Explaining lack of originality in selection/arrangement <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Providing example of why ordering lacks sufficient complexity <span class="mark-allocation">[1]</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 1(c) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(c) Research Ethics [4 marks]</div>
+                        <div class="question-text">
+                            A researcher is planning to conduct an experiment to investigate if a chatbot they have developed helps novice Java programmers solve lab exercises during a programming course. The researcher plans to conduct the experiment on a Java Programming course they will teach next year during the mandatory tutorial sessions within the course.
+                            <br><br>
+                            Identify two potential ethical concerns with this research.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Model Answer</div>
+                            <div class="answer-content">
+                                <p><strong>Ethical Concern 1: Coercion and Power Dynamics (2 marks)</strong></p>
+                                <ul>
+                                    <li><strong>Issue (1 mark):</strong> Students might feel pressured into taking part in the research because the researcher is their teacher.</li>
+                                    <li><strong>Justification (1 mark):</strong> The power imbalance between instructor and student could make students feel they cannot refuse participation without negative consequences to their grades or standing in the course. This undermines the principle of voluntary informed consent, as students may agree to participate not out of genuine willingness but fear of academic repercussions.</li>
+                                </ul>
+
+                                <p><strong>Ethical Concern 2: Inability to Provide True Informed Consent (2 marks)</strong></p>
+                                <ul>
+                                    <li><strong>Issue (1 mark):</strong> Students might be unable to give informed consent (or any genuine consent) since the experiment is interwoven with an essential teaching activity.</li>
+                                    <li><strong>Justification (1 mark):</strong> The tutorial sessions are described as "mandatory," meaning students cannot opt out of the sessions. Since the experiment is conducted during these mandatory sessions, students effectively have no choice but to participate in the research. This violates the fundamental ethical principle that research participation must be voluntary.</li>
+                                </ul>
+
+                                <div class="example-box">
+                                    <h5>🔍 Additional Ethical Concerns (also acceptable):</h5>
+                                    <ul>
+                                        <li><strong>Conflict of Interest:</strong> The researcher is evaluating their own chatbot while teaching the course, potentially introducing bias</li>
+                                        <li><strong>Educational Inequality:</strong> Students in different conditions may receive different quality of educational support</li>
+                                        <li><strong>Right to Withdraw:</strong> Students cannot withdraw from mandatory sessions without affecting their education</li>
+                                        <li><strong>Data Privacy:</strong> Student performance data might be collected without proper consent procedures</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Marking Breakdown:</h4>
+                            <div class="mark-point">✓ Identifying first ethical concern <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Well-justified explanation of first concern <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Identifying second ethical concern <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Well-justified explanation of second concern <span class="mark-allocation">[1]</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 1(d) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">1(d) Survey Design [2 marks]</div>
+                        <div class="question-text">
+                            You have been tasked with creating a survey to investigate consumers' frustration using a new virtual reality application, "MBP VR". Describe one closed and one open-ended question that you could use in the survey to capture this.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Model Answer</div>
+                            <div class="answer-content">
+                                <p><strong>Closed Question (1 mark total):</strong></p>
+                                <div class="example-box">
+                                    <p><strong>Question:</strong> "On a scale of 1-5, to what extent were you frustrated while using MBP VR?"</p>
+                                    <ul>
+                                        <li>1 = Not at all frustrated</li>
+                                        <li>2 = Slightly frustrated</li>
+                                        <li>3 = Moderately frustrated</li>
+                                        <li>4 = Very frustrated</li>
+                                        <li>5 = Extremely frustrated</li>
+                                    </ul>
+                                    <p><em>Marks: 0.5 for relevant closed question, 0.5 for good formatting/scale</em></p>
+                                </div>
+
+                                <p style="margin-top: 20px;"><strong>Open-Ended Question (1 mark total):</strong></p>
+                                <div class="example-box">
+                                    <p><strong>Question:</strong> "Can you describe, if at all, at which moments you were frustrated while using MBP VR and why?"</p>
+                                    <p><em>OR</em></p>
+                                    <p><strong>Question:</strong> "Please explain any frustrating experiences you had while using MBP VR. What caused these frustrations?"</p>
+                                    <p><em>Marks: 0.5 for relevant open question, 0.5 for good formatting/openness</em></p>
+                                </div>
+
+                                <div class="pro-tip">
+                                    <h4>💡 Why These Question Types?</h4>
+                                    <p><strong>Closed Question Benefits:</strong> Provides quantitative data that can be easily analyzed statistically; allows comparison across users; simple for respondents to answer quickly.</p>
+                                    <p><strong>Open-Ended Question Benefits:</strong> Captures rich qualitative insights; reveals specific issues you might not have anticipated; allows users to explain the context and reasons for frustration.</p>
+                                    <p><strong>Together:</strong> They provide both breadth (how many people are frustrated, to what degree) and depth (why they're frustrated, what specifically causes it).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Marking Breakdown:</h4>
+                            <div class="mark-point">✓ Relevant closed question <span class="mark-allocation">[0.5]</span></div>
+                            <div class="mark-point">✓ Well-formatted closed question with clear scale/options <span class="mark-allocation">[0.5]</span></div>
+                            <div class="mark-point">✓ Relevant open-ended question <span class="mark-allocation">[0.5]</span></div>
+                            <div class="mark-point">✓ Well-formatted open-ended question that allows detailed responses <span class="mark-allocation">[0.5]</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUESTION 2 SOLUTIONS -->
+                <div class="question-block">
+                    <div class="question-header">
+                        <span class="question-number">Question 2 - Solutions</span>
+                        <span class="marks-badge">21 Marks Total</span>
+                    </div>
+
+                    <!-- 2(a) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">2(a) Hypothesis Development [2 marks]</div>
+                        <div class="question-text">
+                            Propose a hypothesis for an experiment to investigate this belief.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Model Answer</div>
+                            <div class="answer-content">
+                                <p><strong>Hypothesis (2 marks):</strong></p>
+                                <div class="example-box">
+                                    <p><strong>"The LocoPro locomotion system will provide a more immersive experience than LocoOriginal."</strong></p>
+                                    <p><em>[1 mark for correctly stated hypothesis, +1 mark for clearly indicating dependent variable]</em></p>
+                                </div>
+
+                                <p style="margin-top: 20px;"><strong>Alternative Acceptable Hypotheses:</strong></p>
+                                <ul>
+                                    <li>"LocoPro will be easier to control than LocoOriginal" (DV: ease of control)</li>
+                                    <li>"Players using LocoPro will report higher immersion scores than those using LocoOriginal" (DV: immersion score)</li>
+                                    <li>"LocoPro will result in better player experience compared to LocoOriginal" (DV: player experience)</li>
+                                </ul>
+
+                                <div class="pro-tip">
+                                    <h4>💡 What Makes a Good Hypothesis?</h4>
+                                    <ul>
+                                        <li><strong>Specific:</strong> Clearly states what you're comparing (LocoPro vs LocoOriginal)</li>
+                                        <li><strong>Testable:</strong> You can design an experiment to test it</li>
+                                        <li><strong>Clear DV:</strong> States or implies what will be measured (immersion, ease of control)</li>
+                                        <li><strong>Directional:</strong> Predicts which condition will be better</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Marking Breakdown:</h4>
+                            <div class="mark-point">✓ Correctly stated research question or hypothesis <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Hypothesis clearly indicates a well-chosen dependent variable <span class="mark-allocation">[1]</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 2(b) -->
+                    <div class="sub-question">
+                        <div class="sub-question-header">2(b) Experimental Design [19 marks]</div>
+                        <div class="question-text">
+                            Propose an experiment to investigate this hypothesis. You should cover all aspects of a research project, except performing a literature survey and writing a research proposal.
+                        </div>
+
+                        <div class="answer-section">
+                            <div class="answer-header">Comprehensive Model Answer</div>
+                            <div class="answer-content">
+
+                                <h3 style="color: #1e3c72; margin: 25px 0 15px 0;">1. ASSUMPTIONS & CONSTRAINTS [Max 3 marks]</h3>
+                                <div class="example-box">
+                                    <ul>
+                                        <li><strong>Prior Experience:</strong> Participants are not experienced with LocoOriginal prior to conducting the experiment. This ensures fair comparison without bias from familiarity.</li>
+                                        <li><strong>Participant Diversity:</strong> Participants will be recruited with a variety of prior experience with VR gaming, and a mixture of genders, ages, and backgrounds to ensure generalizability of results.</li>
+                                        <li><strong>Controlled Environment:</strong> The experiment takes place in a controlled lab environment to ensure:
+                                            <ul>
+                                                <li>Sufficient empty space for safe VR movement</li>
+                                                <li>Participants aren't at risk of tripping over obstacles</li>
+                                                <li>Sufficient space for the locomotion systems to function correctly</li>
+                                                <li>Consistent lighting and environmental conditions</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <p><em>[Up to 3 marks for reasonable, well-justified assumptions]</em></p>
+                                </div>
+
+                                <h3 style="color: #1e3c72; margin: 25px 0 15px 0;">2. EXPERIMENTAL DESIGN [Max 12 marks]</h3>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Independent Variable & Conditions [1 mark]</h4>
+                                <div class="example-box">
+                                    <p><strong>Independent Variable:</strong> Locomotion method (2 levels)</p>
+                                    <ul>
+                                        <li><strong>Condition 1:</strong> LocoPro system</li>
+                                        <li><strong>Condition 2:</strong> LocoOriginal system</li>
+                                    </ul>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Control Variables [2 marks]</h4>
+                                <div class="example-box">
+                                    <p><strong>Purpose:</strong> Reduce confounding factors and ensure fair comparison</p>
+                                    <ul>
+                                        <li><strong>Hardware:</strong> Same VR headset and controllers for all participants</li>
+                                        <li><strong>Environment:</strong> Same physical testing space</li>
+                                        <li><strong>Tasks:</strong> Same navigation tasks for both conditions</li>
+                                        <li><strong>Duration:</strong> Same time allocation for each condition</li>
+                                        <li><strong>Instructions:</strong> Standardized briefing and tutorial for all participants</li>
+                                        <li><strong>Virtual Environment:</strong> Same VR game/environment used for testing</li>
+                                    </ul>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Dependent Variables [2 marks]</h4>
+                                <div class="example-box">
+                                    <p><strong>Quantitative Measures:</strong></p>
+                                    <ul>
+                                        <li><strong>Task Completion Time:</strong> Time taken to navigate through a set course (measured in seconds)</li>
+                                        <li><strong>Navigation Accuracy:</strong> Number of errors or collisions during navigation</li>
+                                        <li><strong>Game Performance Score:</strong> Points achieved during gameplay (if applicable)</li>
+                                    </ul>
+                                    <p><strong>Subjective Measures:</strong></p>
+                                    <ul>
+                                        <li><strong>Perceived Immersion:</strong> Standardized immersion questionnaire (e.g., IEQ - Immersive Experience Questionnaire) - scored 1-7</li>
+                                        <li><strong>Ease of Control:</strong> Subjective rating on 5-point Likert scale (1=Very Difficult, 5=Very Easy)</li>
+                                        <li><strong>Overall Satisfaction:</strong> Post-task questionnaire rating overall experience (1-10 scale)</li>
+                                        <li><strong>NASA TLX Workload Assessment:</strong> Standardized measure of perceived workload</li>
+                                    </ul>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Type of Experimental Design [1 mark]</h4>
+                                <div class="example-box">
+                                    <p><strong>Chosen Design:</strong> Within-subjects design (repeated measures)</p>
+                                    <p><strong>Justification:</strong></p>
+                                    <ul>
+                                        <li><strong>Controls for individual differences:</strong> Each participant acts as their own control, reducing variance from different gaming abilities, motion sickness susceptibility, etc.</li>
+                                        <li><strong>Statistical power:</strong> Greater statistical power with fewer participants needed</li>
+                                        <li><strong>Counterbalancing:</strong> Will use counterbalancing to control for order effects (half start with LocoPro, half with LocoOriginal)</li>
+                                    </ul>
+                                    <p><em>Alternative: Between-subjects would also be acceptable if justified (e.g., to avoid learning effects)</em></p>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Sample Size & Participants</h4>
+                                <div class="example-box">
+                                    <p><strong>Sample Size:</strong> 30 participants (sufficient for repeated-measures t-test with medium effect size)</p>
+                                    <p><strong>Recruitment:</strong> University students and staff recruited via email, posters, and online forums</p>
+                                    <p><strong>Inclusion Criteria:</strong></p>
+                                    <ul>
+                                        <li>Age 18-65</li>
+                                        <li>No history of severe motion sickness</li>
+                                        <li>Normal or corrected-to-normal vision</li>
+                                        <li>Mix of VR experience levels (novice to experienced)</li>
+                                    </ul>
+                                    <p><strong>Assignment Method:</strong> Randomized counterbalancing (15 participants do LocoPro first, 15 do LocoOriginal first)</p>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Experimental Tasks [2 marks]</h4>
+                                <div class="example-box">
+                                    <p><strong>Participants will complete the following tasks for EACH locomotion system:</strong></p>
+                                    <ol>
+                                        <li><strong>Training Task (5 minutes):</strong> Tutorial level to familiarize participants with the locomotion controls</li>
+                                        <li><strong>Navigation Task (10 minutes):</strong> Navigate through a virtual maze to find specific waypoints - measures completion time and accuracy</li>
+                                        <li><strong>Gameplay Task (15 minutes):</strong> Play a section of the VR game using the locomotion system - measures performance score and engagement</li>
+                                    </ol>
+                                    <p><strong>Total time per condition:</strong> ~30 minutes</p>
+                                    <p><strong>Break between conditions:</strong> 5-minute break to reduce fatigue and motion sickness</p>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Data Collection Method [1 mark]</h4>
+                                <div class="example-box">
+                                    <ul>
+                                        <li><strong>Automatic Tracking:</strong> VR system automatically logs completion times, collision counts, performance scores</li>
+                                        <li><strong>Questionnaires:</strong> Digital questionnaires completed immediately after each condition</li>
+                                        <li><strong>Observer Notes:</strong> Researcher records observable behaviors (e.g., signs of frustration, motion sickness)</li>
+                                        <li><strong>Video Recording:</strong> (With consent) Record participant movements for later analysis</li>
+                                    </ul>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Form of Data Collected [2 marks]</h4>
+                                <div class="example-box">
+                                    <p><strong>Quantitative Data:</strong></p>
+                                    <ul>
+                                        <li>Continuous: Task completion times (seconds), navigation accuracy (percentage)</li>
+                                        <li>Discrete: Number of collisions, performance scores</li>
+                                        <li>Ordinal: Likert scale responses (1-5, 1-7)</li>
+                                        <li>Ratio: Times, distances, counts (all have true zero)</li>
+                                    </ul>
+                                    <p><strong>Qualitative Data:</strong></p>
+                                    <ul>
+                                        <li>Open-ended questionnaire responses about user experience</li>
+                                        <li>Observer notes on participant behavior</li>
+                                    </ul>
+                                    <p><strong>Data Format:</strong> Stored in CSV files for quantitative data; text files for qualitative data; all anonymized with participant IDs</p>
+                                </div>
+
+                                <h4 style="color: #2a5298; margin-top: 20px;">Pilot Study [1 mark]</h4>
+                                <div class="example-box">
+                                    <p><strong>Pilot Testing (n=5 participants):</strong></p>
+                                    <ul>
+                                        <li>Test data collection procedures and identify technical issues</li>
+                                        <li>Verify questionnaires are understandable</li>
+                                        <li>Ensure tasks are appropriate difficulty and duration</li>
+                                        <li>Check that data processing scripts work correctly</li>
+                                        <li>Identify any potential motion sickness issues</li>
+                                    </ul>
+                                </div>
+
+                                <h3 style="color: #1e3c72; margin: 25px 0 15px 0;">3. ANALYSIS METHODOLOGY [Max 3 marks]</h3>
+                                <div class="example-box">
+                                    <h5>Statistical Analysis Plan:</h5>
+                                    <p><strong>Primary Analysis - Quantitative Data:</strong></p>
+                                    <ul>
+                                        <li><strong>Statistical Test:</strong> Repeated-measures t-tests (paired samples t-test)</li>
+                                        <li><strong>Null Hypothesis (H₀):</strong> There is no significant difference in immersion/control between LocoPro and LocoOriginal</li>
+                                        <li><strong>Alternative Hypothesis (H₁):</strong> LocoPro provides significantly higher immersion/easier control than LocoOriginal</li>
+                                        <li><strong>Significance Level:</strong> α = 0.05 (p < 0.05 considered statistically significant)</li>
+                                        <li><strong>Effect Size:</strong> Calculate Cohen's d to determine practical significance</li>
+                                    </ul>
+
+                                    <p><strong>For Each Dependent Variable:</strong></p>
+                                    <ul>
+                                        <li>Calculate descriptive statistics (mean, standard deviation, median) for both conditions</li>
+                                        <li>Perform paired t-test comparing LocoPro vs LocoOriginal</li>
+                                        <li>Check assumptions (normality using Shapiro-Wilk test)</li>
+                                        <li>If assumptions violated, use non-parametric alternative (Wilcoxon signed-rank test)</li>
+                                    </ul>
+
+                                    <p><strong>Qualitative Analysis:</strong></p>
+                                    <ul>
+                                        <li><strong>Method:</strong> Thematic analysis using open and axial coding</li>
+                                        <li>Identify themes in open-ended questionnaire responses</li>
+                                        <li>Code user comments about frustrations, preferences, experiences</li>
+                                        <li>Use qualitative findings to explain quantitative results</li>
+                                    </ul>
+
+                                    <p><em>[Up to 3 marks for specific, appropriate analysis methods with correct terminology]</em></p>
+                                </div>
+
+                                <h3 style="color: #1e3c72; margin: 25px 0 15px 0;">4. ETHICS [Max 3 marks]</h3>
+                                <div class="example-box">
+                                    <h5>Ethical Approval [1 mark]:</h5>
+                                    <ul>
+                                        <li>Submit ethics application to University Ethics Committee before recruiting participants</li>
+                                        <li>Obtain formal approval before commencing study</li>
+                                    </ul>
+
+                                    <h5>Informed Consent [1 mark]:</h5>
+                                    <ul>
+                                        <li>Provide participants with detailed information sheet explaining:
+                                            <ul>
+                                                <li>Purpose of the study</li>
+                                                <li>What they will be asked to do</li>
+                                                <li>Time commitment (~75 minutes total)</li>
+                                                <li>Potential risks (motion sickness, eye strain)</li>
+                                                <li>How data will be used and stored</li>
+                                            </ul>
+                                        </li>
+                                        <li>Obtain written informed consent before participation</li>
+                                        <li>Participants can ask questions before consenting</li>
+                                    </ul>
+
+                                    <h5>Risk Management [1 mark]:</h5>
+                                    <ul>
+                                        <li><strong>Motion Sickness:</strong> Warn participants about potential VR-induced motion sickness; allow them to stop immediately if feeling unwell; provide seating/breaks</li>
+                                        <li><strong>Physical Safety:</strong> Clear play area of obstacles; researcher monitors participants; emergency stop procedures in place</li>
+                                        <li><strong>Eye Strain:</strong> Limit session duration; provide breaks; screen for vision problems</li>
+                                    </ul>
+
+                                    <h5>Additional Ethical Safeguards:</h5>
+                                    <ul>
+                                        <li><strong>Right to Withdraw:</strong> Participants can withdraw at any time without giving a reason and without penalty</li>
+                                        <li><strong>Data Protection:</strong> All data anonymized; participant IDs used instead of names; secure storage compliant with GDPR</li>
+                                        <li><strong>Confidentiality:</strong> Personal information kept separate from research data; only aggregated results published</li>
+                                        <li><strong>Debriefing:</strong> Participants debriefed after completion; results shared upon request</li>
+                                    </ul>
+                                </div>
+
+                                <h3 style="color: #1e3c72; margin: 25px 0 15px 0;">5. CONCLUSIONS [Max 2 marks]</h3>
+                                <div class="example-box">
+                                    <p><strong>Drawing Conclusions from Results [1 mark]:</strong></p>
+                                    <ul>
+                                        <li>If statistical tests show significant differences (p < 0.05) with LocoPro scoring higher on immersion/ease of control, we can conclude that LocoPro provides a better player experience</li>
+                                        <li>If no significant difference found, the hypothesis is not supported</li>
+                                        <li>Qualitative data will provide insights into WHY one system is preferred</li>
+                                    </ul>
+
+                                    <p><strong>Limitations & Future Work:</strong></p>
+                                    <ul>
+                                        <li>Results may only generalize to similar VR games/environments</li>
+                                        <li>Lab setting may not reflect real-world home VR use</li>
+                                        <li>Short-term study - long-term effects unknown</li>
+                                        <li>Future work: Test in different game genres, longer-term studies, different user populations</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="marking-scheme">
+                            <h4>Detailed Marking Breakdown (19 marks total):</h4>
+
+                            <p><strong>Assumptions/Constraints (Max 3 marks):</strong></p>
+                            <div class="mark-point">✓ List of appropriate assumptions (e.g., participant experience, environment, safety) <span class="mark-allocation">[3]</span></div>
+
+                            <p><strong>Experimental Design (Max 12 marks):</strong></p>
+                            <div class="mark-point">✓ Independent variable/conditions identified <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Control variables or confounding factor reduction <span class="mark-allocation">[2]</span></div>
+                            <div class="mark-point">✓ Dependent variables (multiple appropriate measures) <span class="mark-allocation">[2]</span></div>
+                            <div class="mark-point">✓ Type of experiment (within/between-subjects) <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Experiment tasks described <span class="mark-allocation">[2]</span></div>
+                            <div class="mark-point">✓ Data collection method specified <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Form of data collected described <span class="mark-allocation">[2]</span></div>
+                            <div class="mark-point">✓ Pilot study mentioned <span class="mark-allocation">[1]</span></div>
+
+                            <p><strong>Analysis Method (Max 3 marks):</strong></p>
+                            <div class="mark-point">✓ Specific statistical tests named (e.g., repeated-measures t-test) <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Null and alternative hypotheses stated <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Significance level (p-value) specified OR qualitative analysis method <span class="mark-allocation">[1]</span></div>
+
+                            <p><strong>Ethics (Max 3 marks):</strong></p>
+                            <div class="mark-point">✓ Ethics approval mentioned <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Informed consent procedure <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Potential risks identified (e.g., motion sickness) <span class="mark-allocation">[1]</span></div>
+
+                            <p><strong>Conclusions (Max 2 marks):</strong></p>
+                            <div class="mark-point">✓ How conclusions will be drawn from results <span class="mark-allocation">[1]</span></div>
+                            <div class="mark-point">✓ Discussion of implications or limitations <span class="mark-allocation">[1]</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h3>📊 Summary: Question 2(b) Key Points</h3>
+                    <p>This 19-mark question tests your ability to design a complete research study. Success requires:</p>
+                    <ul>
+                        <li>✅ Using the experimental design checklist (IV, DV, controls, etc.)</li>
+                        <li>✅ Being specific with measurements and procedures</li>
+                        <li>✅ Justifying your design choices</li>
+                        <li>✅ Including ALL aspects: design, data collection, analysis, ethics</li>
+                        <li>✅ Using correct terminology (repeated-measures, t-test, etc.)</li>
+                        <li>✅ Allocating 25-30 minutes for this question</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MARKING GUIDE VIEW -->
+            <div id="marking" class="view">
+                <h2 style="color: #1e3c72; margin-bottom: 30px;">Comprehensive Marking Guide</h2>
+
+                <div class="summary-card">
+                    <h3>📊 Overall Exam Structure</h3>
+                    <table>
+                        <tr>
+                            <th>Question</th>
+                            <th>Topic</th>
+                            <th>Marks</th>
+                            <th>Time</th>
+                        </tr>
+                        <tr>
+                            <td>1(a)</td>
+                            <td>Computer Misuse Act</td>
+                            <td>3</td>
+                            <td>3-4 min</td>
+                        </tr>
+                        <tr>
+                            <td>1(b)</td>
+                            <td>Database Copyright</td>
+                            <td>4</td>
+                            <td>4-5 min</td>
+                        </tr>
+                        <tr>
+                            <td>1(c)</td>
+                            <td>Research Ethics</td>
+                            <td>4</td>
+                            <td>4-5 min</td>
+                        </tr>
+                        <tr>
+                            <td>1(d)</td>
+                            <td>Survey Design</td>
+                            <td>2</td>
+                            <td>2-3 min</td>
+                        </tr>
+                        <tr>
+                            <td>2(a)</td>
+                            <td>Hypothesis</td>
+                            <td>2</td>
+                            <td>2-3 min</td>
+                        </tr>
+                        <tr>
+                            <td>2(b)</td>
+                            <td>Experimental Design</td>
+                            <td>19</td>
+                            <td>25-30 min</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>TOTAL</strong></td>
+                            <td><strong>34</strong></td>
+                            <td><strong>~50 min</strong></td>
+                        </tr>
+                    </table>
+                    <p><em>Note: This appears to be a partial paper (34 marks). Full papers are typically 100 marks.</em></p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>🎯 Mark Distribution Analysis</h3>
+                    <table>
+                        <tr>
+                            <th>Topic Area</th>
+                            <th>Total Marks</th>
+                            <th>Percentage</th>
+                        </tr>
+                        <tr>
+                            <td>Ethics & Legal (1a, 1c)</td>
+                            <td>7</td>
+                            <td>21%</td>
+                        </tr>
+                        <tr>
+                            <td>Experimental Design (2b - design aspects)</td>
+                            <td>12</td>
+                            <td>35%</td>
+                        </tr>
+                        <tr>
+                            <td>Research Methods (1d, 2b - analysis/ethics)</td>
+                            <td>8</td>
+                            <td>24%</td>
+                        </tr>
+                        <tr>
+                            <td>Copyright/IP Law (1b)</td>
+                            <td>4</td>
+                            <td>12%</td>
+                        </tr>
+                        <tr>
+                            <td>Hypothesis (2a)</td>
+                            <td>2</td>
+                            <td>6%</td>
+                        </tr>
+                        <tr>
+                            <td>Other (conclusions, etc.)</td>
+                            <td>1</td>
+                            <td>3%</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="summary-card">
+                    <h3>💡 Examiner's Perspective: What Earns Marks</h3>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 1(a) - Computer Misuse Act [3 marks]</h4>
+                    <ul>
+                        <li><strong>1 mark:</strong> Stating creation is NOT automatically illegal</li>
+                        <li><strong>1 mark:</strong> Mentioning permission/authorization allows use</li>
+                        <li><strong>1 mark:</strong> Explaining prohibition is for unauthorized access/modification</li>
+                    </ul>
+                    <p><strong>Common mistakes:</strong> Saying all virus creation is illegal; not mentioning authorization aspect</p>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 1(b) - Database Copyright [4 marks]</h4>
+                    <ul>
+                        <li><strong>1 mark:</strong> Stating unlikely to succeed</li>
+                        <li><strong>1 mark:</strong> Substantial investment requirement not met</li>
+                        <li><strong>1 mark:</strong> Originality requirement not met</li>
+                        <li><strong>1 mark:</strong> Example of why insufficient complexity</li>
+                    </ul>
+                    <p><strong>Common mistakes:</strong> Not explaining WHY it won't succeed; saying it WILL get copyright</p>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 1(c) - Research Ethics [4 marks]</h4>
+                    <ul>
+                        <li><strong>2 marks per concern (4 total):</strong> 1 for identifying + 1 for justifying</li>
+                        <li><strong>Key issues:</strong> Coercion, informed consent, power dynamics, mandatory participation</li>
+                    </ul>
+                    <p><strong>Common mistakes:</strong> Identifying issues without explaining why they're problems; being too vague</p>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 1(d) - Survey Questions [2 marks]</h4>
+                    <ul>
+                        <li><strong>0.5 + 0.5 marks:</strong> Closed question (relevant + well-formatted)</li>
+                        <li><strong>0.5 + 0.5 marks:</strong> Open question (relevant + well-formatted)</li>
+                    </ul>
+                    <p><strong>Common mistakes:</strong> Closed questions without scales; open questions that are actually closed</p>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 2(a) - Hypothesis [2 marks]</h4>
+                    <ul>
+                        <li><strong>1 mark:</strong> Correctly stated hypothesis</li>
+                        <li><strong>1 mark:</strong> Clear dependent variable indicated</li>
+                    </ul>
+                    <p><strong>Common mistakes:</strong> Vague predictions; not specifying what will be measured</p>
+
+                    <h4 style="color: #1e3c72; margin-top: 20px;">Question 2(b) - Experimental Design [19 marks]</h4>
+                    <p><strong>This is marked on multiple aspects - you don't need everything perfect to score well!</strong></p>
+                    <ul>
+                        <li><strong>Assumptions (3):</strong> Reasonable constraints clearly stated</li>
+                        <li><strong>Variables (5):</strong> Clear IV (1), good DVs (2), controls (2)</li>
+                        <li><strong>Design (1):</strong> Within or between specified</li>
+                        <li><strong>Tasks (2):</strong> What participants will do</li>
+                        <li><strong>Data (3):</strong> Collection method (1), form (2)</li>
+                        <li><strong>Pilot (1):</strong> Mentioned</li>
+                        <li><strong>Analysis (3):</strong> Specific tests, hypotheses, p-values</li>
+                        <li><strong>Ethics (3):</strong> Approval, consent, risks</li>
+                        <li><strong>Conclusions (1):</strong> How to interpret results</li>
+                    </ul>
+                    <p><strong>Key to success:</strong> BE SPECIFIC! Don't say "collect data" - say HOW. Don't say "statistical tests" - name the test!</p>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>🎯 Strategy for Maximum Marks</h4>
+                    <ul>
+                        <li><strong>Read carefully:</strong> Underline command words (discuss, identify, describe)</li>
+                        <li><strong>Plan 2(b) first:</strong> It's worth 19 marks - use the checklist</li>
+                        <li><strong>Use bullet points:</strong> Makes marking easier, earns you marks faster</li>
+                        <li><strong>Be specific:</strong> "30 participants" not "some participants"</li>
+                        <li><strong>Justify everything:</strong> Don't just state - explain WHY</li>
+                        <li><strong>Time management:</strong> Don't spend 20 minutes on 3-mark questions</li>
+                        <li><strong>Leave space:</strong> You might think of more to add</li>
+                        <li><strong>Use terminology:</strong> Show you know the technical terms</li>
+                    </ul>
+                </div>
+
+                <div class="summary-card">
+                    <h3>📈 Grade Boundaries (Estimated)</h3>
+                    <p><em>Based on typical marking schemes:</em></p>
+                    <table>
+                        <tr>
+                            <th>Grade</th>
+                            <th>Percentage</th>
+                            <th>Marks (out of 34)</th>
+                        </tr>
+                        <tr>
+                            <td>A (Excellent)</td>
+                            <td>70%+</td>
+                            <td>24+</td>
+                        </tr>
+                        <tr>
+                            <td>B (Very Good)</td>
+                            <td>60-69%</td>
+                            <td>20-23</td>
+                        </tr>
+                        <tr>
+                            <td>C (Good)</td>
+                            <td>50-59%</td>
+                            <td>17-19</td>
+                        </tr>
+                        <tr>
+                            <td>D (Pass)</td>
+                            <td>40-49%</td>
+                            <td>14-16</td>
+                        </tr>
+                        <tr>
+                            <td>F (Fail)</td>
+                            <td><40%</td>
+                            <td><14</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>RPS Sample Examination Paper with Complete Solutions</strong></p>
+            <p>University of Glasgow - School of Computing Science</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">Practice with this paper to master the exam format! 🎓</p>
+        </footer>
+    </div>
+
+    <script>
+        function showView(viewId) {
+            // Hide all views
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => view.classList.remove('active'));
+
+            // Show selected view
+            document.getElementById(viewId).classList.add('active');
+
+            // Update button states
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('RPS Sample Paper Loaded! 🎯');
+        });
+    </script>
+</body>
+</html>

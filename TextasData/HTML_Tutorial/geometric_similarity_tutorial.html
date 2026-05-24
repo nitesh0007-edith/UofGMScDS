@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text as Data: Geometric Similarity, Text Distributions & Clustering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --highlight: #f39c12;
+            --success: #27ae60;
+            --info: #3498db;
+            --text: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --code-bg: #0f0f1a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #0f3460 100%);
+            color: var(--text);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .nav {
+            position: fixed; top: 0; left: 0; width: 260px; height: 100vh;
+            background: rgba(15, 15, 26, 0.95); backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border); padding: 1.5rem 0;
+            overflow-y: auto; z-index: 1000;
+        }
+        .nav-header { padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+        .nav-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); }
+        .nav-section { margin-bottom: 1rem; }
+        .nav-section-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); padding: 0 1.5rem; margin-bottom: 0.5rem; }
+        .nav a { display: block; padding: 0.5rem 1.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-left: 3px solid transparent; transition: all 0.2s; }
+        .nav a:hover { color: var(--text); background: rgba(233, 69, 96, 0.1); border-left-color: var(--accent); }
+        .nav a.sub-link { padding-left: 2.5rem; font-size: 0.8rem; }
+        .main { margin-left: 260px; padding: 2rem 3rem; max-width: 1100px; }
+        .hero { text-align: center; padding: 3rem 1rem; margin-bottom: 3rem; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--text), var(--accent-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero .subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem; }
+        .badges { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+        .badge { padding: 0.4rem 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 50px; font-size: 0.8rem; }
+        section { margin-bottom: 4rem; scroll-margin-top: 2rem; }
+        .section-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--accent); opacity: 0.3; line-height: 1; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; }
+        h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent-light); }
+        h4 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--highlight); }
+        p { margin-bottom: 1rem; color: var(--text-muted); }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .code-block { background: var(--code-bg); border-radius: 10px; overflow: hidden; margin: 1rem 0; border: 1px solid var(--border); }
+        .code-header { display: flex; justify-content: space-between; padding: 0.5rem 1rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--accent); }
+        pre { padding: 1rem; overflow-x: auto; font-family: 'Source Code Pro', monospace; font-size: 0.85rem; line-height: 1.5; }
+        .keyword { color: #c678dd; } .function { color: #61afef; } .string { color: #98c379; } .number { color: #d19a66; } .comment { color: #5c6370; font-style: italic; }
+        .formula-box { background: linear-gradient(135deg, rgba(233,69,96,0.1), rgba(243,156,18,0.1)); border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+        .formula-box .formula { font-family: 'Source Code Pro', monospace; font-size: 1.2rem; color: var(--text); margin: 0.75rem 0; }
+        .formula-box .desc { font-size: 0.85rem; color: var(--text-muted); }
+        .info-box { border-radius: 10px; padding: 1rem 1.5rem; margin: 1.5rem 0; border-left: 4px solid; }
+        .info-box.tip { background: rgba(39, 174, 96, 0.1); border-color: var(--success); }
+        .info-box.warning { background: rgba(243, 156, 18, 0.1); border-color: var(--highlight); }
+        .info-box.note { background: rgba(52, 152, 219, 0.1); border-color: var(--info); }
+        .info-header { font-weight: 600; margin-bottom: 0.5rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .nav { display: none; } .main { margin-left: 0; padding: 1.5rem; } .hero h1 { font-size: 2rem; } }
+        .table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: 10px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(233, 69, 96, 0.1); padding: 0.75rem; text-align: left; font-size: 0.85rem; }
+        td { padding: 0.75rem; border-top: 1px solid var(--border); }
+        .vector-viz { background: var(--code-bg); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; font-family: 'Source Code Pro', monospace; }
+        .vec-row { display: flex; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+        .vec-label { min-width: 100px; font-weight: 500; }
+        .vec-cell { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.85rem; }
+        .vec-cell.zero { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+        .vec-cell.one { background: var(--accent); color: white; }
+        .vec-cell.val { background: var(--highlight); color: var(--primary); }
+        .steps { padding-left: 2rem; border-left: 2px solid var(--border); }
+        .step { margin-bottom: 1.5rem; position: relative; }
+        .step::before { content: attr(data-step); position: absolute; left: -2.5rem; width: 28px; height: 28px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .lab-box { background: linear-gradient(135deg, rgba(52,152,219,0.1), rgba(155,89,182,0.1)); border: 1px solid var(--info); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .lab-box h4 { color: var(--info); margin-top: 0; }
+        .ex-num { display: inline-block; background: var(--info); color: white; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; margin-bottom: 0.75rem; }
+        .diagram { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+        .diagram svg { max-width: 100%; height: auto; }
+        .diagram-cap { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 3rem; color: var(--text-muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-header"><h2>📊 Text as Data</h2><small style="color:var(--text-muted)">Lecture 2</small></div>
+        <div class="nav-section"><div class="nav-section-title">Foundations</div>
+            <a href="#intro">Introduction</a>
+            <a href="#vectors">From Sets to Vectors</a>
+            <a href="#sparse" class="sub-link">Sparse vs Dense</a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Term Weighting</div>
+            <a href="#tf">Term Frequency</a>
+            <a href="#idf">Inverse Document Freq</a>
+            <a href="#tfidf">TF-IDF</a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Distributions</div>
+            <a href="#zipf">Zipf's Law</a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Similarity</div>
+            <a href="#similarity">Geometric Similarity</a>
+            <a href="#cosine" class="sub-link">Cosine Similarity</a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Clustering</div>
+            <a href="#clustering">K-Means Clustering</a>
+            <a href="#eval" class="sub-link">Evaluation</a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Practice</div>
+            <a href="#lab">Lab Code Examples</a>
+        </div>
+    </nav>
+
+    <main class="main">
+        <header class="hero">
+            <h1>Geometric Similarity & Clustering</h1>
+            <p class="subtitle">Transform text into vectors, measure document similarity, and discover patterns through clustering.</p>
+            <div class="badges">
+                <span class="badge">🎯 Vector Representations</span>
+                <span class="badge">⚖️ TF-IDF Weighting</span>
+                <span class="badge">📐 Cosine Similarity</span>
+                <span class="badge">🎨 K-Means Clustering</span>
+            </div>
+        </header>
+
+        <!-- SECTION 1: INTRODUCTION -->
+        <section id="intro">
+            <span class="section-num">01</span>
+            <h2>Introduction & Review</h2>
+            <p>In this tutorial, we'll learn how to transform text documents into numerical vectors for mathematical processing. This is the foundation of modern NLP and Information Retrieval.</p>
+            
+            <div class="card">
+                <h4>📚 What You'll Learn</h4>
+                <div class="grid-2">
+                    <ul style="color:var(--text-muted)">
+                        <li>Represent documents as vectors</li>
+                        <li>Sparse vs dense representations</li>
+                        <li>Calculate TF-IDF weights</li>
+                    </ul>
+                    <ul style="color:var(--text-muted)">
+                        <li>Measure document similarity</li>
+                        <li>Understand Zipf's Law</li>
+                        <li>Apply K-Means clustering</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Review: Set-based Similarity</h3>
+            <p>Previously, we used sets to represent documents. Let's review the limitations:</p>
+            
+            <div class="formula-box">
+                <div class="desc">Jaccard Similarity</div>
+                <div class="formula">Jaccard(X, Y) = |X ∩ Y| / |X ∪ Y|</div>
+                <div class="desc">Example: X={"bru","i","irn","like"}, Y={"bad","bru","irn","is"} → Jaccard = 2/6 = 1/3</div>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-header">⚠️ Limitations of Set-based Methods</div>
+                <ul style="color:var(--text-muted)">
+                    <li><strong>No importance weighting:</strong> All words treated equally</li>
+                    <li><strong>No frequency info:</strong> Word repetition ignored</li>
+                    <li><strong>Common words dominate:</strong> "the", "is" appear everywhere</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 2: VECTORS -->
+        <section id="vectors">
+            <span class="section-num">02</span>
+            <h2>From Sets to Vectors</h2>
+            <p>We represent documents as <strong>vectors</strong> in a high-dimensional space where each dimension corresponds to a term in our vocabulary.</p>
+
+            <h3>Building the Vocabulary</h3>
+            <p>Collect all unique tokens and assign each an integer ID:</p>
+            
+            <div class="table-wrap">
+                <table>
+                    <tr><th>ID</th><th>Token</th></tr>
+                    <tr><td>0</td><td>a</td></tr>
+                    <tr><td>1</td><td>bad</td></tr>
+                    <tr><td>2</td><td>bru</td></tr>
+                    <tr><td>3</td><td>i</td></tr>
+                    <tr><td>4</td><td>irn</td></tr>
+                    <tr><td>5</td><td>like</td></tr>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">Python</div>
+                <pre><code><span class="keyword">def</span> <span class="function">make_vocabulary</span>(corpus):
+    <span class="string">"""Create vocabulary mapping from corpus."""</span>
+    vocab = {}
+    <span class="keyword">for</span> doc <span class="keyword">in</span> corpus:
+        <span class="keyword">for</span> token <span class="keyword">in</span> doc:
+            <span class="keyword">if</span> token <span class="keyword">not in</span> vocab:
+                vocab[token] = <span class="function">len</span>(vocab)
+    <span class="keyword">return</span> vocab
+
+<span class="comment"># Example:</span>
+corpus = [[<span class="string">'irn'</span>, <span class="string">'bru'</span>, <span class="string">'good'</span>], [<span class="string">'irn'</span>, <span class="string">'bru'</span>, <span class="string">'bad'</span>]]
+vocab = <span class="function">make_vocabulary</span>(corpus)
+<span class="comment"># {'irn': 0, 'bru': 1, 'good': 2, 'bad': 3}</span></code></pre>
+            </div>
+
+            <h3>One-Hot Encoding</h3>
+            <p>Create a vector where tokens present = 1, others = 0:</p>
+            
+            <div class="vector-viz">
+                <p style="color:var(--text-muted);margin-bottom:1rem">Document: {"i", "like", "irn", "bru"}</p>
+                <div class="vec-row">
+                    <span class="vec-label">Token:</span>
+                    <span class="vec-cell zero">a</span>
+                    <span class="vec-cell zero">bad</span>
+                    <span class="vec-cell one">bru</span>
+                    <span class="vec-cell one">i</span>
+                    <span class="vec-cell one">irn</span>
+                    <span class="vec-cell one">like</span>
+                </div>
+                <div class="vec-row">
+                    <span class="vec-label">Value:</span>
+                    <span class="vec-cell zero">0</span>
+                    <span class="vec-cell zero">0</span>
+                    <span class="vec-cell one">1</span>
+                    <span class="vec-cell one">1</span>
+                    <span class="vec-cell one">1</span>
+                    <span class="vec-cell one">1</span>
+                </div>
+            </div>
+
+            <div id="sparse">
+                <h3>Sparse vs Dense Representations</h3>
+                <p>With vocabulary of 150,000+ tokens, most values are 0. Storing zeros wastes memory!</p>
+                
+                <div class="grid-2">
+                    <div class="card" style="border-color:var(--accent)">
+                        <h4>❌ Dense</h4>
+                        <code>[0, 0, 1, 1, 1, 0, 1, 0, ...]</code>
+                        <p style="color:var(--accent);font-size:0.85rem;margin-top:0.5rem">~600KB per document!</p>
+                    </div>
+                    <div class="card" style="border-color:var(--success)">
+                        <h4>✅ Sparse</h4>
+                        <code>{2: 1, 3: 1, 4: 1, 6: 1}</code>
+                        <p style="color:var(--success);font-size:0.85rem;margin-top:0.5rem">Only ~8 bytes per token!</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">Python - Sparse Functions</div>
+                    <pre><code><span class="keyword">def</span> <span class="function">make_onehot_sparse</span>(tokens, vocab):
+    <span class="string">"""Create sparse one-hot vector (dict format)."""</span>
+    vector = {}
+    <span class="keyword">for</span> token <span class="keyword">in</span> tokens:
+        <span class="keyword">if</span> token <span class="keyword">in</span> vocab:
+            vector[vocab[token]] = <span class="number">1</span>
+    <span class="keyword">return</span> vector
+
+<span class="keyword">def</span> <span class="function">sparse_to_dense</span>(sv, length):
+    <span class="string">"""Convert sparse to dense."""</span>
+    dense = [<span class="number">0</span>] * length
+    <span class="keyword">for</span> idx, val <span class="keyword">in</span> sv.items():
+        dense[idx] = val
+    <span class="keyword">return</span> dense</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: TF -->
+        <section id="tf">
+            <span class="section-num">03</span>
+            <h2>Term Frequency (TF)</h2>
+            <p>One-hot encoding loses frequency info. Count how many times each term appears:</p>
+
+            <div class="vector-viz">
+                <p style="color:var(--text-muted);margin-bottom:1rem">Document: "i like irn bru, irn bru taste like"</p>
+                <div class="vec-row">
+                    <span class="vec-label">Token:</span>
+                    <span class="vec-cell val">bru</span>
+                    <span class="vec-cell val">i</span>
+                    <span class="vec-cell val">irn</span>
+                    <span class="vec-cell val">like</span>
+                    <span class="vec-cell val">taste</span>
+                </div>
+                <div class="vec-row">
+                    <span class="vec-label">TF:</span>
+                    <span class="vec-cell val">2</span>
+                    <span class="vec-cell val">1</span>
+                    <span class="vec-cell val">2</span>
+                    <span class="vec-cell val">2</span>
+                    <span class="vec-cell val">1</span>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">Python</div>
+                <pre><code><span class="keyword">from</span> collections <span class="keyword">import</span> Counter
+
+<span class="keyword">def</span> <span class="function">make_tf_sparse</span>(tokens, vocab):
+    <span class="string">"""Create term frequency sparse vector."""</span>
+    counts = Counter(tokens)
+    vector = {}
+    <span class="keyword">for</span> token, count <span class="keyword">in</span> counts.items():
+        <span class="keyword">if</span> token <span class="keyword">in</span> vocab:
+            vector[vocab[token]] = count
+    <span class="keyword">return</span> vector</code></pre>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-header">⚠️ Problem with Raw TF</div>
+                <p style="color:var(--text-muted)">Is a doc with 10 mentions of "Djokovic" really 10× more about him than one with 1 mention? <strong>Aboutness doesn't scale linearly!</strong></p>
+            </div>
+
+            <div class="formula-box">
+                <div class="desc">Sublinear TF Scaling</div>
+                <div class="formula">TF_log = 1 + log₁₀(TF) if TF > 0, else 0</div>
+                <div class="desc">Example: TF=1→1, TF=10→2, TF=1000→4</div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: IDF -->
+        <section id="idf">
+            <h3>Inverse Document Frequency (IDF)</h3>
+            <p>Some words are common everywhere ("the", "is"). We want rare terms to have higher weight!</p>
+
+            <div class="formula-box">
+                <div class="desc">IDF Formula</div>
+                <div class="formula">IDF(t) = log₁₀(N / DF_t)</div>
+                <div class="desc">N = total docs, DF_t = docs containing term t</div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <tr><th>Term</th><th>DF (in 1M docs)</th><th>IDF</th><th>Meaning</th></tr>
+                    <tr><td>calpurnia</td><td>1</td><td>6.0</td><td style="color:var(--success)">Very informative</td></tr>
+                    <tr><td>animal</td><td>100</td><td>5.0</td><td style="color:var(--success)">Informative</td></tr>
+                    <tr><td>fly</td><td>10,000</td><td>3.0</td><td style="color:var(--highlight)">Common</td></tr>
+                    <tr><td>the</td><td>1,000,000</td><td>1.0</td><td style="color:var(--accent)">Useless</td></tr>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">Python</div>
+                <pre><code><span class="keyword">def</span> <span class="function">doc_frequency</span>(corpus):
+    <span class="string">"""Calculate document frequency for each token."""</span>
+    df = Counter()
+    <span class="keyword">for</span> doc <span class="keyword">in</span> corpus:
+        <span class="keyword">for</span> token <span class="keyword">in</span> <span class="function">set</span>(doc):  <span class="comment"># Count once per doc</span>
+            df[token] += <span class="number">1</span>
+    <span class="keyword">return</span> df</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 5: TF-IDF -->
+        <section id="tfidf">
+            <h3>TF-IDF: Putting It Together</h3>
+            
+            <div class="formula-box">
+                <div class="desc">TF-IDF Formula</div>
+                <div class="formula">TF-IDF(t, d) = TF(t, d) × IDF(t)</div>
+                <div class="desc">With sublinear scaling: (1 + log₁₀(tf)) × log₁₀(N/df)</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4 style="color:var(--success)">✅ High TF-IDF</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>Term frequent in THIS doc</li>
+                        <li>Term rare in corpus</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color:var(--accent)">❌ Low TF-IDF</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>Term rare in this doc</li>
+                        <li>Term common everywhere</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">Python - TF-IDF</div>
+                <pre><code><span class="keyword">import</span> math
+
+<span class="keyword">def</span> <span class="function">make_tfidf_sparse</span>(tokens, vocab, doc_freq, N):
+    <span class="string">"""Create TF-IDF sparse vector."""</span>
+    counts = Counter(tokens)
+    vector = {}
+    <span class="keyword">for</span> token, count <span class="keyword">in</span> counts.items():
+        <span class="keyword">if</span> token <span class="keyword">in</span> vocab:
+            tf = <span class="number">1</span> + math.log10(count)  <span class="comment"># Sublinear TF</span>
+            df = doc_freq.get(token, <span class="number">1</span>)
+            idf = math.log10(N / df)
+            vector[vocab[token]] = tf * idf
+    <span class="keyword">return</span> vector</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 6: ZIPF'S LAW -->
+        <section id="zipf">
+            <span class="section-num">04</span>
+            <h2>Zipf's Law</h2>
+            <p><strong>Zipf's Law:</strong> Word frequency is inversely proportional to rank. A few words are very common; most are rare.</p>
+
+            <div class="diagram">
+                <svg viewBox="0 0 400 200" width="400" height="200">
+                    <line x1="50" y1="170" x2="380" y2="170" stroke="#bdc3c7" stroke-width="2"/>
+                    <line x1="50" y1="170" x2="50" y2="30" stroke="#bdc3c7" stroke-width="2"/>
+                    <text x="215" y="195" text-anchor="middle" fill="#bdc3c7" font-size="12">Log(Rank)</text>
+                    <text x="20" y="100" fill="#bdc3c7" font-size="12" transform="rotate(-90,20,100)">Log(Freq)</text>
+                    <path d="M 60 40 Q 120 70, 200 110 T 360 155" stroke="#e94560" stroke-width="3" fill="none"/>
+                    <rect x="55" y="35" width="80" height="45" fill="rgba(233,69,96,0.2)" rx="4"/>
+                    <text x="95" y="55" text-anchor="middle" fill="#e94560" font-size="10">HEAD</text>
+                    <text x="95" y="70" text-anchor="middle" fill="#bdc3c7" font-size="9">Few common</text>
+                    <rect x="280" y="130" width="90" height="35" fill="rgba(243,156,18,0.2)" rx="4"/>
+                    <text x="325" y="150" text-anchor="middle" fill="#f39c12" font-size="10">LONG TAIL</text>
+                    <text x="325" y="162" text-anchor="middle" fill="#bdc3c7" font-size="9">Many rare</text>
+                </svg>
+                <div class="diagram-cap">Zipf's Law: Linear relationship on log-log scale</div>
+            </div>
+
+            <div class="info-box note">
+                <div class="info-header">📊 Why Zipf's Law Matters for TF-IDF</div>
+                <p style="color:var(--text-muted)">Using <strong>logarithms</strong> normalizes extreme differences between common and rare words. Without log scaling, a few words would dominate all calculations!</p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: SIMILARITY -->
+        <section id="similarity">
+            <span class="section-num">05</span>
+            <h2>Geometric Similarity</h2>
+            <p>With documents as vectors, we measure <strong>similarity</strong> by comparing vectors in high-dimensional space.</p>
+
+            <div class="diagram">
+                <svg viewBox="0 0 300 200" width="300" height="200">
+                    <line x1="50" y1="170" x2="280" y2="170" stroke="#bdc3c7" stroke-width="2"/>
+                    <line x1="50" y1="170" x2="50" y2="30" stroke="#bdc3c7" stroke-width="2"/>
+                    <text x="285" y="175" fill="#bdc3c7" font-size="10">"great"</text>
+                    <text x="15" y="35" fill="#bdc3c7" font-size="10">"terrible"</text>
+                    <line x1="50" y1="170" x2="240" y2="130" stroke="#27ae60" stroke-width="3"/>
+                    <circle cx="240" cy="130" r="6" fill="#27ae60"/>
+                    <text x="250" y="125" fill="#27ae60" font-size="10">d₁ (happy)</text>
+                    <line x1="50" y1="170" x2="100" y2="60" stroke="#e94560" stroke-width="3"/>
+                    <circle cx="100" cy="60" r="6" fill="#e94560"/>
+                    <text x="110" y="55" fill="#e94560" font-size="10">d₂ (unhappy)</text>
+                    <line x1="50" y1="170" x2="130" y2="45" stroke="#f39c12" stroke-width="3"/>
+                    <circle cx="130" cy="45" r="6" fill="#f39c12"/>
+                    <text x="140" y="40" fill="#f39c12" font-size="10">d₃ (very unhappy)</text>
+                </svg>
+                <div class="diagram-cap">Documents as vectors - direction matters more than length!</div>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-header">⚠️ Problem with Euclidean Distance</div>
+                <p style="color:var(--text-muted)">d₂ and d₃ point in the <strong>same direction</strong> (both negative reviews) but have different Euclidean distances due to length. Longer docs shouldn't be "more different"!</p>
+            </div>
+
+            <div id="cosine">
+                <h3>Cosine Similarity</h3>
+                <p>Measure the <strong>angle</strong> between vectors, not distance. Same direction = similar!</p>
+
+                <div class="formula-box">
+                    <div class="desc">Cosine Similarity</div>
+                    <div class="formula">cos(θ) = (v · w) / (||v|| × ||w||)</div>
+                    <div class="desc">v·w = dot product, ||v|| = magnitude</div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card" style="border-color:var(--success)">
+                        <h4>θ = 0°</h4>
+                        <p style="color:var(--text-muted);font-size:0.9rem">cos = 1<br>Same direction</p>
+                    </div>
+                    <div class="card" style="border-color:var(--highlight)">
+                        <h4>θ = 45°</h4>
+                        <p style="color:var(--text-muted);font-size:0.9rem">cos ≈ 0.7<br>Somewhat similar</p>
+                    </div>
+                    <div class="card" style="border-color:var(--accent)">
+                        <h4>θ = 90°</h4>
+                        <p style="color:var(--text-muted);font-size:0.9rem">cos = 0<br>Perpendicular</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">Python - Cosine Similarity</div>
+                    <pre><code><span class="keyword">import</span> math
+
+<span class="keyword">def</span> <span class="function">sparse_dot_prod</span>(sv1, sv2):
+    <span class="string">"""Dot product of sparse vectors."""</span>
+    result = <span class="number">0</span>
+    <span class="keyword">for</span> idx, val <span class="keyword">in</span> sv1.items():
+        <span class="keyword">if</span> idx <span class="keyword">in</span> sv2:
+            result += val * sv2[idx]
+    <span class="keyword">return</span> result
+
+<span class="keyword">def</span> <span class="function">sparse_cosine_similarity</span>(sv1, sv2):
+    <span class="string">"""Cosine similarity between sparse vectors."""</span>
+    dot = <span class="function">sparse_dot_prod</span>(sv1, sv2)
+    mag1 = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv1.values()))
+    mag2 = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv2.values()))
+    <span class="keyword">if</span> mag1 == <span class="number">0</span> <span class="keyword">or</span> mag2 == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="number">0</span>
+    <span class="keyword">return</span> dot / (mag1 * mag2)
+
+<span class="keyword">def</span> <span class="function">normalize_sparse_vector</span>(sv):
+    <span class="string">"""Normalize to unit length."""</span>
+    mag = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv.values()))
+    <span class="keyword">if</span> mag == <span class="number">0</span>: <span class="keyword">return</span> {}
+    <span class="keyword">return</span> {idx: val/mag <span class="keyword">for</span> idx, val <span class="keyword">in</span> sv.items()}</code></pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-header">💡 Performance Tip</div>
+                    <p style="color:var(--text-muted)"><strong>Pre-normalize all vectors!</strong> Then cosine similarity = just a dot product (much faster).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: CLUSTERING -->
+        <section id="clustering">
+            <span class="section-num">06</span>
+            <h2>K-Means Clustering</h2>
+            <p><strong>Clustering</strong> groups similar documents without predefined categories. K-Means is the most popular algorithm.</p>
+
+            <div class="grid-3">
+                <div class="card"><h4>📰 News Grouping</h4><p style="color:var(--text-muted);font-size:0.9rem">Group articles about same topic</p></div>
+                <div class="card"><h4>👥 Customer Segments</h4><p style="color:var(--text-muted);font-size:0.9rem">Group by purchasing patterns</p></div>
+                <div class="card"><h4>🔍 Search Results</h4><p style="color:var(--text-muted);font-size:0.9rem">Organize into categories</p></div>
+            </div>
+
+            <h3>K-Means Algorithm</h3>
+            <div class="steps">
+                <div class="step" data-step="0"><h4>Initialize</h4><p style="color:var(--text-muted)">Pick K random centroids</p></div>
+                <div class="step" data-step="1"><h4>Assign</h4><p style="color:var(--text-muted)">Each point to nearest centroid</p></div>
+                <div class="step" data-step="2"><h4>Update</h4><p style="color:var(--text-muted)">Recalculate centroids as mean of assigned points</p></div>
+                <div class="step" data-step="∞"><h4>Repeat</h4><p style="color:var(--text-muted)">Until convergence (centroids stop moving)</p></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card" style="border-color:var(--success)">
+                    <h4>✅ Advantages</h4>
+                    <ul style="color:var(--text-muted);font-size:0.9rem">
+                        <li>Fast: O(N×K) complexity</li>
+                        <li>Simple to implement</li>
+                        <li>Scales to large datasets</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-color:var(--accent)">
+                    <h4>❌ Limitations</h4>
+                    <ul style="color:var(--text-muted);font-size:0.9rem">
+                        <li>Must choose K upfront</li>
+                        <li>Sensitive to initialization</li>
+                        <li>May find local minimum</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="eval">
+                <h3>Choosing K: Elbow Method</h3>
+                <p>Plot distortion vs K, look for the "elbow" where adding clusters provides diminishing returns.</p>
+
+                <h4>Silhouette Coefficient</h4>
+                <div class="formula-box">
+                    <div class="formula">s(i) = (b(i) - a(i)) / max(a(i), b(i))</div>
+                    <div class="desc">a = avg dist to same cluster, b = avg dist to nearest other cluster<br>Range: -1 (wrong cluster) to +1 (perfect fit)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9: LAB CODE -->
+        <section id="lab">
+            <span class="section-num">07</span>
+            <h2>Complete Lab Code</h2>
+
+            <div class="lab-box">
+                <span class="ex-num">Complete Example</span>
+                <h4>Full Pipeline with Scikit-learn</h4>
+                <div class="code-block">
+                    <div class="code-header">Python - Complete Workflow</div>
+                    <pre><code><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> TfidfVectorizer
+<span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans
+<span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> silhouette_score
+<span class="keyword">import</span> spacy
+
+<span class="comment"># Load spaCy</span>
+nlp = spacy.load(<span class="string">"en_core_web_sm"</span>)
+
+<span class="keyword">def</span> <span class="function">text_pipeline_spacy</span>(text):
+    <span class="string">"""Tokenize with spaCy, remove stopwords/punct."""</span>
+    tokens = []
+    doc = nlp(text)
+    <span class="keyword">for</span> t <span class="keyword">in</span> doc:
+        <span class="keyword">if not</span> t.is_stop <span class="keyword">and not</span> t.is_punct <span class="keyword">and not</span> t.is_space:
+            tokens.append(t.lemma_.lower())
+    <span class="keyword">return</span> tokens
+
+<span class="comment"># Vectorize documents</span>
+documents = [
+    <span class="string">"My favourite soft drink is Irn Bru."</span>,
+    <span class="string">"Irn Bru is a Scottish soft drink."</span>,
+    <span class="string">"I love playing football on weekends."</span>,
+    <span class="string">"The weather in Glasgow is often rainy."</span>,
+]
+
+vectorizer = TfidfVectorizer(
+    tokenizer=text_pipeline_spacy,
+    token_pattern=<span class="keyword">None</span>
+)
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+<span class="comment"># Find similar documents</span>
+query_vec = tfidf_matrix[<span class="number">0</span>]
+similarities = tfidf_matrix.dot(query_vec.T).toarray().flatten()
+<span class="function">print</span>(<span class="string">"Similarities to doc 0:"</span>, similarities)
+
+<span class="comment"># K-Means clustering</span>
+kmeans = KMeans(n_clusters=<span class="number">2</span>, random_state=<span class="number">42</span>, n_init=<span class="number">10</span>)
+labels = kmeans.fit_predict(tfidf_matrix)
+score = <span class="function">silhouette_score</span>(tfidf_matrix, labels)
+<span class="function">print</span>(<span class="string">f"Cluster labels: </span>{labels}<span class="string">"</span>)
+<span class="function">print</span>(<span class="string">f"Silhouette score: </span>{score:<span class="number">.3</span>f}<span class="string">"</span>)</code></pre>
+                </div>
+            </div>
+
+            <div class="lab-box">
+                <span class="ex-num">From Scratch Functions</span>
+                <h4>All Lab Functions Combined</h4>
+                <div class="code-block">
+                    <div class="code-header">Python - Complete Implementation</div>
+                    <pre><code><span class="keyword">import</span> math
+<span class="keyword">from</span> collections <span class="keyword">import</span> Counter
+
+<span class="comment"># === VOCABULARY ===</span>
+<span class="keyword">def</span> <span class="function">make_vocabulary</span>(corpus):
+    vocab = {}
+    <span class="keyword">for</span> doc <span class="keyword">in</span> corpus:
+        <span class="keyword">for</span> token <span class="keyword">in</span> doc:
+            <span class="keyword">if</span> token <span class="keyword">not in</span> vocab:
+                vocab[token] = <span class="function">len</span>(vocab)
+    <span class="keyword">return</span> vocab
+
+<span class="comment"># === VECTORS ===</span>
+<span class="keyword">def</span> <span class="function">make_onehot_sparse</span>(tokens, vocab):
+    <span class="keyword">return</span> {vocab[t]: <span class="number">1</span> <span class="keyword">for</span> t <span class="keyword">in</span> tokens <span class="keyword">if</span> t <span class="keyword">in</span> vocab}
+
+<span class="keyword">def</span> <span class="function">make_tf_sparse</span>(tokens, vocab):
+    counts = Counter(tokens)
+    <span class="keyword">return</span> {vocab[t]: c <span class="keyword">for</span> t, c <span class="keyword">in</span> counts.items() <span class="keyword">if</span> t <span class="keyword">in</span> vocab}
+
+<span class="comment"># === TF-IDF ===</span>
+<span class="keyword">def</span> <span class="function">doc_frequency</span>(corpus):
+    df = Counter()
+    <span class="keyword">for</span> doc <span class="keyword">in</span> corpus:
+        <span class="keyword">for</span> token <span class="keyword">in</span> <span class="function">set</span>(doc):
+            df[token] += <span class="number">1</span>
+    <span class="keyword">return</span> df
+
+<span class="keyword">def</span> <span class="function">make_tfidf_sparse</span>(tokens, vocab, doc_freq, N):
+    counts = Counter(tokens)
+    vector = {}
+    <span class="keyword">for</span> token, count <span class="keyword">in</span> counts.items():
+        <span class="keyword">if</span> token <span class="keyword">in</span> vocab:
+            tf = <span class="number">1</span> + math.log10(count)
+            idf = math.log10(N / doc_freq.get(token, <span class="number">1</span>))
+            vector[vocab[token]] = tf * idf
+    <span class="keyword">return</span> vector
+
+<span class="comment"># === SIMILARITY ===</span>
+<span class="keyword">def</span> <span class="function">sparse_euclidean_distance</span>(sv1, sv2):
+    indices = <span class="function">set</span>(sv1.keys()) | <span class="function">set</span>(sv2.keys())
+    <span class="keyword">return</span> math.sqrt(<span class="function">sum</span>((sv1.get(i,<span class="number">0</span>)-sv2.get(i,<span class="number">0</span>))**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> indices))
+
+<span class="keyword">def</span> <span class="function">sparse_dot_prod</span>(sv1, sv2):
+    <span class="keyword">return</span> <span class="function">sum</span>(v * sv2.get(i, <span class="number">0</span>) <span class="keyword">for</span> i, v <span class="keyword">in</span> sv1.items())
+
+<span class="keyword">def</span> <span class="function">normalize_sparse_vector</span>(sv):
+    mag = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv.values()))
+    <span class="keyword">return</span> {i: v/mag <span class="keyword">for</span> i, v <span class="keyword">in</span> sv.items()} <span class="keyword">if</span> mag > <span class="number">0</span> <span class="keyword">else</span> {}
+
+<span class="keyword">def</span> <span class="function">sparse_cosine_similarity</span>(sv1, sv2):
+    dot = <span class="function">sparse_dot_prod</span>(sv1, sv2)
+    mag1 = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv1.values()))
+    mag2 = math.sqrt(<span class="function">sum</span>(v**<span class="number">2</span> <span class="keyword">for</span> v <span class="keyword">in</span> sv2.values()))
+    <span class="keyword">return</span> dot / (mag1 * mag2) <span class="keyword">if</span> mag1 > <span class="number">0</span> <span class="keyword">and</span> mag2 > <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUMMARY -->
+        <section>
+            <h2>📋 Summary</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🎯 Vector Representations</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>Documents → high-dimensional vectors</li>
+                        <li>Use sparse representation for efficiency</li>
+                        <li>Bag of Words loses order, keeps counts</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⚖️ TF-IDF Weighting</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>TF: term importance in document</li>
+                        <li>IDF: term rarity in corpus</li>
+                        <li>Use logarithms to dampen extremes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📐 Cosine Similarity</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>Measures angle, not distance</li>
+                        <li>Pre-normalize for speed</li>
+                        <li>Range: 0 (orthogonal) to 1 (identical)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎨 K-Means Clustering</h4>
+                    <ul style="color:var(--text-muted)">
+                        <li>Unsupervised grouping</li>
+                        <li>Use elbow/silhouette to choose K</li>
+                        <li>Fast but requires K upfront</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            📚 Text as Data - University of Glasgow<br>
+            <small>MSc Data Science | Lecture 2: Geometric Similarity, Text Distributions & Clustering</small>
+        </footer>
+    </main>
+
+    <script>
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('pre code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

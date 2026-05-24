@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLAIDS 2019-2020 Past Paper Solutions</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        .exam-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background-color: #e8f4f8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .solution {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .marks {
+            color: #e74c3c;
+            font-weight: bold;
+            float: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Machine Learning for Data Scientists</h1>
+        <h2>Past Paper 2019-2020 - Solutions</h2>
+
+        <div class="exam-info">
+            <strong>Exam Duration:</strong> 60 minutes<br>
+            <strong>Total Marks:</strong> 60<br>
+            <strong>Instructions:</strong> Answer all of the 3 questions
+        </div>
+
+        <!-- QUESTION 1: REGRESSION -->
+        <h2>Question 1: Polynomial Regression (20 marks)</h2>
+
+        <div class="question">
+            <p>A polynomial regression model is defined as:</p>
+            <p>\[t_n = \sum_{d=0}^{D} w_d x_n^d, \quad n = 1, \ldots, N\]</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) Rescaling in Olympic Data <span class="marks">[4 marks]</span></h3>
+            <p>When applying this model to the Olympic data, where \(x_n \in \{1896, \ldots, 2008\}\), we always rescale x, e.g. \(x_n = \frac{x_n - 1896}{40}\). Explain why is this rescaling necessary.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>In the Olympic data, high polynomials could make the value of \(x^d\) very big. <strong>[2 marks]</strong></p>
+            <p>As a result, the computation of parameters becomes unstable. <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Explanation:</strong> When dealing with years like 1896-2008, raising these large values to high powers (e.g., 2000^10) results in astronomically large numbers that cause:
+                <ul>
+                    <li>Numerical overflow (numbers too large to store in computer memory)</li>
+                    <li>Ill-conditioned matrices (Φ^TΦ becomes nearly singular)</li>
+                    <li>Loss of numerical precision in floating-point arithmetic</li>
+                </ul>
+                Rescaling to a smaller range (e.g., [0,2.8]) keeps polynomial values manageable.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) RBF Basis Function Model <span class="marks">[3 marks]</span></h3>
+            <p>Write down the regression model if the following Radial basis function (RBF) with a range of different position parameter μ is applied to \(x_n\).</p>
+            <p>\[RBF(y; \mu, l) = \exp\left(-\frac{(y-\mu)^2}{l^2}\right)\]</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>\[t_n = \sum_{d=1}^{D} w_d \exp\left(-\frac{(x_n - \mu_d)^2}{l^2}\right), \quad n = 1, \ldots, N\]</p>
+            <p><strong>[3 marks]</strong></p>
+
+            <div class="note">
+                <strong>Explanation:</strong> The RBF model replaces polynomial terms \(x^d\) with Gaussian basis functions centered at different positions μ_d. Each basis function creates a "bump" centered at μ_d, and the final prediction is a weighted sum of these bumps. The width parameter l controls how wide each bump is.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Nonlinear Regression Example <span class="marks">[2 marks]</span></h3>
+            <p>Give an example of nonlinear regression model. Also explain why it is nonlinear.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>Any nonlinear function of the w and x, e.g., \(f(x, w) = \sin(w \cdot x)\) <strong>[1 mark]</strong></p>
+            <p>State clearly which relationship is nonlinear (e.g., the model is nonlinear in the parameters w, or nonlinear in x) <strong>[1 mark]</strong></p>
+
+            <div class="note">
+                <strong>Other Examples:</strong>
+                <ul>
+                    <li>\(f(x, w) = w_1 e^{w_2 x}\) - exponential model, nonlinear in w_2</li>
+                    <li>\(f(x, w) = \frac{w_1}{1 + w_2 x}\) - rational function, nonlinear in w_2</li>
+                    <li>\(f(x, w) = w_1 \log(w_2 x)\) - logarithmic model, nonlinear in w_2</li>
+                </ul>
+                <strong>Key Point:</strong> "Nonlinear" typically means nonlinear in the <em>parameters</em> w, not just in x. Polynomial regression is linear in w (even though polynomial in x).
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Polynomial Regression and Outliers <span class="marks">[3 marks]</span></h3>
+            <p>Explain why polynomial regression could suffer from outliers.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>Outliers favour higher polynomial orders <strong>[1 mark]</strong>, as they can fit the outliers better <strong>[1 mark]</strong>. However, the high order models are more likely to overfit the data <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong> When outliers are present:
+                <ul>
+                    <li>Low-degree polynomials (d=1,2) cannot fit outliers well, leading to high error on those points</li>
+                    <li>High-degree polynomials (d≥5) can bend dramatically to pass through outliers</li>
+                    <li>This causes the polynomial to have extreme oscillations between data points</li>
+                    <li>The model overfits, capturing noise rather than the underlying trend</li>
+                    <li>Test error becomes very high even though training error is low</li>
+                </ul>
+                <strong>Solution:</strong> Use regularization (Ridge/Lasso) or robust regression methods that are less sensitive to outliers.
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) L2 Regularization with Contour Plot <span class="marks">[8 marks]</span></h3>
+            <p>L2 Regularised regression can be used to deal with this problem. Use a contour plot (Assuming the dimension of the parameter is 2) of parameters and the loss function to explain why.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Marking Scheme:</strong></p>
+            <ul>
+                <li>2 marks for the correct contour of the mean squared error (ellipses centered away from origin)</li>
+                <li>2 marks for the correct contour for the L2 regularization (circles centered at origin)</li>
+                <li>2 marks for highlighting the correct intersection between the two</li>
+                <li>2 marks for stating the fact that optimal parameter shifted closer to (0, 0)</li>
+            </ul>
+
+            <div class="note">
+                <strong>Visual Description:</strong>
+                <p><strong>Without Regularization (MSE only):</strong></p>
+                <ul>
+                    <li>Contours are ellipses of constant MSE: \(\sum (y_i - w^T x_i)^2 = c\)</li>
+                    <li>Minimum is at the center of the ellipses (ordinary least squares solution)</li>
+                    <li>This minimum may have large weight values if overfitting</li>
+                </ul>
+                <p><strong>L2 Regularization penalty:</strong></p>
+                <ul>
+                    <li>Contours are circles: \(w_1^2 + w_2^2 = c\) (or \(\|w\|^2 = c\))</li>
+                    <li>Centered at origin (0,0)</li>
+                    <li>Penalty increases as we move away from origin</li>
+                </ul>
+                <p><strong>Combined objective (MSE + λ\|w\|²):</strong></p>
+                <ul>
+                    <li>Optimal solution is where MSE contour touches smallest L2 penalty circle</li>
+                    <li>This point is closer to (0,0) than the unregularized solution</li>
+                    <li>Larger λ → solution closer to origin → smaller weights → less overfitting</li>
+                </ul>
+                <p><strong>Why this helps with outliers:</strong> Smaller weights mean the model is less flexible and cannot bend as dramatically to fit outliers, leading to better generalization.</p>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: CLASSIFICATION -->
+        <h2>Question 2: Classification (20 marks)</h2>
+
+        <div class="question">
+            <h3>(a) Regression vs Classification <span class="marks">[3 marks]</span></h3>
+            <p>Classification and regression are both supervised learning problems. Describe a way to turn a regression problem into a classification problem? (Please state the differences between the two.)</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>In regression, the target variable is a continuous/real-valued variable <strong>[1 mark]</strong>.</p>
+            <p>In classification, the target variable is a discrete/binary/categorical variable <strong>[1 mark]</strong>.</p>
+            <p>To obtain a classification problem from regression, one can cluster/group the continuous/real-valued variable into groups <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Examples:</strong>
+                <ul>
+                    <li><strong>Regression:</strong> Predict house price (continuous: $100K, $250K, $500K, etc.)</li>
+                    <li><strong>Classification:</strong> Predict price category (discrete: "Low", "Medium", "High")</li>
+                    <li><strong>Conversion:</strong> Set thresholds: Low (<$200K), Medium ($200K-$400K), High (>$400K)</li>
+                </ul>
+                <ul>
+                    <li><strong>Regression:</strong> Predict student exam score (0-100)</li>
+                    <li><strong>Classification:</strong> Predict pass/fail (Pass if score ≥50, Fail otherwise)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) ROC Curve <span class="marks">[3 marks]</span></h3>
+            <p>The receiver operating characteristic (ROC) curve is a standard way to visualize the performance of classifiers. Outline how to draw a ROC curve.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>The ROC curve is created by varying the threshold at which the classifier calls something as belonging to the positive class. <strong>[1 mark]</strong></p>
+            <p>Each point is consisted of false positive rate or 1-specificity (normally on the x-axis) <strong>[1 mark]</strong></p>
+            <p>and true positive rate or sensitivity (normally on the y-axis) <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Step-by-Step Process:</strong>
+                <ol>
+                    <li>Sort instances by predicted probability/score (highest to lowest)</li>
+                    <li>Start with threshold = +∞ (all predicted negative): TPR=0, FPR=0 → point (0,0)</li>
+                    <li>For each threshold:
+                        <ul>
+                            <li>Classify instances above threshold as positive, below as negative</li>
+                            <li>Calculate: TPR = TP/(TP+FN), FPR = FP/(FP+TN)</li>
+                            <li>Plot point (FPR, TPR)</li>
+                        </ul>
+                    </li>
+                    <li>End with threshold = -∞ (all predicted positive): TPR=1, FPR=1 → point (1,1)</li>
+                    <li>Connect points to form curve</li>
+                </ol>
+                <strong>Perfect Classifier:</strong> ROC goes from (0,0) → (0,1) → (1,1) (AUC = 1)<br>
+                <strong>Random Classifier:</strong> Diagonal line from (0,0) to (1,1) (AUC = 0.5)
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) AUC Calculation <span class="marks">[7 marks total]</span></h3>
+            <p>For the classifier outputs in the table below, provide a value for the missing output (labeled '?') that would:</p>
+
+            <table>
+                <tr>
+                    <th>Class Label</th>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Output</th>
+                    <td>0.1</td>
+                    <td>0.25</td>
+                    <td>0.4</td>
+                    <td>?</td>
+                    <td>0.6</td>
+                    <td>0.9</td>
+                </tr>
+            </table>
+
+            <p><strong>(i)</strong> Give an AUC equal to 1 <span class="marks">[2 marks]</span></p>
+            <p><strong>(ii)</strong> Give an AUC less than 1 <span class="marks">[2 marks]</span></p>
+            <p><strong>(iii)</strong> Now assuming you can change any output of the six data points, give an example of the outputs, such that the AUC is 0.5 <span class="marks">[3 marks]</span></p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+
+            <p><strong>(i) AUC = 1: [2 marks]</strong></p>
+            <p><strong>Answer:</strong> Anything between 0.4 and 1.0</p>
+            <p><strong>Explanation:</strong> For perfect classification (AUC=1), all positive class outputs must be higher than all negative class outputs. The highest negative output is 0.4, and the lowest known positive output is 0.6. So the missing value must be in the range (0.4, 1.0) to maintain perfect separation.</p>
+
+            <p><strong>(ii) AUC < 1: [2 marks]</strong></p>
+            <p><strong>Answer:</strong> Anything less than 0.4</p>
+            <p><strong>Explanation:</strong> If the missing positive class output is less than 0.4, there will be at least one negative class instance (with output 0.4) that has a higher score than a positive class instance. This creates misclassification at some thresholds, reducing AUC below 1.</p>
+
+            <p><strong>(iii) AUC = 0.5: [3 marks]</strong></p>
+            <p><strong>Answer:</strong> As long as the output for 0s and 1s are the same.</p>
+            <p><strong>Example:</strong> All outputs = 0.5, or outputs [0.3, 0.3, 0.3, 0.3, 0.3, 0.3]</p>
+            <p><strong>Explanation:</strong> AUC = 0.5 represents random guessing. This occurs when the classifier cannot distinguish between classes at all. If all outputs are identical, the classifier provides no information, resulting in a diagonal ROC curve (random performance).</p>
+
+            <div class="note">
+                <strong>AUC Interpretation:</strong>
+                <ul>
+                    <li>AUC = 1.0: Perfect classifier (100% separation)</li>
+                    <li>AUC = 0.5: Random classifier (no discriminative power)</li>
+                    <li>AUC < 0.5: Worse than random (predictions are inverted!)</li>
+                    <li>AUC represents probability that a random positive instance is ranked higher than a random negative instance</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) Linear SVM Diagram <span class="marks">[4 marks]</span></h3>
+            <p>Use a diagram (some data in 2D) to describe how linear Support Vector Machines (SVMs) operate (how they make classification decisions, what and how parameters have to be set, what data needs to be stored etc).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Marking Scheme:</strong></p>
+            <ul>
+                <li>1 mark for drawing that demonstrates the margin</li>
+                <li>1 mark for highlighting the decision boundary</li>
+                <li>1 mark for highlighting support vectors</li>
+                <li>1 mark for pointing out only support vectors need to be stored</li>
+            </ul>
+
+            <div class="note">
+                <strong>Diagram Should Include:</strong>
+                <p><strong>Key Components:</strong></p>
+                <ul>
+                    <li><strong>Decision boundary:</strong> The hyperplane that separates the two classes (solid line in 2D)</li>
+                    <li><strong>Margin:</strong> The region between the two parallel hyperplanes on either side of the decision boundary (shaded area or indicated by dashed lines)</li>
+                    <li><strong>Support vectors:</strong> The data points that lie exactly on the margin boundaries (circled or highlighted). These are the critical points that define the decision boundary.</li>
+                    <li><strong>Other points:</strong> Data points that are farther from the boundary (can be shown but less emphasized)</li>
+                </ul>
+                <p><strong>Mathematical Details:</strong></p>
+                <ul>
+                    <li>Decision boundary: \(w^T x + b = 0\)</li>
+                    <li>Margin boundaries: \(w^T x + b = +1\) (positive class) and \(w^T x + b = -1\) (negative class)</li>
+                    <li>Margin width: \(\frac{2}{\|w\|}\)</li>
+                    <li>Classification: Sign of \(w^T x + b\) determines predicted class</li>
+                </ul>
+                <p><strong>Storage Requirement:</strong></p>
+                <ul>
+                    <li>Only support vectors and their coefficients need to be stored (typically 5-20% of training data)</li>
+                    <li>All other training points can be discarded after training</li>
+                    <li>This makes SVM memory-efficient for prediction</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) Logistic Regression Likelihood <span class="marks">[3 marks]</span></h3>
+            <p>Logistic regression uses the sigmoid function to make classification decision. Now, we have defined the following probability with a sigmoid function:</p>
+            <p>\[p(t_n = 0|\mathbf{w}, \mathbf{x}_n) = \frac{1}{1 + \exp(-\mathbf{w}^T \mathbf{x}_n)}\]</p>
+            <p>Write down the corresponding likelihood function for nth data point, \(p(t_n|\mathbf{w}, \mathbf{x}_n)\).</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>\[p(t_n|\mathbf{w}, \mathbf{x}_n) = \left(1 - \frac{1}{1 + \exp(-\mathbf{w}^T \mathbf{x}_n)}\right)^{t_n} \left(\frac{1}{1 + \exp(-\mathbf{w}^T \mathbf{x}_n)}\right)^{1-t_n}\]</p>
+            <p><strong>[3 marks]</strong></p>
+
+            <div class="note">
+                <strong>Derivation:</strong>
+                <p>Given:</p>
+                <ul>
+                    <li>\(p(t_n = 0|w, x_n) = \sigma(w^T x_n) = \frac{1}{1 + \exp(-w^T x_n)}\)</li>
+                    <li>Then: \(p(t_n = 1|w, x_n) = 1 - \sigma(w^T x_n) = 1 - \frac{1}{1 + \exp(-w^T x_n)} = \frac{\exp(-w^T x_n)}{1 + \exp(-w^T x_n)}\)</li>
+                </ul>
+                <p>The likelihood for a single point can be written compactly as:</p>
+                <ul>
+                    <li>If \(t_n = 1\): use \(p(t_n=1|w,x_n)\) raised to power 1, and \(p(t_n=0|w,x_n)\) raised to power 0</li>
+                    <li>If \(t_n = 0\): use \(p(t_n=1|w,x_n)\) raised to power 0, and \(p(t_n=0|w,x_n)\) raised to power 1</li>
+                </ul>
+                <p>This gives the formula: \(p(t_n|w,x_n) = [p(t_n=1)]^{t_n} [p(t_n=0)]^{1-t_n}\)</p>
+                <p><strong>Note:</strong> This can also be simplified to:</p>
+                <p>\[p(t_n|\mathbf{w}, \mathbf{x}_n) = \sigma(\mathbf{w}^T \mathbf{x}_n)^{1-t_n} (1-\sigma(\mathbf{w}^T \mathbf{x}_n))^{t_n}\]</p>
+                <p>where \(\sigma(z) = \frac{1}{1+\exp(-z)}\)</p>
+            </div>
+        </div>
+
+        <!-- QUESTION 3: UNSUPERVISED LEARNING -->
+        <h2>Question 3: Unsupervised Learning (20 marks)</h2>
+
+        <div class="question">
+            <p>Consider using the K-means algorithm to perform clustering on the following data.</p>
+            <p><em>[Diagram shows concentric circles - inner circle and outer ring pattern]</em></p>
+            <p>We want to cluster data in the outer ring in one cluster and the data in the inner circle as a different cluster.</p>
+        </div>
+
+        <div class="question">
+            <h3>(a) K-means with Euclidean Distance <span class="marks">[2 marks]</span></h3>
+            <p>Outline what would happen if we directly apply K-means with Euclidean distance to this data. Can it achieve the clustering objective? How will it split/group the data?</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>K-means cannot split the data into outer ring and inner circle clusters <strong>[1 mark]</strong>.</p>
+            <p>It will group parts of the outer ring or inner circle <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong>
+                <p>K-means with Euclidean distance assumes clusters are spherical/globular. The algorithm will:</p>
+                <ul>
+                    <li>Draw a straight line (linear decision boundary) between two cluster centers</li>
+                    <li>This creates a vertical or horizontal split through the data</li>
+                    <li>One cluster might contain: left half of both inner circle and outer ring</li>
+                    <li>Other cluster: right half of both inner circle and outer ring</li>
+                    <li>Result: Each cluster is a mixture of both true classes - fails to separate concentric patterns</li>
+                </ul>
+                <p><strong>Why it fails:</strong> The true cluster shapes are non-convex (ring shape cannot be captured by spherical clusters). K-means can only create convex, spherical clusters separated by linear boundaries.</p>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(b) Kernel K-means <span class="marks">[3 marks]</span></h3>
+            <p>An alternative approach is to use Kernel K-means. Explain how the kernel could help in this dataset.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>A kernel that projects the data onto a different space <strong>[1 mark]</strong></p>
+            <p>where data can be easily separated <strong>[1 mark]</strong>.</p>
+            <p>The space could have higher or lower number of dimensions compared to the original data <strong>[1 mark]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Explanation:</strong>
+                <p><strong>How kernel helps with concentric circles:</strong></p>
+                <ul>
+                    <li><strong>Original 2D space:</strong> Inner circle and outer ring are not linearly separable</li>
+                    <li><strong>RBF kernel transformation:</strong> Maps data to infinite-dimensional space</li>
+                    <li><strong>In transformed space:</strong> The two groups become separable by a hyperplane</li>
+                    <li><strong>Result:</strong> K-means in the transformed space correctly separates inner/outer</li>
+                </ul>
+                <p><strong>Intuition for RBF kernel:</strong></p>
+                <ul>
+                    <li>RBF kernel: \(K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)\)</li>
+                    <li>Measures similarity: Points close together → K ≈ 1, far apart → K ≈ 0</li>
+                    <li>Inner circle points are all close to each other (high similarity)</li>
+                    <li>Outer ring points are all close to each other (high similarity)</li>
+                    <li>Inner and outer points are far apart (low similarity)</li>
+                    <li>This similarity structure helps kernel K-means separate the groups</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(c) Kernel Statements <span class="marks">[2 marks]</span></h3>
+            <p>Which one of the following statements about kernel is NOT correct?</p>
+            <p>A. One could use the RBF kernel, \(K(x_n, x_j) = \exp(-\gamma(x_n - x_j)^T(x_n - x_j))\), to achieve the clustering target.</p>
+            <p>B. The RBF kernel projects the data onto an infinite dimensional space. The free parameter γ can be estimated with cross-validation.</p>
+            <p>C. One could use the linear kernel, \(K(x_n, x_j) = x_n^T x_j\), to achieve the clustering target.</p>
+            <p>D. The linear kernel projects the data onto itself, and there is no free parameter to tune.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer: C</strong> <strong>[2 marks]</strong></p>
+
+            <div class="note">
+                <strong>Explanation of Each Statement:</strong>
+                <ul>
+                    <li><strong>A - CORRECT:</strong> RBF kernel can achieve the clustering target. It maps data to infinite dimensions where concentric circles become separable.</li>
+                    <li><strong>B - CORRECT:</strong> RBF kernel does project to infinite-dimensional space (can be shown using Taylor series expansion). Parameter γ controls the width and can be tuned via cross-validation.</li>
+                    <li><strong>C - INCORRECT:</strong> Linear kernel \(K(x_n, x_j) = x_n^T x_j\) projects data onto itself (identity mapping). This is equivalent to standard K-means with Euclidean distance, which we established in part (a) cannot separate concentric circles. Therefore, linear kernel CANNOT achieve the clustering target.</li>
+                    <li><strong>D - CORRECT:</strong> Linear kernel indeed projects data onto itself (no transformation), and has no hyperparameters to tune.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(d) K-means Pseudocode <span class="marks">[5 marks]</span></h3>
+            <p>Write some pseudo-code to perform K-means.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <pre>
+Given: Number of clusters, K
+
+2. For each cluster k = 1...K:                                      [Initialization step implied]
+
+3. For each object n = 1...N:                                       [1 mark]
+
+4. Compute the distance between object n and cluster k              [1 mark]
+
+5. Assign object n to the cluster corresponding to smallest distance [1 mark]
+
+6. Update the mean of each cluster                                  [1 mark]
+
+7. If assignments have changed, return to 2. Else stop.             [1 mark]
+            </pre>
+
+            <div class="note">
+                <strong>More Detailed Algorithm:</strong>
+                <pre>
+<strong>Input:</strong> Data points {x₁, ..., x_N}, number of clusters K
+
+<strong>1. Initialize:</strong>
+   Randomly select K data points as initial cluster centers μ₁, ..., μ_K
+
+<strong>2. Repeat until convergence:</strong>
+
+   <strong>2a. Assignment Step:</strong> [1 mark]
+       For each data point n = 1 to N:
+           Compute distance to each cluster center k:        [1 mark]
+               d_nk = ||x_n - μ_k||²
+           Assign x_n to nearest cluster:                    [1 mark]
+               c_n = argmin_k d_nk
+
+   <strong>2b. Update Step:</strong> [1 mark]
+       For each cluster k = 1 to K:
+           Recompute cluster center as mean of assigned points:
+               μ_k = (1/|C_k|) Σ_{n ∈ C_k} x_n
+
+   <strong>2c. Check Convergence:</strong> [1 mark]
+       If cluster assignments haven't changed (or max iterations reached):
+           Stop
+       Else:
+           Continue to next iteration
+
+<strong>Output:</strong> Cluster assignments {c₁, ..., c_N} and centers {μ₁, ..., μ_K}
+                </pre>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>(e) Cross-validation for Selecting K <span class="marks">[8 marks]</span></h3>
+            <p>Outline how and why cross-validation can be used to select the number of clusters K.</p>
+        </div>
+
+        <div class="solution">
+            <h4>Solution:</h4>
+            <p><strong>Answer:</strong></p>
+            <p>Cross-validation with total or average Euclidean distance between data points and their cluster centers <strong>[2 marks]</strong>.</p>
+            <p>At each CV cycle, use the training data to determine the mean of the clusters <strong>[2 marks]</strong>.</p>
+            <p>Test these means by computing total or average Euclidean distance between testing data points and their nearest cluster centers <strong>[2 marks]</strong>.</p>
+            <p>CV allows the trained number of clusters and means to be tested on a different dataset in which the trained K-means may or may not be a good fit <strong>[2 marks]</strong>.</p>
+
+            <div class="note">
+                <strong>Detailed Cross-Validation Procedure:</strong>
+
+                <p><strong>Why use Cross-Validation for K selection:</strong></p>
+                <ul>
+                    <li>Training error always decreases as K increases (K=N gives zero training error)</li>
+                    <li>Need to evaluate generalization to unseen data</li>
+                    <li>CV provides unbiased estimate of how well clustering generalizes</li>
+                    <li>Prevents overfitting (too many clusters)</li>
+                </ul>
+
+                <p><strong>How to use Cross-Validation:</strong></p>
+                <ol>
+                    <li><strong>For each candidate K value (e.g., K = 2, 3, 4, ..., 10):</strong></li>
+                    <li><strong>Split data into folds (e.g., 5-fold CV):</strong></li>
+                    <li><strong>For each fold f:</strong>
+                        <ul>
+                            <li>Training set: All folds except f (e.g., 80% of data)</li>
+                            <li>Validation set: Fold f (e.g., 20% of data)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Train K-means on training set:</strong>
+                        <ul>
+                            <li>Run K-means algorithm to convergence</li>
+                            <li>Obtain K cluster centers: μ₁, ..., μ_K</li>
+                        </ul>
+                    </li>
+                    <li><strong>Evaluate on validation set:</strong>
+                        <ul>
+                            <li>For each validation point x_n, find nearest cluster center</li>
+                            <li>Compute distance: d_n = min_k ||x_n - μ_k||²</li>
+                            <li>Average over validation set: Error_f = (1/N_val) Σ d_n</li>
+                        </ul>
+                    </li>
+                    <li><strong>Average across all folds:</strong>
+                        <ul>
+                            <li>CV_Error(K) = (1/F) Σ_f Error_f</li>
+                        </ul>
+                    </li>
+                    <li><strong>Select K with minimum CV error</strong></li>
+                </ol>
+
+                <p><strong>Alternative Metrics:</strong></p>
+                <ul>
+                    <li><strong>Silhouette score:</strong> Measures how similar points are to their own cluster vs other clusters</li>
+                    <li><strong>Gap statistic:</strong> Compares within-cluster dispersion to that expected under null reference distribution</li>
+                    <li><strong>Elbow method:</strong> Plot within-cluster sum of squares vs K, look for "elbow"</li>
+                </ul>
+
+                <p><strong>Important Note:</strong> CV for unsupervised learning is tricky because:</p>
+                <ul>
+                    <li>No true labels to evaluate against</li>
+                    <li>Must use reconstruction error or similar proxy metric</li>
+                    <li>Different random initializations can give different results (run multiple times)</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+        <div style="text-align: center; color: #7f8c8d;">
+            <p><strong>End of Past Paper Solutions</strong></p>
+            <p>Total Marks: 60 | Remember to show all working in the exam</p>
+        </div>
+    </div>
+</body>
+</html>

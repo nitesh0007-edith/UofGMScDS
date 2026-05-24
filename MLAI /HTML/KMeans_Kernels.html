@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kernel K-Means | Beyond Linear Boundaries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        :root {
+            --bg-deep: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-elevated: #1a1a25;
+            --accent-gold: #d4a853;
+            --accent-gold-dim: #a07830;
+            --accent-cyan: #4ecdc4;
+            --accent-magenta: #c44569;
+            --text-primary: #e8e6e3;
+            --text-secondary: #9a9a9a;
+            --text-muted: #6a6a6a;
+            --border-subtle: rgba(212, 168, 83, 0.15);
+            --glow-gold: rgba(212, 168, 83, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 168, 83, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(78, 205, 196, 0.08), transparent),
+                radial-gradient(ellipse 50% 30% at 20% 80%, rgba(196, 69, 105, 0.08), transparent);
+        }
+
+        .hero-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.4s;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.6s;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 1s;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--accent-gold), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        /* Main Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem 8rem;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: sectionReveal 0.8s ease forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes sectionReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-gold-dim);
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -0.5rem;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent-gold), transparent);
+        }
+
+        h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin: 2.5rem 0 1rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* Formula Cards */
+        .formula-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .formula-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-magenta));
+        }
+
+        .formula-card:hover {
+            border-color: var(--accent-gold-dim);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px var(--glow-gold);
+            transform: translateY(-2px);
+        }
+
+        .formula-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .formula-content {
+            font-size: 1.1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+        }
+
+        .formula-description {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Problem Visualization */
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .visualization-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .viz-card {
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .viz-card:hover {
+            border-color: var(--border-subtle);
+        }
+
+        .viz-card.problem {
+            background: linear-gradient(135deg, rgba(196, 69, 105, 0.1), var(--bg-elevated));
+        }
+
+        .viz-card.solution {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), var(--bg-elevated));
+        }
+
+        .viz-card svg {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .viz-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .viz-card.problem .viz-label { color: var(--accent-magenta); }
+        .viz-card.solution .viz-label { color: var(--accent-cyan); }
+
+        /* Algorithm Steps */
+        .algorithm-steps {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dim));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--bg-deep);
+        }
+
+        .step-content h4 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .step-content p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Kernel Table */
+        .kernel-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .kernel-table th {
+            background: var(--bg-elevated);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .kernel-table td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .kernel-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .kernel-table tr:hover td {
+            background: rgba(212, 168, 83, 0.03);
+        }
+
+        .kernel-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(212, 168, 83, 0.1), rgba(78, 205, 196, 0.05));
+            border-left: 3px solid var(--accent-gold);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+            font-style: italic;
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Code-like emphasis */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-elevated);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--accent-cyan);
+        }
+
+        /* MathJax styling */
+        mjx-container {
+            color: var(--text-primary) !important;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <span class="hero-label">Unsupervised Learning</span>
+        <h1>Kernel <span>K-Means</span></h1>
+        <p class="hero-subtitle">When data refuses to be linearly separable, we transform the space itself.</p>
+        <div class="scroll-indicator">Explore</div>
+    </section>
+
+    <main class="content">
+        <!-- Section 1: The Problem -->
+        <section class="section">
+            <span class="section-number">01 — The Problem</span>
+            <h2>Where Standard K-Means Fails</h2>
+            
+            <p>Standard K-Means clustering operates by minimizing the within-cluster sum of squared Euclidean distances. It assumes that clusters are <strong>convex</strong> and <strong>linearly separable</strong>—an assumption that crumbles when faced with real-world complexity.</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Standard K-Means Objective</span>
+                <div class="formula-content">
+                    $$J = \sum_{j=1}^{k} \sum_{x_i \in C_j} \| x_i - \mu_j \|^2$$
+                </div>
+                <div class="formula-description">
+                    Where $C_j$ is cluster $j$, $\mu_j$ is the centroid of cluster $j$, and $k$ is the number of clusters. This objective seeks to minimize total intra-cluster variance.
+                </div>
+            </div>
+
+            <p>The fundamental limitation: K-Means can only discover clusters separated by <strong>hyperplanes</strong>. When clusters have non-linear boundaries—concentric rings, spirals, or complex manifolds—K-Means produces meaningless partitions.</p>
+
+            <div class="visualization-grid">
+                <div class="viz-card problem">
+                    <svg viewBox="0 0 200 200">
+                        <!-- Outer ring -->
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#c44569" stroke-width="12" opacity="0.7"/>
+                        <!-- Inner cluster -->
+                        <circle cx="100" cy="100" r="25" fill="#4ecdc4" opacity="0.7"/>
+                        <!-- Wrong linear boundary -->
+                        <line x1="30" y1="100" x2="170" y2="100" stroke="#d4a853" stroke-width="2" stroke-dasharray="8,4" opacity="0.8"/>
+                        <text x="100" y="185" text-anchor="middle" fill="#9a9a9a" font-size="10" font-family="JetBrains Mono">Linear boundary fails</text>
+                    </svg>
+                    <span class="viz-label">Standard K-Means</span>
+                </div>
+                <div class="viz-card solution">
+                    <svg viewBox="0 0 200 200">
+                        <!-- Outer ring - separated -->
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#c44569" stroke-width="12" opacity="0.7"/>
+                        <!-- Inner cluster -->
+                        <circle cx="100" cy="100" r="25" fill="#4ecdc4" opacity="0.7"/>
+                        <!-- Circular boundary -->
+                        <circle cx="100" cy="100" r="47" fill="none" stroke="#d4a853" stroke-width="2" stroke-dasharray="8,4"/>
+                        <text x="100" y="185" text-anchor="middle" fill="#9a9a9a" font-size="10" font-family="JetBrains Mono">Non-linear boundary</text>
+                    </svg>
+                    <span class="viz-label">Kernel K-Means</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Kernel Trick -->
+        <section class="section">
+            <span class="section-number">02 — The Insight</span>
+            <h2>The Kernel Trick</h2>
+
+            <p>Rather than redesigning clustering from scratch, we leverage a profound mathematical insight: map the data to a higher-dimensional <strong>feature space</strong> where non-linear relationships become linear.</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Feature Space Mapping</span>
+                <div class="formula-content">
+                    $$\phi : \mathbb{R}^d \rightarrow \mathcal{H}$$
+                </div>
+                <div class="formula-description">
+                    A mapping $\phi$ transforms each point $x$ from the original $d$-dimensional space into a (potentially infinite-dimensional) Hilbert space $\mathcal{H}$ where clusters become linearly separable.
+                </div>
+            </div>
+
+            <p>The brilliance of the kernel trick: we never explicitly compute $\phi(x)$. Instead, we work entirely through <strong>inner products</strong>, replaced by a kernel function.</p>
+
+            <div class="formula-card">
+                <span class="formula-label">The Kernel Function</span>
+                <div class="formula-content">
+                    $$\kappa(x_i, x_j) = \langle \phi(x_i), \phi(x_j) \rangle_{\mathcal{H}}$$
+                </div>
+                <div class="formula-description">
+                    The kernel $\kappa$ computes the inner product in feature space without ever materializing the high-dimensional vectors. This is computationally tractable even when $\mathcal{H}$ is infinite-dimensional.
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p>"We operate in the shadow of infinite dimensions, computing only what we need—the relationships between points."</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Kernel K-Means Derivation -->
+        <section class="section">
+            <span class="section-number">03 — The Mathematics</span>
+            <h2>Kernelizing the Objective</h2>
+
+            <p>In feature space, the K-Means objective becomes:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Feature Space Objective</span>
+                <div class="formula-content">
+                    $$J_\phi = \sum_{j=1}^{k} \sum_{x_i \in C_j} \| \phi(x_i) - \mu_j^\phi \|^2$$
+                </div>
+                <div class="formula-description">
+                    Where $\mu_j^\phi = \frac{1}{|C_j|} \sum_{x_l \in C_j} \phi(x_l)$ is the centroid in feature space.
+                </div>
+            </div>
+
+            <h3>Expanding the Squared Distance</h3>
+            <p>The distance from a point to its cluster centroid in feature space expands as:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Distance Expansion</span>
+                <div class="formula-content">
+                    $$\| \phi(x_i) - \mu_j^\phi \|^2 = \langle \phi(x_i), \phi(x_i) \rangle - 2\langle \phi(x_i), \mu_j^\phi \rangle + \langle \mu_j^\phi, \mu_j^\phi \rangle$$
+                </div>
+            </div>
+
+            <p>Substituting the centroid definition and converting to kernel notation:</p>
+
+            <div class="formula-card">
+                <span class="formula-label">Kernelized Distance</span>
+                <div class="formula-content">
+                    $$\| \phi(x_i) - \mu_j^\phi \|^2 = \kappa(x_i, x_i) - \frac{2}{|C_j|} \sum_{x_l \in C_j} \kappa(x_i, x_l) + \frac{1}{|C_j|^2} \sum_{x_l, x_m \in C_j} \kappa(x_l, x_m)$$
+                </div>
+                <div class="formula-description">
+                    This is computable entirely from the kernel matrix $K$ where $K_{ij} = \kappa(x_i, x_j)$. No explicit $\phi$ required.
+                </div>
+            </div>
+
+            <h3>Popular Kernel Functions</h3>
+            
+            <table class="kernel-table">
+                <thead>
+                    <tr>
+                        <th>Kernel</th>
+                        <th>Formula</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="kernel-name">Linear</td>
+                        <td>$\kappa(x, y) = x^\top y$</td>
+                        <td>Baseline (equivalent to standard K-Means)</td>
+                    </tr>
+                    <tr>
+                        <td class="kernel-name">Polynomial</td>
+                        <td>$\kappa(x, y) = (x^\top y + c)^d$</td>
+                        <td>Polynomial decision boundaries</td>
+                    </tr>
+                    <tr>
+                        <td class="kernel-name">RBF (Gaussian)</td>
+                        <td>$\kappa(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right)$</td>
+                        <td>Arbitrary non-linear shapes</td>
+                    </tr>
+                    <tr>
+                        <td class="kernel-name">Laplacian</td>
+                        <td>$\kappa(x, y) = \exp\left(-\frac{\|x - y\|}{\sigma}\right)$</td>
+                        <td>Sharper boundaries than RBF</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 4: Algorithm -->
+        <section class="section">
+            <span class="section-number">04 — The Algorithm</span>
+            <h2>Kernel K-Means Procedure</h2>
+
+            <div class="algorithm-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Compute Kernel Matrix</h4>
+                        <p>Calculate $K \in \mathbb{R}^{n \times n}$ where $K_{ij} = \kappa(x_i, x_j)$ for all pairs of data points.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Initialize Cluster Assignments</h4>
+                        <p>Randomly assign each point $x_i$ to one of $k$ clusters, or use K-Means++ initialization on kernel distances.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Assignment Step</h4>
+                        <p>For each point $x_i$, compute its kernelized distance to each cluster centroid and assign to the nearest:</p>
+                        <p style="margin-top: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-cyan);">
+                            $c_i = \arg\min_j \left[ \kappa(x_i, x_i) - \frac{2}{|C_j|} \sum_{l \in C_j} K_{il} + \frac{1}{|C_j|^2} \sum_{l,m \in C_j} K_{lm} \right]$
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Update Cluster Statistics</h4>
+                        <p>Recompute $|C_j|$ and the within-cluster kernel sums $\sum_{l,m \in C_j} K_{lm}$ for each cluster.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Iterate Until Convergence</h4>
+                        <p>Repeat steps 3-4 until cluster assignments stabilize or maximum iterations reached.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="formula-card">
+                <span class="formula-label">Computational Complexity</span>
+                <div class="formula-content">
+                    $$O(n^2) \text{ space, } O(n^2 \cdot k \cdot T) \text{ time}$$
+                </div>
+                <div class="formula-description">
+                    Where $n$ is the number of samples, $k$ is clusters, and $T$ is iterations. The kernel matrix dominates memory. For large $n$, approximations like Nyström method or Random Fourier Features become necessary.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Key Insights -->
+        <section class="section">
+            <span class="section-number">05 — Key Insights</span>
+            <h2>When to Use Kernel K-Means</h2>
+
+            <p><strong>Ideal scenarios:</strong> Data with clearly non-linear cluster boundaries, concentric or nested structures, manifold-structured data where local geometry matters.</p>
+
+            <p><strong>Challenges:</strong> The $O(n^2)$ kernel matrix limits scalability. Kernel choice and hyperparameter selection (e.g., $\sigma$ for RBF) significantly impact results and often require cross-validation or domain expertise.</p>
+
+            <div class="highlight-box">
+                <p>Kernel K-Means transforms the problem geometry rather than the algorithm. The same iterative refinement works—but now in a space engineered to reveal structure invisible in the original coordinates.</p>
+            </div>
+
+            <p>For practitioners, the RBF kernel with bandwidth $\sigma$ set to the median pairwise distance provides a robust starting point. When interpretability matters or data is massive, consider Spectral Clustering (which uses the kernel matrix eigenstructure) as an alternative that often produces cleaner boundaries.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Kernel K-Means — Unsupervised Learning Beyond Linear Boundaries</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,259 @@
+"""
+System B: Glasgow Weather Visualization
+Statistical visualization with distribution focus
+
+Views:
+1. Heatmap (Month × Year Temperature Matrix) - T1, T4: Seasonal and temporal patterns
+2. Box Plot (Temperature by Season) - T1, T2: Distribution and outliers
+3. Scatter Plot with Dynamic Regression (Cloud Cover vs Humidity) - T3: Correlation
+4. Grouped Bar Chart (Weather Type Distribution) - T2: Extreme events
+
+Interaction:
+- Click selection on heatmap cells (month-year combinations)
+- Interval brush on scatter plot
+- Point click on box plot (seasons)
+- Dynamic regression line appears for selected data
+- Color/opacity highlighting across views
+"""
+
+import altair as alt
+import pandas as pd
+import numpy as np
+
+# Load and prepare data
+df = pd.read_csv('../data/Glasgow_weather_data/weather_data_enriched.csv')
+df['day'] = pd.to_datetime(df['day'])
+
+# Calculate average temperature
+df['tempAvg'] = (df['tempMin'] + df['tempMax']) / 2
+
+# Handle missing values
+df = df.fillna({'cloudCover': df['cloudCover'].median(),
+                'desc': 'unknown',
+                'summary': 'No summary available'})
+
+# Configure Altair
+alt.data_transformers.disable_max_rows()
+
+# ============================================================================
+# SELECTION PARAMETERS
+# ============================================================================
+
+# Click selection on heatmap
+click_heatmap = alt.selection_point(fields=['month', 'year'], name='click_heatmap')
+
+# Interval brush on scatter
+brush_scatter = alt.selection_interval(name='brush_scatter')
+
+# Click selection on box plot (by season)
+click_season = alt.selection_point(fields=['season'], name='click_season')
+
+# Combined selection
+combined_selection = click_heatmap | brush_scatter | click_season
+
+# ============================================================================
+# VIEW 1: HEATMAP (T1, T4: Seasonal and Temporal Patterns)
+# ============================================================================
+
+# Aggregate data for heatmap
+heatmap_data = df.groupby(['year', 'month']).agg({
+    'tempAvg': 'mean'
+}).reset_index()
+
+month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+heatmap = alt.Chart(heatmap_data).mark_rect().encode(
+    x=alt.X('year:O',
+            title='Year'),
+    y=alt.Y('month:O',
+            title='Month',
+            axis=alt.Axis(labels=True),
+            sort=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    color=alt.Color('tempAvg:Q',
+                   title='Avg Temp (°C)',
+                   scale=alt.Scale(scheme='redyellowblue', reverse=True, domain=[0, 20])),
+    stroke=alt.condition(click_heatmap,
+                        alt.value('black'),
+                        alt.value(None)),
+    strokeWidth=alt.condition(click_heatmap,
+                             alt.value(3),
+                             alt.value(0)),
+    tooltip=[
+        alt.Tooltip('year:O', title='Year'),
+        alt.Tooltip('month:O', title='Month'),
+        alt.Tooltip('tempAvg:Q', title='Avg Temperature (°C)', format='.1f')
+    ]
+).add_params(
+    click_heatmap
+).properties(
+    width=400,
+    height=300,
+    title='Monthly Temperature Heatmap - Click to Select'
+)
+
+# ============================================================================
+# VIEW 2: BOX PLOT (T1, T2: Distribution and Outliers)
+# ============================================================================
+
+# Order seasons
+season_order = ['Winter', 'Spring', 'Summer', 'Fall']
+
+box_plot = alt.Chart(df).mark_boxplot(size=50).encode(
+    x=alt.X('season:N',
+            title='Season',
+            sort=season_order),
+    y=alt.Y('tempAvg:Q',
+            title='Average Temperature (°C)',
+            scale=alt.Scale(domain=[-10, 32])),
+    color=alt.condition(combined_selection,
+                       alt.Color('season:N',
+                                scale=alt.Scale(
+                                    domain=['Winter', 'Spring', 'Summer', 'Fall'],
+                                    range=['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+                                ),
+                                legend=None),
+                       alt.value('lightgray')),
+    opacity=alt.condition(combined_selection,
+                         alt.value(1.0),
+                         alt.value(0.3)),
+    tooltip=[
+        alt.Tooltip('season:N', title='Season')
+    ]
+).add_params(
+    click_season
+).properties(
+    width=400,
+    height=300,
+    title='Temperature Distribution by Season - Click to Select'
+)
+
+# ============================================================================
+# VIEW 3: SCATTER WITH DYNAMIC REGRESSION (T3: Correlation)
+# ============================================================================
+
+scatter = alt.Chart(df).mark_circle(size=60, opacity=0.6).encode(
+    x=alt.X('cloudCover:Q',
+            title='Cloud Cover (0-1)',
+            scale=alt.Scale(domain=[0, 1])),
+    y=alt.Y('humidity:Q',
+            title='Humidity (0-1)',
+            scale=alt.Scale(domain=[0, 1])),
+    color=alt.condition(combined_selection,
+                       alt.Color('desc:N',
+                                scale=alt.Scale(
+                                    domain=['rain', 'partly-cloudy-day', 'clear-day', 'cloudy', 'fog', 'unknown'],
+                                    range=['#3498db', '#95a5a6', '#f39c12', '#7f8c8d', '#e74c3c', '#bdc3c7']
+                                ),
+                                title='Weather Type'),
+                       alt.value('lightgray')),
+    opacity=alt.condition(combined_selection,
+                         alt.value(0.7),
+                         alt.value(0.1)),
+    tooltip=[
+        alt.Tooltip('day:T', title='Date', format='%Y-%m-%d'),
+        alt.Tooltip('cloudCover:Q', title='Cloud Cover', format='.2f'),
+        alt.Tooltip('humidity:Q', title='Humidity', format='.2f'),
+        alt.Tooltip('desc:N', title='Weather Type'),
+        alt.Tooltip('tempAvg:Q', title='Temp (°C)', format='.1f')
+    ]
+).add_params(
+    brush_scatter
+).properties(
+    width=400,
+    height=300,
+    title='Cloud Cover vs Humidity - Brush to Select'
+)
+
+# Dynamic regression line (only for selected data)
+regression = scatter.transform_filter(
+    combined_selection
+).transform_regression(
+    'cloudCover', 'humidity', method='poly', order=2
+).mark_line(color='red', strokeWidth=4, strokeDash=[5, 5])
+
+scatter_with_regression = scatter + regression
+
+# ============================================================================
+# VIEW 4: WEATHER TYPE DISTRIBUTION (T2: Extreme Events)
+# ============================================================================
+
+# Count by weather type and season
+weather_dist = df.groupby(['season', 'desc']).size().reset_index(name='count')
+weather_dist['season'] = pd.Categorical(weather_dist['season'],
+                                        categories=season_order,
+                                        ordered=True)
+
+weather_bars = alt.Chart(weather_dist).mark_bar().encode(
+    x=alt.X('season:N',
+            title='Season',
+            sort=season_order),
+    y=alt.Y('count:Q',
+            title='Number of Days'),
+    color=alt.Color('desc:N',
+                   title='Weather Type',
+                   scale=alt.Scale(
+                       domain=['rain', 'partly-cloudy-day', 'clear-day', 'cloudy', 'fog', 'unknown'],
+                       range=['#3498db', '#95a5a6', '#f39c12', '#7f8c8d', '#e74c3c', '#bdc3c7']
+                   )),
+    tooltip=[
+        alt.Tooltip('season:N', title='Season'),
+        alt.Tooltip('desc:N', title='Weather Type'),
+        alt.Tooltip('count:Q', title='Number of Days')
+    ]
+).properties(
+    width=800,
+    height=250,
+    title='Weather Type Distribution by Season'
+)
+
+# ============================================================================
+# COMPOSE ALL VIEWS
+# ============================================================================
+
+# Layout: 2x2 grid + bottom bar chart
+top_row = heatmap | box_plot
+middle_row = scatter_with_regression | weather_bars
+
+final_chart = alt.vconcat(
+    top_row,
+    middle_row
+).properties(
+    title=alt.TitleParams(
+        text='System B: Glasgow Weather Statistical Analysis (2015-2019)',
+        fontSize=20,
+        anchor='middle'
+    )
+).configure_view(
+    strokeWidth=0
+).configure_axis(
+    labelFontSize=11,
+    titleFontSize=12
+).configure_legend(
+    labelFontSize=10,
+    titleFontSize=11
+).configure_title(
+    fontSize=14,
+    anchor='start'
+)
+
+# ============================================================================
+# SAVE AND DISPLAY
+# ============================================================================
+
+# Save HTML
+final_chart.save('system_b_visualization.html')
+
+# Save JSON spec
+final_chart.save('system_b_spec.json')
+
+print("✓ System B visualization created successfully!")
+print("  - system_b_visualization.html (open in browser)")
+print("  - system_b_spec.json (Vega-Lite specification)")
+print("\nFeatures:")
+print("  • Click on heatmap cells to filter by month-year")
+print("  • Click on box plot to filter by season")
+print("  • Brush on scatter plot to select cloud cover patterns")
+print("  • All views linked with coordinated highlighting")
+print("  • Red regression curve shows correlation for selected data")
+print("  • Box plots explicitly show outliers and quartiles")

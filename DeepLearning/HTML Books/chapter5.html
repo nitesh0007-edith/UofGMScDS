@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Loss Functions | Understanding Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="chapter-page">
+    <div class="noise-overlay"></div>
+    
+    <nav class="main-nav">
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; color: inherit;">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">DL Tutorial</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#chapters" class="nav-link">All Chapters</a>
+            <a href="https://udlbook.github.io/udlbook/" target="_blank" class="nav-link external">Original Book ↗</a>
+        </div>
+    </nav>
+    
+    <header class="chapter-hero">
+        <div class="container">
+            <div class="chapter-meta">
+                <span class="chapter-badge">Chapter 5</span>
+                <span class="part-label">Part II: Supervised Learning</span>
+            </div>
+            <h1>Loss <span class="gradient-text">Functions</span></h1>
+            <p class="chapter-description">
+                Learn how to measure the gap between predictions and reality. The loss function is the compass that guides network training toward better solutions.
+            </p>
+            <div class="chapter-nav">
+                <a href="chapter4.html" class="nav-btn">← Previous: Deep Networks</a>
+                <a href="chapter6.html" class="nav-btn">Next: Training Models →</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="chapter-content-wrapper">
+        <main class="chapter-main">
+            
+            <section id="what-is-loss" class="content-section">
+                <h2>What is a Loss Function?</h2>
+                
+                <p>
+                    A <strong>loss function</strong> (also called cost function or objective function) measures how wrong our model's predictions are. Training aims to minimize this loss.
+                </p>
+                
+                <div class="info-box definition">
+                    <div class="info-box-title">📖 Definition</div>
+                    <p>
+                        <strong>Loss Function:</strong> A function L(y, ŷ) that quantifies the difference between the true value y and the predicted value ŷ. Lower loss = better predictions.
+                    </p>
+                </div>
+                
+                <h3>Properties of Good Loss Functions</h3>
+                
+                <ul>
+                    <li><strong>Non-negative:</strong> L ≥ 0, with L = 0 for perfect predictions</li>
+                    <li><strong>Differentiable:</strong> We can compute gradients for optimization</li>
+                    <li><strong>Aligned with goals:</strong> Minimizing the loss should improve performance on our actual task</li>
+                </ul>
+            </section>
+            
+            <section id="regression-losses" class="content-section">
+                <h2>Losses for Regression</h2>
+                
+                <p>
+                    For regression tasks where we predict continuous values, several loss functions are commonly used.
+                </p>
+                
+                <h3>Mean Squared Error (MSE)</h3>
+                
+                <p>The most common regression loss:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        MSE = (1/n) Σᵢ (yᵢ - ŷᵢ)²
+                    </div>
+                </div>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Properties of MSE</div>
+                    <p>
+                        • Heavily penalizes large errors (squared term)<br>
+                        • Differentiable everywhere<br>
+                        • Corresponds to Maximum Likelihood under Gaussian noise<br>
+                        • Sensitive to outliers
+                    </p>
+                </div>
+                
+                <h3>Mean Absolute Error (MAE)</h3>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        MAE = (1/n) Σᵢ |yᵢ - ŷᵢ|
+                    </div>
+                </div>
+                
+                <p>
+                    MAE is more robust to outliers than MSE because it doesn't square errors. However, it's not differentiable at zero.
+                </p>
+                
+                <h3>Huber Loss</h3>
+                
+                <p>A hybrid that combines the best of both:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        Huber(y, ŷ) = { 0.5(y-ŷ)² &nbsp;&nbsp; if |y-ŷ| ≤ δ<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; δ(|y-ŷ| - 0.5δ) &nbsp; otherwise }
+                    </div>
+                </div>
+                
+                <p>
+                    Uses MSE for small errors (smooth optimization) and MAE for large errors (outlier robustness).
+                </p>
+            </section>
+            
+            <section id="classification-losses" class="content-section">
+                <h2>Losses for Classification</h2>
+                
+                <p>
+                    For classification, we predict probabilities over classes. The losses are designed for this probabilistic output.
+                </p>
+                
+                <h3>Binary Cross-Entropy</h3>
+                
+                <p>For binary classification with sigmoid output:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        BCE = -[y·log(ŷ) + (1-y)·log(1-ŷ)]
+                    </div>
+                </div>
+                
+                <p>where y ∈ {0, 1} is the true label and ŷ ∈ (0, 1) is the predicted probability.</p>
+                
+                <div class="info-box example">
+                    <div class="info-box-title">💡 Intuition</div>
+                    <p>
+                        • If y = 1: Loss = -log(ŷ). High ŷ → low loss.<br>
+                        • If y = 0: Loss = -log(1-ŷ). Low ŷ → low loss.<br><br>
+                        The loss is very high when we're confident and wrong (e.g., predict 0.99 when y = 0).
+                    </p>
+                </div>
+                
+                <h3>Categorical Cross-Entropy</h3>
+                
+                <p>For multi-class classification with softmax output:</p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        CCE = -Σₖ yₖ·log(ŷₖ)
+                    </div>
+                </div>
+                
+                <p>
+                    where y is a one-hot encoded vector and ŷ is the softmax probability distribution. Since only one yₖ = 1, this simplifies to -log(ŷc) where c is the correct class.
+                </p>
+                
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Numerical Stability</div>
+                    <p>
+                        Computing log(ŷ) can cause issues when ŷ is very close to 0 (log(0) = -∞). In practice, we add a small epsilon: log(ŷ + 1e-7) or use numerically stable implementations that combine softmax and cross-entropy.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="probabilistic-view" class="content-section">
+                <h2>The Probabilistic View</h2>
+                
+                <p>
+                    Loss functions have a beautiful connection to probability theory through <strong>Maximum Likelihood Estimation</strong>.
+                </p>
+                
+                <h3>Maximum Likelihood Principle</h3>
+                
+                <p>
+                    Given data, find parameters that maximize the probability of observing that data:
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        φ* = argmax P(data | φ) = argmax Πᵢ P(yᵢ | xᵢ, φ)
+                    </div>
+                </div>
+                
+                <p>
+                    Taking the negative log (to convert product to sum and maximize to minimize):
+                </p>
+                
+                <div class="math-block">
+                    <div class="equation">
+                        φ* = argmin -Σᵢ log P(yᵢ | xᵢ, φ)
+                    </div>
+                </div>
+                
+                <h3>Connection to Common Losses</h3>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 Key Connections</div>
+                    <p>
+                        <strong>MSE</strong> = MLE assuming Gaussian noise<br>
+                        P(y | x, φ) = Normal(f(x, φ), σ²)<br><br>
+                        <strong>Cross-Entropy</strong> = MLE for categorical distribution<br>
+                        P(y = k | x, φ) = softmax(f(x, φ))ₖ
+                    </p>
+                </div>
+                
+                <p>
+                    This connection means our loss functions are principled—they're the right thing to minimize if our probability assumptions are correct.
+                </p>
+            </section>
+            
+            <section id="loss-landscape" class="content-section">
+                <h2>The Loss Landscape</h2>
+                
+                <p>
+                    The loss function defines a surface over the parameter space. Training is about navigating this landscape to find low points.
+                </p>
+                
+                <div class="diagram-container">
+                    <div class="diagram-title">Gradient Descent on Loss Landscape</div>
+                    <div id="gradient-descent-animation" style="width: 100%; height: 250px;"></div>
+                </div>
+                
+                <h3>Landscape Features</h3>
+                
+                <ul>
+                    <li><strong>Global minimum:</strong> The lowest point—what we ideally want to find</li>
+                    <li><strong>Local minima:</strong> Low points that aren't the lowest—can trap optimization</li>
+                    <li><strong>Saddle points:</strong> Points that go up in some directions, down in others</li>
+                    <li><strong>Plateaus:</strong> Flat regions where gradients are tiny</li>
+                </ul>
+                
+                <div class="info-box tip">
+                    <div class="info-box-title">🔑 High-Dimensional Landscapes</div>
+                    <p>
+                        In high dimensions (millions of parameters), true local minima are rare. Most "stuck" points are saddle points, which optimization can escape. This is one reason deep learning works despite non-convex landscapes.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="choosing-loss" class="content-section">
+                <h2>Choosing the Right Loss</h2>
+                
+                <p>
+                    The choice of loss function should match your problem:
+                </p>
+                
+                <h3>Quick Reference</h3>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--color-border);">
+                            <th style="text-align: left; padding: 0.75rem; color: var(--color-text);">Task</th>
+                            <th style="text-align: left; padding: 0.75rem; color: var(--color-text);">Output Activation</th>
+                            <th style="text-align: left; padding: 0.75rem; color: var(--color-text);">Loss Function</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 0.75rem;">Regression</td>
+                            <td style="padding: 0.75rem;">None (linear)</td>
+                            <td style="padding: 0.75rem;">MSE or Huber</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 0.75rem;">Binary Classification</td>
+                            <td style="padding: 0.75rem;">Sigmoid</td>
+                            <td style="padding: 0.75rem;">Binary Cross-Entropy</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 0.75rem;">Multi-class Classification</td>
+                            <td style="padding: 0.75rem;">Softmax</td>
+                            <td style="padding: 0.75rem;">Categorical Cross-Entropy</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;">Multi-label Classification</td>
+                            <td style="padding: 0.75rem;">Sigmoid (per class)</td>
+                            <td style="padding: 0.75rem;">Binary Cross-Entropy (summed)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Special Considerations</h3>
+                
+                <ul>
+                    <li><strong>Imbalanced classes:</strong> Use weighted cross-entropy or focal loss</li>
+                    <li><strong>Outliers in regression:</strong> Use MAE or Huber instead of MSE</li>
+                    <li><strong>Probabilistic outputs needed:</strong> Ensure loss matches your output (sigmoid/softmax + cross-entropy)</li>
+                </ul>
+            </section>
+            
+            <section id="key-takeaways" class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="key-points">
+                    <div class="key-points-title">Summary</div>
+                    <ul>
+                        <li>Loss functions measure prediction error—lower is better</li>
+                        <li>MSE for regression; penalizes large errors heavily</li>
+                        <li>Cross-entropy for classification; measures probability distribution mismatch</li>
+                        <li>Loss functions connect to Maximum Likelihood Estimation</li>
+                        <li>The loss landscape has global minima, local minima, saddle points</li>
+                        <li>Choose loss based on task type and output activation</li>
+                        <li>Numerical stability matters—use proper implementations</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <footer class="chapter-footer">
+                <a href="chapter4.html" class="chapter-footer-link">
+                    <span class="footer-link-label">Previous Chapter</span>
+                    <span class="footer-link-title">← Deep Neural Networks</span>
+                </a>
+                <a href="chapter6.html" class="chapter-footer-link next">
+                    <span class="footer-link-label">Next Chapter</span>
+                    <span class="footer-link-title">Training Models →</span>
+                </a>
+            </footer>
+        </main>
+        
+        <aside class="chapter-sidebar">
+            <div class="toc-card">
+                <h4 class="toc-title">On This Page</h4>
+                <ul class="toc-list">
+                    <li><a href="#what-is-loss">What is a Loss Function?</a></li>
+                    <li><a href="#regression-losses">Regression Losses</a></li>
+                    <li><a href="#classification-losses">Classification Losses</a></li>
+                    <li><a href="#probabilistic-view">Probabilistic View</a></li>
+                    <li><a href="#loss-landscape">Loss Landscape</a></li>
+                    <li><a href="#choosing-loss">Choosing the Right Loss</a></li>
+                    <li><a href="#key-takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">◈</span>
+                    <span>Understanding Deep Learning Tutorial</span>
+                </div>
+                <p class="footer-note">
+                    Based on the textbook by Simon J.D. Prince.
+                    <a href="https://udlbook.github.io/udlbook/" target="_blank">View original book →</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

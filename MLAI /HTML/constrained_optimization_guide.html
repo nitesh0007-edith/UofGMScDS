@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constrained Optimization - Beginner's Guide with Visuals</title>
+
+    <!-- MathJax for beautiful math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        h2 {
+            color: #2980b9;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h3 {
+            color: #16a085;
+            font-size: 1.6em;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border-left: 6px solid #16a085;
+            padding-left: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .beginner-note {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left: 6px solid #e17055;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .beginner-note strong {
+            color: #d63031;
+            font-size: 1.2em;
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 6px solid #4caf50;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .important {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 6px solid #ff9800;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .math-box {
+            background: #f8f9fa;
+            border: 3px solid #667eea;
+            padding: 30px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-size: 1.3em;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .example {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 6px solid #2196f3;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-left: 6px solid #9c27b0;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin: 40px 0;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .section-nav a {
+            color: #81d4fa;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .section-nav a:hover {
+            color: #ffd700;
+            text-decoration: underline;
+        }
+
+        .visual-diagram {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .visual-diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.05em;
+        }
+
+        table th {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.1em;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        table tr:hover {
+            background: #e3f2fd;
+        }
+
+        .step-by-step {
+            counter-reset: step;
+            margin: 30px 0;
+        }
+
+        .step {
+            counter-increment: step;
+            margin: 25px 0;
+            padding: 25px;
+            background: white;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+            position: relative;
+            padding-left: 80px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+        }
+
+        .step::before {
+            content: counter(step);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.4em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        ul, ol {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            border-left: 6px solid #636e72;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-style: italic;
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .analogy-box::before {
+            content: "💡 Real-World Analogy: ";
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2d3436;
+            font-style: normal;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .step {
+                padding-left: 70px;
+            }
+        }
+
+        .graph-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .graph-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Constrained Optimization</h1>
+        <p class="subtitle">A Complete Beginner's Guide with Visual Explanations</p>
+        <p class="subtitle">Reference: Christopher Bishop, PRML 2006, Appendix E</p>
+
+        <div class="beginner-note">
+            <strong>📖 What You'll Learn:</strong><br>
+            This guide will teach you how to find the best solution to a problem when you have restrictions (constraints).
+            Think of it like finding the highest point on a hill, but you can only walk on a specific path.
+            We'll use lots of pictures and simple explanations!
+        </div>
+
+        <div class="section-nav">
+            <strong>📚 Quick Navigation:</strong><br><br>
+            <a href="#intro">What is This?</a>
+            <a href="#equality">Equality Constraints</a>
+            <a href="#inequality">Inequality Constraints</a>
+            <a href="#kkt">KKT Conditions</a>
+            <a href="#examples">Real Examples</a>
+        </div>
+
+        <!-- INTRODUCTION -->
+        <section id="intro">
+            <h2>🌟 What is Constrained Optimization?</h2>
+
+            <div class="analogy-box">
+                Imagine you want to buy the most delicious pizza possible, but you only have $20 in your wallet.
+                The "delicious pizza" is what you're trying to maximize, and "$20 budget" is your constraint.
+                Constrained optimization helps you find the best pizza you can afford!
+            </div>
+
+            <h3>The Basic Problem</h3>
+
+            <div class="key-concept">
+                <strong>In Simple Terms:</strong><br>
+                We want to find the <span class="highlight">best value</span> (maximum or minimum) of something,
+                but we have <span class="highlight">rules</span> (constraints) we must follow.
+            </div>
+
+            <div class="math-box">
+                <strong>Mathematical Form:</strong><br><br>
+                Find the best value of: \( f(\mathbf{x}) \)<br>
+                While following the rule: \( g(\mathbf{x}) = 0 \) or \( g(\mathbf{x}) \geq 0 \)
+            </div>
+
+            <div class="beginner-note">
+                <strong>🔤 Notation Guide:</strong>
+                <ul>
+                    <li>\( \mathbf{x} \) = The variables we control (like choosing pizza toppings)</li>
+                    <li>\( f(\mathbf{x}) \) = What we want to maximize or minimize (deliciousness)</li>
+                    <li>\( g(\mathbf{x}) \) = The constraint/rule we must follow (budget limit)</li>
+                    <li>\( \lambda \) (lambda) = A special helper number called "Lagrange multiplier"</li>
+                    <li>\( \nabla \) (del/nabla) = Shows the direction of steepest increase</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- EQUALITY CONSTRAINTS -->
+        <section id="equality">
+            <h2>⚖️ Equality Constraints: When You Must Be Exactly On Target</h2>
+
+            <div class="analogy-box">
+                You're walking on a mountain and want to reach the highest point, but you MUST stay exactly on a marked trail.
+                You can't leave the trail even a little bit. This is an equality constraint: \( g(\mathbf{x}) = 0 \)
+            </div>
+
+            <h3>Understanding the Setup</h3>
+
+            <div class="definition">
+                <strong>Problem Statement:</strong><br><br>
+                <strong>Maximize:</strong> \( f(\mathbf{x}) \)<br>
+                <strong>Subject to:</strong> \( g(\mathbf{x}) = 0 \)<br><br>
+                Where \( \mathbf{x} = (x_1, x_2, \ldots, x_D)^T \) is a vector with \( D \) dimensions
+            </div>
+
+            <h3>🎯 The Secret Trick: The Lagrangian</h3>
+
+            <div class="key-concept">
+                <strong>The Magic Formula:</strong><br>
+                Instead of solving the constrained problem directly, we create a new function called the <span class="highlight">Lagrangian</span>:
+            </div>
+
+            <div class="math-box">
+                \[ L(\mathbf{x}, \lambda) = f(\mathbf{x}) + \lambda g(\mathbf{x}) \]
+            </div>
+
+            <div class="beginner-note">
+                <strong>Why does this work?</strong><br>
+                Think of \( \lambda \) as a "penalty multiplier". It penalizes solutions that don't satisfy the constraint.
+                When we find where this Lagrangian is stationary (gradient = 0), we automatically get a solution that satisfies the constraint!
+            </div>
+
+            <h3>📐 Geometric Intuition (The "Why" Behind It)</h3>
+
+            <div class="visual-diagram">
+                <div class="graph-title">Visualization: Equality Constraint Problem</div>
+                <svg width="600" height="500" viewBox="0 0 600 500">
+                    <!-- Contour circles (level sets of f) -->
+                    <circle cx="300" cy="250" r="50" fill="none" stroke="#3498db" stroke-width="2" opacity="0.3"/>
+                    <circle cx="300" cy="250" r="100" fill="none" stroke="#3498db" stroke-width="2" opacity="0.3"/>
+                    <circle cx="300" cy="250" r="150" fill="none" stroke="#3498db" stroke-width="2" opacity="0.3"/>
+                    <circle cx="300" cy="250" r="200" fill="none" stroke="#3498db" stroke-width="2" opacity="0.3"/>
+                    <text x="480" y="260" fill="#3498db" font-size="14">Contours of f(x)</text>
+
+                    <!-- Constraint line g(x) = 0 -->
+                    <line x1="100" y1="400" x2="500" y2="100" stroke="#e74c3c" stroke-width="4"/>
+                    <text x="450" y="80" fill="#e74c3c" font-size="16" font-weight="bold">g(x) = 0 (constraint)</text>
+
+                    <!-- Optimal point -->
+                    <circle cx="350" cy="175" r="8" fill="#27ae60"/>
+                    <text x="360" y="170" fill="#27ae60" font-size="16" font-weight="bold">x* (optimal)</text>
+
+                    <!-- Gradient of f at optimal point -->
+                    <defs>
+                        <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#3498db" />
+                        </marker>
+                        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#e74c3c" />
+                        </marker>
+                    </defs>
+                    <line x1="350" y1="175" x2="410" y2="115" stroke="#3498db" stroke-width="3" marker-end="url(#arrowblue)"/>
+                    <text x="415" y="110" fill="#3498db" font-size="14">∇f(x*)</text>
+
+                    <!-- Gradient of g at optimal point -->
+                    <line x1="350" y1="175" x2="410" y2="115" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowred)"/>
+                    <text x="415" y="125" fill="#e74c3c" font-size="14">∇g(x*)</text>
+
+                    <!-- Axes -->
+                    <line x1="50" y1="450" x2="550" y2="450" stroke="black" stroke-width="2" marker-end="url(#arrowblack)"/>
+                    <line x1="50" y1="450" x2="50" y2="50" stroke="black" stroke-width="2" marker-end="url(#arrowblack)"/>
+                    <text x="560" y="455" font-size="16">x₁</text>
+                    <text x="55" y="40" font-size="16">x₂</text>
+
+                    <marker id="arrowblack" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="black" />
+                    </marker>
+                </svg>
+            </div>
+
+            <div class="important">
+                <strong>🔑 Key Insight:</strong><br>
+                At the optimal point \( \mathbf{x}^* \), both gradients \( \nabla f(\mathbf{x}^*) \) and \( \nabla g(\mathbf{x}^*) \)
+                point in the same direction (or opposite directions). They are parallel!<br><br>
+
+                <strong>Why?</strong> If they weren't parallel, you could move slightly along the constraint surface to increase \( f \).
+                That would mean you haven't found the maximum yet!
+            </div>
+
+            <h3>📝 Step-by-Step Solution Process</h3>
+
+            <div class="step-by-step">
+                <div class="step">
+                    <strong>Step 1: Write the Lagrangian</strong><br>
+                    Combine your objective function and constraint:
+                    <div class="math-box">
+                        \[ L(\mathbf{x}, \lambda) = f(\mathbf{x}) + \lambda g(\mathbf{x}) \]
+                    </div>
+                </div>
+
+                <div class="step">
+                    <strong>Step 2: Take All Partial Derivatives</strong><br>
+                    Find the gradient with respect to all variables:
+                    <div class="math-box">
+                        \[ \frac{\partial L}{\partial x_1} = 0, \quad \frac{\partial L}{\partial x_2} = 0, \quad \ldots, \quad \frac{\partial L}{\partial \lambda} = 0 \]
+                    </div>
+                </div>
+
+                <div class="step">
+                    <strong>Step 3: Solve the System of Equations</strong><br>
+                    You now have \( D + 1 \) equations (D for \( x_i \), 1 for \( \lambda \)).<br>
+                    Solve them to find \( \mathbf{x}^* \) and \( \lambda^* \).
+                </div>
+
+                <div class="step">
+                    <strong>Step 4: Verify the Solution</strong><br>
+                    Check that your solution actually satisfies the constraint \( g(\mathbf{x}^*) = 0 \)
+                </div>
+            </div>
+
+            <h3>🎯 Complete Worked Example</h3>
+
+            <div class="example">
+                <div class="example-title">Example: Maximize a Circle Subject to a Line</div>
+
+                <strong>Problem:</strong><br>
+                Maximize: \( f(x_1, x_2) = 1 - x_1^2 - x_2^2 \) (inverted paraboloid)<br>
+                Subject to: \( g(x_1, x_2) = x_1 + x_2 - 1 = 0 \) (a line)
+
+                <div class="visual-diagram">
+                    <div class="graph-title">Visualization of the Example</div>
+                    <svg width="500" height="500" viewBox="0 0 500 500">
+                        <!-- Grid -->
+                        <line x1="0" y1="250" x2="500" y2="250" stroke="#ddd" stroke-width="1"/>
+                        <line x1="250" y1="0" x2="250" y2="500" stroke="#ddd" stroke-width="1"/>
+
+                        <!-- Contours -->
+                        <circle cx="250" cy="250" r="50" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <circle cx="250" cy="250" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <circle cx="250" cy="250" r="150" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <circle cx="250" cy="250" r="200" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="280" y="230" fill="#3498db" font-size="12">Circles: f(x₁,x₂)</text>
+
+                        <!-- Constraint line: x1 + x2 = 1, or x2 = 1 - x1 -->
+                        <!-- When x1=0, x2=1 (250, 250-200=50) -->
+                        <!-- When x1=1, x2=0 (250+200=450, 250) -->
+                        <line x1="50" y1="50" x2="450" y2="450" stroke="#e74c3c" stroke-width="4"/>
+                        <text x="380" y="400" fill="#e74c3c" font-size="14" font-weight="bold">x₁ + x₂ = 1</text>
+
+                        <!-- Optimal point (0.5, 0.5) maps to (250+100, 250-100) = (350, 150) -->
+                        <circle cx="250" cy="250" r="10" fill="#27ae60"/>
+                        <text x="260" y="245" fill="#27ae60" font-size="14" font-weight="bold">(½, ½)</text>
+
+                        <!-- Axes labels -->
+                        <text x="480" y="265" font-size="14">x₁</text>
+                        <text x="260" y="20" font-size="14">x₂</text>
+                        <text x="240" y="270" font-size="12">0</text>
+                        <text x="445" y="270" font-size="12">1</text>
+                        <text x="230" y="60" font-size="12">1</text>
+                    </svg>
+                </div>
+
+                <div class="step-by-step">
+                    <div class="step">
+                        <strong>Form the Lagrangian:</strong>
+                        <div class="math-box">
+                            \[ L(x_1, x_2, \lambda) = 1 - x_1^2 - x_2^2 + \lambda(x_1 + x_2 - 1) \]
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <strong>Take Partial Derivatives:</strong>
+                        <div class="math-box">
+                            \[ \frac{\partial L}{\partial x_1} = -2x_1 + \lambda = 0 \quad \Rightarrow \quad x_1 = \frac{\lambda}{2} \]
+                            \[ \frac{\partial L}{\partial x_2} = -2x_2 + \lambda = 0 \quad \Rightarrow \quad x_2 = \frac{\lambda}{2} \]
+                            \[ \frac{\partial L}{\partial \lambda} = x_1 + x_2 - 1 = 0 \]
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <strong>Solve for the Variables:</strong><br>
+                        From equations 1 and 2: \( x_1 = x_2 = \frac{\lambda}{2} \)<br><br>
+                        Substitute into equation 3:
+                        <div class="math-box">
+                            \[ \frac{\lambda}{2} + \frac{\lambda}{2} - 1 = 0 \quad \Rightarrow \quad \lambda = 1 \]
+                        </div>
+                        Therefore:
+                        <div class="math-box">
+                            \[ x_1^* = \frac{1}{2}, \quad x_2^* = \frac{1}{2}, \quad \lambda^* = 1 \]
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <strong>Interpret the Result:</strong><br>
+                        The maximum value of \( f(x_1, x_2) \) on the line \( x_1 + x_2 = 1 \) occurs at the point \( (\frac{1}{2}, \frac{1}{2}) \).<br>
+                        The maximum value is: \( f(\frac{1}{2}, \frac{1}{2}) = 1 - \frac{1}{4} - \frac{1}{4} = \frac{1}{2} \)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INEQUALITY CONSTRAINTS -->
+        <section id="inequality">
+            <h2>📊 Inequality Constraints: When You Have a Region to Work With</h2>
+
+            <div class="analogy-box">
+                Now imagine you're on a mountain and can walk anywhere in a fenced area (not just a single path).
+                The fence says "you must stay inside here" - that's \( g(\mathbf{x}) \geq 0 \).
+                The highest point might be inside the area (inactive constraint) or right on the fence (active constraint).
+            </div>
+
+            <h3>Two Different Scenarios</h3>
+
+            <div class="visual-diagram">
+                <div class="graph-title">Inequality Constraint: Two Cases</div>
+                <svg width="700" height="400" viewBox="0 0 700 400">
+                    <!-- Left diagram: Inactive constraint -->
+                    <text x="100" y="30" font-size="18" font-weight="bold" fill="#2c3e50">Case 1: Inactive Constraint</text>
+                    <circle cx="150" cy="200" r="120" fill="#a8dadc" opacity="0.5"/>
+                    <text x="230" y="210" font-size="14" fill="#1d3557">g(x) ≥ 0</text>
+
+                    <!-- Contours -->
+                    <circle cx="150" cy="200" r="30" fill="none" stroke="#457b9d" stroke-width="2"/>
+                    <circle cx="150" cy="200" r="50" fill="none" stroke="#457b9d" stroke-width="2"/>
+                    <circle cx="150" cy="200" r="70" fill="none" stroke="#457b9d" stroke-width="2"/>
+
+                    <!-- Optimal point inside -->
+                    <circle cx="150" cy="200" r="8" fill="#e63946"/>
+                    <text x="120" y="185" font-size="14" fill="#e63946" font-weight="bold">x* (inside)</text>
+                    <text x="110" y="250" font-size="13" fill="#2a9d8f">Constraint doesn't matter</text>
+                    <text x="130" y="270" font-size="13" fill="#2a9d8f">λ = 0</text>
+
+                    <!-- Right diagram: Active constraint -->
+                    <text x="450" y="30" font-size="18" font-weight="bold" fill="#2c3e50">Case 2: Active Constraint</text>
+                    <circle cx="500" cy="200" r="120" fill="#a8dadc" opacity="0.5"/>
+                    <text x="580" y="210" font-size="14" fill="#1d3557">g(x) ≥ 0</text>
+
+                    <!-- Contours shifted -->
+                    <circle cx="550" cy="150" r="30" fill="none" stroke="#457b9d" stroke-width="2"/>
+                    <circle cx="550" cy="150" r="60" fill="none" stroke="#457b9d" stroke-width="2"/>
+                    <circle cx="550" cy="150" r="90" fill="none" stroke="#457b9d" stroke-width="2"/>
+                    <circle cx="550" cy="150" r="120" fill="none" stroke="#457b9d" stroke-width="2"/>
+
+                    <!-- Boundary -->
+                    <circle cx="500" cy="200" r="120" fill="none" stroke="#e63946" stroke-width="4"/>
+
+                    <!-- Optimal point on boundary -->
+                    <circle cx="540" cy="115" r="8" fill="#e63946"/>
+                    <text x="470" y="100" font-size="14" fill="#e63946" font-weight="bold">x* (on boundary)</text>
+                    <text x="450" y="260" font-size="13" fill="#2a9d8f">Constraint is active</text>
+                    <text x="485" y="280" font-size="13" fill="#2a9d8f">λ > 0</text>
+                </svg>
+            </div>
+
+            <h3>📍 Case 1: Inactive Constraint</h3>
+
+            <div class="key-concept">
+                <strong>When the constraint is INACTIVE:</strong><br>
+                The optimal point \( \mathbf{x}^* \) is in the interior where \( g(\mathbf{x}^*) > 0 \)<br><br>
+
+                <strong>What happens:</strong>
+                <ul>
+                    <li>The constraint doesn't affect our solution</li>
+                    <li>We just maximize \( f(\mathbf{x}) \) normally: \( \nabla f(\mathbf{x}^*) = 0 \)</li>
+                    <li>The Lagrange multiplier \( \lambda = 0 \)</li>
+                </ul>
+            </div>
+
+            <div class="beginner-note">
+                <strong>Think of it this way:</strong> If the fence is far away and the peak is in the middle of your area,
+                the fence doesn't matter. You just climb to the peak!
+            </div>
+
+            <h3>🎯 Case 2: Active Constraint</h3>
+
+            <div class="important">
+                <strong>When the constraint is ACTIVE:</strong><br>
+                The optimal point \( \mathbf{x}^* \) is on the boundary where \( g(\mathbf{x}^*) = 0 \)<br><br>
+
+                <strong>What happens:</strong>
+                <ul>
+                    <li>Similar to equality constraint</li>
+                    <li>BUT: The sign of \( \lambda \) matters now!</li>
+                    <li>We MUST have \( \lambda > 0 \)</li>
+                </ul>
+            </div>
+
+            <div class="important">
+                <strong>Why must λ > 0?</strong><br><br>
+                If \( \lambda < 0 \), the gradient \( \nabla f(\mathbf{x}^*) \) would point INTO the feasible region \( g(\mathbf{x}) > 0 \).
+                This means we could increase \( f \) by moving away from the boundary into the interior.
+                But then the boundary wouldn't be optimal!<br><br>
+
+                Therefore, for the boundary to be optimal, we need \( \lambda > 0 \) so that
+                \( \nabla f(\mathbf{x}^*) \) points OUT of the feasible region (toward higher values of \( f \) that we can't reach).
+            </div>
+
+            <h3>🔗 The Combined Solution: Complementary Slackness</h3>
+
+            <div class="key-concept">
+                <strong>The Beautiful Unifying Condition:</strong>
+                <div class="math-box">
+                    \[ \lambda g(\mathbf{x}) = 0 \]
+                </div>
+
+                This is called <span class="highlight">Complementary Slackness</span>. It means:
+                <ul>
+                    <li>Either \( \lambda = 0 \) (constraint inactive) OR</li>
+                    <li>\( g(\mathbf{x}) = 0 \) (constraint active)</li>
+                    <li>At least one must be zero!</li>
+                </ul>
+            </div>
+
+            <div class="math-box">
+                <strong>Complete Conditions for: Maximize \( f(\mathbf{x}) \) subject to \( g(\mathbf{x}) \geq 0 \)</strong><br><br>
+                \[ L(\mathbf{x}, \lambda) = f(\mathbf{x}) + \lambda g(\mathbf{x}) \]<br>
+                Subject to:<br>
+                \[ g(\mathbf{x}) \geq 0 \quad \text{(feasibility)} \]
+                \[ \lambda \geq 0 \quad \text{(non-negativity)} \]
+                \[ \lambda g(\mathbf{x}) = 0 \quad \text{(complementary slackness)} \]
+            </div>
+        </section>
+
+        <!-- KKT CONDITIONS -->
+        <section id="kkt">
+            <h2>🎯 KKT Conditions: The Complete Framework</h2>
+
+            <div class="beginner-note">
+                <strong>What are KKT Conditions?</strong><br>
+                KKT stands for Karush-Kuhn-Tucker. These are the "golden rules" that any optimal solution must follow.
+                Think of them as a checklist to verify if you've found the best solution!
+            </div>
+
+            <h3>The Four KKT Conditions</h3>
+
+            <div class="step-by-step">
+                <div class="step">
+                    <strong>1. Stationarity</strong><br>
+                    The gradient of the Lagrangian must be zero:
+                    <div class="math-box">
+                        \[ \nabla_{\mathbf{x}} L(\mathbf{x}^*, \lambda^*) = 0 \]
+                    </div>
+                    <em>Meaning: We're at a stationary point (like the top of a hill)</em>
+                </div>
+
+                <div class="step">
+                    <strong>2. Primal Feasibility</strong><br>
+                    The solution must satisfy the constraint:
+                    <div class="math-box">
+                        \[ g(\mathbf{x}^*) \geq 0 \]
+                    </div>
+                    <em>Meaning: We're inside (or on) the allowed region</em>
+                </div>
+
+                <div class="step">
+                    <strong>3. Dual Feasibility</strong><br>
+                    The Lagrange multiplier must be non-negative:
+                    <div class="math-box">
+                        \[ \lambda^* \geq 0 \]
+                    </div>
+                    <em>Meaning: The constraint either doesn't matter (\(\lambda = 0\)) or pushes us in the right direction (\(\lambda > 0\))</em>
+                </div>
+
+                <div class="step">
+                    <strong>4. Complementary Slackness</strong><br>
+                    Either the constraint is active OR the multiplier is zero:
+                    <div class="math-box">
+                        \[ \lambda^* g(\mathbf{x}^*) = 0 \]
+                    </div>
+                    <em>Meaning: We can't have both a non-zero multiplier AND an inactive constraint</em>
+                </div>
+            </div>
+
+            <h3>📊 Complete KKT Summary Table</h3>
+
+            <table>
+                <tr>
+                    <th>Problem Type</th>
+                    <th>Lagrangian</th>
+                    <th>Constraint on λ</th>
+                    <th>Slackness</th>
+                </tr>
+                <tr>
+                    <td><strong>Maximize f(x)</strong><br>subject to g(x) = 0</td>
+                    <td>\( L = f(\mathbf{x}) + \lambda g(\mathbf{x}) \)</td>
+                    <td>No constraint on λ</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td><strong>Maximize f(x)</strong><br>subject to g(x) ≥ 0</td>
+                    <td>\( L = f(\mathbf{x}) + \lambda g(\mathbf{x}) \)</td>
+                    <td>\( \lambda \geq 0 \)</td>
+                    <td>\( \lambda g(\mathbf{x}) = 0 \)</td>
+                </tr>
+                <tr>
+                    <td><strong>Minimize f(x)</strong><br>subject to g(x) ≤ 0</td>
+                    <td>\( L = f(\mathbf{x}) + \lambda g(\mathbf{x}) \)</td>
+                    <td>\( \lambda \geq 0 \)</td>
+                    <td>\( \lambda g(\mathbf{x}) = 0 \)</td>
+                </tr>
+            </table>
+
+            <div class="important">
+                <strong>⚠️ For Minimization Problems:</strong><br>
+                When minimizing, the constraint typically uses \( \leq \) instead of \( \geq \).
+                The Lagrangian stays the same form, but the interpretation flips!
+            </div>
+        </section>
+
+        <!-- PRIMAL AND DUAL -->
+        <section id="primal-dual">
+            <h2>🔄 Primal and Dual Problems</h2>
+
+            <div class="analogy-box">
+                Imagine two people looking at the same mountain from opposite sides. One sees it as "climb up" (primal),
+                the other sees it as "don't fall down" (dual). They're looking at the same problem from different perspectives!
+            </div>
+
+            <h3>What are Primal and Dual?</h3>
+
+            <div class="definition">
+                <strong>Primal Problem:</strong><br>
+                The original problem - maximize \( f(\mathbf{x}) \) with respect to \( \mathbf{x} \)
+                <div class="math-box">
+                    \[ \mathbf{x}^* = \arg\max_{\mathbf{x}} L(\mathbf{x}, \lambda) \]
+                </div>
+            </div>
+
+            <div class="definition">
+                <strong>Dual Problem:</strong><br>
+                The "flipped" problem - find the best multiplier \( \lambda \)
+                <div class="math-box">
+                    \[ d(\lambda) = L(\mathbf{x}^*, \lambda) = \max_{\mathbf{x}} L(\mathbf{x}, \lambda) \]
+                    \[ \lambda^* = \arg\min_{\lambda} d(\lambda) \]
+                </div>
+            </div>
+
+            <div class="beginner-note">
+                <strong>Why do we care about the dual?</strong>
+                <ul>
+                    <li>The dual is ALWAYS convex (easier to solve) even if the primal isn't!</li>
+                    <li>Sometimes the dual has fewer variables than the primal</li>
+                    <li>Many algorithms (like SVM) work better in the dual formulation</li>
+                    <li>The dual gives us bounds on the primal solution</li>
+                </ul>
+            </div>
+
+            <div class="visual-diagram">
+                <div class="graph-title">Primal vs Dual Relationship</div>
+                <svg width="600" height="300" viewBox="0 0 600 300">
+                    <!-- Primal box -->
+                    <rect x="50" y="50" width="200" height="200" fill="#e3f2fd" stroke="#2196f3" stroke-width="3" rx="10"/>
+                    <text x="110" y="80" font-size="18" font-weight="bold" fill="#1976d2">PRIMAL</text>
+                    <text x="70" y="110" font-size="14" fill="#333">Maximize over x:</text>
+                    <text x="90" y="140" font-size="14" fill="#333">f(x) + λg(x)</text>
+                    <text x="70" y="170" font-size="13" fill="#555">• Original variables</text>
+                    <text x="70" y="195" font-size="13" fill="#555">• May be complex</text>
+                    <text x="70" y="220" font-size="13" fill="#555">• Direct interpretation</text>
+
+                    <!-- Dual box -->
+                    <rect x="350" y="50" width="200" height="200" fill="#f3e5f5" stroke="#9c27b0" stroke-width="3" rx="10"/>
+                    <text x="425" y="80" font-size="18" font-weight="bold" fill="#7b1fa2">DUAL</text>
+                    <text x="370" y="110" font-size="14" fill="#333">Minimize over λ:</text>
+                    <text x="405" y="140" font-size="14" fill="#333">d(λ)</text>
+                    <text x="370" y="170" font-size="13" fill="#555">• Multiplier variables</text>
+                    <text x="370" y="195" font-size="13" fill="#555">• Always convex!</text>
+                    <text x="370" y="220" font-size="13" fill="#555">• May be easier</text>
+
+                    <!-- Arrow between them -->
+                    <path d="M 250 150 L 350 150" stroke="#e67e22" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+                    <path d="M 350 150 L 250 150" stroke="#e67e22" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+                    <text x="270" y="140" font-size="14" fill="#e67e22" font-weight="bold">Related!</text>
+
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#e67e22" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </section>
+
+        <!-- MULTIPLE CONSTRAINTS -->
+        <section id="multiple">
+            <h2>🔢 Multiple Constraints: Real-World Complexity</h2>
+
+            <div class="analogy-box">
+                Real life isn't simple! You might want to buy the best laptop but have MULTIPLE constraints:
+                budget ≤ $1000, weight ≤ 3 pounds, battery life ≥ 8 hours, screen size ≥ 15 inches, etc.
+                Multiple constraints are the norm in practical problems!
+            </div>
+
+            <h3>General Form with Multiple Constraints</h3>
+
+            <div class="definition">
+                <strong>Problem:</strong> Maximize \( f(\mathbf{x}) \) subject to:
+                <ul>
+                    <li><strong>J Equality Constraints:</strong> \( g_j(\mathbf{x}) = 0 \) for \( j = 1, \ldots, J \)</li>
+                    <li><strong>K Inequality Constraints:</strong> \( h_k(\mathbf{x}) \geq 0 \) for \( k = 1, \ldots, K \)</li>
+                </ul>
+            </div>
+
+            <div class="math-box">
+                <strong>Extended Lagrangian:</strong>
+                \[ L(\mathbf{x}, \{\lambda_j\}, \{\mu_k\}) = f(\mathbf{x}) + \sum_{j=1}^{J} \lambda_j g_j(\mathbf{x}) + \sum_{k=1}^{K} \mu_k h_k(\mathbf{x}) \]
+            </div>
+
+            <div class="key-concept">
+                <strong>What This Means:</strong>
+                <ul>
+                    <li>Each equality constraint gets its own multiplier \( \lambda_j \) (any sign)</li>
+                    <li>Each inequality constraint gets its own multiplier \( \mu_k \) (must be ≥ 0)</li>
+                    <li>We have more equations to solve, but same principle!</li>
+                </ul>
+            </div>
+
+            <h3>Extended KKT Conditions</h3>
+
+            <table>
+                <tr>
+                    <th>Condition</th>
+                    <th>Mathematical Form</th>
+                    <th>What It Means</th>
+                </tr>
+                <tr>
+                    <td><strong>Stationarity</strong></td>
+                    <td>\( \nabla_{\mathbf{x}} L = 0 \)</td>
+                    <td>Gradient is zero</td>
+                </tr>
+                <tr>
+                    <td><strong>Primal Feasibility<br>(Equality)</strong></td>
+                    <td>\( g_j(\mathbf{x}) = 0 \) for all \( j \)</td>
+                    <td>All equality constraints satisfied</td>
+                </tr>
+                <tr>
+                    <td><strong>Primal Feasibility<br>(Inequality)</strong></td>
+                    <td>\( h_k(\mathbf{x}) \geq 0 \) for all \( k \)</td>
+                    <td>All inequality constraints satisfied</td>
+                </tr>
+                <tr>
+                    <td><strong>Dual Feasibility</strong></td>
+                    <td>\( \mu_k \geq 0 \) for all \( k \)</td>
+                    <td>Inequality multipliers non-negative</td>
+                </tr>
+                <tr>
+                    <td><strong>Complementary<br>Slackness</strong></td>
+                    <td>\( \mu_k h_k(\mathbf{x}) = 0 \) for all \( k \)</td>
+                    <td>Each inequality either active or has zero multiplier</td>
+                </tr>
+            </table>
+
+            <h3>🎯 Real-World Example: Portfolio Optimization</h3>
+
+            <div class="example">
+                <div class="example-title">Practical Example: Investing Your Money</div>
+
+                <strong>Scenario:</strong> You have $100,000 to invest in stocks. You want to maximize expected return.
+
+                <br><br><strong>Objective:</strong>
+                <div class="math-box">
+                    Maximize: \( f(\mathbf{w}) = \sum_{i=1}^{n} w_i r_i \)
+                </div>
+                where \( w_i \) = fraction invested in stock \( i \), and \( r_i \) = expected return of stock \( i \)
+
+                <br><strong>Constraints:</strong>
+                <ol>
+                    <li><strong>Equality:</strong> Must invest all money: \( \sum_{i=1}^{n} w_i = 1 \)</li>
+                    <li><strong>Inequality:</strong> No short selling: \( w_i \geq 0 \) for all \( i \)</li>
+                    <li><strong>Inequality:</strong> Risk limit: \( \sigma^2(\mathbf{w}) \leq \sigma_{max}^2 \)</li>
+                    <li><strong>Inequality:</strong> Diversification: \( w_i \leq 0.3 \) for all \( i \) (max 30% in any stock)</li>
+                </ol>
+
+                <br><strong>Lagrangian:</strong>
+                <div class="math-box">
+                    \[ L = \sum_i w_i r_i + \lambda\left(1 - \sum_i w_i\right) + \sum_i \mu_i w_i + \nu(\sigma_{max}^2 - \sigma^2) + \sum_i \eta_i(0.3 - w_i) \]
+                </div>
+
+                <br><strong>Solution Approach:</strong>
+                <ul>
+                    <li>Take derivatives with respect to all \( w_i \)</li>
+                    <li>Apply KKT conditions for each constraint</li>
+                    <li>Solve the system to find optimal portfolio weights</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SUMMARY AND APPLICATIONS -->
+        <section id="summary">
+            <h2>📝 Summary: Everything You Need to Remember</h2>
+
+            <div class="key-concept">
+                <h3>🎯 The Big Ideas</h3>
+                <ol>
+                    <li><strong>Lagrangian:</strong> Combines objective + constraints into one function</li>
+                    <li><strong>Lagrange Multipliers:</strong> Special numbers that enforce constraints</li>
+                    <li><strong>Equality:</strong> Use when you must be exactly on a surface</li>
+                    <li><strong>Inequality:</strong> Use when you have a region (active vs inactive)</li>
+                    <li><strong>KKT Conditions:</strong> The "checklist" for optimal solutions</li>
+                    <li><strong>Complementary Slackness:</strong> Either constraint is active OR multiplier is zero</li>
+                </ol>
+            </div>
+
+            <div class="important">
+                <h3>🔑 Quick Reference Formulas</h3>
+
+                <strong>Equality Constraint:</strong>
+                <div class="math-box">
+                    \[ L(\mathbf{x}, \lambda) = f(\mathbf{x}) + \lambda g(\mathbf{x}) \]
+                    Solve: \( \nabla L = 0 \)
+                </div>
+
+                <strong>Inequality Constraint:</strong>
+                <div class="math-box">
+                    \[ L(\mathbf{x}, \lambda) = f(\mathbf{x}) + \lambda g(\mathbf{x}) \]
+                    Conditions: \( g(\mathbf{x}) \geq 0, \quad \lambda \geq 0, \quad \lambda g(\mathbf{x}) = 0 \)
+                </div>
+            </div>
+
+            <h3>🚀 Real-World Applications</h3>
+
+            <div class="visual-diagram">
+                <table>
+                    <tr>
+                        <th>Field</th>
+                        <th>Application</th>
+                        <th>What's Being Optimized</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Machine Learning</strong></td>
+                        <td>Support Vector Machines</td>
+                        <td>Maximize margin with classification constraints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Finance</strong></td>
+                        <td>Portfolio Optimization</td>
+                        <td>Maximize return with risk and budget constraints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Engineering</strong></td>
+                        <td>Structural Design</td>
+                        <td>Minimize weight with strength constraints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Economics</strong></td>
+                        <td>Utility Maximization</td>
+                        <td>Maximize happiness with budget constraints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Robotics</strong></td>
+                        <td>Path Planning</td>
+                        <td>Minimize time/energy with obstacle avoidance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Operations Research</strong></td>
+                        <td>Resource Allocation</td>
+                        <td>Maximize efficiency with limited resources</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>📚 Further Learning Resources</h3>
+
+            <div class="definition">
+                <strong>Recommended Books:</strong>
+                <ul>
+                    <li>📖 <strong>Christopher M. Bishop</strong> - "Pattern Recognition and Machine Learning" (2006), Appendix E</li>
+                    <li>📖 <strong>Stephen Boyd & Lieven Vandenberghe</strong> - "Convex Optimization" (2004)</li>
+                    <li>📖 <strong>Jorge Nocedal & Stephen Wright</strong> - "Numerical Optimization" (1999)</li>
+                </ul>
+
+                <br><strong>Online Resources:</strong>
+                <ul>
+                    <li>🌐 Khan Academy - Calculus and Optimization</li>
+                    <li>🌐 MIT OpenCourseWare - Optimization Methods</li>
+                    <li>🌐 Stanford CS229 - Machine Learning (discusses SVMs and optimization)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- PRACTICE PROBLEMS -->
+        <section id="practice">
+            <h2>✏️ Practice Problems to Test Your Understanding</h2>
+
+            <div class="example">
+                <div class="example-title">Problem 1: Simple Equality Constraint</div>
+                <strong>Maximize:</strong> \( f(x, y) = xy \)<br>
+                <strong>Subject to:</strong> \( g(x, y) = x + y - 10 = 0 \)<br><br>
+                <strong>Hint:</strong> Form the Lagrangian and take partial derivatives!
+            </div>
+
+            <div class="example">
+                <div class="example-title">Problem 2: Inequality Constraint</div>
+                <strong>Minimize:</strong> \( f(x) = x^2 \)<br>
+                <strong>Subject to:</strong> \( g(x) = x - 5 \geq 0 \)<br><br>
+                <strong>Hint:</strong> Is the constraint active or inactive? Check both cases!
+            </div>
+
+            <div class="example">
+                <div class="example-title">Problem 3: Multiple Constraints</div>
+                <strong>Maximize:</strong> \( f(x, y) = x + 2y \)<br>
+                <strong>Subject to:</strong>
+                <ul>
+                    <li>\( g_1(x, y) = x + y \leq 10 \)</li>
+                    <li>\( g_2(x, y) = x \geq 0 \)</li>
+                    <li>\( g_3(x, y) = y \geq 0 \)</li>
+                </ul>
+                <strong>Hint:</strong> This is a linear programming problem! Which constraints are active?
+            </div>
+        </section>
+
+        <div style="text-align: center; margin-top: 60px; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+            <h2 style="color: white; margin-bottom: 20px;">🎓 Congratulations!</h2>
+            <p style="font-size: 1.2em; line-height: 1.8;">
+                You've completed the beginner's guide to constrained optimization!<br>
+                You now understand Lagrange multipliers, KKT conditions, and can solve real optimization problems.<br><br>
+                <strong>Keep practicing, and these concepts will become second nature!</strong>
+            </p>
+            <p style="margin-top: 20px; font-style: italic; opacity: 0.9;">
+                "Optimization is the art of finding the best solution in a world of constraints."
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
