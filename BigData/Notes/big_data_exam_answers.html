@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data Exam Answers — COMPSCI 4064/5088</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --card: #FFFFFF;
+  --text: #1C1C1A;
+  --text2: #5A5A56;
+  --accent: #2D5BE3;
+  --accent2: #1A3FA0;
+  --green: #0F7B5F;
+  --green-bg: #E8F5EE;
+  --red: #C0392B;
+  --red-bg: #FDECEB;
+  --amber: #B8860B;
+  --amber-bg: #FFF8E7;
+  --purple: #6C3FA0;
+  --purple-bg: #F3EEFA;
+  --blue-bg: #EBF2FD;
+  --border: #E5E5DF;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --radius: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+.container { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 48px 24px 40px;
+  margin-bottom: 32px;
+  background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+.header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2em;
+  font-weight: 400;
+  margin-bottom: 8px;
+  position: relative;
+}
+.header p {
+  font-size: 0.95em;
+  opacity: 0.85;
+  position: relative;
+}
+.header .badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  margin-top: 12px;
+  position: relative;
+  backdrop-filter: blur(4px);
+}
+
+/* Paper selector */
+.paper-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.paper-tab {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font: 600 13px 'DM Sans', sans-serif;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.paper-tab:hover { border-color: var(--accent); color: var(--accent); }
+.paper-tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Paper container */
+.paper { display: none; }
+.paper.active { display: block; }
+
+/* Question card */
+.q-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.q-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s;
+  user-select: none;
+}
+.q-header:hover { background: #FAFAF7; }
+.q-num {
+  min-width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 14px 'DM Sans', sans-serif;
+  flex-shrink: 0;
+}
+.q-num.blue { background: var(--blue-bg); color: var(--accent); }
+.q-num.green { background: var(--green-bg); color: var(--green); }
+.q-num.purple { background: var(--purple-bg); color: var(--purple); }
+.q-num.amber { background: var(--amber-bg); color: var(--amber); }
+.q-title { font: 600 14.5px/1.4 'DM Sans', sans-serif; color: var(--text); flex:1; }
+.q-marks {
+  font: 600 12px 'DM Sans', sans-serif;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: var(--blue-bg);
+  color: var(--accent);
+  white-space: nowrap;
+}
+.q-toggle {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s;
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.q-card.open .q-toggle { transform: rotate(180deg); }
+
+.q-body { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.q-card.open .q-body { max-height: 5000px; }
+.q-inner { padding: 20px; }
+
+/* Context, Question, Guidance boxes */
+.box {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.box-context { background: #F5F5F0; border-left: 3px solid #B0B0A8; }
+.box-question { background: var(--blue-bg); border-left: 3px solid var(--accent); }
+.box-guidance { background: var(--amber-bg); border-left: 3px solid var(--amber); }
+.box-label {
+  font: 700 11px 'DM Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+  display: block;
+}
+.box-context .box-label { color: #6B6B63; }
+.box-question .box-label { color: var(--accent); }
+.box-guidance .box-label { color: var(--amber); }
+
+/* Answer section */
+.answer {
+  background: var(--green-bg);
+  border: 1px solid #C6E4D4;
+  border-radius: 8px;
+  padding: 18px;
+  margin-top: 8px;
+}
+.answer-label {
+  font: 700 12px 'DM Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--green);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.answer p { margin-bottom: 10px; font-size: 14px; }
+.answer p:last-child { margin-bottom: 0; }
+.answer ul { padding-left: 20px; margin-bottom: 10px; }
+.answer li { margin-bottom: 8px; font-size: 14px; }
+.mark-tag {
+  display: inline-block;
+  background: #0F7B5F;
+  color: white;
+  font: 600 10px 'JetBrains Mono', monospace;
+  padding: 1px 7px;
+  border-radius: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.tip {
+  background: var(--purple-bg);
+  border-left: 3px solid var(--purple);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--purple);
+}
+.tip strong { font-weight: 700; }
+
+/* Section divider */
+.section-divider {
+  padding: 18px 0 12px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5em;
+  color: var(--text);
+  border-bottom: 2px solid var(--text);
+  margin-bottom: 20px;
+  margin-top: 16px;
+}
+.section-sub {
+  font: 500 13px 'DM Sans', sans-serif;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+/* Exam tip banner */
+.exam-tip-banner {
+  background: linear-gradient(135deg, #F3EEFA, #EBF2FD);
+  border: 1px solid #D6C8F0;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.exam-tip-banner h3 {
+  font: 700 15px 'DM Sans', sans-serif;
+  color: var(--purple);
+  margin-bottom: 10px;
+}
+.exam-tip-banner ul { padding-left: 18px; }
+.exam-tip-banner li { font-size: 13.5px; margin-bottom: 6px; color: #4A3570; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  background: #F0F0EA;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Big Data Exam Answers</h1>
+  <p>COMPSCI 4064 (H) & COMPSCI 5088 (M) — University of Glasgow</p>
+  <div class="badge">Past 3 Years · Model Answers · Exam-Ready Format</div>
+</div>
+
+<div class="exam-tip-banner">
+  <h3>How to Write Exam Answers (from Dr. McCreadie's guidance)</h3>
+  <ul>
+    <li><strong>Context matters:</strong> Half the marks are for the concept, half for linking it to the scenario. Always connect your answer to the question's context.</li>
+    <li><strong>"Discuss/Describe"</strong> = write short paragraphs. Rule: marks ÷ 2 ≈ number of sentences.</li>
+    <li><strong>"List"</strong> = bullet points. Look for "X points expected" in guidance.</li>
+    <li><strong>2026 exam:</strong> Closed book with crib sheet (Spark functions only). 3 questions, 60 marks, 1.5 hours.</li>
+    <li><strong>Structure:</strong> Q1 = theory (weeks 1-2), Q2 = distributed compute, Q3 = distributed data.</li>
+  </ul>
+</div>
+
+<div class="paper-tabs" id="tabs"></div>
+<div id="papers"></div>
+
+</div>
+
+<script>
+const papers = [
+{
+  id: "paper1",
+  label: "Paper A — 5088 (60 marks)",
+  title: "COMPSCI 5088 — 60 Marks, 1.5 Hours",
+  sub: "Containers2You, UpBank, MoonShuttle, WhiskyAI",
+  questions: [
+    {
+      num: "1a", marks: 3, color: "blue",
+      title: "Is live tracking for retailers a Big Data problem?",
+      context: "Containers2You is a hauling company with 80 trucks sending data once per second over mobile networks. They serve 300 retailers across Europe and want to let retailers track goods live.",
+      question: "Would allowing retailers to track goods live result in a Big Data problem?",
+      guidance: "1 mark for correct identification, 2 marks for reasons why.",
+      answer: `<p><strong>No, this is not a Big Data problem.</strong> <span class="mark-tag">1 mark</span></p>
+<ul>
+<li>The company only needs to serve relatively <strong>small, low-frequency data</strong> — one text-sized packet per truck per second, with only 80 trucks total. This is a tiny data volume that any standard server can handle. <span class="mark-tag">1 mark</span></li>
+<li>The data needs to be served to only <strong>300 businesses</strong>, which is a small number of consumers. A simple database with a REST API would be sufficient — no distributed processing needed. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "1b", marks: 6, color: "blue",
+      title: "Why does processing dashboard camera video constitute a Big Data task?",
+      context: "Trucks now have dashboard cameras streaming 480p video at ~2MB/min via satellite. Equipment is poor quality causing periodic feed loss. Goal: monitor road conditions and re-route drivers in real time.",
+      question: "Processing the dashboard camera video constitutes a big data task, why?",
+      guidance: "4 marks total. Reference two dimensions. 1 mark for dimension, 2 marks for why.",
+      answer: `<ul>
+<li><strong>Velocity</strong> <span class="mark-tag">1 mark</span>: The platform needs to process the video feeds fast enough to detect dangerous road conditions and alert drivers <strong>before they reach the hazard</strong>. This real-time latency requirement is a key Big Data dimension — processing must keep up with continuous incoming data. <span class="mark-tag">2 marks</span></li>
+<li><strong>Veracity</strong> <span class="mark-tag">1 mark</span>: The cameras have poor equipment quality causing periodic loss of video feeds. This means significant <strong>data cleaning and error handling</strong> will be needed to make the feeds usable for road condition analysis — noisy and unreliable data is a classic veracity challenge. <span class="mark-tag">2 marks</span></li>
+</ul>
+<div class="tip"><strong>Exam tip:</strong> Volume and Variety are NOT valid here — 2MB/min × 80 trucks is only ~160MB/min (not huge volume), and there's only one data type (video).</div>`
+    },
+    {
+      num: "1c", marks: 6, color: "blue",
+      title: "Legal and ethical implications of training an AI truck driver",
+      context: "Management wants to use all sensor and video data to train an AI self-driving truck model.",
+      question: "What would be the legal and ethical implications of training such a model?",
+      guidance: "6 marks. Three main points expected, two marks per point.",
+      answer: `<ul>
+<li><strong>Privacy:</strong> The dashboard cameras will have recorded faces of pedestrians, other drivers, and car number plates in the video footage. Using this raw footage to train an AI model would be an <strong>invasion of privacy</strong>, as these individuals did not expect their images to be used for machine learning purposes. <span class="mark-tag">2 marks</span></li>
+<li><strong>Consent:</strong> The company did not obtain <strong>informed consent</strong> from people captured by the cameras. Under GDPR and other data protection laws, using personal data (faces, number plates) for a purpose beyond the original intent (road monitoring) without consent is a legal violation. <span class="mark-tag">2 marks</span></li>
+<li><strong>Data Retention:</strong> EU legal requirements (such as GDPR) place strict limits on <strong>how long a company can retain personal data</strong>. The videos would need to be stored long-term for model training and retraining, which likely violates retention policies. If the model needs replacing in the future, the training data may no longer legally be available. <span class="mark-tag">2 marks</span></li>
+</ul>`
+    },
+    {
+      num: "2a", marks: 6, color: "green",
+      title: "Hadoop deployment design decisions for UpBank",
+      context: "UpBank's data analytics team works on terabytes of historical data stored as raw text files (CSV + custom formats). They're considering Hadoop for a standard data access interface.",
+      question: "What design decisions would they need to make for effective Hadoop deployment from hardware and configuration perspective?",
+      guidance: "6 marks. Three points. 1 mark for what, 1 mark for why in context.",
+      answer: `<ul>
+<li><strong>Number of compute nodes:</strong> Hadoop is a distributed system, so UpBank needs to decide how many machines (and therefore TaskTrackers/NodeManagers) are needed <span class="mark-tag">1 mark</span>. This depends on the number of analytics team members running concurrent jobs and the size of the terabyte-scale datasets they process. <span class="mark-tag">1 mark</span></li>
+<li><strong>Storage per machine:</strong> Each node needs enough local disk storage so that the total combined storage across the cluster can hold all the raw historical data files <span class="mark-tag">1 mark</span>. With terabytes of data and 3x HDFS replication, the cluster needs at least 3× the raw data size in total disk capacity. <span class="mark-tag">1 mark</span></li>
+<li><strong>Co-location / network topology:</strong> The physical machines should be located close together (same data centre, same rack where possible) to minimise network transfer costs <span class="mark-tag">1 mark</span>. Since analytics on terabytes involves significant shuffle operations, poor network layout would severely increase execution time. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2b", marks: 6, color: "green",
+      title: "What classes would the dev team need to implement beyond Map/Reduce?",
+      context: "Same UpBank scenario — replacing current operations with Hadoop. Data includes CSV and custom bank-specific formats. Output feeds into a custom legacy report generation platform.",
+      question: "Excluding Map, Reduce, and the main class, what other classes might the team need to implement?",
+      guidance: "6 marks. Three points. 1 mark for the role, 1 mark for why needed in this scenario.",
+      answer: `<ul>
+<li><strong>Custom InputFormat:</strong> Hadoop needs a data reader that converts raw text files into key-value records for the mappers <span class="mark-tag">1 mark</span>. Since the bank has uniquely formatted data (custom formats beyond standard CSV), they need a custom InputFormat to parse these correctly. <span class="mark-tag">1 mark</span></li>
+<li><strong>Custom OutputFormat:</strong> The output of a reduce task needs to be written to disk in a specific format <span class="mark-tag">1 mark</span>. Since the bank's legacy report generation platform expects data in a particular format, they need a custom OutputFormat to write results in a way that platform can read. <span class="mark-tag">1 mark</span></li>
+<li><strong>Object/Writable Classes:</strong> Classes representing the intermediate analytics data objects need to be implemented (implementing the Writable interface) <span class="mark-tag">1 mark</span>. The bank's data involves complex structures (transactions, accounts, investments) that go beyond simple strings and numbers, so custom serialisable types are needed. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2c", marks: 4, color: "green",
+      title: "Why is computing market statistics every 10 seconds difficult in Hadoop?",
+      context: "A trader needs to compute full market statistics every 10 seconds — a List<Price> to Double transformation.",
+      question: "Why might this be difficult/inefficient to perform in Hadoop?",
+      guidance: "4 marks. Two points. 1 mark for a limitation, 1 mark for why it's a problem here.",
+      answer: `<ul>
+<li>The task is a <strong>key-less transformation</strong> — it converts an entire list of prices into a single number without any grouping by key <span class="mark-tag">1 mark</span>. However, Hadoop's Map and Reduce functions both require key-value pairs as input and output, making this natural transformation awkward to express. <span class="mark-tag">1 mark</span></li>
+<li>The computation needs to run <strong>every 10 seconds</strong>, which is an extremely frequent schedule <span class="mark-tag">1 mark</span>. Hadoop has significant startup costs for each job (launching JVMs, allocating containers, reading from HDFS), meaning most of the 10-second window would be consumed by overhead rather than actual computation. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "3a", marks: 7, color: "purple",
+      title: "Summarise HBase Region Server storage mechanism",
+      context: "MoonShuttle (crypto exchange) uses HBase to store incoming trade data. Needs very low-latency lookup of recent trades.",
+      question: "Summarise the storage mechanism that HBase Region Servers use and describe how it enables fast access for recent trades.",
+      guidance: "7 marks. 1 mark for naming the mechanism. 4 marks for write steps. 2 marks for why fast lookup.",
+      answer: `<p>HBase Region Servers use a <strong>Log-Structured Merge (LSM) Tree</strong> to store data. <span class="mark-tag">1 mark</span></p>
+<p>The write process for an incoming trade follows these steps:</p>
+<ul>
+<li>The trade record is first written to a <strong>Write Ahead Log (WAL)</strong>, which is an append-only file on disk — this ensures the trade is safely persisted even if the server crashes. <span class="mark-tag">1 mark</span></li>
+<li>The trade is also stored in the <strong>MemTable</strong>, which is an in-memory sorted data structure that holds the most recent batch of writes. <span class="mark-tag">1 mark</span></li>
+<li>When the MemTable becomes full, its contents are <strong>sorted, compressed, and flushed to disk as an SSTable</strong> (Sorted String Table) — this is a sequential write, which is fast. <span class="mark-tag">1 mark</span></li>
+<li>Periodically, a background <strong>compaction</strong> process merges multiple SSTables together to save storage space and remove outdated entries. <span class="mark-tag">1 mark</span></li>
+</ul>
+<p>This allows fast lookup of recent trades because the most recent data lives in the <strong>MemTable, which is in main memory</strong> <span class="mark-tag">1 mark</span>. This acts like a recent cache — queries for recent trades are served at RAM speed without touching disk at all. <span class="mark-tag">1 mark</span></p>`
+    },
+    {
+      num: "3b", marks: 3, color: "purple",
+      title: "Does storing fewer large files reduce index lookup time?",
+      context: "MoonShuttle writes tables to disk infrequently, resulting in few large files. Analytics team reports slow lookups of older records traced to loading large files into memory.",
+      question: "An engineer says they store few large files since it reduces index lookup time. Is this true and why?",
+      guidance: "1 mark for whether true, 2 marks for why.",
+      answer: `<p><strong>This is not true.</strong> <span class="mark-tag">1 mark</span></p>
+<p>HBase uses <strong>Bloom Filters</strong> to determine which SSTable files might contain a target record <span class="mark-tag">1 mark</span>. Bloom Filter lookup has <strong>O(k) complexity</strong> (where k is the number of hash functions), and since these can be computed in parallel, it effectively provides constant-time index lookup regardless of how many files exist. Having fewer files does not meaningfully speed up the index lookup step. <span class="mark-tag">1 mark</span></p>
+<div class="tip"><strong>Exam tip:</strong> The real problem is that each file is so large that loading it into memory and scanning it is slow — more, smaller files would actually be better as you'd load less data per lookup.</div>`
+    },
+    {
+      num: "3c", marks: 4, color: "purple",
+      title: "Benefits of Cassandra over HBase for MoonShuttle",
+      context: "Executives worry a government might demand access to all customer records from their single HBase instance.",
+      question: "What benefits might Cassandra offer over HBase?",
+      guidance: "4 marks. 2 points. 1 mark for feature, 1 mark for why it helps.",
+      answer: `<ul>
+<li>Cassandra has <strong>no central master index and no full-scan capability</strong> in its API <span class="mark-tag">1 mark</span>. This means it would be technically difficult for anyone (including a government) to extract a complete list of all MoonShuttle customers, since the data is distributed across peers with no single point that knows everything. <span class="mark-tag">1 mark</span></li>
+<li>Cassandra uses a <strong>consistent hashing scheme</strong> to decide which nodes store which data <span class="mark-tag">1 mark</span>. This could be configured to geographically partition user data by country — keeping each region's data within that region's nodes — while still maintaining searchability for individual records. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "3d", marks: 5, color: "purple",
+      title: "What is Kubernetes and how would it help?",
+      context: "MoonShuttle deploys Cassandra across regions but finds it difficult with heterogeneous hardware and node failures.",
+      question: "What is Kubernetes and how might it help here?",
+      guidance: "2 marks for defining Kubernetes, 3 marks for how it helps (1 per point).",
+      answer: `<p>Kubernetes is an <strong>open-source container orchestration system</strong> <span class="mark-tag">1 mark</span> designed for automating software deployment, scaling, and management of containerised applications across clusters of machines. <span class="mark-tag">1 mark</span></p>
+<p>It would help MoonShuttle in three ways:</p>
+<ul>
+<li>Kubernetes can <strong>automate the deployment</strong> of Cassandra nodes when packaged as containers, making it easy to roll out across different regions without manual setup. <span class="mark-tag">1 mark</span></li>
+<li>It can <strong>automatically restart failed</strong> Cassandra nodes, reducing the maintenance burden when nodes crash. <span class="mark-tag">1 mark</span></li>
+<li>Kubernetes <strong>abstracts away the physical hardware</strong> differences, providing a unified deployment pipeline regardless of what machines are available in each region. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "4a", marks: 6, color: "amber",
+      title: "Why is AI training with synchronisation costly in Spark?",
+      context: "WhiskyAI trains large AI models on cheap machines. Every 10 steps, all machines' models must be synchronised (combined into one, then redistributed).",
+      question: "Why would this be more costly and difficult in Spark than applications without periodic synchronisation?",
+      guidance: "2 marks for stating problem type, 4 marks for reasons (2 per point).",
+      answer: `<p>The core problem is that this training process requires <strong>global state</strong> — the application is <strong>stateful</strong>, meaning machines need to share and synchronise information periodically. <span class="mark-tag">2 marks</span></p>
+<p>This is difficult in Spark because:</p>
+<ul>
+<li>The <strong>synchronisation step forces all machines to wait</strong> — during the "combine and redistribute" phase, no useful training is happening. This idle time grows with cluster size, wasting compute resources that Spark is designed to keep busy. <span class="mark-tag">2 marks</span></li>
+<li>The intermediate neural network state must be <strong>transferred across the network</strong> at every synchronisation point. For large models, this means gigabytes of data moving between all machines every 10 steps, creating a massive network bottleneck that Spark's architecture isn't optimised for. <span class="mark-tag">2 marks</span></li>
+</ul>`
+    },
+    {
+      num: "4b", marks: 4, color: "amber",
+      title: "Why might streaming-based pipeline improve resource usage?",
+      context: "Batch learning wastes compute — CPU is idle during GPU work (network update) and GPU is idle during CPU work (batch preparation).",
+      question: "Why might switching to a streaming pipeline result in better compute resource usage?",
+      guidance: "2 marks for what makes streaming different, 2 marks for why it solves the problem.",
+      answer: `<p>Stream-based solutions define computation as a <strong>pipeline of processing steps, where items in different stages can be processed in parallel</strong>. <span class="mark-tag">2 marks</span></p>
+<p>If batch preparation and neural network updating were separated as different pipeline stages, then the <strong>next batch can be prepared by the CPU while the GPU is still learning from the current batch</strong>. This overlapping of CPU and GPU work eliminates the idle time in each, resulting in much better overall resource utilisation. <span class="mark-tag">2 marks</span></p>`
+    }
+  ]
+},
+{
+  id: "paper2",
+  label: "Paper B — 5088 (75 marks)",
+  title: "COMPSCI 5088 — 75 Marks, 2 Hours",
+  sub: "Satellite Imaging, News Aggregator, Shipping Company, YARN",
+  questions: [
+    {
+      num: "1a", marks: 6, color: "blue",
+      title: "Why is satellite image processing a Big Data task?",
+      context: "Satellite imaging company with 100 satellites (doubling in 5 years). Each sends 10MB images per second. 20-50% active at any time. Building a natural disaster alerting system.",
+      question: "List the dimensions that make this a big data problem and discuss why.",
+      guidance: "3 marks for dimensions, 3 marks for discussion.",
+      answer: `<ul>
+<li><strong>Volume</strong> <span class="mark-tag">1 mark</span>: With up to 50 satellites active at peak, each sending 10MB per second, that's up to 500MB of image data arriving every second — a large volume requiring distributed processing. <span class="mark-tag">1 mark</span></li>
+<li><strong>Velocity</strong> <span class="mark-tag">1 mark</span>: The use-case is real-time disaster alerting, meaning images must be processed fast enough to detect disasters and issue alerts before the situation worsens — strict latency requirements. <span class="mark-tag">1 mark</span></li>
+<li><strong>Variability</strong> <span class="mark-tag">1 mark</span>: The data volume fluctuates significantly — only 20% of satellites are active normally, but this can spike to 50% during busy periods like hurricane season. The system must handle these unpredictable load changes. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "1b", marks: 8, color: "blue",
+      title: "Why is a mainframe not a good option?",
+      context: "A hardware manufacturer offers a single mainframe computer.",
+      question: "Discuss why this is not a good option given their requirements.",
+      guidance: "8 marks. 4 distinct points, 2 marks per point.",
+      answer: `<ul>
+<li>Mainframes have a <strong>maximum limit to scaling</strong> in both compute and storage. As satellite count doubles in 5 years (doubling data volume), the mainframe may not have enough capacity to handle the increased load. <span class="mark-tag">2 marks</span></li>
+<li>Mainframes are <strong>significantly more costly</strong> than horizontally scaled solutions. Achieving equivalent processing power through many commodity machines is typically much cheaper. <span class="mark-tag">2 marks</span></li>
+<li>The company plans to <strong>scale their operations</strong> by adding more satellites, meaning a mainframe purchased today may become unfit for purpose within a few years, requiring an expensive replacement. <span class="mark-tag">2 marks</span></li>
+<li>A single mainframe is a <strong>single point of failure</strong>. If it goes down, the entire disaster alerting system stops — which is unacceptable for a safety-critical application. <span class="mark-tag">2 marks</span></li>
+</ul>`
+    },
+    {
+      num: "1c", marks: 8, color: "blue",
+      title: "Challenges in developing a horizontally scalable solution",
+      context: "Three components: (1) split image into 24 regions, (2) apply 4 filters to each, (3) classify each variant for disasters.",
+      question: "What are the main challenges?",
+      guidance: "8 marks. 4 challenges. 1 mark for concept, 1 mark for why relevant.",
+      answer: `<ul>
+<li><strong>Data splitting and load balancing</strong> <span class="mark-tag">1 mark</span>: The input images need to be divided across machines such that all machines receive a roughly equal workload — if some machines get more images, they become bottlenecks while others sit idle. <span class="mark-tag">1 mark</span></li>
+<li><strong>Communication and storage overheads</strong> <span class="mark-tag">1 mark</span>: The original images and all the variants generated need to be transferred over the network and possibly stored between stages — this creates significant I/O overhead that grows with the number of satellites. <span class="mark-tag">1 mark</span></li>
+<li><strong>Data duplication</strong> <span class="mark-tag">1 mark</span>: Each image is split into 24 regions, then each region gets 4 filter variants — that's 96 images created from each original, massively increasing the data volume that later stages must process. <span class="mark-tag">1 mark</span></li>
+<li><strong>Fault tolerance</strong> <span class="mark-tag">1 mark</span>: With many machines processing safety-critical disaster detection, there must be mechanisms to handle machine failures so that images aren't lost and alerts aren't missed. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2a", marks: 9, color: "green",
+      title: "Implement news summariser in Hadoop MapReduce",
+      context: "News aggregator: (1) extract paragraphs from articles, (2) identify topics per paragraph, (3) group paragraphs by topic, (4) summarise each topic group. Each article is a separate file.",
+      question: "Describe how you would implement this as a Hadoop program.",
+      guidance: "6 marks for operations (type, context, inputs/outputs). 3 marks for why this design.",
+      answer: `<p><strong>Map 1: Content extraction + topic identification</strong> <span class="mark-tag">1 mark</span></p>
+<ul>
+<li>Input: <code>&lt;articleID, article&gt;</code> — each article is read as a key-value pair <span class="mark-tag">1 mark</span></li>
+<li>The mapper extracts paragraphs from the article and identifies topics for each paragraph</li>
+<li>Output: <code>&lt;topic, paragraph&gt;</code> — emits each paragraph keyed by its assigned topic <span class="mark-tag">1 mark</span></li>
+</ul>
+<p><strong>Reduce 1: Summarisation</strong> <span class="mark-tag">1 mark</span></p>
+<ul>
+<li>Input: <code>&lt;topic, List&lt;paragraph&gt;&gt;</code> — all paragraphs grouped by topic <span class="mark-tag">1 mark</span></li>
+<li>The reducer runs the summarisation algorithm on the grouped paragraphs</li>
+<li>Output: the final topic summary <span class="mark-tag">1 mark</span></li>
+</ul>
+<p><strong>Why this design:</strong> Content extraction and topic identification can both be executed independently per-article, so they are combined into a single Map step <span class="mark-tag">1 mark</span>. By setting the Map output key as the topic, the Hadoop shuffle-and-sort phase automatically groups all paragraphs by topic — giving us step 3 for free <span class="mark-tag">1 mark</span>. The summarisation algorithm naturally operates on a group of paragraphs, making it a perfect fit for the Reduce function <span class="mark-tag">1 mark</span>.</p>`
+    },
+    {
+      num: "2b", marks: 8, color: "green",
+      title: "What overhead costs would profiling reveal?",
+      context: "Company implements the system in Java via Hadoop and profiles it.",
+      question: "Describe what overhead costs you expect them to find and why.",
+      guidance: "8 marks. 4 observations. 1 mark for observation, 1 mark for why.",
+      answer: `<ul>
+<li><strong>Data loading will be slow</strong> <span class="mark-tag">1 mark</span> because each news article is stored as a separate file, and HDFS is not suited to many small files — the NameNode gets overloaded with metadata for thousands of tiny files. <span class="mark-tag">1 mark</span></li>
+<li>There will be a cost for the <strong>intermediate sort</strong> <span class="mark-tag">1 mark</span> as Hadoop must sort all the mapper outputs by topic key before they can be sent to the reducers. <span class="mark-tag">1 mark</span></li>
+<li>There will be significant <strong>network transfer latency</strong> <span class="mark-tag">1 mark</span> during the shuffle phase, as paragraphs from every mapper need to be sent across the network to the correct reducer based on their topic key. <span class="mark-tag">1 mark</span></li>
+<li>There will be <strong>disk write costs</strong> <span class="mark-tag">1 mark</span> as paragraphs are persisted to local disk after the map-side sort (spill files), before being read again for the shuffle — Hadoop writes to disk at every stage. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2c", marks: 8, color: "green",
+      title: "Advantages of Spark over Hadoop for this system",
+      context: "Company decides to test an Apache Spark implementation instead.",
+      question: "What primary advantages would Spark have over Hadoop?",
+      guidance: "8 marks. 4 points. 1 mark for advantage, 1 mark for why better than Hadoop.",
+      answer: `<ul>
+<li><strong>Initial data read costs would be lower</strong> <span class="mark-tag">1 mark</span> because Spark does not rely on HDFS and can read from any file system, avoiding the NameNode metadata bottleneck with many small article files. <span class="mark-tag">1 mark</span></li>
+<li><strong>Spark does not write intermediate data to disk</strong> <span class="mark-tag">1 mark</span>, so the expensive spill-file writes between map and reduce that Hadoop performs would be completely avoided — data stays in memory. <span class="mark-tag">1 mark</span></li>
+<li><strong>Transformation overheads would be lower</strong> <span class="mark-tag">1 mark</span> due to Spark's more efficient serialisation (Tungsten) and in-memory processing compared to Hadoop's Java-based Writable serialisation. <span class="mark-tag">1 mark</span></li>
+<li><strong>Individual operations can be defined as separate transformations</strong> <span class="mark-tag">1 mark</span> rather than manually grouping them into Map and Reduce functions — Spark's DAG structure is more flexible than MapReduce's rigid two-phase model. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "3a", marks: 8, color: "purple",
+      title: "NFS+RAID6 vs HDFS for a shipping company",
+      context: "Shipping company stores: (1) large audio logs and (2) many small sensor data files. Currently uses NFS with RAID6, replicated to offsite backup weekly.",
+      question: "What are the advantages and disadvantages of moving to HDFS?",
+      guidance: "8 marks. 4 points. 1 mark for difference, 1 mark for impact.",
+      answer: `<ul>
+<li><strong>Advantage — Built-in replication:</strong> HDFS provides on-site replication of files across multiple machines <span class="mark-tag">1 mark</span>, enabling better fault tolerance and read throughput compared to the NFS single-server setup where data is only backed up weekly. <span class="mark-tag">1 mark</span></li>
+<li><strong>Advantage — No single point of failure:</strong> Having a cluster of DataNodes <span class="mark-tag">1 mark</span> protects the company against the NFS server dying — which currently would take down all data access. <span class="mark-tag">1 mark</span></li>
+<li><strong>Disadvantage — Complexity:</strong> An HDFS cluster is more complex to set up and manage <span class="mark-tag">1 mark</span>, requiring multiple servers running DataNodes, a NameNode, and potentially ZooKeeper for high availability. <span class="mark-tag">1 mark</span></li>
+<li><strong>Disadvantage — Small file performance:</strong> Data access for the sensor data (many small files) would actually become slower with HDFS <span class="mark-tag">1 mark</span>, since HDFS is optimised for large file I/O and the NameNode would struggle with metadata for thousands of small sensor files. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "3b", marks: 3, color: "purple",
+      title: "Distributed vs decentralised storage",
+      context: "An engineer is worried about the NameNode as a single point of failure.",
+      question: "Summarise the primary difference between distributed and decentralised storage.",
+      guidance: "2 marks for definitions, 1 mark for contrast.",
+      answer: `<p>In a <strong>distributed</strong> storage solution, data is spread across many physical machines and usually replicated across multiple of those machines for fault tolerance. <span class="mark-tag">1 mark</span></p>
+<p>However, most distributed solutions (like HDFS) have a <strong>centralised master service</strong> that manages and coordinates the storage process — the NameNode in HDFS's case. <span class="mark-tag">1 mark</span></p>
+<p><strong>Decentralised</strong> solutions are a subset of distributed solutions that lack this central master entirely — every node is equal and can independently coordinate, as in Cassandra's peer-to-peer ring architecture. <span class="mark-tag">1 mark</span></p>`
+    },
+    {
+      num: "3c", marks: 6, color: "purple",
+      title: "Consistent hashing and order-preserving hashing in Cassandra",
+      context: "Cassandra uses hashing schemes for fast indexing.",
+      question: "Describe consistent hashing and order-preserving hashing, and how they are combined in Cassandra.",
+      guidance: "4 marks for explaining the two schemes, 2 marks for how they combine.",
+      answer: `<p><strong>Consistent hashing</strong> partitions the ID space across existing nodes in a ring <span class="mark-tag">1 mark</span>. A key X is assigned to the first node whose ID is equal to or greater than X — if no node has that exact ID, it wraps around the ring to the next available node. <span class="mark-tag">1 mark</span></p>
+<p><strong>Order-preserving hashing</strong> maps input keys to IDs in a way that maintains their order <span class="mark-tag">1 mark</span> — if key Z > key Y, then the ID for Z will always be greater than the ID for Y. This preserves sort order on the ring. <span class="mark-tag">1 mark</span></p>
+<p><strong>How they combine in Cassandra:</strong> An order-preserving hash function maps a row key to a position on the ID space (ensuring nearby keys get nearby positions). Then consistent hashing maps that position to a specific Cassandra node on the ring. This means range queries can be served efficiently because related keys are stored on the same or adjacent nodes. <span class="mark-tag">2 marks</span></p>`
+    },
+    {
+      num: "4a", marks: 3, color: "amber",
+      title: "Why is YARN superior to traditional Hadoop?",
+      context: "Hadoop 2.0 introduced YARN.",
+      question: "Discuss why YARN-based Hadoop is superior to traditional Hadoop.",
+      guidance: "3 marks.",
+      answer: `<ul>
+<li>YARN enables <strong>better use of available resources</strong> <span class="mark-tag">1 mark</span> because it handles variable-size resource requests (flexible containers) rather than using fixed task slots — a map slot that's idle can now be used for a reduce task. <span class="mark-tag">1 mark</span></li>
+<li>YARN enables <strong>multiple types of applications</strong> to run concurrently within the same Hadoop cluster — for example, Spark jobs, HBase, and MapReduce can all share the same resources managed by one ResourceManager. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "4b", marks: 8, color: "amber",
+      title: "YARN containers vs modern containers (Docker/Kubernetes)",
+      context: "The original YARN paper uses 'container' differently from today's meaning.",
+      question: "What are the differences between a YARN container and modern containers?",
+      guidance: "8 marks. 4 differences, 2 marks per difference.",
+      answer: `<ul>
+<li>A YARN container represents a <strong>unit of work run as an OS process</strong> (typically a JVM), while a modern Docker container includes not just the code but also the <strong>entire operating system context</strong> — files, libraries, and dependencies bundled together. <span class="mark-tag">2 marks</span></li>
+<li>YARN containers are managed by a <strong>NodeManager process</strong> on each machine, while modern containers are managed by an <strong>OS-level virtualisation engine</strong> like Docker Engine or Kubernetes. <span class="mark-tag">2 marks</span></li>
+<li>YARN containers can only run <strong>Hadoop ecosystem processes</strong> (MapReduce, Spark, Tez), while modern containers can run <strong>any application</strong> — a web server, a database, a Python script, anything. <span class="mark-tag">2 marks</span></li>
+<li>YARN containers <strong>share the host machine's OS environment</strong> (same libraries, same filesystem), while modern containers are <strong>sandboxed with their own drivers and libraries</strong> — they can't see or interfere with each other. <span class="mark-tag">2 marks</span></li>
+</ul>`
+    }
+  ]
+},
+{
+  id: "paper3",
+  label: "Paper C — 4064/5088 (75 marks)",
+  title: "COMPSCI 4064/5088 — 75 Marks",
+  sub: "BBC iPlayer, Mobile Phone Spark, Computing Cluster, HDFS Replication",
+  questions: [
+    {
+      num: "1a", marks: 6, color: "blue",
+      title: "Why is BBC video preparation a Big Data task?",
+      context: "BBC: ~45GB per hour of broadcast, 35 concurrent channels at peak, audio/video stored separately, some with subtitles. Need to encode to 6 resolutions within 60 minutes of broadcast ending.",
+      question: "List the Big Data dimensions and discuss why.",
+      guidance: "3 marks for dimensions, 3 marks for discussion.",
+      answer: `<ul>
+<li><strong>Volume</strong> <span class="mark-tag">1 mark</span>: Up to 35 channels × 45GB/hour = 1,575GB of video per hour, plus each needs to be converted into 6 different formats — a massive volume of data. <span class="mark-tag">1 mark</span></li>
+<li><strong>Variety</strong> <span class="mark-tag">1 mark</span>: There are multiple data types — video, audio, and subtitle text — that need to be handled differently and combined into the final output. <span class="mark-tag">1 mark</span></li>
+<li><strong>Variability</strong> <span class="mark-tag">1 mark</span>: The data volume varies based on how many channels are currently broadcasting — peak times have all 35 channels active, while off-peak may have far fewer. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "1b", marks: 4, color: "blue",
+      title: "Batch vs stream processing for BBC video encoding",
+      context: "Could use either batch or stream processing.",
+      question: "Which is better and why?",
+      guidance: "4 marks. State your choice, then 2 points contrasting against alternative.",
+      answer: `<p><strong>Arguing for batch processing:</strong></p>
+<ul>
+<li>Batch processing will be <strong>less prone to errors</strong> <span class="mark-tag">1 mark</span> because all video, audio, and subtitle data will be complete before processing begins — unlike streaming where partial data might cause encoding artifacts or sync issues. <span class="mark-tag">1 mark</span></li>
+<li>Batch processing is <strong>more easily parallelisable</strong> <span class="mark-tag">1 mark</span> because different segments of a completed recording can be processed concurrently by different machines, while streaming would require processing frames in order. <span class="mark-tag">1 mark</span></li>
+</ul>
+<div class="tip"><strong>Note:</strong> Arguing for streaming is also valid — lower latency (encoding during broadcast) and avoids storing the full high-quality recording. Either argument gets marks if well reasoned.</div>`
+    },
+    {
+      num: "1c", marks: 14, color: "blue",
+      title: "Describe video processing using MapReduce terminology",
+      context: "Design: split video into batches ending at key frames → encode (downsample) each frame → combine into key-frame blocks with compression.",
+      question: "Describe how a single video would be processed using MapReduce terminology.",
+      guidance: "14 marks. 7 steps expected. 7 marks for identifying steps, 7 for describing what happens.",
+      answer: `<ul>
+<li><strong>Read 1:</strong> The live video recording is <strong>read from HDFS</strong> as a series of HDFS blocks <span class="mark-tag">1 mark</span>, where each block represents a batch of image frames to be processed. <span class="mark-tag">1 mark</span></li>
+<li><strong>Map:</strong> The <strong>Map task</strong> executes the encoder on each image frame <span class="mark-tag">1 mark</span>, downsampling each frame to the target lower resolution. <span class="mark-tag">1 mark</span></li>
+<li><strong>Sort:</strong> The encoded frames are <strong>sorted</strong> by the batch they came from <span class="mark-tag">1 mark</span>, using the key-frame identifier as the sort key. <span class="mark-tag">1 mark</span></li>
+<li><strong>Write 1:</strong> The sorted frames are <strong>written to disk</strong> <span class="mark-tag">1 mark</span> on the local HDFS DataNode (the spill/shuffle files). <span class="mark-tag">1 mark</span></li>
+<li><strong>Read 2:</strong> The sorted frames are <strong>read back</strong> grouped by key <span class="mark-tag">1 mark</span>, where blocks are copied to the reducer's machine and merged. <span class="mark-tag">1 mark</span></li>
+<li><strong>Reduce:</strong> The <strong>Reduce task</strong> reads all frames for a key-frame <span class="mark-tag">1 mark</span> and builds the compressed key-frame block by cropping static content between frames. <span class="mark-tag">1 mark</span></li>
+<li><strong>Write 2:</strong> The key-frame blocks are <strong>written to HDFS</strong> <span class="mark-tag">1 mark</span> as the reducer's output, which will then be replicated across the cluster for fault tolerance. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2a", marks: 8, color: "green",
+      title: "Why use Spark over Hadoop for mobile phone compute?",
+      context: "Start-up lets people sell idle phone compute time. Spark Masters on company servers, Spark Workers on thousands of phones across the UK.",
+      question: "Why choose Spark over Hadoop?",
+      guidance: "8 marks. 4 points. 1 mark for difference, 1 mark for why important in this context.",
+      answer: `<ul>
+<li>Hadoop is tied to <strong>HDFS for data storage</strong> <span class="mark-tag">1 mark</span>, which would be impractical on mobile phones because mobile data upload costs are high and phones have limited storage for HDFS DataNode roles. <span class="mark-tag">1 mark</span></li>
+<li>Spark <strong>does not write intermediate data to disk</strong> <span class="mark-tag">1 mark</span>, which is critical for phones where disk I/O is slow and storage space is limited. <span class="mark-tag">1 mark</span></li>
+<li>Spark tasks are generally <strong>up to 100x faster than Hadoop</strong> <span class="mark-tag">1 mark</span>, meaning less local compute time and therefore less battery drain on users' phones — essential for this business model. <span class="mark-tag">1 mark</span></li>
+<li>Spark <strong>supports more programming languages</strong> (Python, Scala, Java, R) <span class="mark-tag">1 mark</span>, giving the start-up a wider potential customer base who can submit jobs. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2b", marks: 9, color: "green",
+      title: "Why are tasks getting executed multiple times?",
+      context: "Tests show tasks often execute multiple times, wasting resources.",
+      question: "What causes this? Where in Spark execution does it happen? Why is it a problem for this scenario?",
+      guidance: "9 marks. 3 causes. 1 mark for cause, 1 for where in execution, 1 for why problematic here.",
+      answer: `<ul>
+<li><strong>Out of memory:</strong> The mobile phone runs out of RAM <span class="mark-tag">1 mark</span>, which happens during task execution inside the executor <span class="mark-tag">1 mark</span>. Mobile phones typically have limited RAM (2-6GB) that's shared with other apps, making OOM errors much more likely than on a server. <span class="mark-tag">1 mark</span></li>
+<li><strong>Network loss:</strong> The Task Scheduler fails to receive heartbeats from the executor <span class="mark-tag">1 mark</span> because the phone loses mobile network signal <span class="mark-tag">1 mark</span>. Unlike data centre servers with stable connections, phones in areas with poor coverage will frequently lose connectivity. <span class="mark-tag">1 mark</span></li>
+<li><strong>Battery death:</strong> The phone running the executor shuts down <span class="mark-tag">1 mark</span> because the battery runs out during heavy processing <span class="mark-tag">1 mark</span>. Phones are not designed for sustained heavy compute workloads and will drain battery rapidly. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "2c", marks: 6, color: "green",
+      title: "Would YARN reduce the need for headquarters services?",
+      context: "An engineer suggests YARN might reduce headquarters management burden.",
+      question: "Is this true? How would it affect robustness?",
+      guidance: "1 mark for true/false, 2 marks for why, 2 marks for how YARN changes management, 1 mark for robustness.",
+      answer: `<p><strong>This is true.</strong> <span class="mark-tag">1 mark</span></p>
+<p>With YARN, Spark jobs are managed by an <strong>ApplicationMaster</strong> <span class="mark-tag">1 mark</span> that runs on the worker nodes — in this case, on the mobile phones themselves <span class="mark-tag">1 mark</span>.</p>
+<p>The company would still need a <strong>ResourceManager at headquarters</strong> <span class="mark-tag">1 mark</span>, but when a business submits a job, YARN creates an ApplicationMaster on one of the phones, which then manages the entire job from that point on — headquarters doesn't need to track individual tasks. <span class="mark-tag">1 mark</span></p>
+<p>However, given that phones are unreliable (battery death, network loss, user interference), having the ApplicationMaster on a phone would likely make the solution <strong>less robust</strong> — if the phone hosting the AM dies, the entire job fails. <span class="mark-tag">1 mark</span></p>`
+    },
+    {
+      num: "3a", marks: 4, color: "purple",
+      title: "Why RAID6 over RAID1 for the Computing School?",
+      context: "School buying storage for 1000 undergrads (50GB each) + 100 PhD students (1TB each). Undergrads need low latency, PhDs need high read throughput of large data.",
+      question: "Why might RAID6 be superior to RAID1?",
+      guidance: "2 marks for differences, 2 marks for why RAID6 is better here.",
+      answer: `<p>The differences between RAID1 and RAID6:</p>
+<ul>
+<li>RAID1 creates a second mirrored copy (50% space efficiency), while RAID6 uses striping with double parity (much better space efficiency with large numbers of disks). <span class="mark-tag">1 mark</span></li>
+<li>RAID1 survives 1 disk failure per mirror pair, while RAID6 survives up to 2 simultaneous disk failures across the entire array. <span class="mark-tag">1 mark</span></li>
+</ul>
+<p>Why RAID6 is better here:</p>
+<ul>
+<li>Given the large storage needed (50TB undergrads + 100TB PhDs), RAID1 would be extremely costly since it doubles the required disk count. RAID6 achieves redundancy with much less overhead. <span class="mark-tag">1 mark</span></li>
+<li>RAID6's striping enables parallel reads across many disks, which benefits the PhD students who need high read throughput for their large experimental data. <span class="mark-tag">1 mark</span></li>
+</ul>`
+    },
+    {
+      num: "3b", marks: 4, color: "purple",
+      title: "Should they use HBase instead of RAID?",
+      context: "A staff member suggests HBase instead of RAID-based storage.",
+      question: "Is this a good idea given the requirements?",
+      guidance: "4 marks. 2 points.",
+      answer: `<p><strong>No, this is not a good idea.</strong></p>
+<ul>
+<li>HBase is a <strong>column-oriented table store, not a file store</strong>. <span class="mark-tag">2 marks</span></li>
+<li>The students need to store files (code, documents, datasets) — HBase <strong>cannot be used as a general-purpose file system</strong> to store and retrieve arbitrary student files. It stores structured records in tables, not files on a filesystem. <span class="mark-tag">2 marks</span></li>
+</ul>
+<div class="tip"><strong>Exam tip:</strong> Dr. McCreadie mentions this is a "check question" to catch students using answer generators. The correct answer is short and simple — HBase is a table store, not a file store.</div>`
+    },
+    {
+      num: "3c", marks: 5, color: "purple",
+      title: "Should Cassandra use virtual nodes?",
+      context: "50 compute nodes, each with 24 CPU cores and 1TB SSD, for a Cassandra installation.",
+      question: "Should the School use virtual nodes or not?",
+      guidance: "2 marks for what virtual nodes do, 1 for whether needed, 2 for why.",
+      answer: `<p><strong>Virtual nodes</strong> allow a single physical machine to be divided into multiple logical nodes on the Cassandra ring <span class="mark-tag">1 mark</span>, primarily used to enable better load balancing across the cluster. <span class="mark-tag">1 mark</span></p>
+<p>With 50 nodes, virtual nodes are <strong>probably not needed</strong> <span class="mark-tag">1 mark</span>, since 50 unique positions on the hash ring should provide sufficient distribution and fault tolerance. <span class="mark-tag">1 mark</span></p>
+<p>However, if the hashing scheme used happens to co-locate too much data onto a subset of the nodes (data skew), then virtual nodes could still be useful to rebalance the load. <span class="mark-tag">1 mark</span></p>`
+    },
+    {
+      num: "4a", marks: 5, color: "amber",
+      title: "Effect of higher replication factor on HDFS write throughput",
+      context: "HDFS default replication is 3.",
+      question: "What would be the effects of a higher replication factor on write throughput?",
+      guidance: "2 marks for key aspect, 2 marks for how it changes, 1 mark for the effect.",
+      answer: `<p>HDFS creates replicas using a <strong>pipeline</strong> — the client writes to the first DataNode, which forwards to the second, which forwards to the third. <span class="mark-tag">2 marks</span></p>
+<p>With a higher replication factor (say N replicas), the overhead is approximately <strong>N × network latency</strong> added to the time it takes to create the first replica. In a data centre with 1Gbps+ links, this network latency is negligible compared to the actual data transfer time. <span class="mark-tag">2 marks</span></p>
+<p>Therefore, write throughput would only be <strong>slightly reduced</strong> — the pipeline design means replicas are created in parallel (not sequentially), so doubling the replication factor does not double the write time. <span class="mark-tag">1 mark</span></p>`
+    },
+    {
+      num: "4b", marks: 4, color: "amber",
+      title: "Effect of higher replication factor on HDFS read latency",
+      context: "Same HDFS replication context.",
+      question: "What would be the effects on read latency?",
+      guidance: "2 marks for key aspect, 2 marks for how replication factor affects it.",
+      answer: `<p>HDFS reads data from the replica that is <strong>closest in network distance</strong> to the requesting client. <span class="mark-tag">2 marks</span></p>
+<p>With a higher replication factor, there are <strong>more copies</strong> of each block spread across more DataNodes. This increases the probability that a replica exists on the same node or the same rack as the client, potentially <strong>reducing read latency</strong>. <span class="mark-tag">2 marks</span></p>`
+    },
+    {
+      num: "4c", marks: 6, color: "amber",
+      title: "Effect of higher replication factor on NameNode and DataNode resources",
+      context: "Same HDFS replication context.",
+      question: "How would it affect resource usage?",
+      guidance: "6 marks. 3 points, 2 marks per point.",
+      answer: `<ul>
+<li><strong>Increased disk usage on DataNodes:</strong> More replicas means more copies of the same data stored across the cluster — total disk consumption increases proportionally with the replication factor. <span class="mark-tag">2 marks</span></li>
+<li><strong>Higher NameNode memory usage:</strong> The NameNode stores block-to-DataNode mappings in memory. More replicas means more locations stored per block, increasing the NameNode's memory footprint. <span class="mark-tag">2 marks</span></li>
+<li><strong>More network bandwidth for block reports:</strong> DataNodes periodically send block reports to the NameNode listing all their blocks. With more replicas, each DataNode stores more blocks and sends larger reports, consuming more network bandwidth. <span class="mark-tag">2 marks</span></li>
+</ul>`
+    }
+  ]
+}
+];
+
+// Render
+const tabsEl = document.getElementById('tabs');
+const papersEl = document.getElementById('papers');
+
+papers.forEach((paper, pi) => {
+  // Tab
+  const tab = document.createElement('button');
+  tab.className = 'paper-tab' + (pi === 0 ? ' active' : '');
+  tab.textContent = paper.label;
+  tab.onclick = () => {
+    document.querySelectorAll('.paper-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.paper').forEach(p => p.classList.remove('active'));
+    document.getElementById(paper.id).classList.add('active');
+  };
+  tabsEl.appendChild(tab);
+
+  // Paper
+  const paperDiv = document.createElement('div');
+  paperDiv.id = paper.id;
+  paperDiv.className = 'paper' + (pi === 0 ? ' active' : '');
+
+  paperDiv.innerHTML = `<div class="section-divider">${paper.title}<div class="section-sub">${paper.sub}</div></div>`;
+
+  paper.questions.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="q-num ${q.color}">${q.num}</div>
+        <div class="q-title">${q.title}</div>
+        <div class="q-marks">${q.marks} marks</div>
+        <div class="q-toggle">▼</div>
+      </div>
+      <div class="q-body"><div class="q-inner">
+        <div class="box box-context"><span class="box-label">Context</span>${q.context}</div>
+        <div class="box box-question"><span class="box-label">Question</span>${q.question}</div>
+        <div class="box box-guidance"><span class="box-label">Marking Guidance</span>${q.guidance}</div>
+        <div class="answer"><div class="answer-label">✓ Model Answer</div>${q.answer}</div>
+      </div></div>
+    `;
+    paperDiv.appendChild(card);
+  });
+
+  papersEl.appendChild(paperDiv);
+});
+</script>
+</body>
+</html>

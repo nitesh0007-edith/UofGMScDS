@@ -1,0 +1,3196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Learning Mastery — COMPSCI5103 Complete Tutorial</title>
+
+<!-- MathJax -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #818cf8;
+  --accent: #8b5cf6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --text-light: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
+  --gradient-1: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+  --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* ========== LAYOUT ========== */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-logo {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo h1 {
+  font-size: 18px;
+  font-weight: 800;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.sidebar-logo p {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.nav-section {
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+.nav-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.nav-link:hover {
+  background: #f1f5f9;
+  color: var(--primary);
+}
+
+.nav-link.active {
+  background: var(--gradient-1);
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.nav-link .num {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #e0e7ff;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 22px;
+  flex-shrink: 0;
+}
+
+.nav-link.active .num {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main {
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.hero {
+  background: var(--gradient-1);
+  color: white;
+  padding: 80px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.hero p.tagline {
+  font-size: 20px;
+  opacity: 0.95;
+  font-weight: 400;
+  max-width: 700px;
+  margin-bottom: 32px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-stat .num {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.hero-stat .label {
+  font-size: 13px;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ========== CONTENT ========== */
+.content {
+  padding: 60px;
+  max-width: 1100px;
+}
+
+section {
+  margin-bottom: 80px;
+  scroll-margin-top: 20px;
+}
+
+.section-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+
+.section-number {
+  display: inline-block;
+  background: var(--gradient-1);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.section-header h2 {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.section-header p.subtitle {
+  color: var(--text-light);
+  font-size: 17px;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 32px 0 16px;
+  letter-spacing: -0.3px;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 20px 0 12px;
+}
+
+p { margin-bottom: 14px; color: var(--text-light); }
+p strong { color: var(--text); font-weight: 600; }
+
+ul, ol { margin: 12px 0 14px 24px; color: var(--text-light); }
+li { margin-bottom: 6px; }
+
+/* ========== BOXES ========== */
+.box {
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin: 20px 0;
+  border-left: 4px solid;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.box-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.box-concept { background: #eff6ff; border-color: var(--info); }
+.box-concept .box-title { color: var(--info); }
+
+.box-example { background: #f0fdf4; border-color: var(--success); }
+.box-example .box-title { color: var(--success); }
+
+.box-tip { background: #fef3c7; border-color: var(--warning); }
+.box-tip .box-title { color: #b45309; }
+
+.box-trap { background: #fee2e2; border-color: var(--danger); }
+.box-trap .box-title { color: var(--danger); }
+
+.box-beginner {
+  background: linear-gradient(135deg, #ede9fe 0%, #f3e8ff 100%);
+  border-color: var(--accent);
+}
+.box-beginner .box-title { color: var(--accent); }
+
+.box-paper {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+  border-color: var(--primary);
+  border-left-width: 6px;
+}
+.box-paper .box-title { color: var(--primary-dark); }
+
+/* ========== CODE ========== */
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 20px 24px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  box-shadow: var(--shadow);
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f1f5f9;
+  color: var(--primary-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-weight: 500;
+}
+
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.code-keyword { color: #c084fc; }
+.code-string { color: #86efac; }
+.code-number { color: #fbbf24; }
+.code-comment { color: #64748b; font-style: italic; }
+.code-function { color: #60a5fa; }
+
+/* ========== TABLES ========== */
+.table-wrap {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
+}
+
+thead {
+  background: var(--gradient-1);
+  color: white;
+}
+
+th {
+  padding: 14px 18px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-light);
+}
+
+tbody tr:hover { background: #f8fafc; }
+tbody tr:last-child td { border-bottom: none; }
+
+/* ========== DIAGRAMS ========== */
+.diagram {
+  background: white;
+  padding: 28px;
+  border-radius: 14px;
+  margin: 24px 0;
+  box-shadow: var(--shadow);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.diagram svg { max-width: 100%; height: auto; }
+
+.diagram-caption {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  font-style: italic;
+}
+
+/* ========== CARDS GRID ========== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--gradient-1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.card h4 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.card p {
+  font-size: 13px;
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* ========== TABS ========== */
+.tabs {
+  margin: 24px 0;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: var(--primary); }
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tab-content {
+  display: none;
+  padding: 24px;
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+.tab-content.active { display: block; }
+
+/* ========== COLLAPSIBLE ========== */
+details {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+summary::before {
+  content: '▶';
+  font-size: 11px;
+  transition: transform 0.2s;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details > *:not(summary) {
+  margin-top: 14px;
+}
+
+/* ========== PAST PAPER QUESTION ========== */
+.qna {
+  margin: 20px 0;
+  padding: 24px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  border-radius: 14px;
+  border: 2px solid #f59e0b;
+  box-shadow: var(--shadow);
+}
+
+.qna .q-label {
+  display: inline-block;
+  background: #b45309;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.qna .solution {
+  margin-top: 14px;
+  padding: 18px;
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid var(--success);
+}
+
+.qna .solution h5 {
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+/* ========== PROGRESS / FREQ BARS ========== */
+.freq-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.freq-label {
+  min-width: 220px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.freq-track {
+  flex: 1;
+  height: 22px;
+  background: #f1f5f9;
+  border-radius: 11px;
+  overflow: hidden;
+  position: relative;
+}
+
+.freq-fill {
+  height: 100%;
+  background: var(--gradient-1);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  transition: width 1s ease;
+}
+
+/* ========== CALLOUT QUOTES ========== */
+.callout {
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text);
+  padding: 20px 28px;
+  border-left: 4px solid var(--accent);
+  background: linear-gradient(90deg, #faf5ff 0%, transparent 100%);
+  margin: 24px 0;
+  border-radius: 0 10px 10px 0;
+}
+
+/* ========== KEY FORMULA ========== */
+.formula {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ecfccb 100%);
+  padding: 18px 24px;
+  border-radius: 10px;
+  margin: 16px 0;
+  border-left: 4px solid var(--info);
+  font-size: 15px;
+}
+
+.formula-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--info);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+section { animation: fadeIn 0.6s ease-out; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .hero { padding: 50px 24px; }
+  .hero h1 { font-size: 32px; }
+  .hero p.tagline { font-size: 16px; }
+  .content { padding: 40px 24px; }
+  .section-header h2 { font-size: 26px; }
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  background: var(--text);
+  color: var(--text-muted);
+  padding: 40px 60px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.footer h3 { color: white; margin-bottom: 8px; }
+.footer p { color: #94a3b8; }
+
+/* ========== VISIBLE UTILS ========== */
+.highlight {
+  background: linear-gradient(180deg, transparent 60%, #fef08a 60%);
+  padding: 0 2px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 4px;
+}
+
+.pill-primary { background: #e0e7ff; color: var(--primary-dark); }
+.pill-success { background: #d1fae5; color: #065f46; }
+.pill-warning { background: #fef3c7; color: #b45309; }
+.pill-danger { background: #fee2e2; color: #b91c1c; }
+.pill-info { background: #dbeafe; color: #1e40af; }
+
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Deep Learning</h1>
+    <p>COMPSCI5103 · Exam Mastery</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Foundations</div>
+    <a href="#intro" class="nav-link"><span class="num">1</span>Introduction to DL</a>
+    <a href="#mlp" class="nav-link"><span class="num">2</span>MLPs & Backprop</a>
+    <a href="#cnn" class="nav-link"><span class="num">3</span>CNNs</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Practical Engineering</div>
+    <a href="#workflow" class="nav-link"><span class="num">4</span>ML Workflow</a>
+    <a href="#optim" class="nav-link"><span class="num">5</span>Optim & Reg</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced Topics</div>
+    <a href="#viz" class="nav-link"><span class="num">6</span>Interpretability</a>
+    <a href="#rnn" class="nav-link"><span class="num">7</span>RNNs & Transformers</a>
+    <a href="#ae" class="nav-link"><span class="num">8</span>Autoencoders</a>
+    <a href="#vae-gan" class="nav-link"><span class="num">9</span>VAEs & GANs</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Exam Prep</div>
+    <a href="#papers" class="nav-link"><span class="num">★</span>Past Paper Solutions</a>
+    <a href="#strategy" class="nav-link"><span class="num">⚡</span>Strategy & Formulas</a>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-badge">🎓 MSc · University of Glasgow · Open-Book Exam</span>
+    <h1>Deep Learning — from First Principles to Exam Mastery</h1>
+    <p class="tagline">A beginner-friendly, exam-focused tutorial covering every topic in COMPSCI5103 — with worked solutions to four years of past papers, intuitive explanations, and all the formulas you need.</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">10</div>
+        <div class="label">Core Topics</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">4</div>
+        <div class="label">Past Papers</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">60</div>
+        <div class="label">Marks Total</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">90+30</div>
+        <div class="label">Minutes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+
+<!-- ============================================================ -->
+<!-- SECTION 1: INTRODUCTION TO DEEP LEARNING                    -->
+<!-- ============================================================ -->
+<section id="intro">
+  <div class="section-header">
+    <span class="section-number">Week 1 · Foundation</span>
+    <h2>Introduction to Deep Learning</h2>
+    <p class="subtitle">What deep learning actually is, why it works, and the three questions behind every network you'll build.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Start here if you're new</div>
+    <p style="margin-bottom:0"><strong>Deep Learning</strong> is a way of teaching computers by showing them lots of examples. Instead of writing rules like "if the image has whiskers, it's a cat," we feed a network thousands of cat photos and let it <em>learn</em> its own rules. The "deep" part means we stack many layers — each layer learns something slightly more abstract than the one before. First layer spots edges. Middle layers spot eyes, ears, fur. Final layer spots cats.</p>
+  </div>
+
+  <h3>Why Now? The Six Ingredients of Modern DL</h3>
+  <p>Neural networks were invented in the 1940s. So why did they only become useful around 2012? Six things had to line up:</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h4>Theory</h4>
+      <p>50 years of ML math: Bayesian estimation, VC dimension, Cybenko's universal approximation theorem.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h4>Algorithms</h4>
+      <p>Convolutions, ReLU, batch normalisation, better weight init (Xavier/He), Adam optimizer.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖥️</div>
+      <h4>Hardware</h4>
+      <p>GPUs (NVIDIA CUDA, 2007) give ~10× speedup. Training went from weeks to hours.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛠️</div>
+      <h4>Tools</h4>
+      <p>PyTorch, TensorFlow — open-source frameworks removed the barrier to entry.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h4>Data</h4>
+      <p>Curated datasets: MNIST, CIFAR, ImageNet (14M labelled images). Internet-scale scraping.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h4>Money</h4>
+      <p>Google, Meta, OpenAI pouring billions in — attracts talent, which attracts more money.</p>
+    </div>
+  </div>
+
+  <h3>Timeline of Deep Learning</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Milestone</th><th>Why it Mattered</th></tr></thead>
+      <tbody>
+        <tr><td>1943</td><td>McCulloch-Pitts neuron</td><td>First mathematical model of a neuron</td></tr>
+        <tr><td>1958</td><td>Perceptron (Rosenblatt)</td><td>First learning machine</td></tr>
+        <tr><td>1986</td><td>Backpropagation</td><td>Rumelhart/Hinton/Williams — still how we train DNNs today</td></tr>
+        <tr><td>1989</td><td>LeNet (LeCun)</td><td>First successful CNN</td></tr>
+        <tr><td><strong>2012</strong></td><td><strong>AlexNet wins ImageNet</strong></td><td><strong>Woke everyone up — DL beat everything else by a huge margin</strong></td></tr>
+        <tr><td>2014</td><td>GANs (Goodfellow)</td><td>Networks that generate realistic images</td></tr>
+        <tr><td>2017</td><td>Transformer ("Attention is All You Need")</td><td>Foundation of ChatGPT, Claude, every modern LLM</td></tr>
+        <tr><td>2022</td><td>ChatGPT released</td><td>DL enters public consciousness</td></tr>
+        <tr><td>2024</td><td>Nobel Prize to Hopfield & Hinton</td><td>DL officially recognised as foundational science</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The Two Theorems You Must Know</h3>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Cover's Theorem</div>
+    <p>Given non-linearly separable data, projecting it to a <strong>higher-dimensional space</strong> via a non-linear transformation makes it (with high probability) linearly separable.</p>
+    <p style="margin-bottom:0"><em>Why it matters:</em> This is the whole point of hidden layers — they transform data into a space where the final linear layer can actually separate classes.</p>
+  </div>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Cybenko's Theorem (1989) — Universal Approximation</div>
+    <p>A neural network with a <strong>single hidden layer that is wide enough</strong> can approximate any continuous function.</p>
+    <p><strong>BUT the catch</strong>: "wide enough" may mean exponentially many units, and the theorem doesn't say the network will actually <em>learn</em> the function — only that it could represent it in theory.</p>
+    <p style="margin-bottom:0"><strong>Why go deep?</strong> Deep networks can be <strong>exponentially more efficient</strong>. They reuse features hierarchically instead of memorising every possible pattern.</p>
+  </div>
+
+  <h3>The Three Questions Behind Every Network</h3>
+  <p>Whenever you design a deep network — for homework, research, or an exam — you must answer these three:</p>
+
+  <div class="card-grid">
+    <div class="card" style="border-top: 4px solid var(--primary);">
+      <h4>1. What architecture?</h4>
+      <p>How many layers? What type (dense, conv, RNN, attention)? How wide?</p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--accent);">
+      <h4>2. What loss function?</h4>
+      <p>Cross-entropy (classification)? MSE (regression)? BCE (binary)?</p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--success);">
+      <h4>3. What optimiser?</h4>
+      <p>SGD? Adam? What learning rate, momentum, weight decay?</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    "Deep learning is learning <strong>hierarchical representations</strong> from large amounts of data, end-to-end from the objective function."
+  </div>
+
+  <h3>Types of Learning Tasks</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Task</th><th>Example</th><th>Input → Output</th><th>Typical Network</th></tr></thead>
+      <tbody>
+        <tr><td>Supervised Classification</td><td>Cat vs dog</td><td>Image → class label</td><td>CNN</td></tr>
+        <tr><td>Segmentation</td><td>Pixel-wise medical imaging</td><td>Image → pixel labels</td><td>Encoder-decoder CNN (U-Net)</td></tr>
+        <tr><td>Regression</td><td>House price</td><td>Features → real number</td><td>MLP</td></tr>
+        <tr><td>Unsupervised</td><td>Image generation</td><td>Noise → image</td><td>VAE, GAN</td></tr>
+        <tr><td>Reinforcement</td><td>Playing Go</td><td>State → action</td><td>DQN, AlphaGo</td></tr>
+        <tr><td>Sequence</td><td>Translation</td><td>Text → text</td><td>Transformer, RNN</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Tip</div>
+    <p style="margin-bottom:0">Week 1 is rarely examined directly, but examiners love to sneak in "what is the three design questions?" as an opening part. And understanding Cybenko/Cover helps you write clearer essays about <em>why</em> architectures are shaped the way they are.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: MLPs, SGD, BACKPROP                              -->
+<!-- ============================================================ -->
+<section id="mlp">
+  <div class="section-header">
+    <span class="section-number">Week 2 · Foundation</span>
+    <h2>MLPs, SGD & Backpropagation</h2>
+    <p class="subtitle">The building blocks: what a neuron actually computes, how networks learn through gradients, and the chain rule that makes it all work.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Intuition first</div>
+    <p style="margin-bottom:0">A <strong>neuron</strong> does three simple things: (1) multiply each input by a weight, (2) add a bias, (3) squash the result with a non-linear function. Stack thousands of these and you can approximate almost any function. The weights are the "knowledge" of the network, and training = adjusting weights to make the output match the target.</p>
+  </div>
+
+  <h3>2.1 The Feed-Forward Network</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Input layer -->
+      <circle cx="80" cy="80" r="22" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="80" y="85" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">x₁</text>
+      <circle cx="80" cy="160" r="22" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="80" y="165" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">x₂</text>
+      <circle cx="80" cy="240" r="22" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="80" y="245" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">x₃</text>
+
+      <!-- Hidden layer -->
+      <circle cx="280" cy="60" r="22" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="280" y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">h₁</text>
+      <circle cx="280" cy="140" r="22" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="280" y="145" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">h₂</text>
+      <circle cx="280" cy="220" r="22" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="280" y="225" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">h₃</text>
+      <circle cx="280" cy="300" r="22" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="280" y="305" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">h₄</text>
+
+      <!-- Output layer -->
+      <circle cx="480" cy="140" r="22" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+      <text x="480" y="145" text-anchor="middle" font-size="14" font-weight="600" fill="#065f46">y₁</text>
+      <circle cx="480" cy="220" r="22" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+      <text x="480" y="225" text-anchor="middle" font-size="14" font-weight="600" fill="#065f46">y₂</text>
+
+      <!-- Connections input to hidden -->
+      <g stroke="#cbd5e1" stroke-width="1" opacity="0.7">
+        <line x1="102" y1="80" x2="258" y2="60"/><line x1="102" y1="80" x2="258" y2="140"/><line x1="102" y1="80" x2="258" y2="220"/><line x1="102" y1="80" x2="258" y2="300"/>
+        <line x1="102" y1="160" x2="258" y2="60"/><line x1="102" y1="160" x2="258" y2="140"/><line x1="102" y1="160" x2="258" y2="220"/><line x1="102" y1="160" x2="258" y2="300"/>
+        <line x1="102" y1="240" x2="258" y2="60"/><line x1="102" y1="240" x2="258" y2="140"/><line x1="102" y1="240" x2="258" y2="220"/><line x1="102" y1="240" x2="258" y2="300"/>
+      </g>
+      <!-- Connections hidden to output -->
+      <g stroke="#cbd5e1" stroke-width="1" opacity="0.7">
+        <line x1="302" y1="60" x2="458" y2="140"/><line x1="302" y1="60" x2="458" y2="220"/>
+        <line x1="302" y1="140" x2="458" y2="140"/><line x1="302" y1="140" x2="458" y2="220"/>
+        <line x1="302" y1="220" x2="458" y2="140"/><line x1="302" y1="220" x2="458" y2="220"/>
+        <line x1="302" y1="300" x2="458" y2="140"/><line x1="302" y1="300" x2="458" y2="220"/>
+      </g>
+
+      <!-- Labels -->
+      <text x="80" y="290" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Input</text>
+      <text x="280" y="355" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Hidden Layer</text>
+      <text x="480" y="280" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Output</text>
+
+      <!-- Flow arrow -->
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#4f46e5"/>
+        </marker>
+      </defs>
+      <line x1="60" y1="30" x2="540" y2="30" stroke="#4f46e5" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="300" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#4f46e5">Forward pass — information flows left to right</text>
+    </svg>
+    <div class="diagram-caption">A small feed-forward network: 3 inputs → 4 hidden units → 2 outputs. Every connection has its own weight.</div>
+  </div>
+
+  <p>For layer $k$, the computation is two steps — a <strong>linear combination</strong> followed by a <strong>non-linear activation</strong>:</p>
+
+  <div class="formula">
+    <div class="formula-label">Core Equations of a DNN Layer</div>
+    $$z^{[k]} = W^{[k]} h^{[k-1]} + b^{[k]}$$
+    $$h^{[k]} = \phi(z^{[k]})$$
+    <p style="margin:10px 0 0;font-size:13px;"><strong>$W^{[k]}$</strong> = weight matrix · <strong>$b^{[k]}$</strong> = bias vector · <strong>$\phi$</strong> = activation function applied element-wise</p>
+  </div>
+
+  <h3>2.2 Activation Functions — Why Non-Linearity is Everything</h3>
+
+  <div class="box box-trap">
+    <div class="box-title">⚠️ Common Misconception</div>
+    <p style="margin-bottom:0">Without non-linear activations, stacking layers is <strong>pointless</strong>. Math shows: $W_2(W_1 x) = (W_2 W_1)x = W_{combined} \cdot x$ — a linear function of a linear function is just another linear function. The non-linearity $\phi$ is what gives deep networks their power.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Activation</th><th>Formula</th><th>Range</th><th>Derivative</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Step</strong></td>
+          <td>$f(z)=1$ if $z>0$, else $-1$</td>
+          <td>$\{-1,1\}$</td>
+          <td>0 (or undefined)</td>
+          <td>Never — can't do gradient descent</td>
+        </tr>
+        <tr>
+          <td><strong>Sigmoid</strong> $\sigma$</td>
+          <td>$\sigma(z)=\frac{1}{1+e^{-z}}$</td>
+          <td>$(0,1)$</td>
+          <td>$\sigma(z)(1-\sigma(z))$</td>
+          <td>Binary output; gates in LSTM/GRU</td>
+        </tr>
+        <tr>
+          <td><strong>Tanh</strong></td>
+          <td>$\tanh(z)$</td>
+          <td>$(-1,1)$</td>
+          <td>$1 - \tanh^2(z)$</td>
+          <td>Zero-centred; candidate values in LSTM</td>
+        </tr>
+        <tr>
+          <td><strong>ReLU</strong></td>
+          <td>$\max(0,z)$</td>
+          <td>$[0,\infty)$</td>
+          <td>$1$ if $z>0$, $0$ if $z<0$</td>
+          <td>Default for hidden layers — <em>use this</em></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Essential — Memorise these derivatives</div>
+    <p><strong>Sigmoid derivative:</strong> $\sigma'(z) = \sigma(z)(1-\sigma(z))$. If $\sigma(z) = 0.7$, then $\sigma'(z) = 0.7 \times 0.3 = 0.21$.</p>
+    <p style="margin-bottom:0"><strong>ReLU derivative:</strong> $1$ when $z>0$, $0$ when $z<0$. At $z=0$ it's undefined — by convention we set it to 0.</p>
+  </div>
+
+  <h3>2.3 How Learning Actually Happens — Gradient Descent</h3>
+  <p>Training = finding weights that minimise a <strong>loss function</strong> $L$. The loss measures how wrong we are.</p>
+
+  <div class="formula">
+    <div class="formula-label">Gradient Descent Update Rule</div>
+    $$w \leftarrow w - \alpha \cdot \nabla_w L$$
+    <p style="margin:10px 0 0;font-size:13px;"><strong>$\alpha$</strong> = learning rate (how big a step to take) · <strong>$\nabla_w L$</strong> = gradient of loss w.r.t. weights</p>
+  </div>
+
+  <p>Intuition: imagine the loss is a valley. The gradient points uphill. We take a small step <em>downhill</em> (hence the minus). Repeat until we reach the bottom.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Loss curve -->
+      <path d="M 40 60 Q 150 220 260 140 Q 370 60 480 180" stroke="#4f46e5" stroke-width="3" fill="none"/>
+      <!-- Steps -->
+      <circle cx="60" cy="73" r="6" fill="#ef4444"/>
+      <circle cx="110" cy="135" r="6" fill="#f59e0b"/>
+      <circle cx="170" cy="185" r="6" fill="#10b981"/>
+      <circle cx="230" cy="168" r="6" fill="#10b981"/>
+      <circle cx="260" cy="143" r="6" fill="#10b981" stroke="#065f46" stroke-width="2"/>
+      <!-- Arrows -->
+      <path d="M 60 73 L 107 132" stroke="#64748b" stroke-dasharray="3 3" fill="none"/>
+      <path d="M 110 135 L 167 182" stroke="#64748b" stroke-dasharray="3 3" fill="none"/>
+      <path d="M 170 185 L 227 170" stroke="#64748b" stroke-dasharray="3 3" fill="none"/>
+      <text x="55" y="55" font-size="12" fill="#ef4444" font-weight="600">Start (high loss)</text>
+      <text x="240" y="120" font-size="12" fill="#065f46" font-weight="600">Minimum ✓</text>
+      <!-- Axes -->
+      <line x1="20" y1="220" x2="500" y2="220" stroke="#94a3b8"/>
+      <line x1="20" y1="30" x2="20" y2="220" stroke="#94a3b8"/>
+      <text x="260" y="238" text-anchor="middle" font-size="12" fill="#64748b">weight $w$</text>
+      <text x="10" y="125" text-anchor="middle" font-size="12" fill="#64748b" transform="rotate(-90,10,125)">loss $L$</text>
+    </svg>
+    <div class="diagram-caption">Gradient descent rolls downhill toward a minimum, taking steps proportional to the learning rate.</div>
+  </div>
+
+  <h3>2.4 Stochastic Gradient Descent (SGD)</h3>
+  <p>Computing the gradient over the <em>entire</em> dataset every step is expensive — if you have 1 million training examples, one step takes forever. Instead:</p>
+  <ul>
+    <li><strong>Mini-batch SGD</strong>: compute the gradient on a small random batch (32, 64, 256 examples) and take a step.</li>
+    <li>Each step is noisier but much faster. Typical batches per epoch: hundreds.</li>
+    <li><strong>Surprise benefit</strong>: noise helps escape shallow local minima and saddle points.</li>
+  </ul>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Saddle Points vs Local Minima</div>
+    <p style="margin-bottom:0">In high-dimensional weight spaces (millions of parameters), stationary points are <strong>much more likely to be saddle points</strong> than local minima — flat in many directions but with at least one escape direction. SGD naturally escapes along those directions.</p>
+  </div>
+
+  <h3>2.5 Backpropagation — The Chain Rule at Scale</h3>
+  <p><strong>Problem</strong>: if we have a network with millions of weights, how do we compute the gradient $\partial L / \partial w_i$ for every single weight $w_i$?</p>
+  <p><strong>Answer</strong>: the chain rule, applied systematically from output back to input. This is <strong>backpropagation</strong>.</p>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 The Four Steps of Backprop</div>
+    <ol style="margin:0">
+      <li><strong>Forward pass</strong> — compute every activation from input to output.</li>
+      <li><strong>Compute loss</strong> — measure how wrong the prediction is.</li>
+      <li><strong>Backward pass</strong> — compute $\partial L / \partial w$ for every weight using the chain rule, going backwards.</li>
+      <li><strong>Update weights</strong> — $w \leftarrow w - \alpha \cdot \partial L / \partial w$.</li>
+    </ol>
+  </div>
+
+  <div class="formula">
+    <div class="formula-label">Chain Rule for a Single Neuron</div>
+    $$\frac{\partial L}{\partial w_i} = \underbrace{\frac{\partial L}{\partial y}}_{\text{loss deriv}} \cdot \underbrace{\frac{\partial y}{\partial z}}_{\text{activation deriv}} \cdot \underbrace{\frac{\partial z}{\partial w_i}}_{\text{linear part}}$$
+  </div>
+
+  <div class="formula">
+    <div class="formula-label">Hidden-Layer Backprop (the "big one")</div>
+    $$\frac{\partial L}{\partial h_j^{[i-1]}} = \sum_k w_{jk}^{[i]} \cdot \phi'(z_k^{[i]}) \cdot \frac{\partial L}{\partial h_k^{[i]}}$$
+    <p style="margin:10px 0 0;font-size:13px;">"Error at a hidden unit = sum over every neuron it connects to in the next layer of (its weight × activation derivative × its error)."</p>
+  </div>
+
+  <h3>2.6 The Vanishing Gradient Problem</h3>
+  <p>For a deep network with $n$ layers, the gradient at the first weight is:</p>
+
+  $$\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y} \cdot \prod_{k=2}^{n} \phi'(z_k) \cdot w_k$$
+
+  <p>If $\phi'(z_k) \cdot w_k < 1$ at every layer (which is common with sigmoid/tanh), this product <strong>shrinks exponentially</strong>. By the first layer, the gradient is essentially zero — it never learns.</p>
+
+  <div class="box box-example">
+    <div class="box-title">✓ Three Solutions to Vanishing Gradients</div>
+    <ul style="margin-bottom:0">
+      <li><strong>Use ReLU</strong> — its derivative is 1 for $z>0$, so no shrinking.</li>
+      <li><strong>Residual/skip connections</strong> (ResNet) — gradient has a direct highway backward.</li>
+      <li><strong>Smart weight init</strong> — Xavier (for sigmoid/tanh) or He/Kaiming (for ReLU).</li>
+    </ul>
+  </div>
+
+  <h3>2.7 Forward-Mode vs Reverse-Mode Autodiff</h3>
+  <p>There are two ways to use automatic differentiation. This is a classic exam topic:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>How it works</th><th>Cost for $P$ parameters, $M$ outputs</th><th>When used</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Forward-mode</strong></td><td>Propagate derivatives forward with inputs</td><td>$P$ forward passes</td><td>Few parameters, many outputs</td></tr>
+        <tr><td><strong>Reverse-mode (backprop)</strong></td><td>Propagate derivatives backward from output</td><td>1 forward + 1 backward pass</td><td>Many parameters, 1 output — <em>DL</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    Deep networks have millions of parameters but one scalar loss. That's why reverse-mode (backprop) is the right choice — it's independent of parameter count.
+  </div>
+
+  <!-- PAST PAPER EXAMPLE -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2023 Q2(c-g) · Backprop through an MLP</div>
+    <p><strong>Given:</strong> A 2-input network with matrices $M \in \mathbb{R}^{2\times 2}$ and $N \in \mathbb{R}^{1\times 2}$, sigmoid activations:</p>
+    <p>$z = Mx$, &nbsp; $h = \sigma(z)$, &nbsp; $y = Nh$</p>
+  </div>
+
+  <details>
+    <summary>Click for full worked solution</summary>
+
+    <p><strong>(c) Equations:</strong></p>
+    $$y = Nh, \quad h = \sigma(z), \quad z = Mx$$
+
+    <p><strong>(d) Matrices in terms of elements from the diagram:</strong></p>
+    $$M = \begin{bmatrix} w_{11}^{(1)} & w_{12}^{(1)} \\ w_{21}^{(1)} & w_{22}^{(1)} \end{bmatrix}, \quad N = \begin{bmatrix} w_1^{(2)} & w_2^{(2)} \end{bmatrix}$$
+
+    <p><strong>(e) $\nabla_h y$:</strong> Since $y = Nh = w_1^{(2)} h_1 + w_2^{(2)} h_2$:</p>
+    $$\nabla_h y = \begin{bmatrix} w_1^{(2)} \\ w_2^{(2)} \end{bmatrix}$$
+
+    <p><strong>(f) $\nabla_z y$ via chain rule:</strong> $y = N\,\sigma(z)$, so</p>
+    $$\frac{\partial y}{\partial z_i} = w_i^{(2)} \cdot \sigma'(z_i) = w_i^{(2)} \cdot \sigma(z_i)(1-\sigma(z_i))$$
+
+    $$\nabla_z y = \begin{bmatrix} w_1^{(2)} \, \sigma(z_1)(1-\sigma(z_1)) \\ w_2^{(2)} \, \sigma(z_2)(1-\sigma(z_2)) \end{bmatrix}$$
+
+    <p><strong>(g) $\partial y / \partial x_1$:</strong> Now we chain back through $z$ which depends on $x_1$ through <em>both</em> $z_1$ and $z_2$:</p>
+    $$\frac{\partial y}{\partial x_1} = \frac{\partial y}{\partial z_1}\frac{\partial z_1}{\partial x_1} + \frac{\partial y}{\partial z_2}\frac{\partial z_2}{\partial x_1}$$
+
+    <p>Since $z_1 = w_{11}^{(1)} x_1 + w_{12}^{(1)} x_2$, we have $\partial z_1 / \partial x_1 = w_{11}^{(1)}$. Similarly $\partial z_2 / \partial x_1 = w_{21}^{(1)}$.</p>
+
+    $$\boxed{\frac{\partial y}{\partial x_1} = w_1^{(2)}\sigma'(z_1) w_{11}^{(1)} + w_2^{(2)}\sigma'(z_2) w_{21}^{(1)}}$$
+
+    <p style="margin-bottom:0"><strong>Key insight for exam:</strong> when a variable feeds into multiple downstream neurons, <strong>sum</strong> the contributions. Always draw the computation graph first.</p>
+  </details>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: CONVOLUTIONAL NEURAL NETWORKS                    -->
+<!-- ============================================================ -->
+<section id="cnn">
+  <div class="section-header">
+    <span class="section-number">Week 3 · Foundation</span>
+    <h2>Convolutional Neural Networks</h2>
+    <p class="subtitle">Why we don't use fully-connected networks for images, how convolution works, and the architectures that won ImageNet.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Why CNNs exist</div>
+    <p style="margin-bottom:0">A 224×224 colour image has 150,528 pixels. A fully-connected network with 1000 hidden units would need <strong>150 million</strong> parameters <em>just for the first layer</em>. CNNs solve this with a clever trick: use the <strong>same small filter</strong> everywhere on the image (parameter sharing), because a cat's ear looks like a cat's ear whether it's in the top-left or the middle of the image.</p>
+  </div>
+
+  <h3>3.1 The Key Idea — Local Receptive Fields + Parameter Sharing</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Architecture</th><th>Image size</th><th>Hidden units</th><th>Parameters</th></tr></thead>
+      <tbody>
+        <tr><td>Fully Connected</td><td>3×32×32 = 3072</td><td>6×28×28 = 4704</td><td>14,455,392</td></tr>
+        <tr><td><strong>Conv2d(3, 6, kernel=5)</strong></td><td>3×32×32</td><td>6×28×28</td><td><strong>456</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>That's a <strong>31,000× reduction</strong>. Same output shape. How? Because the same 5×5 filter slides across the whole image.</p>
+
+  <h3>3.2 Five Key Properties of CNNs</h3>
+
+  <div class="card-grid">
+    <div class="card"><h4>1. Sparse connectivity</h4><p>Each output depends only on a small patch of the input.</p></div>
+    <div class="card"><h4>2. Parameter sharing</h4><p>Same filter applied everywhere — detects the feature anywhere in the image.</p></div>
+    <div class="card"><h4>3. Translation invariance</h4><p>For classification: $f(t(x)) = f(x)$. Cat anywhere → "cat".</p></div>
+    <div class="card"><h4>4. Translation equivariance</h4><p>For segmentation: $f(t(x)) = t(f(x))$. Shift input → shift output.</p></div>
+    <div class="card"><h4>5. Sub-sampling</h4><p>Pooling concentrates strongest activations, reduces spatial size.</p></div>
+  </div>
+
+  <h3>3.3 How a Convolution Operation Works</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Input grid -->
+      <text x="70" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Input (5×5)</text>
+      <g>
+        <rect x="10" y="35" width="120" height="120" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
+        <!-- grid lines -->
+        <g stroke="#93c5fd" stroke-width="1">
+          <line x1="34" y1="35" x2="34" y2="155"/><line x1="58" y1="35" x2="58" y2="155"/>
+          <line x1="82" y1="35" x2="82" y2="155"/><line x1="106" y1="35" x2="106" y2="155"/>
+          <line x1="10" y1="59" x2="130" y2="59"/><line x1="10" y1="83" x2="130" y2="83"/>
+          <line x1="10" y1="107" x2="130" y2="107"/><line x1="10" y1="131" x2="130" y2="131"/>
+        </g>
+        <!-- highlighted 3x3 patch -->
+        <rect x="10" y="35" width="72" height="72" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" stroke-width="2"/>
+      </g>
+
+      <!-- Kernel -->
+      <text x="230" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">Kernel (3×3)</text>
+      <rect x="195" y="35" width="72" height="72" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <g stroke="#c4b5fd" stroke-width="1">
+        <line x1="219" y1="35" x2="219" y2="107"/><line x1="243" y1="35" x2="243" y2="107"/>
+        <line x1="195" y1="59" x2="267" y2="59"/><line x1="195" y1="83" x2="267" y2="83"/>
+      </g>
+
+      <!-- operator -->
+      <text x="160" y="75" text-anchor="middle" font-size="26" font-weight="700" fill="#4f46e5">⊙</text>
+      <text x="300" y="75" text-anchor="middle" font-size="26" font-weight="700" fill="#4f46e5">=</text>
+
+      <!-- Output -->
+      <text x="400" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="#065f46">Output (3×3)</text>
+      <rect x="335" y="35" width="120" height="120" fill="#d1fae5" stroke="#10b981" stroke-width="1"/>
+      <g stroke="#6ee7b7" stroke-width="1">
+        <line x1="375" y1="35" x2="375" y2="155"/><line x1="415" y1="35" x2="415" y2="155"/>
+        <line x1="335" y1="75" x2="455" y2="75"/><line x1="335" y1="115" x2="455" y2="115"/>
+      </g>
+      <rect x="335" y="35" width="40" height="40" fill="rgba(16,185,129,0.4)" stroke="#059669" stroke-width="2"/>
+
+      <!-- caption -->
+      <text x="290" y="200" text-anchor="middle" font-size="13" fill="#475569">
+        At each position, compute dot product of kernel with image patch.
+      </text>
+      <text x="290" y="222" text-anchor="middle" font-size="13" fill="#475569">
+        Slide the kernel; this produces the feature map.
+      </text>
+    </svg>
+    <div class="diagram-caption">2D convolution: the kernel slides across the input, computing a dot product at each position.</div>
+  </div>
+
+  <pre><code><span class="code-comment"># PyTorch convolution example</span>
+self.conv1 = nn.Conv2d(<span class="code-keyword">in_channels</span>=3, <span class="code-keyword">out_channels</span>=6, <span class="code-keyword">kernel_size</span>=5)
+<span class="code-comment"># 6 kernels, each shape (3, 5, 5) — produces 6 activation maps</span></code></pre>
+
+  <h3>3.4 The Output Size Formula ⭐ (memorise this!)</h3>
+
+  <div class="formula">
+    <div class="formula-label">Conv / Pool Output Size</div>
+    $$\text{out} = \left\lfloor \frac{I + 2P - F}{S} \right\rfloor + 1$$
+    <p style="margin:10px 0 0;font-size:13px;"><strong>$I$</strong> = input size · <strong>$F$</strong> = filter size · <strong>$P$</strong> = padding · <strong>$S$</strong> = stride</p>
+  </div>
+
+  <div class="box box-example">
+    <div class="box-title">✓ Quick Examples</div>
+    <ul style="margin-bottom:0">
+      <li><strong>"Same" padding</strong>: $P = (F-1)/2$, stride 1 → output same size as input.</li>
+      <li><strong>No padding, stride 1</strong>: output = $I - F + 1$.</li>
+      <li><strong>MaxPool 2×2, stride 2</strong>: halves each spatial dimension.</li>
+      <li><strong>Input 28×28, kernel 5×5, padding 2, stride 1</strong>: $(28 + 4 - 5)/1 + 1 = 28$ ✓</li>
+    </ul>
+  </div>
+
+  <h3>3.5 Parameter Count for Conv Layers ⭐</h3>
+
+  <div class="formula">
+    <div class="formula-label">Parameters per Conv Layer</div>
+    $$\text{params} = C_{out} \times (C_{in} \times F_h \times F_w + 1)$$
+    <p style="margin:10px 0 0;font-size:13px;">The +1 is the <strong>bias per kernel</strong>. Every kernel sees all input channels.</p>
+  </div>
+
+  <div class="box box-example">
+    <div class="box-title">✓ Worked Example — Conv2d(3, 10, 5)</div>
+    <p>3 input channels, 10 output channels, 5×5 kernel.</p>
+    <ul style="margin-bottom:0">
+      <li>Each kernel: $3 \times 5 \times 5 + 1 = 76$ parameters.</li>
+      <li>Total: $10 \times 76 = \boxed{760}$ parameters.</li>
+    </ul>
+  </div>
+
+  <h3>3.6 Pooling Layers</h3>
+  <p><strong>MaxPool</strong> slides a window over the feature map and keeps only the <strong>maximum</strong> value in each window.</p>
+  <ul>
+    <li>Reduces spatial dimensions (usually halves them).</li>
+    <li>Operates <strong>independently per channel</strong> (no cross-channel mixing).</li>
+    <li>Has <strong>no learnable parameters</strong>.</li>
+    <li>Makes features more robust to small shifts.</li>
+  </ul>
+
+  <h3>3.7 The Receptive Field</h3>
+  <p>The <strong>receptive field</strong> of a neuron is the region of the input image that can affect its value. As you go deeper, it grows.</p>
+  <ul>
+    <li>One 3×3 conv: receptive field = 3×3.</li>
+    <li>Two stacked 3×3 convs: receptive field = 5×5.</li>
+    <li>Three stacked 3×3 convs: receptive field = 7×7.</li>
+  </ul>
+  <p>This is why the modern trend is <strong>smaller kernels + deeper networks</strong> — fewer parameters, richer hierarchical features.</p>
+
+  <h3>3.8 Classic CNN Architectures</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Architecture</th><th>Year</th><th>Key innovation</th></tr></thead>
+      <tbody>
+        <tr><td>LeNet-5</td><td>1998</td><td>First successful CNN; [CONV-POOL]×2 + FC</td></tr>
+        <tr><td>AlexNet</td><td>2012</td><td>Won ImageNet; ReLU, dropout, data augmentation</td></tr>
+        <tr><td>VGG-16</td><td>2014</td><td>Deeper (16 layers), only 3×3 kernels</td></tr>
+        <tr><td>GoogLeNet</td><td>2014</td><td>Inception modules — parallel convolutions</td></tr>
+        <tr><td><strong>ResNet</strong></td><td>2015</td><td>Skip connections — enabled 152-layer networks</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.9 ResNet — The Skip Connection Trick</h3>
+  <p>Beyond ~20 layers, adding more layers made networks <em>worse</em> (even on training data!). The fix:</p>
+
+  <div class="formula">
+    <div class="formula-label">Residual Block</div>
+    $$y = F(x) + x$$
+    <p style="margin:10px 0 0;font-size:13px;">The block learns the <strong>residual</strong> $F(x)$ on top of an identity skip. Gradients flow unblocked through the $+x$ term.</p>
+  </div>
+
+  <div class="box box-example">
+    <div class="box-title">✓ Why skip connections work</div>
+    <ul style="margin-bottom:0">
+      <li>If identity is optimal, the block can just learn $F(x)=0$.</li>
+      <li>Gradients have a direct path back — no vanishing.</li>
+      <li>Enables training of 100+ layer networks. ResNet-152 still beats many modern networks.</li>
+    </ul>
+  </div>
+
+  <h3>3.10 1D Convolutions (Conv1d)</h3>
+  <p>Same idea as Conv2d but along a single sequential axis. Used for audio, time series, DNA, ECG.</p>
+  <pre><code>nn.Conv1d(in_channels, out_channels, kernel_size)</code></pre>
+
+  <!-- PAST PAPER EXAMPLE -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q2(a) · Apply a Kernel</div>
+    <p>Kernel: <code>[[-1,-1,-1],[+1,+1,+1]]</code> (2×3)</p>
+    <p>Image: 5×5 with a 3×3 block of 1s in the centre surrounded by 0s.</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution (parts i, ii, iii, iv)</summary>
+
+    <p><strong>(i) Type of feature this kernel detects:</strong> This is a <strong>horizontal edge detector</strong> — specifically a <strong>bottom-edge detector</strong>. It computes (row below) − (row above). Where pixels transition dark→bright vertically, the kernel fires positive; bright→dark, negative.</p>
+
+    <p><strong>(ii) Output with padding=0, stride=1</strong></p>
+    <p>Input is 5×5. Kernel is 2 rows × 3 cols. Output size = $(5-2+1) \times (5-3+1) = 4 \times 3$.</p>
+
+    <p>Compute at each valid position $(r, c)$ for $r \in \{0,1,2,3\}$, $c \in \{0,1,2\}$:</p>
+
+    $$\text{out}[r,c] = -I[r,c]-I[r,c+1]-I[r,c+2] + I[r+1,c]+I[r+1,c+1]+I[r+1,c+2]$$
+
+    <p>Row 0 (kernel rows 0,1 = image rows 0,1): image row 0 is all 0; row 1 is 0,1,1,1,0.</p>
+    <p>Windows over row 1: (0,1,1)=2, (1,1,1)=3, (1,1,0)=2 → output row 0: $2, 3, 2$.</p>
+    <p>Row 1 (kernel over rows 1,2): row 1 = 0,1,1,1,0; row 2 = 0,1,1,1,0. Pos (c=0): $-(0+1+1)+(0+1+1) = 0$. Similar → $0, 0, 0$.</p>
+    <p>Row 2 (rows 2,3): same values → $0, 0, 0$.</p>
+    <p>Row 3 (rows 3,4): row 3 = 0,1,1,1,0; row 4 = 0,0,0,0,0. Pos 0: $-(0+1+1)+0 = -2$. $-3, -2$.</p>
+
+    <pre><code>Output (padding=0, stride=1):
+  2,  3,  2
+  0,  0,  0
+  0,  0,  0
+ -2, -3, -2</code></pre>
+
+    <p>Positive at top (bottom edge of shape), zero in middle (no change), negative at bottom (top edge seen from below).</p>
+
+    <p><strong>(iii) Output with padding=1, stride=2</strong></p>
+    <p>Padded image becomes 7×7 (border of zeros). Output size = $\lfloor(5+2-2)/2\rfloor+1 = 3$ rows; $\lfloor(5+2-3)/2\rfloor+1 = 3$ cols → <strong>3×3</strong>.</p>
+    <p>Top-left kernel position starts at padded coord $(0,0)$, stepping by 2.</p>
+
+    <pre><code>Output (padding=1, stride=2) — approximate working:
+  0,  2,  0
+  0,  0,  0
+  0, -2,  0</code></pre>
+
+    <p><strong>(iv) MaxPool (5 rows × 1 col), stride=2 on the original image</strong></p>
+    <p>Pool window is a full column. Output rows = $\lfloor(5-5)/2\rfloor+1 = 1$. Output cols = $\lfloor(5-1)/2\rfloor+1 = 3$.</p>
+    <p>Max of each column-of-5: cols 0,4 are all 0s (max=0); cols 1,2,3 contain 1s (max=1). With stride 2 along columns, we pick cols 0, 2, 4 → $[0, 1, 0]$.</p>
+
+    <pre><code>MaxPool output (1×3):
+  0, 1, 0</code></pre>
+  </details>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Pattern — CNN questions appear EVERY year</div>
+    <p style="margin-bottom:0">You'll be asked to (1) compute output tensor shapes through layers, (2) count parameters, (3) manually apply a kernel, (4) identify what features a kernel detects. <strong>Practice these until they're automatic.</strong></p>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: ML WORKFLOW                                      -->
+<!-- ============================================================ -->
+<section id="workflow">
+  <div class="section-header">
+    <span class="section-number">Week 4 · Practical</span>
+    <h2>ML Workflow & Practical Aspects</h2>
+    <p class="subtitle">How to actually run a DL project end-to-end — from defining success metrics to catching training issues before they bite you.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 The big picture</div>
+    <p style="margin-bottom:0">Training a model is only 20% of a DL project. The other 80% is <strong>deciding what success means, cleaning the data, setting up fair evaluation, and diagnosing what goes wrong</strong>. This section is where marks are usually lost and won in exams — and where junior engineers are usually told "don't do that" in their first job.</p>
+  </div>
+
+  <h3>4.1 The Eight Steps of ML Workflow</h3>
+  <ol>
+    <li><strong>Define the problem and assemble the dataset.</strong> What exactly are you predicting? What data do you have?</li>
+    <li><strong>Choose a measure of success.</strong> Accuracy? F1? Recall? This depends on the problem.</li>
+    <li><strong>Prepare the data.</strong> Clean, normalise, encode, split.</li>
+    <li><strong>Decide on an evaluation protocol.</strong> Train/val/test split? K-fold cross-validation?</li>
+    <li><strong>Monitor & diagnose training.</strong> Watch loss curves; detect over/underfitting.</li>
+    <li><strong>Build a simple baseline.</strong> Start small — linear, shallow — to know what's trivially possible.</li>
+    <li><strong>Scale up to an over-capacity model.</strong> Deliberately overfit to prove the model <em>can</em> learn.</li>
+    <li><strong>Tune hyperparameters and regularise.</strong> Dial back to the sweet spot.</li>
+  </ol>
+
+  <h3>4.2 Measures of Success — Choose Wisely</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Formula</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>Accuracy</td><td>$\frac{TP+TN}{N}$</td><td>Balanced datasets only</td></tr>
+        <tr><td>Precision</td><td>$\frac{TP}{TP+FP}$</td><td>When false positives are costly (e.g., spam)</td></tr>
+        <tr><td>Recall (Sensitivity)</td><td>$\frac{TP}{TP+FN}$</td><td>When false negatives are costly (e.g., cancer)</td></tr>
+        <tr><td>F1 Score</td><td>$\frac{2 \cdot P \cdot R}{P+R}$</td><td>Balanced summary of precision & recall</td></tr>
+        <tr><td>AUC-ROC</td><td>Area under ROC curve</td><td>Threshold-agnostic evaluation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-trap">
+    <div class="box-title">⚠️ Classic exam trap: accuracy on imbalanced data</div>
+    <p><strong>Cancer detection</strong>: if 1% of patients have cancer, a dumb model predicting "no cancer" for everyone gets <strong>99% accuracy</strong> — while missing every single cancer case.</p>
+    <p style="margin-bottom:0">Instead, use <strong>recall</strong> (you want high recall — catching all the cancers) combined with <strong>precision</strong> (you also don't want to scare healthy people). F1 alone is insufficient because it can't distinguish high-precision-low-recall from the reverse.</p>
+  </div>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Why can't we use accuracy as a loss function?</div>
+    <p style="margin-bottom:0">Accuracy, F1, etc. are <strong>not differentiable</strong> — they're piecewise constant as you change weights. We need a differentiable <em>surrogate</em> (cross-entropy, MSE) for training, then evaluate the real metric at the end.</p>
+  </div>
+
+  <h3>4.3 Data Preparation Techniques</h3>
+
+  <div class="card-grid">
+    <div class="card"><h4>One-hot encoding</h4><p>Convert categories to binary vectors. <code>red=[1,0,0]</code>, <code>blue=[0,1,0]</code>. Avoids fake ordering.</p></div>
+    <div class="card"><h4>Normalisation</h4><p>$\hat{x} = (x - \min) / (\max - \min)$ — scale to $[0,1]$.</p></div>
+    <div class="card"><h4>Standardisation</h4><p>$\hat{x} = (x - \mu) / \sigma$ — zero mean, unit variance. Preferred for NNs.</p></div>
+    <div class="card"><h4>Imputation</h4><p>Fill missing values (mean, median, predicted, or out-of-range sentinel).</p></div>
+    <div class="card"><h4>Binning</h4><p>Convert continuous to categorical — injects domain knowledge.</p></div>
+    <div class="card"><h4>Data augmentation</h4><p>Rotations, flips, colour jitter — artificially grow the training set.</p></div>
+  </div>
+
+  <h3>4.4 Loss Functions by Task</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Output type</th><th>Output activation</th><th>Loss function</th><th>PyTorch</th></tr></thead>
+      <tbody>
+        <tr><td>Binary classification</td><td>Sigmoid</td><td>Binary cross-entropy</td><td><code>nn.BCELoss</code> or <code>BCEWithLogitsLoss</code></td></tr>
+        <tr><td>Multi-class classification</td><td><strong>None</strong> (linear)</td><td>Cross-entropy</td><td><code>nn.CrossEntropyLoss</code></td></tr>
+        <tr><td>Regression</td><td>None (linear)</td><td>MSE</td><td><code>nn.MSELoss</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-trap">
+    <div class="box-title">⚠️ The #1 PyTorch coding mistake (asked in 2022)</div>
+    <p style="margin-bottom:0"><code>nn.CrossEntropyLoss</code> expects <strong>raw logits</strong>, NOT softmax outputs — it applies <code>LogSoftmax</code> internally. Applying <code>softmax</code> in your forward pass and then using <code>CrossEntropyLoss</code> means you're log-softmax-softmaxing. Three ways to fix: (1) remove the softmax from <code>forward</code>, (2) use <code>NLLLoss</code> with <code>log_softmax</code> in forward, (3) switch to raw logits + <code>BCEWithLogitsLoss</code> for binary.</p>
+  </div>
+
+  <h3>4.5 The Maximum Likelihood Framework</h3>
+  <p>Every loss function is secretly a maximum likelihood estimator:</p>
+  <ol>
+    <li>Pick a known distribution to model your output (Normal for regression, Bernoulli for binary, Categorical for multi-class).</li>
+    <li>Your network predicts the parameters of that distribution.</li>
+    <li>Maximise the likelihood ↔ minimise the negative log-likelihood ↔ your loss function.</li>
+  </ol>
+  <p>Normal → MSE. Bernoulli → BCE. Categorical → CE. It's all the same principle.</p>
+
+  <h3>4.6 Evaluation Protocol</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- Train / val / test -->
+      <rect x="20" y="40" width="350" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="195" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">Training Set (60–80%)</text>
+      <rect x="370" y="40" width="90" height="50" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="415" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">Validation</text>
+      <rect x="460" y="40" width="90" height="50" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <text x="505" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">Test</text>
+
+      <!-- Labels -->
+      <text x="195" y="110" text-anchor="middle" font-size="12" fill="#475569">Fit weights</text>
+      <text x="415" y="110" text-anchor="middle" font-size="12" fill="#475569">Pick hyperparams</text>
+      <text x="505" y="110" text-anchor="middle" font-size="12" fill="#475569">Final score — ONCE</text>
+      <text x="280" y="140" text-anchor="middle" font-size="12" fill="#64748b" font-style="italic">Test set is held out and used exactly once. Touch it repeatedly and you're secretly tuning to it.</text>
+    </svg>
+    <div class="diagram-caption">The train/validation/test split — the validation set is for hyperparameter tuning, the test set is sacred.</div>
+  </div>
+
+  <h4>K-fold Cross-Validation</h4>
+  <p>When data is limited, split into $K$ folds, train $K$ times each leaving one fold out as validation, and average the scores. More robust but $K\times$ slower. Typical $K = 5$ or $10$.</p>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Final model generation (exam favourite)</div>
+    <ol style="margin-bottom:0">
+      <li>Use cross-validation on (train + val) to find the best hyperparameters.</li>
+      <li><strong>Retrain on ALL training+validation data</strong> with those best hyperparameters.</li>
+      <li>Evaluate <strong>once</strong> on the held-out test set for the final number you report.</li>
+    </ol>
+  </div>
+
+  <h3>4.7 Monitoring Training — Reading Loss Curves</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Three subplots -->
+      <!-- 1: LR too high -->
+      <g>
+        <rect x="10" y="20" width="200" height="170" fill="#fff" stroke="#cbd5e1"/>
+        <polyline points="15,40 30,180 50,40 70,170 90,30 110,180 130,35 150,150 170,25 190,170" stroke="#ef4444" stroke-width="2" fill="none"/>
+        <text x="110" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">LR too high</text>
+        <text x="110" y="230" text-anchor="middle" font-size="10" fill="#64748b">Loss oscillates/explodes</text>
+      </g>
+      <!-- 2: LR too low -->
+      <g>
+        <rect x="240" y="20" width="200" height="170" fill="#fff" stroke="#cbd5e1"/>
+        <polyline points="245,50 265,55 285,60 305,66 325,72 345,78 365,84 385,90 405,97 425,104" stroke="#f59e0b" stroke-width="2" fill="none"/>
+        <text x="340" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#b45309">LR too low</text>
+        <text x="340" y="230" text-anchor="middle" font-size="10" fill="#64748b">Barely decreases</text>
+      </g>
+      <!-- 3: Just right -->
+      <g>
+        <rect x="470" y="20" width="200" height="170" fill="#fff" stroke="#cbd5e1"/>
+        <polyline points="475,40 495,60 515,80 535,100 555,120 575,135 595,148 615,158 635,165 655,170" stroke="#10b981" stroke-width="2" fill="none"/>
+        <text x="570" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#065f46">Just right</text>
+        <text x="570" y="230" text-anchor="middle" font-size="10" fill="#64748b">Smooth, steady decrease</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Reading a loss curve tells you a lot about the learning rate.</div>
+  </div>
+
+  <h4>Underfitting vs Overfitting</h4>
+
+  <div class="card-grid">
+    <div class="card" style="border-top: 4px solid var(--warning);">
+      <h4>🟨 Underfitting</h4>
+      <p>Both train and validation loss are high. Model is too simple or hasn't trained long enough.</p>
+      <p style="font-size:13px;color:var(--primary);"><strong>Fix:</strong> bigger model, train longer, better features.</p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--danger);">
+      <h4>🟥 Overfitting</h4>
+      <p>Training loss keeps dropping, but validation loss starts rising. The model memorises noise.</p>
+      <p style="font-size:13px;color:var(--primary);"><strong>Fix:</strong> more data, dropout, weight decay, early stopping, simpler model.</p>
+    </div>
+  </div>
+
+  <h3>4.8 Hyperparameter Optimisation Methods</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>How it works</th><th>Trade-off</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Manual</strong></td><td>Educated guessing based on expertise</td><td>Requires know-how</td></tr>
+        <tr><td><strong>Grid search</strong></td><td>Exhaustive on a predefined grid</td><td>Thorough, very slow</td></tr>
+        <tr><td><strong>Random search</strong></td><td>Sample random points from the space</td><td>Often beats grid — Bergstra & Bengio (2012)</td></tr>
+        <tr><td><strong>Bayesian optimisation</strong></td><td>Build a surrogate model (e.g. Gaussian process) to predict performance; pick the next point to try</td><td>Most sample-efficient; best for expensive evaluations</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.9 Class Imbalance Strategies</h3>
+  <ol>
+    <li><strong>Data augmentation</strong> of the minority class (more synthetic examples).</li>
+    <li><strong>Weighted sampler</strong> — in PyTorch's <code>DataLoader</code>, sample classes more uniformly.</li>
+    <li><strong>Weighted loss</strong> — make mistakes on the minority class cost more.</li>
+  </ol>
+
+  <!-- Past paper -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q1(e) · Reading an overfitting loss curve</div>
+    <p>The loss curve showed training loss decreasing to ~0 while validation loss increases after epoch ~30.</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>Diagnosis:</strong> The model is severely <strong>overfitting</strong>. Training loss → 0 means it has memorised the training data; validation loss rising means this memorisation doesn't generalise.</p>
+    <p><strong>Four specific fixes:</strong></p>
+    <ol>
+      <li><strong>Add dropout layers</strong> (e.g. <code>nn.Dropout(p=0.3)</code> after each ReLU) — forces redundancy, acts like an ensemble.</li>
+      <li><strong>Increase weight decay</strong> — e.g. change <code>weight_decay=0.001</code> to <code>0.01</code> — stronger L2 penalty on large weights.</li>
+      <li><strong>Early stopping</strong> — save the model at the epoch with lowest validation loss (~30 here) and stop training there.</li>
+      <li><strong>Data augmentation / more data</strong> — if inputs are 2D features, add noise jitter; if images, apply flips/rotations; collect more training examples.</li>
+    </ol>
+    <p style="margin-bottom:0"><em>Other valid answers:</em> reduce model capacity (fewer hidden units), batch normalisation, ensembling.</p>
+  </details>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Pattern — Workflow questions are Q2's bread-and-butter</div>
+    <p style="margin-bottom:0">Expect to diagnose a loss curve, pick a loss function, explain cross-validation, or discuss imbalanced data. Answers should be <strong>concrete</strong> ("add <code>nn.Dropout(0.3)</code>") not vague ("use regularisation").</p>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: OPTIMISATION, GENERALISATION, REGULARISATION     -->
+<!-- ============================================================ -->
+<section id="optim">
+  <div class="section-header">
+    <span class="section-number">Week 5 · Practical</span>
+    <h2>Optimisation, Generalisation & Regularisation</h2>
+    <p class="subtitle">The engine room of deep learning — momentum, Adam, weight initialisation, dropout, and the bias-variance trade-off.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Two different jobs</div>
+    <p style="margin-bottom:0"><strong>Optimisation</strong> is making training <em>fast and reach a low loss</em>. <strong>Regularisation</strong> is making the model <em>generalise to unseen data</em>. They're different goals — a model can have low training loss and still fail on test data. Good engineering needs both.</p>
+  </div>
+
+  <h3>5.1 Challenges on the Loss Surface</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Challenge</th><th>Description</th><th>Solution</th></tr></thead>
+      <tbody>
+        <tr><td>Local minima</td><td>Shallow pits in the loss surface</td><td>SGD noise helps escape; less problematic in high-D</td></tr>
+        <tr><td><strong>Saddle points</strong></td><td>Flat in some dims, descending in others — very common in high-D</td><td>SGD naturally escapes along descending dimensions</td></tr>
+        <tr><td>Cliffs</td><td>Sudden steep walls from weight products (esp. RNNs)</td><td><strong>Gradient clipping</strong></td></tr>
+        <tr><td>Plateaus</td><td>Long flat regions; gradient ≈ 0</td><td>Momentum, adaptive LR</td></tr>
+        <tr><td>Steep valleys</td><td>Big gradient in one direction, tiny in another — oscillations</td><td>Momentum + adaptive LR</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.2 Momentum — Rolling Downhill</h3>
+  <p>Plain SGD takes each step based only on the current gradient. <strong>Momentum</strong> accumulates an exponentially-weighted moving average of past gradients — like a ball rolling downhill instead of teleporting step-by-step.</p>
+
+  <div class="formula">
+    <div class="formula-label">SGD with Momentum</div>
+    $$v_t = \beta v_{t-1} + \nabla_w L$$
+    $$w \leftarrow w - \alpha v_t$$
+    <p style="margin:10px 0 0;font-size:13px;">$\beta$ (momentum coefficient) is typically $0.9$.</p>
+  </div>
+
+  <div class="box box-example">
+    <div class="box-title">✓ What momentum buys you</div>
+    <ul style="margin-bottom:0">
+      <li>Accelerates in consistent gradient directions.</li>
+      <li>Dampens oscillations in steep valleys.</li>
+      <li>Pushes past small local minima and flat regions.</li>
+      <li>Smooths noisy SGD updates.</li>
+    </ul>
+  </div>
+
+  <h3>5.3 Adaptive Learning Rates — RMSprop & Adam</h3>
+  <p>Different parameters benefit from different step sizes. Parameters with large gradients should take small steps; parameters with small gradients should take large steps.</p>
+
+  <h4>RMSprop</h4>
+  <div class="formula">
+    $$s_t = \gamma s_{t-1} + (1-\gamma)(\nabla_w L)^2$$
+    $$w \leftarrow w - \frac{\alpha}{\sqrt{s_t + \epsilon}} \nabla_w L$$
+  </div>
+
+  <h4>Adam — The Go-To Optimiser</h4>
+  <p>Adam = Momentum (1st moment) + RMSprop (2nd moment) + bias correction.</p>
+
+  <div class="formula">
+    <div class="formula-label">Adam Update Rule</div>
+    $$m_t = \beta_1 m_{t-1} + (1-\beta_1) \nabla_w L \quad \text{(momentum)}$$
+    $$v_t = \beta_2 v_{t-1} + (1-\beta_2) (\nabla_w L)^2 \quad \text{(adaptive)}$$
+    $$\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t} \quad \text{(bias correction)}$$
+    $$w \leftarrow w - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$$
+    <p style="margin:10px 0 0;font-size:13px;">Typical defaults: $\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$.</p>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Contour-like loss surface (ravine) -->
+      <g fill="none" stroke-width="1.5">
+        <ellipse cx="260" cy="130" rx="220" ry="40" stroke="#94a3b8"/>
+        <ellipse cx="260" cy="130" rx="180" ry="30" stroke="#cbd5e1"/>
+        <ellipse cx="260" cy="130" rx="140" ry="22" stroke="#cbd5e1"/>
+        <ellipse cx="260" cy="130" rx="100" ry="15" stroke="#cbd5e1"/>
+        <ellipse cx="260" cy="130" rx="60" ry="10" stroke="#cbd5e1"/>
+      </g>
+      <circle cx="260" cy="130" r="6" fill="#10b981"/>
+      <text x="260" y="148" text-anchor="middle" font-size="11" fill="#065f46" font-weight="700">minimum</text>
+
+      <!-- SGD zigzag -->
+      <polyline points="60,90 90,170 120,90 150,170 180,95 210,165 240,100 260,130" stroke="#ef4444" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+      <circle cx="60" cy="90" r="4" fill="#ef4444"/>
+      <text x="60" y="82" text-anchor="middle" font-size="11" fill="#b91c1c" font-weight="600">SGD start</text>
+
+      <!-- Momentum smoother -->
+      <path d="M 60 220 Q 120 200 180 180 T 260 130" stroke="#4f46e5" stroke-width="2.5" fill="none"/>
+      <circle cx="60" cy="220" r="4" fill="#4f46e5"/>
+      <text x="60" y="240" text-anchor="middle" font-size="11" fill="#4f46e5" font-weight="600">Momentum</text>
+
+      <text x="260" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Steep valley: SGD oscillates, momentum glides</text>
+    </svg>
+    <div class="diagram-caption">In a narrow valley, plain SGD zigzags because the gradient mostly points across the valley. Momentum averages those out and moves smoothly toward the minimum.</div>
+  </div>
+
+  <h3>5.4 Weight Initialisation</h3>
+  <p>Bad init destroys training. Two failure modes:</p>
+  <ul>
+    <li><strong>All same weights</strong> → all neurons compute the same thing → identical gradients → nothing learns. <span class="highlight">Symmetry must be broken randomly.</span></li>
+    <li><strong>Too large</strong> → activations saturate (sigmoid) or explode (ReLU). <strong>Too small</strong> → gradients vanish.</li>
+  </ul>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Formula</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Xavier / Glorot</strong></td><td>$W \sim U\!\left(-\sqrt{\tfrac{6}{m+n}}, \sqrt{\tfrac{6}{m+n}}\right)$</td><td>Sigmoid, Tanh</td></tr>
+        <tr><td><strong>He / Kaiming</strong></td><td>$W \sim \mathcal{N}\!\left(0, \tfrac{2}{m}\right)$</td><td>ReLU (default in modern nets)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>$m$ = fan-in (input units), $n$ = fan-out (output units).</p>
+
+  <h3>5.5 The Bias-Variance Trade-off</h3>
+  <div class="formula">
+    <div class="formula-label">Expected Test Error Decomposition</div>
+    $$\mathbb{E}[\text{Test Error}] = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$
+  </div>
+
+  <ul>
+    <li><strong>Bias</strong> — systematic error from too-simple model (underfitting). Reduce by using a bigger model.</li>
+    <li><strong>Variance</strong> — sensitivity to different training sets (overfitting). Reduce by more data or regularisation.</li>
+    <li><strong>Noise</strong> — irreducible; data is inherently uncertain.</li>
+  </ul>
+
+  <h3>5.6 Regularisation — Explicit and Implicit</h3>
+
+  <h4>Explicit (adds a term to the loss)</h4>
+
+  <div class="formula">
+    <div class="formula-label">L2 Regularisation (Weight Decay / Ridge)</div>
+    $$L_{\text{total}} = L_{\text{data}} + \lambda \sum_i w_i^2$$
+    <p style="margin:10px 0 0;font-size:13px;">Favours small weights. Smooth. Weights shrink toward zero but never become exactly zero.</p>
+  </div>
+
+  <div class="formula">
+    <div class="formula-label">L1 Regularisation (LASSO)</div>
+    $$L_{\text{total}} = L_{\text{data}} + \lambda \sum_i |w_i|$$
+    <p style="margin:10px 0 0;font-size:13px;">Encourages <strong>sparsity</strong> — many weights go to exactly zero. Useful for feature selection.</p>
+  </div>
+
+  <h4>Implicit Regularisation</h4>
+
+  <div class="card-grid">
+    <div class="card"><h4>Early stopping</h4><p>Stop training when validation loss bottoms out. Weights haven't grown large, so effective complexity is low.</p></div>
+    <div class="card"><h4>Data augmentation</h4><p>Transform existing data into more examples. Makes the model invariant to those transformations.</p></div>
+    <div class="card"><h4>Dropout</h4><p>Randomly zero out neurons during training. Acts as an ensemble of sub-networks.</p></div>
+    <div class="card"><h4>Ensembling / Bagging</h4><p>Train multiple models, average their predictions. Reduces variance.</p></div>
+    <div class="card"><h4>Adversarial training</h4><p>Train on adversarial examples. Improves robustness.</p></div>
+    <div class="card"><h4>Transfer learning</h4><p>Start from a pre-trained network. Leverages knowledge from a bigger dataset.</p></div>
+  </div>
+
+  <h3>5.7 Dropout in Detail</h3>
+  <p>At each training step, each neuron is "dropped" (output set to 0) with probability $p$. At test time, no dropout, but weights are scaled by $(1-p)$ to maintain expected activations. (Modern frameworks use <strong>inverted dropout</strong>: scale by $1/(1-p)$ during training instead, so test time is unchanged.)</p>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Why dropout works</div>
+    <ul style="margin-bottom:0">
+      <li>It's effectively an <strong>ensemble</strong> of $2^n$ sub-networks (sharing weights).</li>
+      <li>Neurons can't co-adapt (rely on specific others being present).</li>
+      <li>Forces redundancy — features are detected by many neurons.</li>
+    </ul>
+  </div>
+
+  <!-- Past paper -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q1(d) · SGD with momentum & weight decay</div>
+    <p>Given: <code>optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.001)</code>. Explain what each parameter does.</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(i) Learning rate (lr = 0.01)</strong></p>
+    <p>Controls step size. <strong>Too large</strong>: loss oscillates wildly and can diverge — the optimiser overshoots the minimum and can "bounce" out of valleys. <strong>Too small</strong>: loss decreases painfully slowly and may never reach the minimum within the training budget.</p>
+
+    <p><strong>(ii) Momentum = 0.9</strong></p>
+    <p>Accumulates an exponentially-weighted moving average of past gradients. Formula: $v_t = 0.9 v_{t-1} + \nabla_w L$, update $w \leftarrow w - \alpha v_t$.</p>
+    <p><strong>Helpful for:</strong> steep, narrow valleys (where SGD would oscillate), plateaus (where momentum carries the ball forward even when the current gradient is small), and noisy SGD updates (momentum smooths them).</p>
+
+    <p><strong>(iii) Weight decay = 0.001</strong></p>
+    <p>This is <strong>L2 regularisation</strong>. It adds $\lambda \sum w_i^2$ to the loss, penalising large weights. Equivalent to multiplying weights by $(1 - \alpha \lambda)$ each step.</p>
+    <p style="margin-bottom:0"><strong>Helps with</strong> overfitting — keeps weights small, reduces model complexity, improves generalisation. Particularly useful when training with many parameters relative to data.</p>
+  </details>
+
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2021 · Symmetric weight initialisation</div>
+    <p>"What happens if all weights are initialised to 0.1?"</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>Problem:</strong> All weights being identical creates <strong>symmetry</strong> that the optimiser can never break. Every neuron in a layer computes the same linear combination, produces the same activation, and — crucially — receives the same gradient. They remain identical forever, wasting the entire layer's capacity on a single effective neuron.</p>
+    <p style="margin-bottom:0"><strong>Solution:</strong> <strong>Random initialisation</strong>. Xavier for sigmoid/tanh, He/Kaiming for ReLU. The randomness breaks the symmetry on the first update and lets neurons specialise.</p>
+  </details>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: VISUALISATION & INTERPRETABILITY                 -->
+<!-- ============================================================ -->
+<section id="viz">
+  <div class="section-header">
+    <span class="section-number">Week 6 · Advanced</span>
+    <h2>Visualisation & Interpretability</h2>
+    <p class="subtitle">How to see inside a "black box" network — saliency, Grad-CAM, LIME, and why interpretability matters for ethics and debugging.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Why care about interpretability?</div>
+    <p style="margin-bottom:0">DNNs routinely achieve high accuracy <em>for the wrong reasons</em>. A husky/wolf classifier turned out to be a <em>snow detector</em>. A skin-cancer model learned to detect <em>rulers</em> (only used on malignant moles). Interpretability tools let you catch these shortcuts before they cause real harm — and they're legally required for high-stakes applications (medicine, loans, criminal justice).</p>
+  </div>
+
+  <h3>6.1 Four Families of Interpretation</h3>
+
+  <div class="card-grid">
+    <div class="card"><h4>1. Weights & Activations</h4><p>Visualise filters and feature maps directly. Great for first-layer CNNs.</p></div>
+    <div class="card"><h4>2. Perturbation</h4><p>Occlusion, LIME. Change inputs, see how outputs change.</p></div>
+    <div class="card"><h4>3. Gradient-based</h4><p>Saliency, SmoothGrad, Integrated Gradients, LRP, Guided Backprop.</p></div>
+    <div class="card"><h4>4. Class Activation Maps</h4><p>CAM, Grad-CAM. Show which image region drives a specific class prediction.</p></div>
+  </div>
+
+  <h3>6.2 Visualising Weights & Activations</h3>
+  <ul>
+    <li><strong>First-layer filters</strong>: can be shown as small images. AlexNet's first layer has clear edge detectors, colour blobs, and frequency detectors — reminiscent of primary visual cortex.</li>
+    <li><strong>Feature maps</strong>: conv activations keep 2D structure, so you can display them as images showing what each channel responds to.</li>
+    <li><strong>Layer embeddings</strong>: project high-dim activations to 2D with <strong>t-SNE</strong> or <strong>UMAP</strong>. Watch classes separate as you go deeper.</li>
+  </ul>
+
+  <h3>6.3 Perturbation Methods</h3>
+
+  <h4>Occlusion</h4>
+  <p>Slide a grey patch across the image. Record the change in predicted probability. Regions where occluding causes a big drop are "important."</p>
+  <ul>
+    <li>Simple and model-agnostic.</li>
+    <li>Expensive — one forward pass per patch position.</li>
+  </ul>
+
+  <h4>LIME (Local Interpretable Model-Agnostic Explanations)</h4>
+  <p>For a given input $x$:</p>
+  <ol>
+    <li>Generate many perturbed samples in the neighbourhood of $x$.</li>
+    <li>Get the black-box's prediction for each.</li>
+    <li>Fit a simple <strong>interpretable model</strong> (usually linear) to those predictions, weighted by proximity to $x$.</li>
+    <li>The simple model explains the black-box's behaviour near $x$.</li>
+  </ol>
+  <p>Model-agnostic, works with any classifier — but only gives <em>local</em> explanations.</p>
+
+  <h3>6.4 Gradient-based Attribution</h3>
+
+  <h4>Vanilla Saliency</h4>
+  <div class="formula">
+    $$\text{Saliency}(x) = \left|\frac{\partial F}{\partial x}\right|$$
+    <p style="margin:10px 0 0;font-size:13px;">A single backprop pass gives a pixel-level importance map.</p>
+  </div>
+  <p><strong>Limitations:</strong> noisy, and sensitivity ≠ importance (a pixel where a small change flips the prediction is "sensitive" but may not be "important").</p>
+
+  <h4>SmoothGrad</h4>
+  <p>Average gradients over $N$ noisy copies of the input:</p>
+  $$\text{SmoothGrad}(x) = \frac{1}{N} \sum_{i=1}^{N} \left|\frac{\partial F}{\partial(x+\eta_i)}\right|$$
+  <p>Reduces visual noise, gives cleaner maps.</p>
+
+  <h4>Integrated Gradients (Sundararajan et al., 2017)</h4>
+  <div class="formula">
+    $$\text{IG}_i(x) = (x_i - x'_i) \int_0^1 \frac{\partial F}{\partial x_i}(x' + \alpha(x - x'))\, d\alpha$$
+    <p style="margin:10px 0 0;font-size:13px;">$x'$ = baseline (e.g. all-black image). Averages gradients along the path from baseline to input — fixes gradient saturation.</p>
+  </div>
+  <p><strong>Two critical axioms satisfied:</strong></p>
+  <ul>
+    <li><strong>Completeness</strong>: attributions sum to the output difference $F(x) - F(x')$.</li>
+    <li><strong>Implementation invariance</strong>: functionally equivalent networks give the same attributions.</li>
+  </ul>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Sensitivity vs Importance</div>
+    <ul style="margin-bottom:0">
+      <li><strong>Sensitivity (vanilla saliency)</strong>: how much does the output change if I change this input? (Local.)</li>
+      <li><strong>Importance (Integrated Gradients)</strong>: how much did this feature contribute to the prediction? (Accounts for the full path.)</li>
+    </ul>
+  </div>
+
+  <h3>6.5 Class Activation Mapping (CAM / Grad-CAM)</h3>
+
+  <h4>CAM (Zhou et al., 2015)</h4>
+  <p>Requires Global Average Pooling before the final classification layer. The weights from GAP to the output tell you how important each feature map is for that class. Heatmap = weighted combination.</p>
+  <p><strong>Limitation:</strong> requires GAP architecture, so you must retrain.</p>
+
+  <h4>Grad-CAM (Selvaraju et al., 2017)</h4>
+  <p>Uses gradients to avoid retraining. Works with any CNN.</p>
+  <div class="formula">
+    $$\alpha_k = \frac{1}{Z}\sum_{i,j} \frac{\partial Y_c}{\partial A_k^{ij}} \quad \text{(importance weight of channel $k$)}$$
+    $$\text{Grad-CAM} = \text{ReLU}\!\left(\sum_k \alpha_k A_k\right)$$
+    <p style="margin:10px 0 0;font-size:13px;">ReLU keeps only <em>positive</em> contributions (what supports this class, not what contradicts it).</p>
+  </div>
+
+  <p><strong>Guided Grad-CAM</strong> = Guided Backprop × Grad-CAM (element-wise). Combines fine-grained details with class-discriminative localisation.</p>
+
+  <h3>6.6 Method Comparison</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Type</th><th>Speed</th><th>Resolution</th><th>Class-specific?</th></tr></thead>
+      <tbody>
+        <tr><td>Vanilla Saliency</td><td>Gradient</td><td>Fast</td><td>Pixel</td><td>Yes</td></tr>
+        <tr><td>SmoothGrad</td><td>Gradient</td><td>Medium</td><td>Pixel</td><td>Yes</td></tr>
+        <tr><td>Integrated Gradients</td><td>Gradient (path)</td><td>Medium</td><td>Pixel</td><td>Yes</td></tr>
+        <tr><td>LRP</td><td>Propagation</td><td>Medium</td><td>Pixel</td><td>Yes</td></tr>
+        <tr><td>Occlusion</td><td>Perturbation</td><td>Slow</td><td>Patch</td><td>Yes</td></tr>
+        <tr><td>LIME</td><td>Perturbation</td><td>Slow</td><td>Superpixel</td><td>Yes</td></tr>
+        <tr><td>CAM</td><td>Activation</td><td>Fast</td><td>Low (feature map)</td><td>Yes</td></tr>
+        <tr><td>Grad-CAM</td><td>Gradient + Activation</td><td>Fast</td><td>Low (feature map)</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Past paper -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2022 Q1(e) · Compare Saliency, SmoothGrad, and Integrated Gradients</div>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>Saliency Analysis:</strong> Computes $|\partial F / \partial x|$ — a single backward pass. Fast and model-agnostic. Shows <em>sensitivity</em> of the output to each input pixel. <strong>Weakness:</strong> very noisy; affected by gradient saturation; high sensitivity ≠ high importance.</p>
+
+    <p><strong>SmoothGrad:</strong> Averages the saliency over $N$ samples of the input with small Gaussian noise added. Fixes the visual noise of vanilla saliency by smoothing out high-frequency artefacts. <strong>Still</strong> suffers from the fundamental sensitivity/importance confusion.</p>
+
+    <p><strong>Integrated Gradients:</strong> Averages gradients along a straight-line path from a baseline $x'$ (e.g. all-black image) to the input $x$. Fixes the saturation problem because it accumulates gradient information along the full trajectory. Satisfies <strong>completeness</strong> (attributions sum to $F(x)-F(x')$) and <strong>implementation invariance</strong>. More expensive — needs ~50 interpolation steps.</p>
+
+    <p style="margin-bottom:0"><strong>Summary:</strong> All three produce pixel-level attributions, but IG is the most principled; SmoothGrad fixes SmoothGrad's noise; vanilla saliency is the fastest and simplest.</p>
+  </details>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Tip</div>
+    <p style="margin-bottom:0">Know at least 3 visualisation methods with pros/cons. <strong>Grad-CAM</strong> is the darling for exam answers about "detecting bias in classifiers" — it shows <em>what region</em> the model attends to, so you can catch the husky-snow problem.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: RNNs & TRANSFORMERS                              -->
+<!-- ============================================================ -->
+<section id="rnn">
+  <div class="section-header">
+    <span class="section-number">Week 7 · Advanced</span>
+    <h2>RNNs & Transformers</h2>
+    <p class="subtitle">Networks for sequences — from vanilla RNNs to LSTMs to the Transformer architecture that powers every modern LLM.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Why not CNNs for text?</div>
+    <p style="margin-bottom:0">CNNs assume spatial locality (nearby pixels matter). Text and audio are <strong>sequential</strong> — order matters, lengths vary, and the meaning of "bank" depends on context from 10 words away. We need architectures that can <strong>remember</strong> the past and handle variable-length input.</p>
+  </div>
+
+  <h3>7.1 Vanilla RNN</h3>
+  <p>Key idea: share weights across time. The state at time $t$ depends on the state at time $t-1$.</p>
+
+  <div class="formula">
+    <div class="formula-label">Vanilla RNN Equations</div>
+    $$h_t = \phi(W_h h_{t-1} + W_u x_t + b)$$
+    $$y_t = c + V h_t$$
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#4f46e5"/>
+        </marker>
+      </defs>
+      <!-- 3 time steps -->
+      <g>
+        <rect x="50" y="70" width="90" height="50" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" rx="8"/>
+        <text x="95" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">RNN Cell</text>
+        <text x="95" y="60" text-anchor="middle" font-size="13" fill="#475569">t=0</text>
+        <text x="95" y="150" text-anchor="middle" font-size="12" fill="#1e40af">x₀</text>
+        <text x="95" y="40" text-anchor="middle" font-size="12" fill="#065f46">y₀</text>
+        <line x1="95" y1="140" x2="95" y2="125" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="95" y1="65" x2="95" y2="50" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr2)"/>
+      </g>
+      <g>
+        <rect x="260" y="70" width="90" height="50" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" rx="8"/>
+        <text x="305" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">RNN Cell</text>
+        <text x="305" y="60" text-anchor="middle" font-size="13" fill="#475569">t=1</text>
+        <text x="305" y="150" text-anchor="middle" font-size="12" fill="#1e40af">x₁</text>
+        <text x="305" y="40" text-anchor="middle" font-size="12" fill="#065f46">y₁</text>
+        <line x1="305" y1="140" x2="305" y2="125" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="305" y1="65" x2="305" y2="50" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr2)"/>
+      </g>
+      <g>
+        <rect x="470" y="70" width="90" height="50" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" rx="8"/>
+        <text x="515" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">RNN Cell</text>
+        <text x="515" y="60" text-anchor="middle" font-size="13" fill="#475569">t=2</text>
+        <text x="515" y="150" text-anchor="middle" font-size="12" fill="#1e40af">x₂</text>
+        <text x="515" y="40" text-anchor="middle" font-size="12" fill="#065f46">y₂</text>
+        <line x1="515" y1="140" x2="515" y2="125" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="515" y1="65" x2="515" y2="50" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr2)"/>
+      </g>
+      <!-- hidden connections -->
+      <line x1="140" y1="95" x2="255" y2="95" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arr2)"/>
+      <line x1="350" y1="95" x2="465" y2="95" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arr2)"/>
+      <text x="195" y="88" text-anchor="middle" font-size="11" fill="#6d28d9" font-weight="600">h₀</text>
+      <text x="405" y="88" text-anchor="middle" font-size="11" fill="#6d28d9" font-weight="600">h₁</text>
+    </svg>
+    <div class="diagram-caption">An "unrolled" RNN across three time steps. The same weights $W_h, W_u, V$ are reused at every step.</div>
+  </div>
+
+  <h4>Input/output sequence patterns</h4>
+  <ul>
+    <li><strong>Seq → seq (aligned)</strong>: POS tagging, same-length output.</li>
+    <li><strong>Seq → seq (encoder-decoder)</strong>: machine translation, different-length output.</li>
+    <li><strong>Seq → vec</strong>: sentiment analysis.</li>
+    <li><strong>Vec → seq</strong>: image captioning.</li>
+  </ul>
+
+  <h3>7.2 Vanishing/Exploding Gradients in RNNs</h3>
+  <p>Unrolling an RNN over $T$ steps is like a $T$-layer-deep network. The gradient w.r.t. an early weight involves a <strong>product of $T$ terms</strong>:</p>
+
+  $$\frac{\partial L}{\partial w} = \prod_{t} \phi'(z_t) \cdot W_h$$
+
+  <p>If eigenvalues of $W_h < 1$ → <strong>vanishing gradients</strong>. If $> 1$ → <strong>exploding gradients</strong>.</p>
+  <p>Vanilla RNNs handle short-range dependencies but struggle with long ones.</p>
+
+  <h3>7.3 LSTM — Long Short-Term Memory</h3>
+  <p>LSTM adds a <strong>cell state</strong> $C_t$ that runs through time, and three <strong>gates</strong> that control what's added, removed, and output.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Gate</th><th>Formula</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Forget</strong> $f_t$</td><td>$\sigma(W_f[h_{t-1}, x_t] + b_f)$</td><td>What to remove from cell state</td></tr>
+        <tr><td><strong>Input</strong> $i_t$</td><td>$\sigma(W_i[h_{t-1}, x_t] + b_i)$</td><td>What new info to store</td></tr>
+        <tr><td><strong>Output</strong> $o_t$</td><td>$\sigma(W_o[h_{t-1}, x_t] + b_o)$</td><td>What to output</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="formula">
+    <div class="formula-label">LSTM Update</div>
+    $$\tilde{C}_t = \tanh(W_C[h_{t-1}, x_t] + b_C) \quad \text{(candidate)}$$
+    $$C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \quad \text{(update cell state)}$$
+    $$h_t = o_t \odot \tanh(C_t) \quad \text{(output)}$$
+  </div>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Why sigmoid for gates, tanh for candidates?</div>
+    <ul style="margin-bottom:0">
+      <li><strong>Sigmoid ∈ (0,1)</strong> — acts as a soft switch (0 = block, 1 = pass) for gating information flow.</li>
+      <li><strong>Tanh ∈ (-1,1)</strong> — creates candidate values that can either add to or subtract from the cell state.</li>
+    </ul>
+  </div>
+
+  <h3>7.4 GRU — Gated Recurrent Unit</h3>
+  <p>A streamlined LSTM with <strong>two</strong> gates and no separate cell state.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Gate</th><th>Formula</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reset</strong> $r_t$</td><td>$\sigma(W_r[h_{t-1}, x_t])$</td><td>How much past state to forget</td></tr>
+        <tr><td><strong>Update</strong> $z_t$</td><td>$\sigma(W_z[h_{t-1}, x_t])$</td><td>Blend between old and new state</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  $$\tilde{h}_t = \tanh(W[r_t \odot h_{t-1}, x_t])$$
+  $$h_t = (1-z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t$$
+
+  <h4>LSTM vs GRU</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>LSTM</th><th>GRU</th></tr></thead>
+      <tbody>
+        <tr><td>Gates</td><td>3 (forget, input, output)</td><td>2 (reset, update)</td></tr>
+        <tr><td>Cell state</td><td>Separate $C_t$</td><td>None — just $h_t$</td></tr>
+        <tr><td>Parameters</td><td>More</td><td>Fewer</td></tr>
+        <tr><td>Training speed</td><td>Slower</td><td>Faster</td></tr>
+        <tr><td>Very long sequences</td><td>Generally better</td><td>Comparable</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.5 Attention Mechanism</h3>
+  <p>Even with LSTMs, the encoder-decoder context vector is a bottleneck. <strong>Attention</strong> lets the decoder "look back" at all encoder states:</p>
+  <ol>
+    <li>Compute similarity between decoder query and each encoder state → <strong>attention scores</strong>.</li>
+    <li>Softmax → <strong>attention weights</strong>.</li>
+    <li>Context = weighted sum of encoder states.</li>
+  </ol>
+
+  <h3>7.6 Transformer — "Attention is All You Need"</h3>
+  <p>The 2017 Vaswani paper. Replaces recurrence entirely with <strong>self-attention</strong>, enabling full parallelisation.</p>
+
+  <div class="formula">
+    <div class="formula-label">Scaled Dot-Product Attention</div>
+    $$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$
+    <p style="margin:10px 0 0;font-size:13px;">
+      <strong>Q</strong>uery ("what am I looking for?") ·
+      <strong>K</strong>ey ("what do I contain?") ·
+      <strong>V</strong>alue ("what will I contribute?") ·
+      $\sqrt{d_k}$ scaling prevents softmax saturation.
+    </p>
+  </div>
+
+  <h4>Multi-Head Attention (MHA)</h4>
+  <p>Instead of one set of $(Q, K, V)$ matrices, learn $H$ parallel heads. Each head captures different relationships (syntactic, semantic, positional). Outputs concatenated and mixed by a final linear layer.</p>
+
+  <h4>Masked Self-Attention (Decoder)</h4>
+  <p>During training, mask out future tokens so each position can only attend to previous tokens. Enables autoregressive generation: predict the next token given the previous ones.</p>
+
+  <h3>7.7 Transformer vs RNN</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>RNN</th><th>Transformer</th></tr></thead>
+      <tbody>
+        <tr><td>Parallelisation</td><td>Sequential (slow)</td><td>Fully parallel (fast)</td></tr>
+        <tr><td>Long-range deps</td><td>Struggles</td><td>Explicit attention</td></tr>
+        <tr><td>Memory</td><td>$O(1)$ per step</td><td>$O(n^2)$ attention matrix</td></tr>
+        <tr><td>Position encoding</td><td>Implicit</td><td>Requires explicit positional encoding</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Past paper: 2025 Q3a RNN forward pass -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q3(a)(i) · RNN forward pass</div>
+    <p>Given a scalar vanilla RNN: $h_t = \text{ReLU}(w h_{t-1} + u x_t)$, $y_t = c + v h_t$.</p>
+    <p>$u = -3, v = 3, w = 0.5, c = +1, h_{-1} = 0$. Inputs: $x_0 = -1, x_1 = +2$. Compute $y_0, y_1$.</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+
+    <p><strong>t = 0:</strong></p>
+    <p>Input to ReLU: $w h_{-1} + u x_0 = 0.5 \cdot 0 + (-3)\cdot(-1) = 3$.</p>
+    <p>$h_0 = \text{ReLU}(3) = 3$.</p>
+    <p>$y_0 = c + v h_0 = 1 + 3 \cdot 3 = \boxed{10}$.</p>
+
+    <p><strong>t = 1:</strong></p>
+    <p>Input to ReLU: $w h_0 + u x_1 = 0.5 \cdot 3 + (-3)\cdot 2 = 1.5 - 6 = -4.5$.</p>
+    <p>$h_1 = \text{ReLU}(-4.5) = 0$.</p>
+    <p style="margin-bottom:0">$y_1 = c + v h_1 = 1 + 3 \cdot 0 = \boxed{1}$.</p>
+  </details>
+
+  <!-- Past paper: 2025 Q3a(ii) RNN derivatives -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q3(a)(ii) · RNN gradient $\partial y_0 / \partial x_0$</div>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p>Trace the graph: $x_0 \to z_0 = w h_{-1} + u x_0 \to h_0 = \text{ReLU}(z_0) \to y_0 = c + v h_0$.</p>
+
+    <p><strong>Case 1: Input to ReLU ≤ 0</strong> ($z_0 \le 0$)</p>
+    <p>ReLU derivative = 0, so $\partial h_0 / \partial x_0 = 0$, hence:</p>
+    $$\frac{\partial y_0}{\partial x_0} = 0$$
+
+    <p><strong>Case 2: Input to ReLU &gt; 0</strong> ($z_0 > 0$)</p>
+    <p>ReLU derivative = 1, so $\partial h_0 / \partial z_0 = 1$. Chain rule:</p>
+    $$\frac{\partial y_0}{\partial x_0} = \frac{\partial y_0}{\partial h_0} \cdot \frac{\partial h_0}{\partial z_0} \cdot \frac{\partial z_0}{\partial x_0} = v \cdot 1 \cdot u = \boxed{u \cdot v}$$
+
+    <p style="margin-bottom:0">With our numbers, this is $(-3)(3) = -9$.</p>
+  </details>
+
+  <!-- Past paper: 2025 Q3c Transformer parameter count -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q3(c) · Counting Transformer attention parameters</div>
+    <p>Transformer block: $l=1024$ tokens, $d_e = 100$, $H = 2$ heads, $d_k = 10$, $d_v = 20$, $d_o = 100$. How many parameters?</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p>For each of the $H = 2$ heads, we have three projection matrices:</p>
+    <ul>
+      <li><strong>$W_Q^{(h)}$</strong>: $d_e \times d_k = 100 \times 10 = 1000$ params.</li>
+      <li><strong>$W_K^{(h)}$</strong>: $d_e \times d_k = 100 \times 10 = 1000$ params.</li>
+      <li><strong>$W_V^{(h)}$</strong>: $d_e \times d_v = 100 \times 20 = 2000$ params.</li>
+    </ul>
+    <p>Per head: $1000 + 1000 + 2000 = 4000$. For $H = 2$ heads: $2 \times 4000 = 8000$.</p>
+
+    <p><strong>Output projection</strong> $W_O$: concatenated output has dim $H \cdot d_v = 2 \cdot 20 = 40$, projected to $d_o = 100$:</p>
+    <p>$W_O$: $40 \times 100 = 4000$ params.</p>
+
+    <p><strong>Total:</strong> $8000 + 4000 = \boxed{12{,}000 \text{ parameters}}$.</p>
+    <p style="margin-bottom:0"><em>Note:</em> biases sometimes added (+$d_k$ per head for Q, K; +$d_v$ for V; +$d_o$ for output) — check the question's convention. The sequence length $l=1024$ doesn't affect parameter count (the attention matrix is $l \times l$ but computed on the fly).</p>
+  </details>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Exam Pattern — RNN + Transformer are Q3 regulars</div>
+    <p style="margin-bottom:0">RNN forward pass + gradient calculations appear almost every year. Transformer attention parameter counting appeared in 2025. LSTM/GRU gate explanations appear frequently.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: AUTOENCODERS                                     -->
+<!-- ============================================================ -->
+<section id="ae">
+  <div class="section-header">
+    <span class="section-number">Week 8 · Advanced</span>
+    <h2>Autoencoders</h2>
+    <p class="subtitle">Networks trained to reconstruct their input through a bottleneck — the Swiss army knife of unsupervised learning.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 The core trick</div>
+    <p style="margin-bottom:0">Take an input (say a 784-pixel image). Squeeze it through a narrow bottleneck (say 32 numbers). Then try to reconstruct the original from those 32 numbers. To succeed, the network must learn to <strong>keep the important information and throw away the noise</strong>. The 32-dim bottleneck is a <em>compressed representation</em>.</p>
+  </div>
+
+  <h3>8.1 Architecture</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
+      <!-- Input -->
+      <rect x="20" y="40" width="60" height="100" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+      <text x="50" y="95" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">x</text>
+      <text x="50" y="165" text-anchor="middle" font-size="11" fill="#475569">Input</text>
+
+      <!-- Encoder -->
+      <polygon points="100,40 180,70 180,110 100,140" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="140" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">Encoder</text>
+      <text x="140" y="160" text-anchor="middle" font-size="11" fill="#475569">f(x)</text>
+
+      <!-- Latent -->
+      <rect x="210" y="75" width="50" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
+      <text x="235" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">z</text>
+      <text x="235" y="130" text-anchor="middle" font-size="11" fill="#475569">Latent</text>
+      <text x="235" y="148" text-anchor="middle" font-size="10" fill="#64748b">(bottleneck)</text>
+
+      <!-- Decoder -->
+      <polygon points="290,70 290,110 370,140 370,40" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="330" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">Decoder</text>
+      <text x="330" y="160" text-anchor="middle" font-size="11" fill="#475569">g(z)</text>
+
+      <!-- Output -->
+      <rect x="390" y="40" width="60" height="100" fill="#d1fae5" stroke="#10b981" stroke-width="2" rx="4"/>
+      <text x="420" y="95" text-anchor="middle" font-size="14" font-weight="700" fill="#065f46">x̂</text>
+      <text x="420" y="165" text-anchor="middle" font-size="11" fill="#475569">Reconstruction</text>
+
+      <!-- Arrows -->
+      <line x1="80" y1="90" x2="98" y2="90" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="180" y1="90" x2="208" y2="90" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="260" y1="90" x2="288" y2="90" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="370" y1="90" x2="388" y2="90" stroke="#4f46e5" stroke-width="2"/>
+
+      <!-- Loss -->
+      <text x="480" y="90" font-size="13" font-weight="700" fill="#ef4444">↘ L = ||x − x̂||²</text>
+    </svg>
+    <div class="diagram-caption">Autoencoder: input → encoder → latent $z$ → decoder → reconstruction. Train to minimise the reconstruction error.</div>
+  </div>
+
+  <h3>8.2 Why Bother?</h3>
+  <div class="card-grid">
+    <div class="card"><h4>📉 Dimensionality reduction</h4><p>Latent $z$ has fewer dimensions than $x$. Generalises PCA to non-linear manifolds.</p></div>
+    <div class="card"><h4>🎯 Feature extraction</h4><p>The bottleneck learns informative features without labels — useful pre-training.</p></div>
+    <div class="card"><h4>🧹 Denoising</h4><p>Add noise to input, train to reconstruct clean original. Removes noise from new data.</p></div>
+    <div class="card"><h4>🔍 Anomaly detection</h4><p>Reconstruction error is high for out-of-distribution inputs — flag them as anomalies.</p></div>
+  </div>
+
+  <h3>8.3 Connection to PCA</h3>
+  <p>If encoder and decoder are <strong>linear</strong> (no activations), the bottleneck captures the <strong>principal components</strong> of the data. That's exactly PCA.</p>
+
+  <div class="callout">
+    Linear autoencoder ≡ PCA. Non-linear autoencoder = <strong>non-linear PCA</strong> — can fit curved manifolds that PCA can't.
+  </div>
+
+  <h3>8.4 Undercomplete vs Overcomplete</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Latent dim</th><th>Risk</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Undercomplete</td><td>$\dim(z) < \dim(x)$</td><td>Encoder can memorise training set</td><td>Limit encoder complexity</td></tr>
+        <tr><td>Overcomplete</td><td>$\dim(z) > \dim(x)$</td><td>May learn trivial copy $z \approx x$</td><td>Regularise (sparse / denoising / contractive)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.5 Regularised Autoencoders</h3>
+
+  <h4>Sparse Autoencoder</h4>
+  <div class="formula">
+    $$L = \|x - \hat{x}\|^2 + \lambda \|z\|_1$$
+    <p style="margin:10px 0 0;font-size:13px;">L1 penalty on the latent → most dimensions become zero → each active dim is a specialised feature detector.</p>
+  </div>
+
+  <h4>Denoising Autoencoder</h4>
+  <p>Feed in $x_{\text{noisy}} = x + \eta$, train to reconstruct clean $x$. Interpretation: learns a <strong>vector field</strong> pointing from off-manifold points back onto the data manifold.</p>
+
+  <h4>Contractive Autoencoder</h4>
+  <div class="formula">
+    $$L = \|x - \hat{x}\|^2 + \lambda \|J_f(x)\|_F^2$$
+    <p style="margin:10px 0 0;font-size:13px;">Penalises sensitivity of encoder to input changes — $J_f$ is the Jacobian. Equivalent to denoising as noise → 0.</p>
+  </div>
+
+  <h3>8.6 Convolutional Autoencoders</h3>
+  <p>For images, use conv layers in the encoder (downsampling) and transposed convolutions (or upsampling + conv) in the decoder. Preserves spatial structure.</p>
+
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2021 Q3(a) · Denoising autoencoders for unsupervised pre-training</div>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>Use case:</strong> when you have lots of unlabelled data but few labels — train an autoencoder on the unlabelled pool first, then use the learned encoder as the feature extractor for a supervised model.</p>
+    <ol>
+      <li>Take unlabelled inputs $x$, corrupt with noise: $x_{\text{noisy}} = x + \eta$.</li>
+      <li>Train encoder-decoder to reconstruct clean $x$ from $x_{\text{noisy}}$. Objective: $L = \|x - g(f(x_{\text{noisy}}))\|^2$.</li>
+      <li>Discard the decoder. Attach a classifier head to the encoder's latent output.</li>
+      <li>Fine-tune on labelled data (end-to-end or head-only).</li>
+    </ol>
+    <p style="margin-bottom:0"><strong>Why it works:</strong> to denoise, the network must learn the underlying data manifold. That manifold encodes the structure that's also useful for downstream classification.</p>
+  </details>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: VAEs & GANs                                      -->
+<!-- ============================================================ -->
+<section id="vae-gan">
+  <div class="section-header">
+    <span class="section-number">Week 9 · Advanced</span>
+    <h2>VAEs & GANs — Generative Models</h2>
+    <p class="subtitle">Two very different ways to make networks that generate realistic new data.</p>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 Generative modelling in one sentence</div>
+    <p style="margin-bottom:0">Can we build a network that, given random noise $z$, produces an output that <em>looks like</em> a sample from our training distribution (cat photo, human face, English sentence)? VAEs and GANs are two competing answers.</p>
+  </div>
+
+  <h3>9.1 Why Standard Autoencoders Fail at Generation</h3>
+  <ul>
+    <li>No guarantee that smooth variation in the latent produces smooth outputs.</li>
+    <li>"Holes" in the latent space decode to garbage.</li>
+    <li>Not probabilistic — the mapping can be arbitrary as long as reconstruction works.</li>
+  </ul>
+
+  <h3>9.2 Variational Autoencoders (VAEs)</h3>
+  <p>Instead of encoding to a <em>point</em>, encode to a <em>distribution</em>:</p>
+  <ul>
+    <li>Encoder outputs $\mu(x)$ and $\sigma(x)$.</li>
+    <li>Sample $z \sim \mathcal{N}(\mu(x), \sigma(x))$.</li>
+    <li>Decode $\hat{x} = g(z)$.</li>
+  </ul>
+
+  <h4>The Reparameterisation Trick</h4>
+  <p>Sampling is non-differentiable — can't backprop through it. Fix: rewrite the sample as a deterministic function of a parameter-free random source:</p>
+
+  <div class="formula">
+    $$z = \mu + \sigma \odot \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$$
+    <p style="margin:10px 0 0;font-size:13px;">Gradients now flow through $\mu$ and $\sigma$; $\epsilon$ is just noise (no gradient needed).</p>
+  </div>
+
+  <h4>The VAE Loss</h4>
+
+  <div class="formula">
+    <div class="formula-label">VAE Objective</div>
+    $$L_{\text{VAE}} = \underbrace{\|x - \hat{x}\|^2}_{\text{reconstruction}} + \underbrace{\text{KL}\!\left(q(z|x) \| \mathcal{N}(0, I)\right)}_{\text{prior-matching}}$$
+  </div>
+
+  <p>The KL term forces each encoding to look like a standard Gaussian.</p>
+
+  <div class="formula">
+    <div class="formula-label">KL divergence for Gaussians (closed form)</div>
+    $$\text{KL} = -\tfrac{1}{2} \sum_i \left(1 + \log \sigma_i^2 - \mu_i^2 - \sigma_i^2\right)$$
+  </div>
+
+  <div class="box box-concept">
+    <div class="box-title">📘 Why the KL term?</div>
+    <ul style="margin-bottom:0">
+      <li>Forces latent space to follow a <strong>known distribution</strong> — $\mathcal{N}(0, I)$.</li>
+      <li>Lets us <strong>sample</strong> from $\mathcal{N}(0, I)$ and decode to get new plausible samples.</li>
+      <li>Creates a <strong>smooth, continuous</strong> latent space — no holes.</li>
+      <li>Prevents the encoder from collapsing to isolated points (posterior collapse).</li>
+    </ul>
+  </div>
+
+  <h4>Generating new samples</h4>
+  <ol>
+    <li>Sample $z \sim \mathcal{N}(0, I)$.</li>
+    <li>Pass through the decoder.</li>
+    <li>Out pops a new, plausible image.</li>
+  </ol>
+
+  <h3>9.3 Generative Adversarial Networks (GANs)</h3>
+  <p>A completely different approach: no explicit probability model, no likelihood. Instead, a <strong>game</strong> between two networks.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Noise -->
+      <circle cx="70" cy="100" r="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="70" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">z ~ N(0,I)</text>
+      <!-- Generator -->
+      <rect x="140" y="70" width="100" height="60" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" rx="8"/>
+      <text x="190" y="95" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Generator</text>
+      <text x="190" y="115" text-anchor="middle" font-size="12" fill="#6d28d9">G(z)</text>
+      <!-- Fake data -->
+      <rect x="270" y="75" width="70" height="50" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="4"/>
+      <text x="305" y="105" text-anchor="middle" font-size="12" font-weight="600" fill="#b91c1c">Fake</text>
+      <!-- Real data -->
+      <rect x="270" y="165" width="70" height="40" fill="#d1fae5" stroke="#10b981" stroke-width="2" rx="4"/>
+      <text x="305" y="190" text-anchor="middle" font-size="12" font-weight="600" fill="#065f46">Real x</text>
+      <!-- Discriminator -->
+      <rect x="380" y="110" width="110" height="60" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="8"/>
+      <text x="435" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Discriminator</text>
+      <text x="435" y="155" text-anchor="middle" font-size="12" fill="#1e40af">D(·)</text>
+      <!-- Output -->
+      <text x="550" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Real / Fake?</text>
+      <!-- arrows -->
+      <line x1="100" y1="100" x2="138" y2="100" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="240" y1="100" x2="268" y2="100" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="340" y1="100" x2="378" y2="125" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="340" y1="185" x2="378" y2="155" stroke="#4f46e5" stroke-width="2"/>
+      <line x1="490" y1="140" x2="520" y2="140" stroke="#4f46e5" stroke-width="2"/>
+
+      <text x="190" y="30" text-anchor="middle" font-size="13" fill="#475569" font-weight="600">G tries to fool D. D tries to catch G. They train together.</text>
+    </svg>
+    <div class="diagram-caption">GAN architecture: the generator learns to produce fakes that fool the discriminator; the discriminator learns to tell real from fake.</div>
+  </div>
+
+  <div class="formula">
+    <div class="formula-label">GAN Minimax Objective</div>
+    $$\min_G \max_D \, \mathbb{E}_{x \sim p_{\text{data}}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]$$
+  </div>
+
+  <p>At equilibrium, $G$ produces data indistinguishable from the real distribution, and $D$ outputs 0.5 on everything (pure guessing).</p>
+
+  <h4>The "Better Generator Loss"</h4>
+  <p>Early in training, $D(G(z)) \approx 0$, and the gradient of $\log(1 - D(G(z)))$ is tiny — slowest exactly when learning is most needed. Fix: instead of minimising $\log(1 - D(G(z)))$, <strong>maximise $\log D(G(z))$</strong>. Same fixed point, but much stronger gradients early on.</p>
+
+  <h3>9.4 DCGAN, CycleGAN</h3>
+  <ul>
+    <li><strong>DCGAN</strong>: convolutional generator (transposed convs) + convolutional discriminator. Guidelines: batch norm, ReLU in G, LeakyReLU in D.</li>
+    <li><strong>CycleGAN</strong>: unpaired image-to-image translation (horse ↔ zebra, photo ↔ painting). Two generators + cycle-consistency loss: $G_{BA}(G_{AB}(x_A)) \approx x_A$.</li>
+  </ul>
+
+  <h3>9.5 VAE vs GAN</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>VAE</th><th>GAN</th></tr></thead>
+      <tbody>
+        <tr><td>Approach</td><td>Probabilistic + variational</td><td>Game-theoretic</td></tr>
+        <tr><td>Latent space</td><td>Structured (forced Gaussian)</td><td>Unstructured</td></tr>
+        <tr><td>Training stability</td><td>Stable (single loss)</td><td>Often unstable (two competing)</td></tr>
+        <tr><td>Output quality</td><td>Blurry</td><td>Sharper, more realistic</td></tr>
+        <tr><td>Likelihood $p(x)$</td><td>Approximate</td><td>Can't compute</td></tr>
+        <tr><td>Mode coverage</td><td>Good</td><td>May suffer mode collapse</td></tr>
+        <tr><td>Interpolation</td><td>Smooth, meaningful</td><td>Meaningful with DCGAN latent arithmetic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Past paper -->
+  <div class="box box-paper">
+    <div class="box-title">📝 Past Paper · 2025 Q2(b) · GAN architecture and objective</div>
+    <p>(i) Describe the two architectural parts of a GAN and the purpose of each when generating images.</p>
+    <p>(ii) For the GAN minimax equation, describe: $G, D, x \sim p_{\text{data}}(x), D(x), z \sim p_z(z), D(G(z))$.</p>
+  </div>
+
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(i) Two parts</strong></p>
+    <ul>
+      <li><strong>Generator $G$:</strong> a neural network that takes random noise $z$ (usually sampled from $\mathcal{N}(0, I)$) and produces synthetic images $G(z)$. Its goal is to produce images that look like real training images. Typically uses transposed convolutions to upsample from a low-dim noise vector to a full image.</li>
+      <li><strong>Discriminator $D$:</strong> a classifier that takes an image (real or generated) and outputs a scalar probability in $[0, 1]$ that the image is real. Typically a standard CNN classifier. Its goal is to correctly distinguish real from fake.</li>
+    </ul>
+    <p>During generation at <em>inference time</em>, we discard $D$ and simply sample $z$ and push through $G$.</p>
+
+    <p><strong>(ii) Term-by-term</strong></p>
+    <ul>
+      <li><strong>$G$:</strong> the generator network.</li>
+      <li><strong>$D$:</strong> the discriminator network.</li>
+      <li><strong>$x \sim p_{\text{data}}(x)$:</strong> $x$ is a real image drawn from the training data distribution.</li>
+      <li><strong>$D(x)$:</strong> the discriminator's probability that real image $x$ is real. Should be close to 1 for real data (→ $D$ wants $\log D(x)$ large).</li>
+      <li><strong>$z \sim p_z(z)$:</strong> $z$ is random noise drawn from a prior (typically standard Gaussian).</li>
+      <li><strong>$D(G(z))$:</strong> the discriminator's probability that the generated image $G(z)$ is real. $D$ wants this near 0 (fake looks fake); $G$ wants this near 1 (fool $D$). Hence the opposed objectives: $D$ maximises, $G$ minimises.</li>
+    </ul>
+  </details>
+
+</section>
+
+
+<!-- =================================================== -->
+<!-- SECTION 10 — PAST PAPER ANALYSIS -->
+<!-- =================================================== -->
+<section id="papers">
+  <h2>📊 10. Past Paper Analysis (2021–2025)</h2>
+  <p class="lead">Five years of papers. Patterns jump out. Here's what actually gets tested, ranked by how often it appears — with more worked solutions so you've seen the trap before exam day.</p>
+
+  <div class="box box-beginner">
+    <div class="box-title">🧭 How to use this section</div>
+    <p>Don't just read. After each frequency bar, <strong>close the page and recreate the calculation</strong> on paper. If you can do every worked solution below cold, without peeking, you are in strong shape. The exam rewards fluency, not recognition.</p>
+  </div>
+
+  <h3>10.1 Topic Frequency Across 5 Years</h3>
+  <p>Percentage of papers (2021, 2022, 2023, 2024, 2025) containing each topic:</p>
+
+  <div class="card" style="padding:24px;">
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Forward / backward pass calculation</strong><span>100% (5/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:100%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>PyTorch code analysis (Q1)</strong><span>100% (5/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:100%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Parameter counting</strong><span>80% (4/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>CNN convolution / pooling calculation</strong><span>80% (4/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Loss / activation function choice</strong><span>80% (4/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>RNN forward pass + gradients</strong><span>60% (3/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Output tensor shape calculation</strong><span>60% (3/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Hyperparameters (lr, momentum, weight decay)</strong><span>60% (3/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Visualisation / interpretability</strong><span>60% (3/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Ethics</strong><span>60% (3/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Attention / Transformers</strong><span>60% (3/5) ⬆ rising</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:60%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>LSTM / GRU gate explanation</strong><span>20% (1/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:20%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Autoencoders / pre-training</strong><span>20% (1/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:20%;"></div></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>GAN / VAE</strong><span>20% (1/5) ⬆ new in 2025</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:20%;"></div></div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>Conv1d (sequence CNN)</strong><span>20% (1/5)</span></div>
+      <div class="freq-bar"><div class="freq-fill" style="width:20%;"></div></div>
+    </div>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">🎯 The big pattern</div>
+    <p>Every single year, Q1 is a <strong>PyTorch-code-analysis</strong> question (count params, trace tensor shapes, pick loss/activation), Q2 involves a <strong>CNN/MLP forward-or-backward numerical computation</strong>, and Q3 covers <strong>RNN / Attention</strong>. Lock down these three and you have ~45+ of 60 marks before reading anything novel.</p>
+  </div>
+
+  <h3>10.2 Additional Worked Solutions</h3>
+  <p>Below are the solutions not yet covered inline in the main sections. Work each one through before peeking.</p>
+
+  <!-- 2024 Q1 full -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2024 Q1 · Conv1d network analysis (full question, 20 marks)</div>
+    <pre><code>class Net(nn.Module):
+  def __init__(self, value1=15, value2=7):
+    super().__init__()
+    self.conv1 = nn.Conv1d(20, 5, value1, padding=value1//2)
+    self.conv2 = nn.Conv1d( 5, 3, value2, padding=value2//2)
+  def forward(self, x):
+    x = F.relu(self.conv1(x))
+    x = self.conv2(x)
+    return x
+loss = nn.CrossEntropyLoss()</code></pre>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Type of network + what's unique.</strong> This is a <strong>1D Convolutional Neural Network</strong> (Conv1d stack). Unlike a conventional 2D ConvNet which takes <code>(batch, channels, H, W)</code> image tensors, this one takes <code>(batch, channels, length)</code> — i.e. sequential / time-series data. Output is also a sequence.</p>
+
+    <p><strong>(b) Channels + use case.</strong> 20 input channels, 3 output channels. Could be used for per-timestep classification of 20-channel time series into 3 classes — e.g. EEG stage classification, audio phoneme tagging, sensor signal segmentation.</p>
+
+    <p><strong>(c) What are value1, value2?</strong> They are <strong>kernel sizes</strong> for conv1 and conv2. Exposing them as default arguments in <code>__init__</code> lets you instantiate the network with different kernel sizes without editing the class — this facilitates <strong>hyperparameter search</strong> (grid/random/Bayesian search over kernel sizes).</p>
+
+    <p><strong>(d) Tensor shapes.</strong> Input <code>[1, 20, 50]</code>.</p>
+    <ul>
+      <li>conv1: kernel=15, padding=7. Output length = $\lfloor (50 + 2\cdot 7 - 15)/1 \rfloor + 1 = 50$. Shape: <code>[1, 5, 50]</code>.</li>
+      <li>conv2: kernel=7, padding=3. Output length = $\lfloor (50 + 2\cdot 3 - 7)/1 \rfloor + 1 = 50$. Shape: <code>[1, 3, 50]</code>.</li>
+    </ul>
+    <p>Note: "half padding" = $(F-1)/2$ preserves length when stride=1.</p>
+
+    <p><strong>(e) Parameter formula.</strong> Conv1d params = $\text{out\_ch} \cdot (\text{in\_ch} \cdot k + 1)$.</p>
+    <ul>
+      <li>conv1: $5 \cdot (20 \cdot \text{value1} + 1) = 100\cdot\text{value1} + 5$</li>
+      <li>conv2: $3 \cdot (5 \cdot \text{value2} + 1) = 15\cdot\text{value2} + 3$</li>
+    </ul>
+    <div class="formula">$$\text{Total} = 100\cdot\text{value1} + 15\cdot\text{value2} + 8$$</div>
+    <p>For defaults (15, 7): $1500 + 105 + 8 = 1613$ parameters.</p>
+
+    <p><strong>(f) Is the output appropriate for CrossEntropyLoss?</strong> Yes. <code>nn.CrossEntropyLoss</code> in PyTorch expects <strong>raw logits</strong> (applies LogSoftmax internally). Since conv2 has no activation, its output is raw — correct. Nothing is missing.</p>
+    <p>Target tensor shape: <code>[1, 50]</code> (per-timestep class labels, no channel axis), dtype <code>torch.long</code> (integer class indices in {0, 1, 2}).</p>
+  </details>
+
+  <!-- 2024 Q2a,b -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2024 Q2(a)(b) · Conv1d kernel + max pooling</div>
+    <p>Kernel (2 channels, length 3): channel 1 = [1, 0, 1], channel 2 = [0, 1, 0].<br>
+    Input (2 channels, length 5): channel 1 = [1, 2, 3, 4, 5], channel 2 = [6, 7, 8, 9, 10].</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Conv1d, stride=1, no padding.</strong> Output length = $5 - 3 + 1 = 3$. At each position, sum dot products across <em>both</em> channels:</p>
+    <ul>
+      <li>Position 0: ch1: $1\cdot 1 + 0\cdot 2 + 1\cdot 3 = 4$; ch2: $0\cdot 6 + 1\cdot 7 + 0\cdot 8 = 7$. Total = <strong>11</strong>.</li>
+      <li>Position 1: ch1: $1\cdot 2 + 0\cdot 3 + 1\cdot 4 = 6$; ch2: $0\cdot 7 + 1\cdot 8 + 0\cdot 9 = 8$. Total = <strong>14</strong>.</li>
+      <li>Position 2: ch1: $1\cdot 3 + 0\cdot 4 + 1\cdot 5 = 8$; ch2: $0\cdot 8 + 1\cdot 9 + 0\cdot 10 = 9$. Total = <strong>17</strong>.</li>
+    </ul>
+    <p>Output: <code>[11, 14, 17]</code> (single channel, length 3).</p>
+
+    <p><strong>(b) MaxPool1d(length=3, stride=2)</strong> applied to the 2-channel input. Output length = $\lfloor (5-3)/2 \rfloor + 1 = 2$. Independent per channel:</p>
+    <ul>
+      <li>Channel 1: window[0:3]=[1,2,3] → max=3; window[2:5]=[3,4,5] → max=5. Output: [3, 5].</li>
+      <li>Channel 2: window[0:3]=[6,7,8] → max=8; window[2:5]=[8,9,10] → max=10. Output: [8, 10].</li>
+    </ul>
+    <p>Output (2 channels × length 2): <code>[[3, 5], [8, 10]]</code>.</p>
+  </details>
+
+  <!-- 2024 Q3 Linear RNN + Attention -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2024 Q3 · Linear RNN with cross-attention</div>
+    <p>Linear RNN: $h_t = W_h h_{t-1} + W_u u_t$ with $W_h = \begin{pmatrix}-1 & 2 \\ 0 & 1\end{pmatrix}$, $W_u = \begin{pmatrix}0 \\ 1\end{pmatrix}$, $h_0 = \mathbf{0}$. Inputs $u_1=1, u_2=2, u_3=-1$. Fill in $v_1, h_2, v_2, k_3, h_\text{out}$ and compute attention output (argmax, not softmax).</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Fill in the blanks.</strong> Forward pass the RNN first:</p>
+    <ul>
+      <li>$h_1 = W_h h_0 + W_u \cdot 1 = \mathbf{0} + [0, 1]^T = [0, 1]^T$ ✓ (given).</li>
+      <li>$h_2 = W_h h_1 + W_u \cdot 2 = \begin{pmatrix}-1 & 2\\0 & 1\end{pmatrix}\begin{pmatrix}0\\1\end{pmatrix} + \begin{pmatrix}0\\2\end{pmatrix} = \begin{pmatrix}2\\1\end{pmatrix} + \begin{pmatrix}0\\2\end{pmatrix} = [2, 3]^T$.</li>
+      <li>$h_3 = W_h h_2 + W_u \cdot (-1) = \begin{pmatrix}-1 & 2\\0 & 1\end{pmatrix}\begin{pmatrix}2\\3\end{pmatrix} + \begin{pmatrix}0\\-1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix} + \begin{pmatrix}0\\-1\end{pmatrix} = [4, 2]^T$ ✓ (given).</li>
+      <li>$h_\text{out} = W_h h_3 = \begin{pmatrix}-1 & 2\\0 & 1\end{pmatrix}\begin{pmatrix}4\\2\end{pmatrix} = [0, 2]^T$.</li>
+    </ul>
+    <p>Now keys/values:</p>
+    <ul>
+      <li>$v_1 = W_V h_1 = \begin{pmatrix}1 & 0\\-1 & 1\end{pmatrix}\begin{pmatrix}0\\1\end{pmatrix} = [0, 1]^T$.</li>
+      <li>$v_2 = W_V h_2 = \begin{pmatrix}1 & 0\\-1 & 1\end{pmatrix}\begin{pmatrix}2\\3\end{pmatrix} = [2, 1]^T$.</li>
+      <li>$k_3 = W_K h_3 = \begin{pmatrix}2 & -1\\-1 & 1\end{pmatrix}\begin{pmatrix}4\\2\end{pmatrix} = [6, -2]^T$.</li>
+    </ul>
+    <p><strong>Answers:</strong> $v_1 = [0,1]^T$, $h_2 = [2,3]^T$, $v_2 = [2,1]^T$, $k_3 = [6,-2]^T$, $h_\text{out} = [0,2]^T$.</p>
+
+    <p><strong>(b) Attention output.</strong> Keys in the figure: $k_1=[-1,1]^T$, $k_2=[1,1]^T$, $k_3=[6,-2]^T$. Values: $v_1=[0,1]^T$, $v_2=[2,1]^T$, $v_3=[4,-2]^T$. Query $q = W_Q h_\text{out} = \begin{pmatrix}3 & 1\\4 & 2\end{pmatrix}\begin{pmatrix}0\\2\end{pmatrix} = [2, 4]^T$.</p>
+    <p>Scores $q^T k_i$:</p>
+    <ul>
+      <li>$q^T k_1 = 2(-1) + 4(1) = 2$</li>
+      <li>$q^T k_2 = 2(1) + 4(1) = 6$</li>
+      <li>$q^T k_3 = 2(6) + 4(-2) = 4$</li>
+    </ul>
+    <p>argmax([2, 6, 4]) = [0, 1, 0] → attention picks $v_2$ entirely. <strong>Attention output = $v_2 = [2, 1]^T$.</strong></p>
+
+    <p><strong>(c) Role of attention in linear RNNs.</strong> Without attention, the decoder only sees the final state $h_\text{out}$ — a bottleneck. Attention lets the decoder query <em>all</em> encoder states, selecting the most relevant ones. In a linear RNN specifically, the state evolution is just matrix multiplication, so intermediate states carry information that would otherwise be overwritten. Attention preserves access to that intermediate information, solving the long-range dependency problem.</p>
+
+    <p><strong>(d) Attention scores + context vector.</strong> Scores are dot products $q^T k_i$ (or scaled $q^T k_i / \sqrt{d_k}$). Apply softmax to get attention weights $\alpha_i$ summing to 1. Context vector = weighted sum $\sum_i \alpha_i v_i$.</p>
+
+    <p><strong>(e) Real-world example.</strong> Machine translation: for "The cat sat on the mat" → "Le chat s'est assis sur le tapis", when producing "chat" the decoder should attend heavily to "cat". Without attention, all source info is crammed into one context vector and long sentences degrade. Attention gives direct access to the most relevant source words for each target word, dramatically improving translation quality and producing interpretable alignment heatmaps.</p>
+  </details>
+
+  <!-- 2023 Q1 -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2023 Q1 · MLP vs ConvNet parameter count</div>
+    <p><strong>model1:</strong> Flatten → Linear(224·224, 28·28) → Sigmoid.<br>
+    <strong>model2:</strong> three Conv2d layers (1→2→4→1), kernel 3×3, stride 2, padding 1, each followed by Sigmoid; then Flatten.</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Data type.</strong> Shape <code>[3, 1, 224, 224]</code> = batch of 3 grayscale 224×224 images. Dims: (batch, channels, height, width).</p>
+
+    <p><strong>(b) model1 parameters.</strong> Only the Linear layer has params. Linear($m$, $n$) has $m\cdot n + n$.</p>
+    <div class="formula">$$224\cdot 224 \cdot 28\cdot 28 + 28\cdot 28 = 50176 \cdot 784 + 784 = 39{,}339{,}152$$</div>
+    <p>(Approximately 39 million — the key point.)</p>
+
+    <p><strong>(c) model2 parameters.</strong> Conv2d($c_\text{in}$, $c_\text{out}$, $k$) has $c_\text{out}(c_\text{in}\cdot k^2 + 1)$.</p>
+    <ul>
+      <li>conv1 (1→2, 3×3): $2(1\cdot 9 + 1) = 20$</li>
+      <li>conv2 (2→4, 3×3): $4(2\cdot 9 + 1) = 76$</li>
+      <li>conv3 (4→1, 3×3): $1(4\cdot 9 + 1) = 37$</li>
+    </ul>
+    <p><strong>Total = 20 + 76 + 37 = 133 parameters.</strong></p>
+
+    <p><strong>(d) Output shapes for input [3, 1, 224, 224].</strong></p>
+    <p><u>model1:</u></p>
+    <ul>
+      <li>flatten → [3, 50176]</li>
+      <li>fc1 → [3, 784]</li>
+      <li>sig → [3, 784]</li>
+    </ul>
+    <p><u>model2:</u> stride=2, padding=1, kernel=3 → halves spatial dim each layer.</p>
+    <ul>
+      <li>conv1 → [3, 2, 112, 112] → sig1 same</li>
+      <li>conv2 → [3, 4, 56, 56] → sig2 same</li>
+      <li>conv3 → [3, 1, 28, 28] → sig3 same</li>
+      <li>flatten → [3, 784]</li>
+    </ul>
+
+    <p><strong>(e) Comparison.</strong> Both produce the same output shape [3, 784], but:</p>
+    <ul>
+      <li><strong>model1:</strong> ~40M params vs 133 params. Massively over-parameterised. Destroys 2D spatial structure via flatten. Cannot generalise to different input sizes. Very high memory.</li>
+      <li><strong>model2:</strong> ~300,000× fewer params. Preserves spatial hierarchy. Parameter sharing = translation equivariance. Can handle arbitrary input sizes (up to a point).</li>
+    </ul>
+
+    <p><strong>(f) Input [3, 1, 28, 28].</strong></p>
+    <ul>
+      <li><u>model1:</u> Flatten → [3, 784]. But Linear expects 50176 inputs → <strong>shape error / crash.</strong> model1 is hard-coded for 224×224.</li>
+      <li><u>model2:</u> conv halves each time: 28→14→7→4. Final flattened shape: [3, 16]. <strong>Works fine</strong> — key advantage of conv models.</li>
+    </ul>
+  </details>
+
+  <!-- 2023 Q2 -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2023 Q2(a)(b) · 2×3 kernel + maxpool</div>
+    <p>Kernel [[1,0,1],[0,1,0]], image (3 rows × 5 cols): row 0: [0,12,15,12,0]; row 1: [12,15,15,15,12]; row 2: [0,12,20,25,30].</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Convolution, no padding, stride 1.</strong> Kernel is 2×3, image is 3×5. Output: (3-2+1)×(5-3+1) = <strong>2×3</strong>.</p>
+    <p>At each position, dot-product kernel with corresponding image patch:</p>
+    <ul>
+      <li>(0,0): row0[0:3]·[1,0,1] + row1[0:3]·[0,1,0] = (0+0+15) + (0+15+0) = <strong>30</strong></li>
+      <li>(0,1): row0[1:4]·[1,0,1] + row1[1:4]·[0,1,0] = (12+0+12) + (0+15+0) = <strong>39</strong></li>
+      <li>(0,2): row0[2:5]·[1,0,1] + row1[2:5]·[0,1,0] = (15+0+0) + (0+15+0) = <strong>30</strong></li>
+      <li>(1,0): row1[0:3]·[1,0,1] + row2[0:3]·[0,1,0] = (12+0+15) + (0+12+0) = <strong>39</strong></li>
+      <li>(1,1): row1[1:4]·[1,0,1] + row2[1:4]·[0,1,0] = (15+0+15) + (0+20+0) = <strong>50</strong></li>
+      <li>(1,2): row1[2:5]·[1,0,1] + row2[2:5]·[0,1,0] = (15+0+12) + (0+25+0) = <strong>52</strong></li>
+    </ul>
+    <p>Output:</p>
+    <pre><code>30, 39, 30
+39, 50, 52</code></pre>
+
+    <p><strong>(b) 2×2 maxpool, stride 1</strong> on the 2×3 result. Output: 1×2.</p>
+    <ul>
+      <li>(0,0): max(30, 39, 39, 50) = 50</li>
+      <li>(0,1): max(39, 30, 50, 52) = 52</li>
+    </ul>
+    <p>Output: <code>[50, 52]</code>.</p>
+  </details>
+
+  <!-- 2022 Q1 Titanic -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2022 Q1 · Titanic network (full)</div>
+    <pre><code>self.linear1 = nn.Linear(12, 12); self.sigmoid1 = nn.Sigmoid()
+self.linear2 = nn.Linear(12, 8);  self.sigmoid2 = nn.Sigmoid()
+self.linear3 = nn.Linear( 8, 2);  self.softmax  = nn.Softmax(dim=1)
+criterion = nn.CrossEntropyLoss(); optimizer = Adam(..., lr=0.1)</code></pre>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Inputs/outputs:</strong> 12 inputs (Titanic features — age, class, sex, etc., one-hot where categorical), 2 outputs (survived / died).</p>
+
+    <p><strong>(b) Parameter count.</strong> Linear($m$,$n$) = $mn+n$.</p>
+    <ul>
+      <li>linear1 (12→12): $144 + 12 = 156$</li>
+      <li>linear2 (12→8): $96 + 8 = 104$</li>
+      <li>linear3 (8→2): $16 + 2 = 18$</li>
+    </ul>
+    <p>Total = <strong>278 parameters</strong>. Activations and softmax have no params.</p>
+
+    <p><strong>(c) Two Adam innovations over SGD:</strong></p>
+    <ol>
+      <li><strong>Momentum (1st moment).</strong> Adam maintains an exponentially decaying average of past gradients $m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t$. Physically: like a ball rolling downhill, it builds velocity in consistent directions and smooths noise — helps traverse long valleys and escape shallow local minima.</li>
+      <li><strong>Per-parameter adaptive learning rate (2nd moment).</strong> Adam maintains $v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2$, the running average of squared gradients, and divides the step by $\sqrt{v_t}$. Physically: steep directions get small steps (avoid overshoot), shallow directions get large steps (escape plateaus). Effectively normalises the curvature.</li>
+    </ol>
+
+    <p><strong>(d) Loss surface sketch.</strong> Draw a long, narrow, curved valley — a "taco shell" shape. The floor slopes gently along one axis ($w_1$) while the walls are steep along $w_2$. Plain SGD with a large learning rate bounces side-to-side off the walls; with a small rate, it crawls along the floor. Momentum accelerates the slow descent along $w_1$; adaptive learning rates automatically take small steps in $w_2$ (large gradient) and large steps in $w_1$ (small gradient). Result: smooth, fast convergence.</p>
+
+    <p><strong>(e) Saliency vs SmoothGrad vs IntegratedGradients.</strong></p>
+    <ul>
+      <li><strong>Vanilla saliency</strong> = $|\partial y / \partial x|$. Fast (1 backprop pass). Problem: noisy, suffers from gradient saturation — in saturated regions (sigmoid near 0/1) gradient is tiny even when the feature is important.</li>
+      <li><strong>SmoothGrad</strong> averages saliency over many noisy copies of the input: $\frac{1}{N}\sum |\partial F/\partial (x+\epsilon_i)|$. Reduces visual noise. Still saturates.</li>
+      <li><strong>IntegratedGradients</strong> integrates the gradient along a straight path from a baseline $x'$ (e.g. black image) to $x$. Fixes saturation by averaging gradient along the path. Satisfies <em>completeness</em> (attributions sum to $F(x) - F(x')$) and <em>implementation invariance</em>. More expensive (~50 passes).</li>
+    </ul>
+
+    <p><strong>(f) Coding mistake + three fixes.</strong> Mistake: the model applies <code>Softmax</code> in <code>forward</code>, but <code>nn.CrossEntropyLoss</code> <strong>internally applies LogSoftmax</strong>. So you get LogSoftmax of Softmax — gradients become nearly flat, training fails. Fixes:</p>
+    <ol>
+      <li><strong>Remove the softmax</strong> from forward; keep <code>CrossEntropyLoss</code>. Model outputs raw logits; CE handles LogSoftmax+NLL internally. <em>Recommended.</em></li>
+      <li><strong>Replace softmax with LogSoftmax</strong>; change the loss to <code>nn.NLLLoss</code>. Mathematically equivalent but explicit.</li>
+      <li><strong>Keep softmax; apply <code>torch.log</code> in forward; use NLLLoss.</strong> Ugly but equivalent.</li>
+    </ol>
+    <p>All three produce functionally equivalent trained networks.</p>
+  </details>
+
+  <!-- 2022 Q2 ConvNet -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2022 Q2 · ConvNet architecture + regression</div>
+    <p>Conv1 (8 filters, 3×3, stride 1, pad 1) → ReLU1 → MaxPool1 (2×2, stride 2) → FC1+ReLU → FC2.</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) FC1 neurons for 18×18 colour input.</strong></p>
+    <ul>
+      <li>Input: [3, 18, 18]. Conv1 (8 filters, 3×3, stride=1, pad=1): output = $\lfloor(18+2-3)/1\rfloor+1 = 18$. Shape [8, 18, 18]. Same after ReLU.</li>
+      <li>MaxPool1 (2×2, stride 2): $\lfloor(18-2)/2\rfloor+1 = 9$. Shape [8, 9, 9].</li>
+      <li>Flatten: $8 \cdot 9 \cdot 9 = $ <strong>648 neurons</strong> needed as FC1 input.</li>
+    </ul>
+
+    <p><strong>(b) Receptive field of central MaxPool1 output.</strong> MaxPool1 window = 2×2 on the activation map. Each value in the 2×2 pool window came from Conv1 (3×3 kernel). The union of 3×3 input patches mapping to the 2×2 pool window = <strong>4×4</strong> region in the input image.</p>
+
+    <p><strong>(c) What does kernel [[-1,+1,0],[-1,+1,0],[-1,+1,0]] detect?</strong> A <strong>vertical edge</strong> going from dark (left) to bright (right). Columns of −1, +1, 0 — negative on left, positive in middle. High positive response where image goes dark→bright horizontally.</p>
+
+    <p><strong>(d) Apply kernel to 5×5 image.</strong> No padding, stride 1 → output 3×3. Image:</p>
+    <pre><code>0 5 5 5 0
+0 0 5 0 0
+0 0 5 0 0
+0 0 5 0 0
+0 5 5 5 0</code></pre>
+    <p>Each output = sum over 3×3 patch of element-wise product with kernel. Computing all 9 positions gives Conv1 output:</p>
+    <pre><code> 5,  0, -5
+ 0,  5,  0
+ 5,  0, -5</code></pre>
+    <p>After ReLU1 (zero negatives):</p>
+    <pre><code>5, 0, 0
+0, 5, 0
+5, 0, 0</code></pre>
+    <p>After MaxPool1 (2×2, stride 1) on a 3×3 → 2×2:</p>
+    <pre><code>5, 5
+5, 5</code></pre>
+
+    <p><strong>(e) Regression activation + loss.</strong> FC2 output should be <strong>linear / identity</strong> (no activation) so output can take any real value (profits in £). Loss: <strong>MSE (<code>nn.MSELoss</code>)</strong>.</p>
+
+    <p><strong>(f) Ethical risks of "predicting profit from manager photos."</strong></p>
+    <ul>
+      <li><strong>Phrenology by CNN.</strong> No scientific basis for predicting leadership ability or profit from facial appearance — the model picks up spurious correlations.</li>
+      <li><strong>Bias amplification.</strong> Historical data reflects existing biases (male, white, middle-aged). The model recommends more of the same demographic; those get retrained on → <em>feedback loop</em> locks in discrimination.</li>
+      <li><strong>Protected characteristics.</strong> Hiring on appearance likely violates the UK Equality Act 2010 (age, race, sex).</li>
+      <li><strong>No explainability.</strong> Rejected candidates cannot be given a justifiable reason.</li>
+      <li><strong>Confounders.</strong> Profit depends on market, team, capital — none in a headshot. Model fundamentally misspecified.</li>
+    </ul>
+  </details>
+
+  <!-- 2022 Q3 RNN -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2022 Q3 · Vanilla RNN + GRU</div>
+    <p>$h_t = \text{ReLU}(w h_{t-1} + u x_t)$, $y_t = c + v h_t$, $L = \frac{1}{2}(y-y_t)^2$.<br>
+    $u=-2.0$, $v=3.0$, $w=0.5$, $c=-1.0$, $h_{-1}=0$. Inputs $x_0=-1, x_1=+1$.</p>
+  </div>
+  <details>
+    <summary>Click for full solution</summary>
+    <p><strong>(a) Forward pass.</strong></p>
+    <ul>
+      <li>$t=0$: $z_0 = w h_{-1} + u x_0 = 0.5(0) + (-2)(-1) = 2$. ReLU(2) = 2 → $h_0 = 2$. $y_0 = -1 + 3(2) = \mathbf{5}$.</li>
+      <li>$t=1$: $z_1 = w h_0 + u x_1 = 0.5(2) + (-2)(1) = -1$. ReLU(-1) = 0 → $h_1 = 0$. $y_1 = -1 + 3(0) = \mathbf{-1}$.</li>
+    </ul>
+
+    <p><strong>(b) $\partial y_0 / \partial x_0$.</strong> $y_0 = c + v \cdot \text{ReLU}(u x_0)$ (since $h_{-1}=0$).</p>
+    <ul>
+      <li>If ReLU input $\le 0$: ReLU' = 0, so $\partial y_0/\partial x_0 = 0$.</li>
+      <li>If ReLU input $> 0$: ReLU' = 1, so $\partial y_0/\partial x_0 = v \cdot u$.</li>
+    </ul>
+
+    <p><strong>(c) $\partial y_1 / \partial x_0$.</strong> $y_1 = c + v \,\text{ReLU}(w\,\text{ReLU}(u x_0) + u x_1)$. Chain rule:</p>
+    <div class="formula">$$\frac{\partial y_1}{\partial x_0} = v \cdot \text{ReLU}'(z_1) \cdot w \cdot \text{ReLU}'(z_0) \cdot u$$</div>
+    <p>Cases:</p>
+    <ul>
+      <li>$z_0 \le 0$: result = 0 (regardless of $z_1$).</li>
+      <li>$z_0 > 0$ and $z_1 \le 0$: result = 0.</li>
+      <li>$z_0 > 0$ and $z_1 > 0$: result = $v \cdot w \cdot u$.</li>
+    </ul>
+
+    <p><strong>(d) Why care about $\partial y_t / \partial x_0$ for different $t$?</strong> It measures how much the output at time $t$ depends on an input from the <em>past</em>. This is exactly what BPTT needs to train long-range dependencies. If the derivative shrinks to 0 for large $t$ (vanishing gradients), the network cannot learn long-term dependencies; if it explodes, training is unstable. Motivates LSTMs/GRUs and attention.</p>
+
+    <p><strong>(e) GRU: sigmoid vs tanh.</strong> Sigmoid (0–1) is used for reset $r_t$ and update $z_t$ gates because they are <strong>soft switches / selectors</strong> — "how much to let through?" 0 = block, 1 = pass. You want a bounded non-negative gating weight. Tanh (−1 to 1) is used for the <strong>candidate state</strong> $\tilde h_t$ because it produces <em>signed</em> values that can push the hidden state up or down.</p>
+
+    <p><strong>(f) GRU advantage over vanilla RNN.</strong> GRU largely solves the vanishing gradient problem. The update gate gives $h_t = (1-z_t) h_{t-1} + z_t \tilde h_t$: if $z_t \approx 0$ the network simply copies $h_{t-1}$ forward, creating a near-identity path through which gradients flow unattenuated. Vanilla RNN has no such shortcut — every timestep multiplies the gradient by $w \cdot \text{ReLU}'(\cdot)$, causing exponential decay/explosion.</p>
+  </details>
+
+  <!-- 2021 quick ref -->
+  <div class="box box-paper">
+    <div class="box-title">📝 2021 paper · quick reference</div>
+    <p>Most 2021 questions are covered inline in the main sections. Reminders below.</p>
+  </div>
+  <details>
+    <summary>Quick reference: 2021 key answers</summary>
+    <ul>
+      <li><strong>Symmetric weight init (all 0.1):</strong> neurons in the same layer receive identical inputs and produce identical gradients → weights update identically forever → effectively one neuron per layer. Fix: <em>random initialisation</em> (Xavier for sigmoid/tanh, He for ReLU).</li>
+      <li><strong>Forward vs reverse autodiff:</strong> Forward = $P$ passes (one per parameter); Reverse = 2 passes total. DNNs have millions of parameters → reverse wins. This is backpropagation.</li>
+      <li><strong>Accuracy inappropriate for cancer detection:</strong> imbalanced data. Predicting "healthy" gets ~99% accuracy but catches zero cancers. Use <em>recall</em>, <em>precision</em>, or ROC-AUC.</li>
+      <li><strong>Cross-validation then final test:</strong> (1) split train/test; (2) k-fold on train to choose hyperparameters; (3) retrain on <em>all</em> train data with chosen hyperparameters; (4) evaluate <em>once</em> on test set.</li>
+      <li><strong>Denoising autoencoder for pre-training:</strong> train on noisy-input→clean-output to learn robust representations; discard decoder; fine-tune encoder for supervised classification.</li>
+    </ul>
+  </details>
+
+</section>
+
+
+<!-- =================================================== -->
+<!-- SECTION 11 — EXAM STRATEGY -->
+<!-- =================================================== -->
+<section id="strategy">
+  <h2>🎯 11. Exam Strategy &amp; Cheat Sheet</h2>
+  <p class="lead">The final mile: time management, formulas to know cold, traps to avoid, and a framework for ethics questions.</p>
+
+  <h3>11.1 Time Management</h3>
+  <div class="box box-tip">
+    <div class="box-title">⏱ Suggested allocation (90 min + 30 min extra)</div>
+    <ul>
+      <li><strong>5 min:</strong> Read all three questions. Spot the one you're most confident on — do that first.</li>
+      <li><strong>25 min × 3 = 75 min.</strong> Don't exceed 30 min on any one question on the first pass.</li>
+      <li><strong>15 min:</strong> Review arithmetic in forward/backward passes — number errors are the easiest marks to lose.</li>
+      <li><strong>30 min extra time:</strong> Attempt parts you skipped, double-check parameter counts, tidy up. Don't leave early.</li>
+    </ul>
+  </div>
+
+  <h3>11.2 Formula Cheat Sheet (Know These Cold)</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Shapes &amp; Parameters</h4>
+      <div class="formula">$$\text{Conv out} = \left\lfloor \frac{I + 2P - F}{S} \right\rfloor + 1$$</div>
+      <p>Conv2d params: $c_\text{out}(c_\text{in}\cdot k_h\cdot k_w + 1)$</p>
+      <p>Linear params: $m \cdot n + n$</p>
+    </div>
+    <div class="card">
+      <h4>Activations &amp; derivatives</h4>
+      <p>$\sigma(z) = 1/(1+e^{-z})$; $\sigma'(z) = \sigma(z)(1-\sigma(z))$</p>
+      <p>ReLU: $\max(0,z)$; ReLU': $\mathbb{1}[z>0]$</p>
+      <p>tanh' = $1-\tanh^2(z)$</p>
+    </div>
+    <div class="card">
+      <h4>Backprop chain</h4>
+      <div class="formula">$$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y}\cdot\frac{\partial y}{\partial z}\cdot\frac{\partial z}{\partial w}$$</div>
+      <p>Hidden: $\partial L/\partial h_j = \sum_k w_{jk}\,\phi'(z_k)\,\partial L/\partial h_k$</p>
+    </div>
+    <div class="card">
+      <h4>Optimisers</h4>
+      <p>SGD: $w \leftarrow w - \alpha \nabla L$</p>
+      <p>Momentum: $v \leftarrow \beta v + \nabla L$; $w \leftarrow w - \alpha v$</p>
+      <p>Adam: $m$ (momentum) + $v$ (sq. grad) + bias correction</p>
+    </div>
+    <div class="card">
+      <h4>Attention</h4>
+      <div class="formula">$$\text{Attn}(Q,K,V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$</div>
+      <p>Per head: $d_e(d_k + d_k + d_v)$; output: $H d_v \cdot d_o$</p>
+    </div>
+    <div class="card">
+      <h4>Generative</h4>
+      <p>VAE: $\|x-\hat x\|^2 + \text{KL}(q(z|x)\,\|\,\mathcal{N}(0,I))$</p>
+      <p>GAN: $\min_G \max_D \mathbb{E}[\log D(x)] + \mathbb{E}[\log(1-D(G(z)))]$</p>
+    </div>
+    <div class="card">
+      <h4>Metrics</h4>
+      <p>Precision = TP/(TP+FP)</p>
+      <p>Recall = TP/(TP+FN)</p>
+      <p>F1 = 2·P·R/(P+R)</p>
+    </div>
+    <div class="card">
+      <h4>Regularisation</h4>
+      <p>L2 (weight decay): $L + \lambda \sum w_i^2$</p>
+      <p>L1 (sparsity): $L + \lambda \sum |w_i|$</p>
+      <p>Dropout: scale by $(1-p)$ at test time</p>
+    </div>
+  </div>
+
+  <h3>11.3 The Top 10 Traps</h3>
+  <div class="box box-trap">
+    <div class="box-title">⚠ These are the mistakes markers look for every year</div>
+    <ol>
+      <li><strong>Softmax before CrossEntropyLoss.</strong> PyTorch's <code>nn.CrossEntropyLoss</code> applies <code>LogSoftmax</code> internally. Adding softmax yourself = double-softmax = broken gradients.</li>
+      <li><strong>Accuracy on imbalanced data.</strong> 99% accuracy is meaningless if 99% of samples are one class. Use precision/recall/F1/AUROC.</li>
+      <li><strong>F1 alone for medical tasks.</strong> F1 = 0.7 could mean P=1.0/R=0.54 or P=0.54/R=1.0 — very different clinically. Report P and R separately.</li>
+      <li><strong>Forward vs reverse autodiff.</strong> Forward = one pass per parameter; reverse (backprop) = just one forward + one backward total.</li>
+      <li><strong>Symmetric weight init.</strong> Identical weights → identical gradients forever. Must use random init (Xavier / He).</li>
+      <li><strong>Weight decay ≠ "small weights".</strong> It's <em>L2 regularisation</em> penalising the squared weight magnitude.</li>
+      <li><strong>ReLU at 0.</strong> Derivative undefined; conventionally set to 0. Don't write "1".</li>
+      <li><strong>Dropout scaling.</strong> At test time, no dropout; weights scaled by $(1-p)$ — or inverted dropout during training.</li>
+      <li><strong>MaxPool size formula.</strong> Same as conv: $\lfloor (I - F)/S \rfloor + 1$ (no padding by default).</li>
+      <li><strong>Half padding = $(F-1)/2$.</strong> Only preserves spatial size when stride=1. With stride>1, output shrinks.</li>
+    </ol>
+  </div>
+
+  <h3>11.4 Ethics Answer Framework</h3>
+  <p>Ethics appears in ~60% of papers (usually Q2f or Q3d/e). Whether surveillance, hiring, medical, or recommendation, use the same <strong>four-pillar</strong> framework — it covers almost every mark scheme.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>① Bias in training data</h4>
+      <p>Who/what is under-represented? Historical prejudice baked in? Demographics unbalanced? Labels themselves discriminatory?</p>
+      <p><em>Example:</em> "Training data from historical arrests reflects biased over-policing of minority neighbourhoods."</p>
+    </div>
+    <div class="card">
+      <h4>② Disparate impact on groups</h4>
+      <p>Will error rates differ across protected groups (race, gender, age)? Are costs of false positives/negatives borne unequally?</p>
+      <p><em>Example:</em> "False 'antisocial' flags will fall disproportionately on young men and racialised groups."</p>
+    </div>
+    <div class="card">
+      <h4>③ Feedback loops</h4>
+      <p>Do model outputs affect future training data? If flagged people get re-flagged, bias compounds. Auto-annotated data is especially dangerous.</p>
+      <p><em>Example:</em> "Using model predictions as new training labels locks in initial biases permanently."</p>
+    </div>
+    <div class="card">
+      <h4>④ Explainability &amp; accountability</h4>
+      <p>Can the decision be justified to the affected person? GDPR / Equality Act rights? Who is responsible when the model is wrong?</p>
+      <p><em>Example:</em> "A black-box CNN cannot provide transparent reasoning required for police action or criminal proceedings."</p>
+    </div>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">💡 Bonus pillars for longer (5+ mark) ethics questions</div>
+    <ul>
+      <li><strong>Consent &amp; privacy:</strong> Were subjects informed? GDPR? Can data be withdrawn?</li>
+      <li><strong>Chilling effects:</strong> Does pervasive surveillance alter lawful behaviour (free expression, assembly)?</li>
+      <li><strong>Concept drift:</strong> "Antisocial" is socially defined and changes; the model's definition is frozen at training time.</li>
+      <li><strong>Automation bias:</strong> Humans trust AI outputs too much; annotators may rubber-stamp the model's suggestions.</li>
+      <li><strong>Adversarial misuse:</strong> Who else could this system be used against (journalists, activists)?</li>
+    </ul>
+  </div>
+
+  <h3>11.5 Question-by-Question Playbook</h3>
+  <div class="card-grid">
+    <div class="card" style="border-top:4px solid var(--primary);">
+      <h4>Q1 · PyTorch code analysis (~20 marks)</h4>
+      <ol>
+        <li>Read the class line-by-line. Note every layer and its dimensions.</li>
+        <li>Write down input shape. Trace it through each layer using the output-size formula.</li>
+        <li>Count parameters per layer, then sum.</li>
+        <li>Check the final activation against the loss function — flag any softmax-before-CE mistakes.</li>
+        <li>For loss curves: identify overfitting (train ↓, val ↑), underfitting (both flat high), or learning-rate issues (oscillation = too high, slow = too low).</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid var(--accent);">
+      <h4>Q2 · Numerical computation (~20 marks)</h4>
+      <ol>
+        <li>For kernel application: lay out image and kernel explicitly. Compute one position fully showing working; list the others.</li>
+        <li>For backprop: write the chain rule expression <em>first</em>, then substitute numbers.</li>
+        <li>Double-check ReLU cases (active vs zero) — this gates whole paths.</li>
+        <li>For attention: compute Q, K, V vectors; then scores; then weights; then context.</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid #ef4444;">
+      <h4>Q3 · Conceptual / applied (~20 marks)</h4>
+      <ol>
+        <li>RNN forward pass: compute $z_t$, then $h_t$, then $y_t$ at each step. Show working.</li>
+        <li>Gradient through time: enumerate ReLU states, write the product form, then plug in.</li>
+        <li>Comparison questions (RNN vs Transformer, LSTM vs GRU, VAE vs GAN): use a short table — markers reward structure.</li>
+        <li>Ethics: use the 4-pillar framework. One paragraph per pillar. No waffle.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="box box-beginner">
+    <div class="box-title">🌱 The night before</div>
+    <p>Don't learn anything new. Do a 20-minute walk-through of the formulas cheat sheet, re-read the Top 10 Traps, and sleep early. Your memory needs REM more than it needs another worked example. On exam day: arrive with a calculator (even though "not required"), scrap paper, and water. You've got this. 💪</p>
+  </div>
+
+</section>
+
+
+
+
+</div>
+
+<div class="footer">
+  <h3>Good luck with your exam! 🍀</h3>
+  <p>Built from lecture notes, past papers (2021–2025), and beginner-first pedagogy. Study well, sleep well, perform well.</p>
+</div>
+
+</main>
+</div>
+
+<script>
+// Smooth nav highlighting
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 100;
+    if (window.scrollY >= top) current = sec.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+}
+window.addEventListener('scroll', updateActiveNav);
+
+// Tab switching
+document.addEventListener('click', e => {
+  if (e.target.matches('.tab-btn')) {
+    const group = e.target.closest('.tabs');
+    const idx = [...group.querySelectorAll('.tab-btn')].indexOf(e.target);
+    group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    group.querySelectorAll('.tab-content')[idx].classList.add('active');
+  }
+});
+
+// Animate freq bars on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.width = e.target.dataset.width;
+    }
+  });
+});
+document.querySelectorAll('.freq-fill').forEach(el => {
+  el.dataset.width = el.style.width;
+  el.style.width = '0%';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

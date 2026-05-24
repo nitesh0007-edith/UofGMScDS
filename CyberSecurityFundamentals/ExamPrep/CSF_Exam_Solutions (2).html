@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMPSCI5063 — Cyber Security Fundamentals | Exam Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --bg3: #151d35;
+    --surface: #1a2540;
+    --surface2: #1f2d4a;
+    --border: #2a3a5c;
+    --text: #e2e8f8;
+    --text2: #8fa4cc;
+    --text3: #5a7299;
+    --accent: #4f9eff;
+    --accent2: #7b6eff;
+    --gold: #f5c842;
+    --green: #3dda8a;
+    --red: #ff5c7a;
+    --orange: #ff9d4d;
+    --crib: #ffe45e;
+    --crib-bg: rgba(255, 228, 94, 0.08);
+    --crib-border: rgba(255, 228, 94, 0.35);
+    --paper25-color: #3dda8a;
+    --paper24-color: #4f9eff;
+    --paper23-color: #b57aff;
+    --paper22-color: #ff9d4d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BG ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,158,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,158,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-tag::before { content: ''; display: inline-block; width: 24px; height: 2px; background: var(--accent); }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  h1 span { color: var(--accent); }
+  .header-sub { font-size: 15px; color: var(--text2); max-width: 600px; line-height: 1.6; }
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: var(--surface);
+  }
+  .meta-pill.hl { border-color: var(--crib-border); color: var(--crib); background: var(--crib-bg); }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 40px;
+    align-items: center;
+  }
+  .legend-label { font-size: 12px; color: var(--text3); font-family: 'JetBrains Mono', monospace; margin-right: 4px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .l-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .nav-tab {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .nav-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .nav-tab[data-year="2025"] { --c: var(--paper25-color); }
+  .nav-tab[data-year="2024"] { --c: var(--paper24-color); }
+  .nav-tab[data-year="2023"] { --c: var(--paper23-color); }
+  .nav-tab[data-year="2022"] { --c: var(--paper22-color); }
+  .nav-tab.active[data-year="2025"] { background: var(--paper25-color); border-color: var(--paper25-color); }
+  .nav-tab.active[data-year="2024"] { background: var(--paper24-color); border-color: var(--paper24-color); }
+  .nav-tab.active[data-year="2023"] { background: var(--paper23-color); border-color: var(--paper23-color); }
+  .nav-tab.active[data-year="2022"] { background: var(--paper22-color); border-color: var(--paper22-color); }
+
+  /* ── PAPER SECTION ── */
+  .paper { display: none; }
+  .paper.active { display: block; }
+
+  .paper-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .paper-year-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    padding: 8px 20px;
+    border-radius: 10px;
+    color: #000;
+  }
+  .badge-25 { background: var(--paper25-color); }
+  .badge-24 { background: var(--paper24-color); }
+  .badge-23 { background: var(--paper23-color); }
+  .badge-22 { background: var(--paper22-color); }
+  .paper-info { flex: 1; }
+  .paper-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
+  .paper-desc { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .question-card:hover { border-color: var(--text3); }
+
+  .q-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--surface);
+    transition: background 0.2s;
+  }
+  .q-header:hover { background: var(--surface2); }
+
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .q-number.c25 { background: var(--paper25-color); }
+  .q-number.c24 { background: var(--paper24-color); }
+  .q-number.c23 { background: var(--paper23-color); }
+  .q-number.c22 { background: var(--paper22-color); }
+
+  .q-title { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .q-marks {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .q-toggle {
+    font-size: 18px;
+    color: var(--text3);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .q-header.open .q-toggle { transform: rotate(180deg); }
+
+  .q-body { padding: 0 24px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
+  .q-body.open { max-height: 4000px; padding: 24px 24px 28px; }
+
+  /* ── QUESTION TEXT BOX ── */
+  .question-text {
+    background: var(--bg3);
+    border-left: 3px solid var(--text3);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* ── CRIB BADGE ── */
+  .crib-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--crib-bg);
+    border: 1px solid var(--crib-border);
+    color: var(--crib);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    vertical-align: middle;
+  }
+  .crib-badge::before { content: '📋'; font-size: 11px; }
+
+  .crib-box {
+    background: var(--crib-bg);
+    border: 1px solid var(--crib-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: var(--crib);
+    line-height: 1.7;
+  }
+  .crib-box strong { color: #ffe896; }
+  .crib-box .crib-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .crib-box .crib-title::before { content: '📋 '; }
+
+  /* ── SOLUTION SECTIONS ── */
+  .solution-section { margin-bottom: 22px; }
+  .solution-section:last-child { margin-bottom: 0; }
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before { content: ''; width: 16px; height: 2px; background: var(--accent2); }
+  .section-label.sub { color: var(--accent); font-size: 12px; }
+  .section-label.sub::before { background: var(--accent); width: 10px; }
+
+  p { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; padding: 0; }
+  .steps li {
+    position: relative;
+    padding-left: 36px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .steps li::before {
+    content: counter(step);
+    counter-increment: step;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps { counter-reset: step; }
+
+  /* ── MATH BLOCK ── */
+  .math-block {
+    background: #0d1220;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .math-block .comment { color: var(--text3); }
+  .math-block .highlight { color: var(--gold); font-weight: 600; }
+  .math-block .answer { color: var(--crib); font-weight: 600; }
+
+  /* ── TABLE ── */
+  .sol-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .sol-table th {
+    background: var(--surface2);
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .sol-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    line-height: 1.6;
+    vertical-align: top;
+  }
+  .sol-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .sol-table .td-key { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 12px; }
+
+  /* ── PILL TAGS ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    margin: 2px;
+  }
+  .pill-green { background: rgba(61,218,138,0.12); color: var(--green); border: 1px solid rgba(61,218,138,0.3); }
+  .pill-red { background: rgba(255,92,122,0.12); color: var(--red); border: 1px solid rgba(255,92,122,0.3); }
+  .pill-blue { background: rgba(79,158,255,0.12); color: var(--accent); border: 1px solid rgba(79,158,255,0.3); }
+  .pill-gold { background: rgba(245,200,66,0.12); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+  .pill-purple { background: rgba(123,110,255,0.15); color: var(--accent2); border: 1px solid rgba(123,110,255,0.3); }
+
+  /* ── KEY POINT ── */
+  .key-point {
+    display: flex;
+    gap: 12px;
+    background: rgba(79,158,255,0.06);
+    border: 1px solid rgba(79,158,255,0.2);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    align-items: flex-start;
+  }
+  .key-point::before { content: '💡'; flex-shrink: 0; margin-top: 1px; }
+  .key-point.warn { background: rgba(255,92,122,0.06); border-color: rgba(255,92,122,0.2); }
+  .key-point.warn::before { content: '⚠️'; }
+  .key-point.success { background: rgba(61,218,138,0.06); border-color: rgba(61,218,138,0.2); }
+  .key-point.success::before { content: '✅'; }
+
+  /* ── SUB-PART ── */
+  .sub-part {
+    border-left: 2px solid var(--border);
+    padding-left: 18px;
+    margin: 16px 0;
+  }
+  .sub-part-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ── TOPICS OVERVIEW ── */
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  .topic-card .t-name { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .topic-card .t-freq { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+  .freq-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .freq-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* ── EEA STEP-BY-STEP LAYOUT ── */
+  .eea-wrap { margin: 14px 0; }
+
+  .eea-phase {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .eea-phase.down { background: rgba(79,158,255,0.12); color: var(--accent); border: 1px solid rgba(79,158,255,0.25); }
+  .eea-phase.up   { background: rgba(123,110,255,0.12); color: var(--accent2); border: 1px solid rgba(123,110,255,0.25); }
+  .eea-phase.final{ background: rgba(61,218,138,0.12); color: var(--green); border: 1px solid rgba(61,218,138,0.25); }
+  .eea-phase.verify{ background: rgba(255,228,94,0.1); color: var(--crib); border: 1px solid var(--crib-border); }
+
+  .eea-step {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 0 14px;
+    margin-bottom: 8px;
+    align-items: start;
+  }
+  .eea-n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 600; color: var(--text2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .eea-n.alpha { background: rgba(123,110,255,0.15); border-color: rgba(123,110,255,0.4); color: var(--accent2); }
+  .eea-n.final { background: rgba(61,218,138,0.15); border-color: rgba(61,218,138,0.4); color: var(--green); }
+
+  .eea-content { display: flex; flex-direction: column; gap: 3px; }
+  .eea-eq {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--green); line-height: 1.65;
+  }
+  .eea-eq .rem  { color: var(--accent); font-weight: 600; }
+  .eea-eq .sub  { color: var(--accent2); font-weight: 600; }
+  .eea-eq .gcd  { color: var(--gold); font-weight: 600; }
+  .eea-eq .ans  { color: var(--crib); font-weight: 700; }
+  .eea-eq .save { color: var(--orange); }
+  .eea-eq .ind  { display: block; padding-left: 20px; }
+  .eea-eq .ind2 { display: block; padding-left: 40px; }
+  .eea-note {
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    color: var(--text3); line-height: 1.5;
+  }
+  .eea-separator { height: 1px; background: var(--border); margin: 14px 0 12px; }
+
+  /* ── INLINE CRIB MARKER ── */
+  .crib-inline {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,228,94,0.1); border: 1px solid rgba(255,228,94,0.3);
+    color: var(--crib); font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 4px; letter-spacing: 0.5px; vertical-align: middle;
+    margin-left: 6px; white-space: nowrap;
+  }
+  .crib-inline::before { content: '📋'; font-size: 10px; }
+
+  /* ── ANSWER SUMMARY BOX ── */
+  .ans-summary {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    background: rgba(61,218,138,0.05);
+    border: 1px solid rgba(61,218,138,0.25);
+    border-radius: 10px; padding: 14px 18px; margin: 14px 0;
+    align-items: center;
+  }
+  .ans-item { text-align: center; }
+  .ans-label { font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+  .ans-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; color: var(--green); }
+  .ans-val.highlight { color: var(--crib); }
+  .ans-check { font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; flex: 1; min-width: 200px; line-height: 1.8; }
+
+  @media (max-width: 600px) {
+    .q-header { padding: 14px 16px; gap: 10px; }
+    .q-body.open { padding: 16px 16px 20px; }
+    .question-text, .crib-box, .math-block { padding: 12px 14px; }
+    .eea-eq { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">University of Glasgow · COMPSCI5063</div>
+    <h1>Cyber Security<br><span>Fundamentals M</span></h1>
+    <p class="header-sub">Complete worked solutions for all past exam papers (2022–2025), with crib sheet references highlighted throughout. Open book exam — use these notes strategically.</p>
+    <div class="header-meta">
+      <span class="meta-pill">4 Past Papers</span>
+      <span class="meta-pill">2022 · 2023 · 2024 · 2025</span>
+      <span class="meta-pill hl">📋 Crib Sheet Tagged</span>
+      <span class="meta-pill">All Marks Covered</span>
+    </div>
+  </header>
+
+  <!-- TOPIC FREQUENCY -->
+  <div class="topics-grid">
+    <div class="topic-card">
+      <div class="t-name">RSA / Public Key Crypto</div>
+      <div class="t-freq">Appears every year ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:100%;background:var(--gold)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">Block Ciphers (CBC/ECB)</div>
+      <div class="t-freq">Every year ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:100%;background:var(--accent)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">SSO / Kerberos / Auth</div>
+      <div class="t-freq">3 of 4 papers ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;background:var(--accent2)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">Access Control (DAC)</div>
+      <div class="t-freq">3 of 4 papers ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;background:var(--paper25-color)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">Web Security / HTTPS</div>
+      <div class="t-freq">3 of 4 papers ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:80%;background:var(--orange)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">Digital Forensics</div>
+      <div class="t-freq">2 of 4 papers ★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:55%;background:var(--red)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">RC4 Stream Cipher</div>
+      <div class="t-freq">2 of 4 papers ★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:55%;background:var(--paper23-color)"></div></div>
+    </div>
+    <div class="topic-card">
+      <div class="t-name">Network / Brute Force</div>
+      <div class="t-freq">3 of 4 papers ★★★</div>
+      <div class="freq-bar"><div class="freq-fill" style="width:75%;background:var(--green)"></div></div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span class="legend-label">LEGEND:</span>
+    <div class="legend-item"><div class="l-dot" style="background:var(--crib)"></div> Crib sheet directly helps</div>
+    <div class="legend-item"><div class="l-dot" style="background:var(--paper25-color)"></div> 2025 paper</div>
+    <div class="legend-item"><div class="l-dot" style="background:var(--paper24-color)"></div> 2024 paper</div>
+    <div class="legend-item"><div class="l-dot" style="background:var(--paper23-color)"></div> 2023 paper</div>
+    <div class="legend-item"><div class="l-dot" style="background:var(--paper22-color)"></div> 2022 paper</div>
+    <div class="legend-item"><div class="l-dot" style="background:var(--gold)"></div> Mark-scoring answer</div>
+  </div>
+
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-year="2025" onclick="showPaper('2025')">2025 Paper (40 marks, 1hr)</button>
+    <button class="nav-tab" data-year="2024" onclick="showPaper('2024')">2024 Paper (80 marks, 2hr)</button>
+    <button class="nav-tab" data-year="2023" onclick="showPaper('2023')">2023 Paper (60 marks, 2hr)</button>
+    <button class="nav-tab" data-year="2022" onclick="showPaper('2022')">2022 Paper (60 marks, 2hr)</button>
+  </div>
+
+  <!-- ═══════════════════════════ 2025 PAPER ═══════════════════════════ -->
+  <div class="paper active" id="paper-2025">
+    <div class="paper-header">
+      <div class="paper-year-badge badge-25">2025</div>
+      <div class="paper-info">
+        <div class="paper-title">MSc — Cyber Security Fundamentals M</div>
+        <div class="paper-desc">Wednesday 14 May 2025 · 14:00–15:00 BST · 1 hour · 40 marks total · Open book</div>
+      </div>
+    </div>
+
+    <!-- Q1 2025 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c25">Q1</span>
+        <span class="q-title">Travelsafe website with URL session IDs — vulnerability + defence [5 marks]</span>
+        <span class="q-marks">★ 5 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">A company called Travelsafe uses URL session IDs for authentication. Visitors can search for holiday locations. Mention and describe a potential vulnerability and corresponding defence mechanisms.</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet Reference</div>
+          No direct formula on crib sheet, but the Web Security concepts (HTTPS vs HTTP, session management) and the DAC/Access control context help frame this answer.
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Vulnerability — Session Hijacking via URL-embedded Session ID</div>
+          <p>Because the session ID is embedded in the URL (e.g., <code>travelsafe.com/search?session=12345abc</code>), it is exposed in several dangerous ways:</p>
+          <ol class="steps">
+            <li><strong>Referer header leakage:</strong> when a user clicks any external link, the browser sends the full URL (including session ID) in the HTTP Referer header to the destination server — no attacker needed.</li>
+            <li><strong>Browser history / bookmarks:</strong> session IDs are stored in plaintext in browser history, accessible to anyone with physical or malware access to the machine.</li>
+            <li><strong>Server log exposure:</strong> web server access logs record the full URL — anyone who can read logs can steal active sessions.</li>
+            <li><strong>Network interception:</strong> without HTTPS, any MitM or packet sniffer can read the session ID from URLs in transit.</li>
+          </ol>
+          <p>Additionally, the <strong>search box</strong> makes the site vulnerable to <strong>Cross-Site Scripting (XSS)</strong> — unsanitised input lets an attacker inject JavaScript that steals session tokens from other users.</p>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Defence Mechanisms</div>
+          <table class="sol-table">
+            <tr><th>Defence</th><th>How It Mitigates</th></tr>
+            <tr><td><strong>Use cookies instead of URL params</strong></td><td>Session IDs in HttpOnly + Secure cookies are not exposed in URLs, Referer headers, or browser history. JavaScript cannot read them (HttpOnly).</td></tr>
+            <tr><td><strong>Enforce HTTPS (TLS)</strong></td><td>Encrypts the entire request including URLs and cookies — prevents network-level interception.</td></tr>
+            <tr><td><strong>Session expiry &amp; regeneration</strong></td><td>Short-lived sessions reduce the attack window. Regenerate session ID after login to prevent fixation attacks.</td></tr>
+            <tr><td><strong>Input sanitisation (XSS prevention)</strong></td><td>Validate and escape all search box input — prevents injected scripts from stealing session tokens.</td></tr>
+          </table>
+        </div>
+        <div class="key-point success">For full marks: name the vulnerability (URL session ID exposure → session hijacking), explain 2–3 specific exposure routes, then give 2+ defences with reasoning.</div>
+      </div>
+    </div>
+
+    <!-- Q2 2025 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c25">Q2</span>
+        <span class="q-title">SSO advantages/disadvantages + CIA/CIAAN properties [7 marks]</span>
+        <span class="q-marks">★ 7 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">1) Argue for advantages and disadvantages of SSO over traditional approaches. 2) Explain what SSO means for Confidentiality, Integrity, Authenticity, Accountability, and Non-repudiation.</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — Kerberos / SSO Process</div>
+          The crib sheet covers the Kerberos ticket-based SSO mechanism. Kerberos is the canonical SSO example: user authenticates once to KDC → gets TGT → uses TGT to get service tickets → accesses services without re-authenticating.
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Part 1 — SSO Advantages vs Disadvantages</div>
+          <table class="sol-table">
+            <tr><th>Category</th><th>SSO</th><th>Traditional (per-service auth)</th></tr>
+            <tr><td><strong>Advantages</strong></td><td>Single credential → less password fatigue → users choose stronger passwords. Fewer credentials = smaller attack surface. Centralised security policy (MFA, lockout). Better user experience.</td><td>N/A (baseline comparison)</td></tr>
+            <tr><td><strong>Disadvantages</strong></td><td><span class="pill pill-red">Single point of failure</span> — one compromise exposes every connected service. SSO outage locks users out of everything simultaneously.</td><td>Many credentials → users reuse, write down, or choose weak passwords across services.</td></tr>
+          </table>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Part 2 — SSO and Security Properties (CIAAN) <span class="crib-inline">Crib: Kerberos ticket properties</span></div>
+          <table class="sol-table">
+            <tr><th>Property</th><th>Effect of SSO</th></tr>
+            <tr><td><span class="pill pill-blue">Confidentiality</span></td><td><strong>Improved</strong> — credentials transmitted fewer times over encrypted channels. Reduced interception exposure compared to re-authenticating at every service.</td></tr>
+            <tr><td><span class="pill pill-blue">Integrity</span></td><td><strong>Maintained</strong> — SSO tickets (e.g., Kerberos TGT) are cryptographically signed/encrypted. Any tampering invalidates the ticket and authentication fails.</td></tr>
+            <tr><td><span class="pill pill-green">Authenticity</span></td><td><strong>Improved</strong> — identity verified once by a trusted KDC/IdP. All services trust the issued ticket as proof of identity without independent re-verification.</td></tr>
+            <tr><td><span class="pill pill-purple">Accountability</span></td><td><strong>Centralised</strong> — all authentication and access events logged in one place, making audit trails comprehensive and easier to correlate.</td></tr>
+            <tr><td><span class="pill pill-gold">Non-repudiation</span></td><td><strong>Strengthened</strong> — actions are tied to a centrally-verified identity. Users cannot credibly deny session actions — the audit log is from a single trusted authority.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2025 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c25">Q3</span>
+        <span class="q-title">Block cipher 4-bit — ECB decrypt, CBC decrypt, ECB insecurity [13 marks]</span>
+        <span class="q-marks">★ 13 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Given permutation table EK(m). (a) ECB decrypt: 187b06 [2] (b) CBC decrypt: 301be, IV=1 [4] (c) Why is ECB insecure? Suggest a better mode [7].</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — CBC Diagram</div>
+          The crib sheet has the full CBC encryption/decryption diagram. <strong>CBC Decryption:</strong> P_i = D_K(C_i) ⊕ C_{i-1}  (with C_0 = IV). The crib also has the binary-to-hex table.
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Reference — Permutation Table & Inverse (DK) <span class="crib-inline">Crib: binary-to-hex table</span></div>
+          <div class="math-block">
+Given EK table:
+m     :  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+EK(m) :  1  b  5  c  7  e  2  a  4  9  f  d  0  3  6  8
+
+To DECRYPT: reverse the table  (if EK(m)=c, then DK(c)=m)
+Cipher:  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+Plain:   c  0  6  d  8  2  e  4  f  9  7  1  3  5  b  a</div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) ECB Decryption of 187b06 [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">How ECB works + step-by-step lookup <span class="crib-inline">Crib: DK inverse table above</span></div>
+            <p>In ECB mode each nibble is decrypted <strong>independently</strong> — just look up each ciphertext nibble in the DK table above.</p>
+            <div class="math-block">
+Ciphertext:  1    8    7    b    0    6
+
+Step 1: DK(1) = 0      (EK(0)=1, so reverse: DK(1)=0)
+Step 2: DK(8) = f      (EK(f)=8, so DK(8)=f)
+Step 3: DK(7) = 4      (EK(4)=7, so DK(7)=4)
+Step 4: DK(b) = 1      (EK(1)=b, so DK(b)=1)
+Step 5: DK(0) = c      (EK(c)=0, so DK(0)=c)
+Step 6: DK(6) = e      (EK(e)=6, so DK(6)=e)
+
+Plaintext = <span class="answer">0  f  4  1  c  e  →  0f41ce</span></div>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) CBC Decryption of 301be, IV=1 [4 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Formula <span class="crib-inline">Crib: CBC diagram P_i = DK(C_i) ⊕ C_{i-1}</span></div>
+            <p><strong>P<sub>i</sub> = D<sub>K</sub>(C<sub>i</sub>) ⊕ C<sub>i−1</sub></strong> &nbsp;where C<sub>0</sub> = IV = 1</p>
+            <p style="font-size:13px;color:var(--text2);">Ciphertext nibbles in order: <strong>3, 0, 1, b, e</strong></p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step-by-step decryption (show binary XOR for full marks)</div>
+            <div class="math-block">
+Block 1:  C_cur=3, C_prev=1(IV)
+          DK(3) = d
+          d ⊕ 1  =  1101 ⊕ 0001  =  1100  = <span class="answer">c</span>
+
+Block 2:  C_cur=0, C_prev=3
+          DK(0) = c
+          c ⊕ 3  =  1100 ⊕ 0011  =  1111  = <span class="answer">f</span>
+
+Block 3:  C_cur=1, C_prev=0
+          DK(1) = 0
+          0 ⊕ 0  =  0000 ⊕ 0000  =  0000  = <span class="answer">0</span>
+
+Block 4:  C_cur=b, C_prev=1
+          DK(b) = 1
+          1 ⊕ 1  =  0001 ⊕ 0001  =  0000  = <span class="answer">0</span>
+
+Block 5:  C_cur=e, C_prev=b
+          DK(e) = b
+          b ⊕ b  =  1011 ⊕ 1011  =  1110  = <span class="answer">e</span>
+
+Plaintext = <span class="answer">c f 0 0 e  →  cf00e</span></div>
+            <div class="key-point">XOR rule: same bits → 0, different bits → 1. Always work in 4-bit binary then convert back to hex using the crib sheet's binary-to-hex table.</div>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(c) Why ECB is insecure + better alternative [7 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Why ECB is insecure</div>
+            <p><strong>Core problem:</strong> ECB encrypts each plaintext block independently with the same key. Therefore, <em>identical plaintext blocks always produce identical ciphertext blocks</em>.</p>
+            <ul class="steps">
+              <li><strong>Pattern leakage:</strong> Eve observes repeated ciphertext blocks → infers the plaintext structure without knowing the key. E.g., if "TRANSFER £1000" appears many times, the same ciphertext block repeats, revealing the pattern.</li>
+              <li><strong>No diffusion across blocks:</strong> changing one plaintext block only changes the corresponding ciphertext block — no avalanche effect across the message.</li>
+              <li><strong>Block replay attacks:</strong> an attacker can cut and paste ciphertext blocks (e.g., swap an account number block) without detection, because there's no chaining or integrity check.</li>
+            </ul>
+            <div class="key-point warn">Classic example: ECB-encrypted bitmap images retain the shape/structure of the original image — visually demonstrating ECB's pattern leakage.</div>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Better Mode: CBC (Cipher Block Chaining)</div>
+            <p><strong>How CBC mitigates:</strong></p>
+            <ul class="steps">
+              <li><strong>XOR chaining:</strong> each plaintext block is XORed with the previous ciphertext block before encryption: C_i = EK(P_i ⊕ C_{i-1}). This means identical plaintext blocks produce different ciphertext blocks (because C_{i-1} differs each time).</li>
+              <li><strong>IV (Initialization Vector):</strong> a random IV for the first block ensures that the same message encrypted twice produces different ciphertexts, preventing pattern analysis across sessions.</li>
+              <li><strong>Error propagation:</strong> a change in one ciphertext block affects decryption of subsequent blocks, making replay/cut-and-paste attacks detectable.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 2025 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c25">Q4</span>
+        <span class="q-title">RSA private key (e=17, n=1763) + Brute force analysis [15 marks]</span>
+        <span class="q-marks">★ 15 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) Find private key: e=17, n=1763. Show full steps. [10] (b) 2^8 encryptions/sec, key=16 bits — brute force time? Scenarios. What if key doubled? [5]</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — RSA Key Generation Algorithm</div>
+          <strong>Crib sheet gives:</strong><br>
+          1. Select p, q (both prime)<br>
+          2. n = p × q<br>
+          3. φ(n) = (p−1)(q−1)<br>
+          4. Select e: gcd(φ(n), e) = 1<br>
+          5. Calculate d: d·e mod φ(n) = 1 → <strong>d = e⁻¹ mod φ(n)</strong><br>
+          Public key: {e, n} | Private key: {d, n}
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Finding Private Key d [10 marks]</div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Factor n to find p and q <span class="crib-inline">Crib: RSA key gen</span></div>
+            <p>Try dividing n = 1763 by small primes until one divides evenly:</p>
+            <div class="math-block">
+1763 ÷ 41 = <span class="highlight">43</span>  (exact, no remainder)
+→  p = 41,  q = 43
+→  Check: 41 × 43 = <span class="answer">1763 ✓</span>  Both 41 and 43 are prime ✓</div>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Calculate φ(n) (Euler's totient) <span class="crib-inline">Crib: φ(n)=(p−1)(q−1)</span></div>
+            <div class="math-block">
+φ(n) = (p − 1) × (q − 1)
+     = (41 − 1) × (43 − 1)
+     = 40 × 42
+     = <span class="answer">1680</span></div>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — Find d using Extended Euclidean Algorithm (EEA) <span class="crib-inline">Crib: d·e mod φ(n)=1</span></div>
+            <p>We need d so that <strong>17 × d ≡ 1 (mod 1680)</strong>. The EEA has two phases.</p>
+
+            <div class="eea-wrap">
+              <span class="eea-phase down">↓ Phase 1 — Division chain (going down)</span>
+              <p style="font-size:12px;color:var(--text3);margin:0 0 10px;">Divide the larger number by the smaller, saving each remainder. Stop when remainder = 0.</p>
+
+              <div class="eea-step">
+                <div class="eea-n">1</div>
+                <div class="eea-content">
+                  <div class="eea-eq">1680 = 98 × 17 + <span class="rem">14</span>
+                    <span class="save">  → save:  14 = 1680 − 98×17</span></div>
+                  <div class="eea-note">1680 ÷ 17 = 98 remainder 14</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n">2</div>
+                <div class="eea-content">
+                  <div class="eea-eq">17 = 1 × 14 + <span class="rem">3</span>
+                    <span class="save">  → save:  3 = 17 − 1×14</span></div>
+                  <div class="eea-note">17 ÷ 14 = 1 remainder 3</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n">3</div>
+                <div class="eea-content">
+                  <div class="eea-eq">14 = 4 × 3 + <span class="rem">2</span>
+                    <span class="save">  → save:  2 = 14 − 4×3</span></div>
+                  <div class="eea-note">14 ÷ 3 = 4 remainder 2</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n">4</div>
+                <div class="eea-content">
+                  <div class="eea-eq">3 = 1 × 2 + <span class="gcd">1</span>
+                    <span class="save">  → save:  1 = 3 − 1×2</span></div>
+                  <div class="eea-note">Remainder = 1 → gcd = 1 ✓ (inverse exists!) ← this is the key line</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n">5</div>
+                <div class="eea-content">
+                  <div class="eea-eq">2 = 2 × 1 + <span class="rem">0</span></div>
+                  <div class="eea-note">Remainder = 0 → stop here</div>
+                </div>
+              </div>
+
+              <div class="eea-separator"></div>
+              <span class="eea-phase up">↑ Phase 2 — Back-substitution (going back up)</span>
+              <p style="font-size:12px;color:var(--text3);margin:0 0 10px;">Replace each remainder using the saved equations from Phase 1, one step at a time, until only 17 and 1680 remain.</p>
+
+              <div class="eea-step">
+                <div class="eea-n alpha">A</div>
+                <div class="eea-content">
+                  <div class="eea-eq">1 = 3 − 1×2</div>
+                  <div class="eea-note">Start from step 4's saved equation</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n alpha">B</div>
+                <div class="eea-content">
+                  <div class="eea-eq">= 3 − 1×<span class="sub">(14 − 4×3)</span>
+                    <span class="ind eea-note">↑ replaced "2" using step 3:  2 = 14 − 4×3</span>
+                    <span class="ind">= 3 + 4×3 − 14</span>
+                    <span class="ind">= 5×3 − 14</span></div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n alpha">C</div>
+                <div class="eea-content">
+                  <div class="eea-eq">= 5×<span class="sub">(17 − 1×14)</span> − 14
+                    <span class="ind eea-note">↑ replaced "3" using step 2:  3 = 17 − 1×14</span>
+                    <span class="ind">= 5×17 − 5×14 − 14</span>
+                    <span class="ind">= 5×17 − 6×14</span></div>
+                  <div class="eea-note">−5×14 and −1×14 combine: −6×14</div>
+                </div>
+              </div>
+
+              <div class="eea-step">
+                <div class="eea-n alpha">D</div>
+                <div class="eea-content">
+                  <div class="eea-eq">= 5×17 − 6×<span class="sub">(1680 − 98×17)</span>
+                    <span class="ind eea-note">↑ replaced "14" using step 1:  14 = 1680 − 98×17</span>
+                    <span class="ind">= 5×17 − 6×1680 + 6×98×17</span>
+                    <span class="ind">= 5×17 + 588×17 − 6×1680</span>
+                    <span class="ind">= <span class="ans">593×17</span> − 6×1680</span></div>
+                  <div class="eea-note">5 + 6×98 = 5 + 588 = 593. The "−6×1680" vanishes under mod 1680.</div>
+                </div>
+              </div>
+
+              <div class="eea-separator"></div>
+              <span class="eea-phase final">Reading the answer</span>
+              <div class="eea-step" style="margin-top:10px;">
+                <div class="eea-n final">d</div>
+                <div class="eea-content">
+                  <div class="eea-eq">1 ≡ 593 × 17  (mod 1680)</div>
+                  <div class="eea-note">Taking mod 1680 removes the −6×1680 term (it's a multiple of 1680 = 0 mod 1680)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 4 — Verify</div>
+            <div class="eea-wrap">
+              <span class="eea-phase verify">Verify: 17 × d mod φ(n) must = 1</span>
+              <div class="math-block" style="margin-top:10px;">
+17 × 593     = 10081
+10081 mod 1680  =  10081 − 6×1680  =  10081 − 10080  =  <span class="answer">1  ✓</span></div>
+            </div>
+          </div>
+
+          <div class="ans-summary">
+            <div class="ans-item"><div class="ans-label">e (public)</div><div class="ans-val">17</div></div>
+            <div class="ans-item"><div class="ans-label">n</div><div class="ans-val">1763</div></div>
+            <div class="ans-item"><div class="ans-label">p, q</div><div class="ans-val">41, 43</div></div>
+            <div class="ans-item"><div class="ans-label">φ(n)</div><div class="ans-val">1680</div></div>
+            <div class="ans-item"><div class="ans-label">d (private key)</div><div class="ans-val highlight">593</div></div>
+            <div class="ans-check">Private key = {d = 593, n = 1763}<br>17 × 593 mod 1680 = 1 ✓</div>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Brute Force Analysis [5 marks]</div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Calculate worst-case time</div>
+            <div class="math-block">
+Key size  = 16 bits  →  Total possible keys = 2^16 = 65,536
+Speed     = 2^8      =  256 encryptions per second
+
+Worst case  =  2^16 ÷ 2^8  =  2^(16−8)  =  2^8  =  256 seconds  ≈  <span class="highlight">4.3 minutes</span>
+Average     =  256 ÷ 2     =  128 seconds  ≈  2.1 minutes
+(on average you find the key after trying half the keyspace)</div>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Two scenarios</div>
+            <table class="sol-table">
+              <tr><th>Scenario</th><th>Practical?</th><th>Reasoning</th></tr>
+              <tr><td>Recovering your own lost zip file (low-stakes, short-lived)</td><td><span class="pill pill-red">Practical to attack</span></td><td>~4 minutes on a single laptop. Any attacker can break it trivially. 16-bit keys offer no real security.</td></tr>
+              <tr><td>Protecting military / banking communications over decades</td><td><span class="pill pill-green">NOT acceptable to use</span></td><td>Even 4 minutes is catastrophically short. Any serious adversary would crack it instantly. Completely unsuitable.</td></tr>
+            </table>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — Doubling the key size (16 → 32 bits)</div>
+            <div class="math-block">
+New key space  =  2^32  =  4,294,967,296 keys  (65,536× larger than before)
+Time           =  2^32 ÷ 2^8  =  2^24 seconds  =  16,777,216 seconds
+
+                        ≈  <span class="highlight">194 days</span>
+
+<span class="comment">But modern CPUs do billions of operations/sec — in practice still breakable.</span>
+<span class="comment">This is why real encryption uses AES-128 (2^128 keyspace) or AES-256.</span>
+
+Key rule: <span class="answer">adding 1 bit DOUBLES the search time.
+          adding n bits multiplies time by 2^n (exponential, not linear).</span></div>
+          </div>
+
+          <div class="key-point">Examiner wants: formula (2^keysize ÷ speed), correct time unit, one practical scenario, one impractical, and the "doubling key size squares search time" insight — that last point is worth easy marks.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end 2025 paper -->
+
+
+  <!-- ═══════════════════════════ 2024 PAPER ═══════════════════════════ -->
+  <div class="paper" id="paper-2024">
+    <div class="paper-header">
+      <div class="paper-year-badge badge-24">2024</div>
+      <div class="paper-info">
+        <div class="paper-title">MSc/BEng/BSc — Cyber Security Fundamentals (M)</div>
+        <div class="paper-desc">Tuesday 7 May 2024 · 09:30–11:30 BST · 2 hours · 80 marks · Open book</div>
+      </div>
+    </div>
+
+    <!-- Q1 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q1</span>
+        <span class="q-title">DAC system — granting and revoking access (Dr Anderson / Dr Bell) [6 marks]</span>
+        <span class="q-marks">★ 6 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Dr. Anderson owns "Experiment Data" file. Must grant Dr. Bell write+read access, then revoke it at end of project. Use DAC matrix commands from Fig.1. Maintain least privilege.</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — Full DAC Rules Table</div>
+          <strong>R2 grant</strong>: requires 'owner' in A[S₀, X] → stores α* in A[S, X]<br>
+          <strong>R3 delete α from S, X</strong>: requires 'control' in A[S₀, S] OR 'owner' in A[S₀, X]<br>
+          <strong>R5 create object X</strong>: None required → stores 'owner' in A[S₀, X]<br>
+          <strong>R7 create subject S</strong>: None required → stores 'control' in A[S, S]
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step-by-Step Commands <span class="crib-inline">Crib: DAC rules R2 & R3</span></div>
+          <ol class="steps">
+            <li>
+              <strong>Prerequisite check:</strong> Dr. Anderson (S₀) must have 'owner' in A[Anderson, ExperimentData]. Since he created the project, this is already in the matrix.
+            </li>
+            <li>
+              <strong>Grant read access</strong> (Rule R2):<br>
+              <code>grant {read} to DrBell, ExperimentData</code><br>
+              Authorization: 'owner' in A[Anderson, ExperimentData] ✓<br>
+              Effect: stores 'read' in A[DrBell, ExperimentData]
+            </li>
+            <li>
+              <strong>Grant write access</strong> (Rule R2):<br>
+              <code>grant {write} to DrBell, ExperimentData</code><br>
+              Authorization: 'owner' in A[Anderson, ExperimentData] ✓<br>
+              Effect: stores 'write' in A[DrBell, ExperimentData]
+            </li>
+            <li>
+              <strong>Least privilege principle:</strong> Do NOT grant 'owner' or any other permissions. Dr Bell gets ONLY read+write as required.
+            </li>
+            <li>
+              <strong>Revoke at end of project</strong> (Rule R3):<br>
+              <code>delete read from DrBell, ExperimentData</code><br>
+              <code>delete write from DrBell, ExperimentData</code><br>
+              Authorization: 'owner' in A[Anderson, ExperimentData] ✓<br>
+              Effect: removes both rights from A[DrBell, ExperimentData]
+            </li>
+          </ol>
+        </div>
+        <div class="key-point success">Marks come from: naming the correct rules (R2 for grant, R3 for delete), stating the authorization required for each, and explicitly applying least privilege (no extra permissions).</div>
+      </div>
+    </div>
+
+    <!-- Q2 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q2</span>
+        <span class="q-title">Man-in-the-Middle attack (cafe Wi-Fi) + RSN defence [10 marks]</span>
+        <span class="q-marks">★ 10 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) How can Eve conduct a MitM attack on Alice in the café? [5] (b) Discuss RSN's role in preventing MitM attacks and why it may not apply to public Wi-Fi. [5]</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) MitM Attack Mechanism [5 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Set up the rogue access point</div>
+            <p>Eve creates a Wi-Fi hotspot with the <strong>exact same SSID</strong> as the café's network (e.g., "CafeWifi"). Alice's device either auto-connects (if it's seen this SSID before) or she connects manually, with no way to tell it's fake.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Intercept all traffic</div>
+            <p>All Alice's traffic now flows through Eve's device before reaching the real internet. Eve acts as an invisible relay. Any unencrypted HTTP traffic is fully readable — login forms, session tokens, page content.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — Defeat HTTPS via SSL Stripping</div>
+            <p>Eve forwards requests to the real cloud server over HTTPS (server thinks it's secure), but <strong>downgrades Alice's side to HTTP</strong>. Alice sees the page load normally but without the padlock — credentials are now sent in plaintext to Eve.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 4 — Harvest credentials + modify data</div>
+            <p>Alice's username/password are captured. Eve can also <strong>alter responses</strong> — inject malicious JavaScript, redirect Alice to a phishing page, or silently change data (e.g., a bank transfer destination).</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) RSN (Robust Security Network) in Wi-Fi [5 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">What RSN does (why it helps on private networks)</div>
+            <ol class="steps">
+              <li><strong>Mutual authentication via 4-way handshake:</strong> Both the client and AP must prove knowledge of the PSK. A rogue AP that doesn't know the real PSK cannot complete the handshake — Alice's device rejects it.</li>
+              <li><strong>Per-session encryption keys (PTK):</strong> Each session generates a unique Pairwise Transient Key via the handshake. Even if traffic is captured, replaying old packets won't work.</li>
+              <li><strong>CCMP/AES encryption:</strong> All data traffic is encrypted end-to-end — eavesdropping gives only ciphertext.</li>
+            </ol>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Why RSN fails on public café Wi-Fi</div>
+            <ol class="steps">
+              <li><strong>Shared PSK is public:</strong> The café password is written on the wall. Eve knows it too — so she can set up a rogue AP with the same SSID <em>and</em> the same PSK. The 4-way handshake completes successfully because Eve has the correct key.</li>
+              <li><strong>RSN can't distinguish APs:</strong> WPA2-Personal has no way to verify which physical device is the "real" AP — only that the PSK matches. With a known PSK, the rogue AP passes all checks.</li>
+              <li><strong>Fix would require 802.1X Enterprise:</strong> Individual user certificates would prevent this, but this needs a RADIUS server — impractical for a café.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q3</span>
+        <span class="q-title">SSO advantages + Kerberos 5-step protocol [12 marks]</span>
+        <span class="q-marks">★ 12 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) SSO advantages + which CIAAN properties it provides [7]. (b) Kerberos 5-step process, focus on Ticket construction and usage [5].</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — Kerberos Process</div>
+          Kerberos is the canonical SSO protocol. Key components: KDC (Key Distribution Centre), TGS (Ticket-Granting Server), AS (Authentication Server), Ticket (contains session key + identity, encrypted with service's key).
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) SSO Advantages + CIAAN [7 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Advantages over traditional per-service authentication</div>
+            <ol class="steps">
+              <li><strong>Single credential to manage:</strong> Users only remember one password, so they choose a stronger one and are less likely to reuse it across services.</li>
+              <li><strong>Reduced attack surface:</strong> Fewer credentials in transit means fewer interception opportunities. One strong authentication event replaces many weak ones.</li>
+              <li><strong>Centralised policy enforcement:</strong> Password complexity, MFA, and account lockout rules are enforced in one place — consistent across all connected services.</li>
+            </ol>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">CIAAN properties <span class="crib-inline">Crib: Kerberos ticket = integrity + authenticity</span></div>
+            <table class="sol-table">
+              <tr><th>Property</th><th>Provided?</th><th>Explanation</th></tr>
+              <tr><td>Confidentiality</td><td><span class="pill pill-green">Yes</span></td><td>Credentials transmitted once over encrypted channel (TLS). Reducing transmission frequency reduces interception risk.</td></tr>
+              <tr><td>Integrity</td><td><span class="pill pill-green">Yes</span></td><td>Tickets are cryptographically signed/encrypted — any modification makes the ticket invalid and authentication fails.</td></tr>
+              <tr><td>Availability</td><td><span class="pill pill-red">Risk</span></td><td>SSO is a <strong>single point of failure</strong> — if the IdP/KDC goes down, users cannot access ANY service.</td></tr>
+              <tr><td>Authenticity</td><td><span class="pill pill-green">Yes</span></td><td>Identity is verified once by a trusted authority (KDC/IdP). All services trust the issued token as proof of identity.</td></tr>
+              <tr><td>Accountability</td><td><span class="pill pill-green">Yes</span></td><td>All authentication events are logged centrally — complete audit trail of who accessed what and when.</td></tr>
+              <tr><td>Non-repudiation</td><td><span class="pill pill-green">Yes</span></td><td>The authenticated session is tied to a verified identity. Users cannot deny actions performed under their session.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Kerberos 5 Steps [5 marks] <span class="crib-inline">Crib: Kerberos components</span></div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — User → Authentication Server (AS)</div>
+            <p>User sends their <strong>username in plaintext</strong> to the AS, requesting a Ticket-Granting Ticket (TGT). No password is sent at this stage.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — AS → User (issues TGT)</div>
+            <p>AS responds with two things: (1) a <strong>TGT encrypted with the TGS's secret key</strong> (user cannot read it), and (2) a session key encrypted with the user's <em>password-derived key</em>. The TGT contains: user identity, TGS session key, timestamp, expiry. User decrypts the session key using their password — this is the only time the password is used.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — User → Ticket-Granting Server (TGS)</div>
+            <p>User presents the TGT (opaque to them) + an <strong>Authenticator</strong> (current timestamp encrypted with the TGS session key). TGS decrypts the TGT, extracts the session key, and verifies the Authenticator — this prevents replay attacks.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 4 — TGS → User (issues Service Ticket)</div>
+            <p>TGS issues a <strong>Service Ticket encrypted with the target service's secret key</strong> (user cannot read it). Contains: user identity, service session key, validity period. User also gets the service session key encrypted with the TGS session key.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 5 — User → Service</div>
+            <p>User presents the Service Ticket + a new Authenticator to the target service. The service decrypts the ticket with <strong>its own secret key</strong>, verifies timestamp, and grants access. The user's password was never transmitted to the service.</p>
+          </div>
+          <div class="key-point success">Key exam insight: tickets are always encrypted with the <em>recipient's</em> secret key — the user carries the ticket but cannot forge or read it. This is what makes the system secure.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q4</span>
+        <span class="q-title">Digital Forensics — investigation steps + evidence collection [8 marks]</span>
+        <span class="q-marks">★ 8 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Employee suspected of unauthorized access and data theft. (a) 4 steps a digital forensics investigator would take [4]. (b) Key digital evidence to collect [4].</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Four Investigation Steps [4 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Identification & Preservation</div>
+            <p>Immediately <strong>isolate the computer from the network</strong> (unplug cable — do NOT shut down, as shutdown destroys volatile RAM data). Create a <strong>forensic bit-for-bit image</strong> of all storage media. Hash the image (SHA-256) to prove it hasn't been altered. Document chain of custody: who touched it, when, and why.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Collection (volatile data first)</div>
+            <p>Capture <strong>volatile data before powering down</strong>: running processes, active network connections, RAM contents (may contain encryption keys or passwords). Then collect disk images, log files, email archives, and USB connection history.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — Examination & Analysis</div>
+            <p>Work only on <strong>forensic copies, never originals</strong>. Use tools like FTK or Autopsy to: recover deleted files from unallocated disk space, analyse file system timestamps, examine browser history, and <strong>correlate events with the off-hours timestamps</strong> the admin noticed.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 4 — Reporting</div>
+            <p>Compile a <strong>formal, legally admissible report</strong> with: timeline of events, evidence found, tools and versions used, hash values of all images, and a maintained chain of custody log for court admissibility.</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Key Digital Evidence [4 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Evidence to collect and why</div>
+            <table class="sol-table">
+              <tr><th>Evidence Type</th><th>What to Look For</th><th>Why It Matters</th></tr>
+              <tr><td><strong>Network/Firewall logs</strong></td><td>External IPs accessed, large data transfers, VPN logs during off-hours</td><td>Identifies data exfiltration destinations and confirms the off-hours activity</td></tr>
+              <tr><td><strong>Windows Event Logs</strong></td><td>Security log: file open/copy/delete events, logon events</td><td>Proves which files were accessed and when — directly links employee to sensitive data</td></tr>
+              <tr><td><strong>USB/Removable media history</strong></td><td>Windows Registry USBSTOR key — device serial numbers + timestamps</td><td>Shows whether data was copied to a USB drive for physical exfiltration</td></tr>
+              <tr><td><strong>Email records</strong></td><td>Sent folder: large attachments, use of personal/external email from work PC</td><td>Common exfiltration method — emailing files to personal account</td></tr>
+              <tr><td><strong>Browser history / downloads</strong></td><td>Uploads to cloud storage (Dropbox, Drive, WeTransfer), file upload sites</td><td>Web-based exfiltration leaves browser traces even if files are deleted</td></tr>
+              <tr><td><strong>Deleted files</strong></td><td>Recover from unallocated disk space using forensic tools</td><td>Attacker may have deleted evidence — file carving can recover it</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q5</span>
+        <span class="q-title">Biometric continuous authentication — 3 methods + sensors [6 marks]</span>
+        <span class="q-marks">★ 6 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">List 3 biometric-based authentication methods for continuous user authentication, with necessary sensors for each.</div>
+
+        <table class="sol-table">
+          <tr><th>Method</th><th>Sensor Required</th><th>How it works continuously</th></tr>
+          <tr><td><strong>Keystroke Dynamics</strong></td><td>Standard keyboard (software captures timing data)</td><td>Measures typing rhythm, key press duration, inter-key intervals. Each user has a unique typing pattern. Continuously validates during typing sessions.</td></tr>
+          <tr><td><strong>Gait Analysis (Walking pattern)</strong></td><td>Accelerometer + Gyroscope (IMU) — in smartphone/smartwatch</td><td>The way a person walks has a unique pattern captured by motion sensors. Background monitoring doesn't interrupt workflow.</td></tr>
+          <tr><td><strong>Facial Recognition</strong></td><td>Front-facing camera (RGB, or IR camera for depth/liveness)</td><td>Periodic snapshots verify the same person is still at the device. Liveness detection prevents photo spoofing.</td></tr>
+        </table>
+        <div class="key-point">Bonus methods: mouse dynamics (mouse), voice recognition (microphone), fingerprint (fingerprint scanner). The question asks for any 3 — pick the ones you can explain clearly.</div>
+      </div>
+    </div>
+
+    <!-- Q6 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q6</span>
+        <span class="q-title">Session state across HTTPS + Why HTTPS is more secure than HTTP [12 marks]</span>
+        <span class="q-marks">★ 12 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) 2 mechanisms for session state in HTTPS + 2 disadvantages each [8]. (b) Why HTTPS is more secure than HTTP — 2 reasons with explanation [4].</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Session State Mechanisms [8 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Mechanism 1 — Cookies</div>
+            <p>Server issues a session token stored as a browser <strong>cookie</strong>; sent automatically with every subsequent request via the Cookie header.</p>
+            <table class="sol-table">
+              <tr><th>Disadvantage</th><th>Explanation</th></tr>
+              <tr><td><span class="pill pill-red">CSRF (Cross-Site Request Forgery)</span></td><td>Cookies are attached automatically to every matching request. A malicious site can trick the browser into firing an authenticated request to the target site — the victim's session cookie goes with it, authorising a forged action.</td></tr>
+              <tr><td><span class="pill pill-red">XSS Cookie Theft</span></td><td>If the site has an XSS vulnerability, an attacker injects JavaScript that reads <code>document.cookie</code> and sends the session token to a remote server. The attacker then uses it to impersonate the user.</td></tr>
+            </table>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Mechanism 2 — URL Session Tokens</div>
+            <p>Session ID embedded in the URL query string (e.g., <code>site.com/page?session=abc123</code>), passed in every link and redirect.</p>
+            <table class="sol-table">
+              <tr><th>Disadvantage</th><th>Explanation</th></tr>
+              <tr><td><span class="pill pill-red">Referer Header Leakage</span></td><td>The full URL — including the session ID — is sent to external sites via the HTTP <code>Referer</code> header when the user clicks a link. Any third-party analytics or ad service on the page receives the session ID.</td></tr>
+              <tr><td><span class="pill pill-red">Browser History & Log Exposure</span></td><td>Session IDs are stored in plaintext in browser history, bookmarks, proxy logs, and server access logs. Anyone with access to these (local attacker, sysadmin, log breach) can steal the session.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) HTTPS vs HTTP [4 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Reason 1 — Encryption (TLS)</div>
+            <p><strong>HTTP</strong> sends all data as plaintext — anyone on the same network (Wireshark, Wi-Fi sniffer, ISP, MitM) can read passwords, session tokens, and credit card numbers verbatim. <strong>HTTPS</strong> wraps the connection in TLS, which negotiates a shared symmetric key (AES) via asymmetric key exchange. All request/response content is encrypted — intercepted traffic is unreadable ciphertext.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Reason 2 — Server Authentication (Certificate Verification)</div>
+            <p><strong>HTTP</strong> has no server identity check — a MitM can silently proxy your connection with no indication. <strong>HTTPS</strong> requires the server to present a <strong>digital certificate signed by a trusted CA (Certificate Authority)</strong>. The browser verifies the certificate chain before the connection proceeds, ensuring you're talking to the genuine server, not an impersonator.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q7</span>
+        <span class="q-title">Hospital wireless network APT breach — implications + security strategy [5 marks]</span>
+        <span class="q-marks">★ 5 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) Implications of security breach on hospital operations and patient privacy [2]. (b) Multi-layered security strategy — technical + procedural controls [3].</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Implications [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Patient Privacy (Confidentiality breach)</div>
+            <p>Patient records — diagnoses, medications, personal details — may be exposed. This triggers <strong>mandatory GDPR breach notification</strong>, potential fines (up to 4% of annual turnover under UK GDPR), reputational damage, and loss of patient trust. Confidentiality is fundamentally violated.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Operational Disruption (Safety risk)</div>
+            <p>Medical devices on the wireless network (infusion pumps, patient monitors, imaging equipment) could be disabled or manipulated, <strong>directly endangering patient lives</strong>. Communication breakdown between departments delays emergency response — a ransomware attack on the network could halt critical services entirely.</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Multi-layered Security Strategy [3 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Layer 1 — Network segmentation</div>
+            <p><strong>Technical:</strong> Isolate medical devices on a separate VLAN from general staff Wi-Fi. Implement WPA3 Enterprise with 802.1X — each device authenticates individually. <strong>Procedural:</strong> Quarterly network access reviews; only registered devices allowed on the medical VLAN.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Layer 2 — Detection & Monitoring</div>
+            <p><strong>Technical:</strong> Deploy IDS/IPS to flag anomalous traffic (e.g., unexpected large transfers, lateral movement). <strong>Procedural:</strong> 24/7 SOC monitoring with a documented incident response plan specific to healthcare scenarios (DSPT compliance).</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Layer 3 — Access Control</div>
+            <p><strong>Technical:</strong> MFA for all staff accessing patient records; privileged access management (PAM) for system administrators. <strong>Procedural:</strong> Least privilege — clinical staff access only their own patients' records. Mandatory annual security awareness training covering phishing and social engineering.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q8</span>
+        <span class="q-title">RC4 stream cipher — known plaintext attack, KSA, invariance weakness [7 marks]</span>
+        <span class="q-marks">★ 7 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) Known plaintext attack on RC4 (key=5 bytes, known fragment=3 bytes) [2]. (b) K[i]=i+1 for i=0-4, perform first 3 iterations of KSA [3]. (c) RC4 Invariance Weakness [2].</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — RC4 KSA (Key Scheduling Algorithm)</div>
+          <strong>Step 1 (Init):</strong> S[i] = i; T[i] = K[i mod keylen]<br>
+          <strong>Step 2 (KSA):</strong> j = (j + S[i] + T[i]) mod 256; Swap(S[i], S[j])<br>
+          <strong>Step 3 (PRGA):</strong> i=(i+1)%256; j=(j+S[i])%256; Swap(S[i],S[j]); k=S[(S[i]+S[j])%256]
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Known Plaintext Attack on RC4 [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Recover keystream bytes</div>
+            <p>Since RC4 is a stream cipher: <code>Ciphertext = Plaintext XOR Keystream</code>. Therefore: <strong>Keystream = Ciphertext XOR Plaintext</strong>. With 3 known plaintext/ciphertext pairs, the attacker recovers the first 3 bytes of the keystream directly — no key needed for this step.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Brute-force the 5-byte key</div>
+            <p>The 5-byte key has a keyspace of 2<sup>40</sup> ≈ 1 trillion possibilities. For each candidate key: run the RC4 KSA + generate the first 3 PRGA bytes, compare against the known keystream bytes. A match identifies the real key. This is feasible on modern hardware — the short key length is the fundamental weakness.</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(c) RC4 Invariance Weakness [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">What the weakness is</div>
+            <p>Certain key byte patterns cause the KSA to leave many S-box values near their initialised positions (S[i] ≈ i). This means the <strong>initial keystream bytes are statistically biased</strong> — not uniformly random — and are correlated with portions of the key.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Why it matters — the WEP attack</div>
+            <p>An attacker who collects many ciphertexts encrypted with <strong>related keys</strong> (same key prefix, different IV prepended — exactly how WEP worked) can use statistical analysis of the first keystream byte across packets to recover key bytes one at a time. This is how WEP was completely broken: by collecting ~50,000–100,000 packets and running this statistical attack, the full WEP key could be recovered in minutes.</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) First 3 KSA Iterations — K[i]=i+1 [3 marks]</div>
+          <span class="crib-badge">Crib Sheet Available</span>
+          <div class="crib-box">
+            <div class="crib-title">Crib Sheet — RC4 KSA Formula (Step 2)</div>
+            j = (j + S[i] + T[i]) mod 256 &nbsp;→&nbsp; Swap(S[i], S[j])<br>
+            Where T[i] = K[i mod keylen]
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Initialise state</div>
+          <div class="math-block">
+<span class="comment">Initialise:</span>
+S = [0, 1, 2, 3, 4]   (S[i] = i for i = 0..4)
+T = [1, 2, 3, 4, 5]   (T[i] = K[i] = i+1)
+j = 0
+
+<span class="highlight">── Iteration i = 0 ──</span>
+  j = (j + S[0] + T[0]) mod 256
+    = (0 + 0   + 1)     mod 256
+    = <span class="rem">1</span>
+  Swap(S[0], S[1]):  S[0]=0 ↔ S[1]=1
+  S = [<span class="answer">1</span>, <span class="answer">0</span>, 2, 3, 4]
+
+<span class="highlight">── Iteration i = 1 ──</span>
+  j = (j + S[1] + T[1]) mod 256
+    = (1 + 0   + 2)     mod 256
+    = <span class="rem">3</span>
+  Swap(S[1], S[3]):  S[1]=0 ↔ S[3]=3
+  S = [1, <span class="answer">3</span>, 2, <span class="answer">0</span>, 4]
+
+<span class="highlight">── Iteration i = 2 ──</span>
+  j = (j + S[2] + T[2]) mod 256
+    = (3 + 2   + 3)     mod 256
+    = 8 mod 256 = 8
+
+  <span class="comment">Note: In the real 256-element RC4, j=8 is valid (S has indices 0–255).</span>
+  <span class="comment">In this 5-element exam example, treat j = 8 mod 5 = 3 (circular array).</span>
+
+  Swap(S[2], S[3]):  S[2]=2 ↔ S[3]=0
+  S = [1, 3, <span class="answer">0</span>, <span class="answer">2</span>, 4]
+
+<span class="answer">Final S after 3 iterations:  [1, 3, 0, 2, 4]</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Q9 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q9</span>
+        <span class="q-title">Simple CBC encryption — encrypt P=1101 0110 1001, then change IV [6 marks]</span>
+        <span class="q-marks">★ 6 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Block size: 4 bits. IV=1010. P=1101 0110 1001. E(Block,Key)=Block XOR Key, Key=0011. (a) Encrypt using CBC [3]. (b) How does changing IV to 0010 affect ciphertext? [3].</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — CBC Encryption Formula</div>
+          C_i = E_K(P_i ⊕ C_{i-1}), where C_0 = IV<br>
+          Here E(Block, Key) = Block XOR Key = Block XOR 0011
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) CBC Encryption — IV=1010, Key=0011 [3 marks] <span class="crib-inline">Crib: C_i = E_K(P_i ⊕ C_{i-1})</span></div>
+          <div class="math-block">
+P1=1101, P2=0110, P3=1001 | IV=1010, Key=0011
+
+<span class="highlight">Block 1:</span>
+  P1 ⊕ IV   = 1101 ⊕ 1010 = 0111
+  C1 = E(0111) = 0111 ⊕ 0011 = <span class="answer">0100</span>
+
+<span class="highlight">Block 2:</span>
+  P2 ⊕ C1   = 0110 ⊕ 0100 = 0010
+  C2 = E(0010) = 0010 ⊕ 0011 = <span class="answer">0001</span>
+
+<span class="highlight">Block 3:</span>
+  P3 ⊕ C2   = 1001 ⊕ 0001 = 1000
+  C3 = E(1000) = 1000 ⊕ 0011 = <span class="answer">1011</span>
+
+<span class="answer">Ciphertext = 0100 0001 1011</span></div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Effect of changing IV = 1010 → 0010 [3 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Recalculate with new IV = 0010</div>
+            <div class="math-block">
+<span class="highlight">Block 1 (changes — uses new IV):</span>
+  P1 ⊕ IV_new = 1101 ⊕ 0010 = 1111
+  C1_new = E(1111) = 1111 ⊕ 0011 = <span class="answer">1100</span>   (was 0100)
+
+<span class="highlight">Block 2 (changes — uses new C1):</span>
+  P2 ⊕ C1_new = 0110 ⊕ 1100 = 1010
+  C2_new = E(1010) = 1010 ⊕ 0011 = <span class="answer">1001</span>   (was 0001)
+
+<span class="highlight">Block 3 (changes — uses new C2):</span>
+  P3 ⊕ C2_new = 1001 ⊕ 1001 = 0000
+  C3_new = E(0000) = 0000 ⊕ 0011 = <span class="answer">0011</span>   (was 1011)
+
+New ciphertext = <span class="answer">1100 1001 0011</span>
+Old ciphertext = 0100 0001 1011  (every block different)</div>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Why every block changed — the key insight</div>
+            <p>In CBC mode, each block's ciphertext depends on <strong>all previous blocks</strong> via chaining. Changing the IV changes C1, which changes C2 (because C1 feeds into block 2's XOR), which changes C3. The same plaintext encrypted with a different IV produces a completely different ciphertext — this is the security property that prevents pattern analysis across sessions. Always use a fresh random IV per encryption.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q10 2024 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c24">Q10</span>
+        <span class="q-title">RSA decryption — p=17, q=31, e=17, c=394 [8 marks]</span>
+        <span class="q-marks">★ 8 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Perform full RSA decryption for p=17, q=31, e=17, ciphertext c=394.</div>
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — Full RSA Algorithm (4 steps)</div>
+          <strong>Step 1:</strong> n = p×q &nbsp;|&nbsp; <strong>Step 2:</strong> φ(n) = (p−1)(q−1) &nbsp;|&nbsp; <strong>Step 3:</strong> EEA → d·e ≡ 1 mod φ(n) &nbsp;|&nbsp; <strong>Step 4:</strong> M = C<sup>d</sup> mod n
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 1 — n = p × q <span class="crib-inline">Crib: formula</span></div>
+          <div class="math-block">n = 17 × 31 = <span class="answer">527</span></div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 2 — φ(n) = (p−1)(q−1) <span class="crib-inline">Crib: formula</span></div>
+          <div class="math-block">φ(n) = 16 × 30 = <span class="answer">480</span></div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 3 — Find d: 17d ≡ 1 (mod 480) via EEA <span class="crib-inline">Crib: EEA steps</span></div>
+          <div class="eea-wrap">
+            <span class="eea-phase down">↓ Phase 1 — Division chain</span>
+            <div class="eea-step" style="margin-top:10px;">
+              <div class="eea-n">1</div>
+              <div class="eea-content">
+                <div class="eea-eq">480 = 28 × 17 + <span class="rem">4</span>
+                  <span class="save">  → save:  4 = 480 − 28×17</span></div>
+                <div class="eea-note">480 ÷ 17 = 28 remainder 4</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n">2</div>
+              <div class="eea-content">
+                <div class="eea-eq">17 = 4 × 4 + <span class="gcd">1</span>
+                  <span class="save">  → save:  1 = 17 − 4×4  ← gcd=1, inverse exists!</span></div>
+                <div class="eea-note">17 ÷ 4 = 4 remainder 1 → stop (gcd found)</div>
+              </div>
+            </div>
+            <div class="eea-separator"></div>
+            <span class="eea-phase up">↑ Phase 2 — Back-substitution</span>
+            <div class="eea-step" style="margin-top:10px;">
+              <div class="eea-n alpha">A</div>
+              <div class="eea-content">
+                <div class="eea-eq">1 = 17 − 4×4</div>
+                <div class="eea-note">Start from step 2's saved equation</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n alpha">B</div>
+              <div class="eea-content">
+                <div class="eea-eq">= 17 − 4×<span class="sub">(480 − 28×17)</span>
+                  <span class="ind eea-note">↑ replaced "4" using step 1:  4 = 480 − 28×17</span>
+                  <span class="ind">= 17 − 4×480 + 112×17</span>
+                  <span class="ind">= <span class="ans">113×17</span> − 4×480</span></div>
+                <div class="eea-note">1 + 112 = 113. The −4×480 vanishes under mod 480.</div>
+              </div>
+            </div>
+            <div class="eea-separator"></div>
+            <span class="eea-phase verify">Verify: 17 × 113 mod 480</span>
+            <div class="math-block" style="margin-top:8px;">17 × 113 = 1921 = 4 × 480 + 1  →  1921 mod 480 = <span class="answer">1 ✓</span>    d = <span class="answer">113</span></div>
+          </div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 4 — Decrypt: M = 394<sup>113</sup> mod 527 via repeated squaring <span class="crib-inline">Crib: M=C^d mod n</span></div>
+          <p style="font-size:13px;color:var(--text2);">Convert 113 to binary: <strong>1110001</strong> = 64+32+16+1. Build a powers-of-2 table, then multiply only those four values.</p>
+          <div class="math-block">
+<span class="comment">── Powers-of-2 table (square each previous result mod 527) ──</span>
+394^ 1  mod 527  =  394
+394^ 2  mod 527  =  394²  mod 527  =  155236 − 294×527  =  <span class="highlight">298</span>
+394^ 4  mod 527  =  298²  mod 527  =   88804 − 168×527  =  <span class="highlight">268</span>
+394^ 8  mod 527  =  268²  mod 527  =   71824 − 136×527  =  <span class="highlight">152</span>
+394^16  mod 527  =  152²  mod 527  =   23104 −  43×527  =  <span class="highlight">443</span>  ← needed
+394^32  mod 527  =  443²  mod 527  =  196249 − 372×527  =  <span class="highlight">205</span>  ← needed
+394^64  mod 527  =  205²  mod 527  =   42025 −  79×527  =  <span class="highlight">392</span>  ← needed
+
+<span class="comment">── Combine: 113 = 64+32+16+1  →  multiply those four values ──</span>
+Start:  394^64           =  392
+× 394^32 (205):   392×205  =  80360  − 152×527  =  256
+× 394^16 (443):   256×443  = 113408  − 215×527  =  103
+× 394^ 1 (394):   103×394  =  40582  −  77×527  =  <span class="answer">3</span>
+
+Plaintext  M  =  <span class="answer">3</span></div>
+        </div>
+
+        <div class="ans-summary">
+          <div class="ans-item"><div class="ans-label">n</div><div class="ans-val">527</div></div>
+          <div class="ans-item"><div class="ans-label">φ(n)</div><div class="ans-val">480</div></div>
+          <div class="ans-item"><div class="ans-label">d</div><div class="ans-val">113</div></div>
+          <div class="ans-item"><div class="ans-label">Plaintext M</div><div class="ans-val highlight">3</div></div>
+          <div class="ans-check">Each step earns marks independently — show n, φ(n), d, and M even if one has a small arithmetic slip.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end 2024 paper -->
+
+
+  <!-- ═══════════════════════════ 2023 PAPER ═══════════════════════════ -->
+  <div class="paper" id="paper-2023">
+    <div class="paper-header">
+      <div class="paper-year-badge badge-23">2023</div>
+      <div class="paper-info">
+        <div class="paper-title">MSc — Cyber Security Fundamentals for MSc (M)</div>
+        <div class="paper-desc">Monday 15 May 2023 · 14:00–16:00 BST · 2 hrs + 30 min extra · 60 marks · 8 questions</div>
+      </div>
+    </div>
+
+    <!-- Q1 2023 MCQ -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q1</span>
+        <span class="q-title">10 Multiple Choice Questions [15 marks — +1.5 correct, −0.5 wrong]</span>
+        <span class="q-marks">★ 15 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="key-point warn">NEGATIVE MARKING: +1.5 for correct, −0.5 for wrong, 0 for blank. Only answer if you're reasonably confident (>25% confident = attempt it; >1/4 chance beats the penalty).</div>
+        <table class="sol-table">
+          <tr><th>Q</th><th>Topic</th><th>Answer</th><th>Reasoning</th></tr>
+          <tr><td>(a)</td><td>Passive attack (no disruption)</td><td><span class="pill pill-green">D — Fiber tapping</span></td><td>Fiber tapping intercepts data without disrupting the system. UDP flood, SYN spoofing are active DoS attacks. Email hacking involves active access.</td></tr>
+          <tr><td>(b)</td><td>MitM attacks on which property</td><td><span class="pill pill-green">D — Either (A) or (B)</span></td><td>MitM can breach Confidentiality (eavesdropping) OR Integrity (modifying data in transit). Both are affected.</td></tr>
+          <tr><td>(c)</td><td>Definitely NOT sensible password management</td><td><span class="pill pill-green">B — Security questions when wrong password</span></td><td>Security questions are weak (guessable answers). Asking them after a wrong password creates another attack vector, not a replacement. Random passwords (A), longer (C), complex (D) are all sensible.</td></tr>
+          <tr><td>(d)</td><td>Who constructs Kerberos ticket for server access</td><td><span class="pill pill-green">C — Trusted third party server (TGS/KDC)</span></td><td>In Kerberos, the TGS (Ticket Granting Server) constructs the service ticket — a trusted third party. The user cannot construct it (they don't have the service's secret key).</td></tr>
+          <tr><td>(e)</td><td>Optimal continuous authentication</td><td><span class="pill pill-green">D — Combination of above</span></td><td>Multi-factor/multi-modal biometrics provide the highest security. Keystroke dynamics alone is good but combining behavioural + physiological is optimal.</td></tr>
+          <tr><td>(f)</td><td>Purpose of Diffie-Hellman</td><td><span class="pill pill-green">A — Establish shared secret key</span></td><td>DH is specifically for secure key exchange (agree on a shared secret over insecure channel). It does NOT encrypt data itself. RSA generates public/private key pairs.</td></tr>
+          <tr><td>(g)</td><td>What makes ACL shorter</td><td><span class="pill pill-green">D — Default no-access rule</span></td><td>If subjects not listed have no access by default, you only need to list subjects WITH access — drastically shortening the ACL.</td></tr>
+          <tr><td>(h)</td><td>Transposition cipher</td><td><span class="pill pill-green">C — Characters exchanged by position</span></td><td>Transposition rearranges (permutes) character positions — does NOT substitute them. Substitution replaces characters. Polyalphabetic encrypts as units.</td></tr>
+          <tr><td>(i)</td><td>IEEE 802.11i — protocol + key length specification</td><td><span class="pill pill-green">A — Cipher suite</span></td><td>A cipher suite specifies the combination of protocol, key exchange, bulk encryption, and MAC algorithms in IEEE 802.11i / TLS.</td></tr>
+          <tr><td>(j)</td><td>Public key encryption definition</td><td><span class="pill pill-green">B — Two keys: private (secret) + public</span></td><td>Asymmetric encryption: each party has a private key (secret) and a public key (shared). Others use your public key to send you messages; you decrypt with your private key.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q2 2023 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q2</span>
+        <span class="q-title">Memory stick + Sony PSN — threats, vulnerabilities, controls [5 marks]</span>
+        <span class="q-marks">★ 5 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Memory stick left in vehicle [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Threat + Control</div>
+            <table class="sol-table">
+              <tr><th>Category</th><th>Answer</th><th>Why</th></tr>
+              <tr><td><span class="pill pill-red">Threat</span></td><td>Unauthorised disclosure of patient data</td><td>The car wash attendant (or anyone who found the device) was able to read 1,000+ patient records with no barrier — physical access = full access</td></tr>
+              <tr><td><span class="pill pill-green">Control</span></td><td>Encrypt all data on portable storage (AES-256 full-disk encryption)</td><td>Even if the device is physically stolen, the data is unreadable without the decryption key. Loss of the device becomes a hardware loss, not a data breach</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Sony PSN Hack [3 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Vulnerability, Threat & Control</div>
+            <table class="sol-table">
+              <tr><th>Category</th><th>Answer</th><th>Why</th></tr>
+              <tr><td><span class="pill pill-red">Vulnerability</span></td><td>Weak/unsalted password hashing on Sony's servers (or SQL injection in authentication endpoint)</td><td>Passwords stored insecurely could be cracked offline; SQL injection allowed attackers to bypass authentication checks entirely</td></tr>
+              <tr><td><span class="pill pill-red">Threat</span></td><td>Credential theft by external attackers — "unknown attackers verified members' IDs and passwords"</td><td>Attackers could impersonate users, access accounts, and potentially escalate to other services where passwords were reused</td></tr>
+              <tr><td><span class="pill pill-green">Control</span></td><td>Store passwords with strong adaptive hashing + salt (bcrypt/Argon2); use parameterised queries; rate-limit login attempts</td><td>Salted hashes can't be cracked with precomputed rainbow tables. Parameterised queries prevent SQL injection. Rate limiting stops automated credential stuffing</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2023 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q3</span>
+        <span class="q-title">Digital Forensics — field description + mobile phone recovery steps [12 marks]</span>
+        <span class="q-marks">★ 12 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="sub-part">
+          <div class="sub-part-label">(a) What is Digital Forensics + Types [6 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Definition</div>
+            <p>Digital forensics is the <strong>scientific process of identifying, preserving, collecting, analysing, and reporting</strong> on digital evidence found on electronic devices and storage media, in a manner that maintains its integrity and is admissible in legal proceedings.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Types of Digital Forensics</div>
+            <table class="sol-table">
+              <tr><th>Type</th><th>Scope</th><th>Example Evidence</th></tr>
+              <tr><td><strong>Computer Forensics</strong></td><td>Hard drives, SSDs, file systems on laptops/desktops</td><td>Deleted files, metadata, file system artefacts</td></tr>
+              <tr><td><strong>Mobile Device Forensics</strong></td><td>Smartphones, tablets</td><td>Call logs, SMS, app data, GPS location history</td></tr>
+              <tr><td><strong>Network Forensics</strong></td><td>Packet captures, firewall/IDS logs</td><td>Reconstructed traffic, intrusion paths, C2 communications</td></tr>
+              <tr><td><strong>Memory (RAM) Forensics</strong></td><td>Volatile memory dumps</td><td>Running processes, encryption keys, open connections</td></tr>
+              <tr><td><strong>Database Forensics</strong></td><td>DB transaction logs, query logs</td><td>Unauthorised data access, record tampering</td></tr>
+              <tr><td><strong>Cloud Forensics</strong></td><td>Remote server logs, API call logs</td><td>Cross-jurisdiction access records — jurisdictional challenges</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Mobile Phone Data Recovery Steps [6 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 1 — Secure & Isolate</div>
+            <p>Place the phone in a <strong>Faraday bag</strong> immediately to block cellular, Wi-Fi, and Bluetooth signals — this prevents remote wipe commands from reaching the device. Note the screen state, battery level, and any visible content.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 2 — Document & Photograph</div>
+            <p>Photograph the device before handling. Record IMEI, serial number, and model. Start the <strong>chain of custody log</strong>: who touched it, when, and under what authority.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 3 — Acquisition</div>
+            <p>Attach a <strong>write blocker</strong> to prevent any modification. Use specialist tools (Cellebrite UFED, Oxygen Forensic Detective) to extract data. Methods: logical extraction (standard backup), physical extraction (bit-for-bit NAND copy), or chip-off (for locked/damaged devices).</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 4 — Create Forensic Image + Hash</div>
+            <p>Generate a <strong>SHA-256 hash</strong> of the acquired image. Store the hash securely. Any future analysis copy must produce the same hash — proving the evidence has not been tampered with.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 5 — Analysis</div>
+            <p>Examine the image (never the device): call logs, SMS/iMessage, app data, GPS history, photos (EXIF metadata), <strong>deleted files</strong> in unallocated space, browser history, cloud app credentials.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Step 6 — Report</div>
+            <p>Compile a formal, legally admissible report: hash values, tools and version numbers used, timeline of findings, and a complete chain of custody record for court submission.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 2023 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q4</span>
+        <span class="q-title">HTTP vs HTTPS — security differences + payment recommendation [8 marks]</span>
+        <span class="q-marks">★ 8 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="solution-section">
+          <div class="section-label sub">Step 1 — Core difference: Encryption</div>
+          <p><strong>HTTP</strong> transmits everything as plaintext — anyone on the network (packet sniffer, ISP, Wi-Fi eavesdropper) can read all data including passwords and session tokens verbatim. <strong>HTTPS</strong> wraps the connection in <strong>TLS (Transport Layer Security)</strong>: a handshake negotiates a shared symmetric key (typically AES-256), and all subsequent traffic is encrypted. Intercepted packets are unreadable ciphertext.</p>
+        </div>
+        <div class="solution-section">
+          <div class="section-label sub">Step 2 — Server authentication</div>
+          <p><strong>HTTP</strong> provides no server identity verification — a MitM attacker can silently relay your connection without any sign. <strong>HTTPS</strong> requires the server to present a <strong>digital certificate signed by a trusted CA</strong>. The browser verifies the full chain before connecting — you know you're talking to the genuine server.</p>
+        </div>
+        <div class="solution-section">
+          <div class="section-label sub">Step 3 — Data integrity</div>
+          <p><strong>HTTP</strong> allows in-transit modification — attackers can inject ads, malware scripts, or alter form fields silently. <strong>HTTPS</strong> uses a MAC (Message Authentication Code) in TLS — any tampering with ciphertext causes the MAC check to fail and the connection is dropped immediately.</p>
+        </div>
+        <div class="solution-section">
+          <div class="section-label sub">Which to use for payment — and why</div>
+          <table class="sol-table">
+            <tr><th>Aspect</th><th>HTTP</th><th>HTTPS</th></tr>
+            <tr><td>Port</td><td>TCP 80</td><td>TCP 443</td></tr>
+            <tr><td>Card number in transit</td><td><span class="pill pill-red">Plaintext — trivially intercepted</span></td><td><span class="pill pill-green">Encrypted — unreadable to interceptor</span></td></tr>
+            <tr><td>PCI-DSS compliance</td><td><span class="pill pill-red">Fails — illegal for card processing</span></td><td><span class="pill pill-green">Required — mandatory for all card data</span></td></tr>
+            <tr><td>Use for payment?</td><td colspan="2"><strong>Always HTTPS.</strong> Credit card numbers, CVV, billing address are in the request body. HTTP sends these verbatim. HTTPS is legally mandatory under PCI-DSS for any payment card data.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 2023 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q5</span>
+        <span class="q-title">Three wireless network threats + corresponding measures [3 marks]</span>
+        <span class="q-marks">★ 3 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="solution-section">
+          <div class="section-label sub">Threat 1 — Eavesdropping (passive) <span class="crib-inline">Crib: RSN/802.11i</span></div>
+          <p>Attacker captures Wi-Fi packets in range using a passive sniffer (e.g., Wireshark in monitor mode). On open or WEP networks, all traffic is readable. <strong>Defence:</strong> Enable WPA3/WPA2 (RSN — IEEE 802.11i) — all wireless frames are encrypted using CCMP/AES, making captured packets unreadable.</p>
+        </div>
+        <div class="solution-section">
+          <div class="section-label sub">Threat 2 — Rogue Access Point (MitM setup)</div>
+          <p>Attacker deploys a fake AP with the same SSID as the legitimate network. Clients connect to the rogue AP, routing all traffic through the attacker. <strong>Defence:</strong> IEEE 802.1X Enterprise authentication — each AP must authenticate to the network controller using certificates; a rogue AP without valid credentials is refused. Wireless Intrusion Detection Systems (WIDS) can also detect rogue APs by scanning for unexpected SSIDs.</p>
+        </div>
+        <div class="solution-section">
+          <div class="section-label sub">Threat 3 — Deauthentication (DoS) Attack</div>
+          <p>Attacker sends spoofed deauthentication frames (using victim's MAC address) forcing clients off the network. Because pre-802.11w management frames were unauthenticated, any device could send them. <strong>Defence:</strong> IEEE 802.11w (Management Frame Protection) — authenticates management frames cryptographically. Spoofed deauth frames are rejected.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6 2023 RSA -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q6</span>
+        <span class="q-title">RSA private key — e=17, n=3599 [7 marks]</span>
+        <span class="q-marks">★ 7 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — RSA Key Generation</div>
+          <strong>Same 3-step process every time:</strong> factor n → compute φ(n) = (p−1)(q−1) → Extended Euclidean Algorithm for d
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 1 — Factor n = 3599 <span class="crib-inline">Crib: n = p×q</span></div>
+          <div class="math-block">
+Try dividing by primes: 3599 ÷ 59 = 61  (exact)
+→  p = 59,  q = 61
+→  Check: 59 × 61 = <span class="answer">3599 ✓</span>  Both 59 and 61 are prime ✓</div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 2 — φ(n) = (p−1)(q−1) <span class="crib-inline">Crib: formula</span></div>
+          <div class="math-block">φ(n) = (59−1) × (61−1) = 58 × 60 = <span class="answer">3480</span></div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 3 — Find d: 17d ≡ 1 (mod 3480) via EEA <span class="crib-inline">Crib: EEA steps</span></div>
+          <div class="eea-wrap">
+            <span class="eea-phase down">↓ Phase 1 — Division chain</span>
+            <div class="eea-step" style="margin-top:10px;">
+              <div class="eea-n">1</div>
+              <div class="eea-content">
+                <div class="eea-eq">3480 = 204 × 17 + <span class="rem">12</span>
+                  <span class="save">  → save:  12 = 3480 − 204×17</span></div>
+                <div class="eea-note">3480 ÷ 17 = 204 remainder 12</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n">2</div>
+              <div class="eea-content">
+                <div class="eea-eq">17 = 1 × 12 + <span class="rem">5</span>
+                  <span class="save">  → save:  5 = 17 − 1×12</span></div>
+                <div class="eea-note">17 ÷ 12 = 1 remainder 5</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n">3</div>
+              <div class="eea-content">
+                <div class="eea-eq">12 = 2 × 5 + <span class="rem">2</span>
+                  <span class="save">  → save:  2 = 12 − 2×5</span></div>
+                <div class="eea-note">12 ÷ 5 = 2 remainder 2</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n">4</div>
+              <div class="eea-content">
+                <div class="eea-eq">5 = 2 × 2 + <span class="gcd">1</span>
+                  <span class="save">  → save:  1 = 5 − 2×2  ← gcd=1 ✓</span></div>
+                <div class="eea-note">Remainder = 1 → inverse exists, stop here</div>
+              </div>
+            </div>
+
+            <div class="eea-separator"></div>
+            <span class="eea-phase up">↑ Phase 2 — Back-substitution</span>
+
+            <div class="eea-step" style="margin-top:10px;">
+              <div class="eea-n alpha">A</div>
+              <div class="eea-content">
+                <div class="eea-eq">1 = 5 − 2×2</div>
+                <div class="eea-note">Start from step 4's saved equation</div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n alpha">B</div>
+              <div class="eea-content">
+                <div class="eea-eq">= 5 − 2×<span class="sub">(12 − 2×5)</span>
+                  <span class="ind eea-note">↑ replaced "2" using step 3:  2 = 12 − 2×5</span>
+                  <span class="ind">= 5 + 4×5 − 2×12 = 5×5 − 2×12</span></div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n alpha">C</div>
+              <div class="eea-content">
+                <div class="eea-eq">= 5×<span class="sub">(17 − 1×12)</span> − 2×12
+                  <span class="ind eea-note">↑ replaced "5" using step 2:  5 = 17 − 1×12</span>
+                  <span class="ind">= 5×17 − 5×12 − 2×12 = 5×17 − 7×12</span></div>
+              </div>
+            </div>
+            <div class="eea-step">
+              <div class="eea-n alpha">D</div>
+              <div class="eea-content">
+                <div class="eea-eq">= 5×17 − 7×<span class="sub">(3480 − 204×17)</span>
+                  <span class="ind eea-note">↑ replaced "12" using step 1:  12 = 3480 − 204×17</span>
+                  <span class="ind">= 5×17 − 7×3480 + 1428×17</span>
+                  <span class="ind">= <span class="ans">1433×17</span> − 7×3480</span></div>
+                <div class="eea-note">5 + 7×204 = 5 + 1428 = 1433. The −7×3480 vanishes under mod 3480.</div>
+              </div>
+            </div>
+
+            <div class="eea-separator"></div>
+            <span class="eea-phase verify">Verify: 17 × 1433 mod 3480</span>
+            <div class="math-block" style="margin-top:8px;">
+17 × 1433 = 24361 = 7 × 3480 + 1  →  24361 mod 3480 = <span class="answer">1 ✓</span></div>
+          </div>
+        </div>
+
+        <div class="ans-summary">
+          <div class="ans-item"><div class="ans-label">p, q</div><div class="ans-val">59, 61</div></div>
+          <div class="ans-item"><div class="ans-label">n</div><div class="ans-val">3599</div></div>
+          <div class="ans-item"><div class="ans-label">φ(n)</div><div class="ans-val">3480</div></div>
+          <div class="ans-item"><div class="ans-label">d (private key)</div><div class="ans-val highlight">1433</div></div>
+          <div class="ans-check">Private key = {d = 1433, n = 3599}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7 2023 Brute Force -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q7</span>
+        <span class="q-title">Brute force — 2^20 enc/sec, 40-bit key [5 marks]</span>
+        <span class="q-marks">★ 5 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="solution-section">
+          <div class="section-label sub">Step 1 — Worst-case time for 40-bit key</div>
+          <div class="math-block">
+Key space  =  2^40  =  1,099,511,627,776 keys  (about 1.1 trillion)
+Speed      =  2^20  =  1,048,576 encryptions per second
+
+Worst case  =  2^40 ÷ 2^20  =  2^(40−20)  =  2^20 seconds
+            =  1,048,576 seconds  ≈  <span class="highlight">12.1 days</span>
+
+Average     =  12.1 ÷ 2  ≈  6 days
+(expect to find key after trying half the keyspace on average)</div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 2 — Two scenarios</div>
+          <table class="sol-table">
+            <tr><th>Scenario</th><th>Practical?</th><th>Why</th></tr>
+            <tr><td>Cracking a personal zip file or archive password to recover your own data</td><td><span class="pill pill-red">Practical</span></td><td>12 days on one machine. A cloud cluster of 100 nodes cuts it to hours. Acceptable for a one-time personal recovery.</td></tr>
+            <tr><td>Protecting military or long-term financial communications</td><td><span class="pill pill-green">Not acceptable</span></td><td>A nation-state adversary with compute resources could crack it in hours. Any secret that must stay secret for months or years is exposed.</td></tr>
+          </table>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 3 — Doubling key size: 40 → 80 bits</div>
+          <div class="math-block">
+New key space  =  2^80
+Time           =  2^80 ÷ 2^20  =  2^60 seconds
+
+2^60 seconds   ≈  3.66 × 10^13 seconds
+               ≈  <span class="highlight">1.16 billion years</span>  → completely impractical for any attacker
+
+<span class="answer">Rule: each extra bit doubles the time.
+      Adding 40 bits multiplies time by 2^40 ≈ 1 trillion times.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8 2023 Feistel -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c23">Q8</span>
+        <span class="q-title">Feistel cipher — prove round transformation is 1-to-1 [5 marks]</span>
+        <span class="q-marks">★ 5 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <span class="crib-badge">Crib Sheet Available</span>
+        <div class="crib-box">
+          <div class="crib-title">Crib Sheet — Feistel Structure (visual diagram provided)</div>
+          <strong>L<sub>i+1</sub> = R<sub>i</sub></strong> &nbsp;|&nbsp; <strong>R<sub>i+1</sub> = L<sub>i</sub> ⊕ f(K<sub>i</sub>, R<sub>i</sub>)</strong><br>
+          The crib sheet has the full Feistel diagram — use it to check which half goes where. The key insight is that L is just copied across, so it's always recoverable.
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Proof overview</div>
+          <p><strong>Given:</strong> From the forward round we get the new state (L<sub>i+1</sub>, R<sub>i+1</sub>) and we know key K<sub>i</sub>. We need to recover the old state (L<sub>i</sub>, R<sub>i</sub>).</p>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 1 — Recover R<sub>i</sub> for free</div>
+          <div class="math-block">
+Forward rule:  L_{i+1}  =  R_i
+
+Therefore:     R_i  =  L_{i+1}    <span class="answer">← read directly from output, no computation needed</span></div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Step 2 — Recover L<sub>i</sub> using XOR's self-inverse property</div>
+          <div class="math-block">
+Forward rule:  R_{i+1}  =  L_i  ⊕  f(K_i, R_i)
+
+Rearrange:     L_i  =  R_{i+1}  ⊕  f(K_i, R_i)
+
+We already know R_i = L_{i+1}  (from Step 1),
+so we can compute f(K_i, L_{i+1}) using the known key K_i.
+
+Therefore:     L_i  =  R_{i+1}  ⊕  f(K_i, L_{i+1})    <span class="answer">← fully determined</span></div>
+        </div>
+
+        <div class="solution-section">
+          <div class="section-label sub">Conclusion</div>
+          <div class="math-block">
+(L_{i+1}, R_{i+1})  →  R_i = L_{i+1}
+                     →  L_i = R_{i+1} ⊕ f(K_i, L_{i+1})
+
+Both L_i and R_i are uniquely determined from (L_{i+1}, R_{i+1}, K_i).
+The round is 1-to-1 regardless of what f is.  ∎</div>
+          <div class="key-point success">Why XOR works here: if A ⊕ B = C, then A = C ⊕ B (XOR is its own inverse). We XOR R<sub>i+1</sub> with f(…) to undo the original XOR. This is why f doesn't need to be invertible itself — only the XOR operation needs to be.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end 2023 paper -->
+
+
+  <!-- ═══════════════════════════ 2022 PAPER ═══════════════════════════ -->
+  <div class="paper" id="paper-2022">
+    <div class="paper-header">
+      <div class="paper-year-badge badge-22">2022</div>
+      <div class="paper-info">
+        <div class="paper-title">MSc/BEng/BSc — Cyber Security Fundamentals M</div>
+        <div class="paper-desc">Tuesday 10 May 2022 · 09:30–11:30 BST · 2 hrs + 30 min · 60 marks · 3 questions</div>
+      </div>
+    </div>
+
+    <!-- Q1 2022 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c22">Q1</span>
+        <span class="q-title">Caesar cipher + Vigenère cipher breaking + Password strength [20 marks]</span>
+        <span class="q-marks">★ 20 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">(a) Notepad ciphers: 1st: shift 2 to right. 2nd: passwd (keywd) → ZCGNFJXQX. (b) DB Password = ASECRETMESSAGE — derive 3 passwords, evaluate strength.</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Breaking the Ciphers [15 marks]</div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Cipher 1 — Caesar Cipher (shift right by 2)</div>
+            <p>A Caesar cipher shifts every letter by a fixed amount. "Shift 2 to the right" on encryption means each plaintext letter moved +2. To <strong>decrypt: shift every letter −2 (left by 2)</strong>.</p>
+            <div class="math-block">
+<span class="comment">Decryption rule: subtract 2 from each letter's position (mod 26)</span>
+Alphabet positions: A=0, B=1, C=2 ... Z=25
+
+To decrypt any ciphertext letter X:  Plaintext = (X − 2) mod 26
+
+Examples:
+  C(2)  − 2 = 0  → A
+  D(3)  − 2 = 1  → B
+  A(0)  − 2 = 24 → Y   (wraps around: 0−2 mod 26 = 24)
+  B(1)  − 2 = 25 → Z
+
+<span class="comment">The question gives only the shift rule, not the actual ciphertext.</span>
+<span class="comment">Apply (letter_position − 2) mod 26 to every letter you see.</span></div>
+          </div>
+
+          <div class="solution-section">
+            <div class="section-label sub">Cipher 2 — Vigenère Cipher (keyword: passwd → ciphertext: ZCGNFJXQX)</div>
+            <p>Vigenère repeats the keyword and shifts each ciphertext letter <strong>backwards</strong> by the corresponding keyword letter's position. Decryption formula: <strong>P<sub>i</sub> = (C<sub>i</sub> − K<sub>i</sub>) mod 26</strong></p>
+            <div class="math-block">
+<span class="comment">Step 1 — Map keyword to the ciphertext (keyword repeats)</span>
+Position :  1    2    3    4    5    6    7    8    9
+Keyword  :  p    a    s    s    w    d    p    a    s
+Key value: 15    0   18   18   22    3   15    0   18
+
+Ciphertext: Z    C    G    N    F    J    X    Q    X
+Ciph value: 25   2    6   13    5    9   23   16   23
+
+<span class="comment">Step 2 — Subtract key value from cipher value (mod 26)</span>
+<span class="comment">If result is negative, add 26</span>
+
+Pos 1: Z(25) − p(15) =  10        → K
+Pos 2: C( 2) − a( 0) =   2        → C
+Pos 3: G( 6) − s(18) = −12 +26=14 → O
+Pos 4: N(13) − s(18) = − 5 +26=21 → V
+Pos 5: F( 5) − w(22) = −17 +26= 9 → J
+Pos 6: J( 9) − d( 3) =   6        → G
+Pos 7: X(23) − p(15) =   8        → I
+Pos 8: Q(16) − a( 0) =  16        → Q
+Pos 9: X(23) − s(18) =   5        → F
+
+<span class="answer">Plaintext = K C O V J G I Q F  →  "KCOVJGIQF"</span></div>
+            <div class="key-point">For full marks: (1) write out the keyword mapping above each ciphertext letter, (2) show the subtraction for each position, (3) handle negatives with +26, (4) state the plaintext. Even if 1–2 letters differ, showing the method earns most marks.</div>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) 3 Passwords from ASECRETMESSAGE + Strength Analysis [5 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Three derived passwords</div>
+            <table class="sol-table">
+              <tr><th>Password</th><th>Derivation Method</th><th>Strength</th><th>Entropy / Analysis</th></tr>
+              <tr><td><code>A$3cr3tM3ss4g3!</code></td><td>Leet speak (e→3, s→$) + capitalise + symbol appended</td><td><span class="pill pill-green">Strong</span></td><td>15 chars, all 4 character classes. Resists dictionary attack. ~80-bit entropy. Best of the three.</td></tr>
+              <tr><td><code>ASECRETmessage7</code></td><td>Mixed case + appended number</td><td><span class="pill pill-gold">Moderate</span></td><td>15 chars but based on a real dictionary phrase. Predictable transformation — targeted dictionary attack or rule-based cracking could crack it.</td></tr>
+              <tr><td><code>Amsgrt</code></td><td>Acronym: first letter of each word/syllable</td><td><span class="pill pill-red">Weak</span></td><td>Only 6 chars, all letters. ~28-bit entropy. Brute-forceable in seconds on modern hardware.</td></tr>
+            </table>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Password strength factors (course guidelines)</div>
+            <ol class="steps">
+              <li><strong>Length:</strong> Minimum 12+ characters. Each extra character exponentially increases keyspace.</li>
+              <li><strong>Character diversity:</strong> Mix upper/lowercase, numbers, symbols — expands character set from 26 to ~95 possible characters per position.</li>
+              <li><strong>Avoid dictionary words:</strong> Common words and phrases are in cracking wordlists. Leet speak substitutions are also in these lists.</li>
+              <li><strong>Uniqueness:</strong> Never reuse across sites. A breach at one service exposes all others if the same password is used.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 2022 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c22">Q2</span>
+        <span class="q-title">Penetration testing + OSINT from network scan outputs [25 marks]</span>
+        <span class="q-marks">★ 25 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Penetration testing in 2 weeks [3 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Most realistic option: External Black Box</div>
+            <p>A 2-week window is sufficient for a <strong>focused external/black-box assessment</strong>: the tester has no prior knowledge and mimics a real external attacker — running OSINT, port scanning, vulnerability scanning, and attempting exploitation of public-facing systems only.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">What's NOT feasible in 2 weeks</div>
+            <p>Full Red Team engagements (physical intrusion attempts, social engineering campaigns, full internal network lateral movement) and White Box assessments (full source code review, internal architecture audit) require months of work. A 2-week budget forces scope to the external perimeter.</p>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) 3 vital pieces from Figure 1 (Wappalyzer-style output) [6 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">What an attacker extracts and how they use it</div>
+            <table class="sol-table">
+              <tr><th>#</th><th>Information Found</th><th>Attacker's Use</th></tr>
+              <tr><td>1</td><td>Host IPs: 45.33.32.156 and 74.207.244.221 — both Linux</td><td>Specific scan targets identified. Linux OS narrows exploit research to Linux kernel CVEs and Apache/Ubuntu package vulnerabilities.</td></tr>
+              <tr><td>2</td><td>Web server: Apache/2.4.7 Ubuntu (outdated version)</td><td>Apache 2.4.7 has published CVEs. Attacker looks up specific exploits (e.g., mod_status info disclosure, RCEs) applicable to this exact version.</td></tr>
+              <tr><td>3</td><td>Client-side: JavaScript + Adobe Flash</td><td>Flash was deprecated and has numerous unpatched critical vulnerabilities. Attacker delivers a malicious Flash file to compromise browsers of site visitors.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) 3 vital pieces from Figure 2 (DNS lookup output) [6 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">What an attacker extracts and how they use it</div>
+            <table class="sol-table">
+              <tr><th>#</th><th>Information Found</th><th>Attacker's Use</th></tr>
+              <tr><td>1</td><td>A record: 45.33.32.156 + AAAA IPv6 address</td><td>Confirms server IPs for direct exploitation. IPv6 address may reveal additional infrastructure not visible via IPv4.</td></tr>
+              <tr><td>2</td><td>MX records: aspmx2.googlemail.com, alt2.aspmx.l.google.com → Google Workspace</td><td>Company uses Google Workspace for email. Enables highly targeted phishing emails mimicking Google security alerts — known and trusted platform.</td></tr>
+              <tr><td>3</td><td>TXT SPF record: include:_spf.google.com <strong>~all</strong> (softfail)</td><td>The "~all" softfail means spoofed emails from this domain won't be hard-rejected. Attacker can spoof the company's email domain in phishing with reduced spam filtering.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(c) Tools producing similar results [2 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Figure 1 (technology fingerprinting) vs Figure 2 (DNS records)</div>
+            <table class="sol-table">
+              <tr><th>Output Type</th><th>Tools</th></tr>
+              <tr><td>Figure 1 — Web tech stack (Wappalyzer-style)</td><td>Wappalyzer, BuiltWith, WhatWeb — passive fingerprinting from HTTP headers and page content</td></tr>
+              <tr><td>Figure 2 — DNS records (A, AAAA, MX, TXT, SPF)</td><td>nslookup, dig, host, DNSdumpster, MXToolbox, SecurityTrails</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(d) Figure 3 (Nmap scan) vs Figures 1 & 2 [3 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Key distinction: Active vs Passive reconnaissance</div>
+            <ol class="steps">
+              <li><strong>Figures 1 & 2 = Passive OSINT:</strong> Information gathered from public records (DNS, web fingerprinting) without sending any packets to the target. The target cannot detect this — it leaves no trace in their logs.</li>
+              <li><strong>Figure 3 (Nmap) = Active scanning:</strong> Probe packets sent directly to the target IP. Reveals open ports (22/SSH, 80/HTTP), running service versions (OpenSSH 6.6.1p1, Apache 2.4.7), and OS fingerprinting. This <strong>appears in firewall and IDS logs</strong> — the target can detect and block the scan.</li>
+              <li><strong>Information quality:</strong> Nmap gives ground-truth live service information; OSINT tools give publicly registered/cached information that may be stale.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(e) Two exploitation scenarios [5 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Scenario 1 — CVE Exploit via SSH (port 22)</div>
+            <p>Nmap confirms SSH on port 22 running OpenSSH 6.6.1p1. The attacker checks CVE databases for exploits against this specific version. Using the company email format inferred from DNS MX records, they build a targeted credential list and attempt a credential stuffing or known-exploit attack to gain shell access to the Linux server.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Scenario 2 — Spear Phishing → Web Shell</div>
+            <p>Using the Google Workspace MX records, the attacker sends staff a convincing phishing email (spoofed via the softfail SPF) disguised as a Google security alert. Staff enter credentials on a fake login page. The attacker uses harvested credentials to access the company web portal, then exploits Apache 2.4.7 CVEs to upload a persistent web shell — providing long-term covert server access.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 2022 -->
+    <div class="question-card">
+      <div class="q-header" onclick="toggleQ(this)">
+        <span class="q-number c22">Q3</span>
+        <span class="q-title">Home student network — services/ports + attack scenarios [15 marks]</span>
+        <span class="q-marks">★ 15 pts</span>
+        <span class="q-toggle">▼</span>
+      </div>
+      <div class="q-body">
+        <div class="question-text">Student uses: SSH to remote campus machines, downloads papers from web archives, sends email, uploads files to university fileserver. What services/ports? Two attack scenarios?</div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(a) Services and Ports [11 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Expected services for this student's workflow</div>
+            <table class="sol-table">
+              <tr><th>Service</th><th>Port(s)</th><th>Protocol</th><th>Why needed</th></tr>
+              <tr><td><strong>SSH</strong></td><td>22/TCP</td><td>SSH</td><td>Remote login to campus machines to run code — encrypted terminal session</td></tr>
+              <tr><td><strong>HTTPS</strong></td><td>443/TCP</td><td>TLS/HTTP</td><td>Downloading papers from arXiv, IEEE Xplore, ACM DL — most web archives use HTTPS</td></tr>
+              <tr><td><strong>HTTP</strong></td><td>80/TCP</td><td>HTTP</td><td>Some older archives/redirects use HTTP; also used for initial redirect to HTTPS</td></tr>
+              <tr><td><strong>SMTP/SMTPS</strong></td><td>587/TCP (STARTTLS)<br>465/TCP (SMTPS)</td><td>SMTP</td><td>Sending emails — port 587 with STARTTLS is the modern standard for authenticated submission</td></tr>
+              <tr><td><strong>IMAP/IMAPS</strong></td><td>143/TCP (plain)<br>993/TCP (encrypted)</td><td>IMAP</td><td>Reading university email — IMAPS (993) for encrypted access to mail server</td></tr>
+              <tr><td><strong>SFTP</strong></td><td>22/TCP</td><td>SSH (SFTP subsystem)</td><td>Uploading files to university fileserver — SFTP runs over SSH, same port, encrypted</td></tr>
+              <tr><td><strong>DNS</strong></td><td>53/UDP</td><td>DNS</td><td>Resolves all hostnames (campus servers, archive URLs, mail servers) to IPs — every connection depends on this</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="sub-part">
+          <div class="sub-part-label">(b) Two Attack Scenarios [4 marks]</div>
+          <div class="solution-section">
+            <div class="section-label sub">Scenario 1 — SSH Brute Force (Port 22)</div>
+            <p>The campus SSH server is reachable from the internet (needed for remote access). An automated bot discovers port 22 is open and runs a <strong>credential stuffing/brute-force attack</strong> against the student's username. If the student uses a weak or reused password, the attacker gains a full shell on the campus machine — with access to code, university network resources, and the student's home directory.</p>
+            <p><strong>Mitigation:</strong> Use SSH key authentication (disable password auth), and use fail2ban to block IPs after repeated failures.</p>
+          </div>
+          <div class="solution-section">
+            <div class="section-label sub">Scenario 2 — Email Phishing + Credential Interception</div>
+            <p>If unencrypted SMTP (port 25) or IMAP (port 143) is used, an attacker with access to the home network (e.g., compromised router) can capture login credentials in transit. More practically: a <strong>phishing email</strong> mimicking the university IT department prompts the student to "verify their account" on a fake portal — credentials captured there give the attacker access to SFTP (file server), SSH (campus machines), and email.</p>
+            <p><strong>Mitigation:</strong> Always use SMTPS/IMAPS (encrypted). Be suspicious of unsolicited emails requesting credential re-entry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end 2022 paper -->
+
+</div><!-- end wrapper -->
+
+<script>
+function showPaper(year) {
+  document.querySelectorAll('.paper').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('paper-' + year).classList.add('active');
+  document.querySelector('[data-year="' + year + '"]').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleQ(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  // close all in this paper
+  const paper = header.closest('.paper');
+  paper.querySelectorAll('.q-body').forEach(b => b.classList.remove('open'));
+  paper.querySelectorAll('.q-header').forEach(h => h.classList.remove('open'));
+  if (!isOpen) {
+    body.classList.add('open');
+    header.classList.add('open');
+    // smooth scroll
+    setTimeout(() => {
+      header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+}
+</script>
+</body>
+</html>

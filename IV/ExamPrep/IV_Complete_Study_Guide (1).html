@@ -1,0 +1,2612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information Visualisation — Complete Study Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #f78166;
+    --accent3: #3fb950;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --gold: #e3b341;
+    --sidebar-w: 280px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+
+  /* ── SIDEBAR ─────────────────────────────────── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 10;
+  }
+
+  .sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.3;
+  }
+
+  .sidebar-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  #progress-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--accent));
+    width: 0%;
+    transition: width 0.3s ease;
+    margin-top: 12px;
+    border-radius: 2px;
+  }
+
+  .nav-section {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 8px 20px 4px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 6px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'Source Serif 4', serif;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-link:hover { color: var(--text); background: var(--surface2); }
+  .nav-link.active { color: var(--gold); border-left-color: var(--gold); background: rgba(227,179,65,0.06); }
+
+  /* ── MAIN CONTENT ─────────────────────────────────── */
+  #main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #1a1f2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(88,166,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 640px;
+    line-height: 1.7;
+  }
+
+  .exam-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    background: rgba(247,129,102,0.12);
+    border: 1px solid rgba(247,129,102,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── SECTIONS ─────────────────────────────────── */
+  .chapter {
+    padding: 60px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 20px;
+  }
+
+  .chapter-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .chapter h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+
+  .chapter h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 36px 0 14px;
+  }
+
+  .chapter h4 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent4);
+    margin: 24px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .chapter p { margin-bottom: 16px; color: #cdd9e5; max-width: 760px; }
+
+  /* ── CALLOUT BOXES ─────────────────────────────────── */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 24px 0;
+    border-left: 4px solid;
+    font-size: 15px;
+    max-width: 760px;
+  }
+
+  .callout.tip { background: rgba(63,185,80,0.08); border-color: var(--accent3); }
+  .callout.tip strong { color: var(--accent3); }
+
+  .callout.warning { background: rgba(255,166,87,0.08); border-color: var(--accent5); }
+  .callout.warning strong { color: var(--accent5); }
+
+  .callout.exam { background: rgba(210,168,255,0.08); border-color: var(--accent4); }
+  .callout.exam strong { color: var(--accent4); }
+
+  .callout.info { background: rgba(88,166,255,0.08); border-color: var(--accent); }
+  .callout.info strong { color: var(--accent); }
+
+  .callout.gold { background: rgba(227,179,65,0.08); border-color: var(--gold); }
+  .callout.gold strong { color: var(--gold); }
+
+  /* ── TABLES ─────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; max-width: 860px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead tr { background: var(--surface2); }
+
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    border-bottom: 2px solid var(--border);
+  }
+
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #cdd9e5;
+    vertical-align: top;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+
+  .badge.good { background: rgba(63,185,80,0.2); color: var(--accent3); }
+  .badge.poor { background: rgba(247,129,102,0.2); color: var(--accent2); }
+  .badge.marg { background: rgba(255,166,87,0.2); color: var(--accent5); }
+  .badge.yes  { background: rgba(88,166,255,0.2); color: var(--accent); }
+  .badge.no   { background: rgba(247,129,102,0.15); color: var(--accent2); }
+
+  /* ── DIAGRAM CONTAINERS ─────────────────────────────────── */
+  .diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 28px 0;
+    max-width: 860px;
+    overflow-x: auto;
+  }
+
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── EXAMPLE BOX ─────────────────────────────────── */
+  .example {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin: 24px 0;
+    max-width: 760px;
+  }
+
+  .example-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent5);
+    margin-bottom: 10px;
+  }
+
+  /* ── QUIZ ─────────────────────────────────── */
+  .quiz-section {
+    background: linear-gradient(135deg, rgba(88,166,255,0.04), rgba(210,168,255,0.04));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin: 40px 0;
+    max-width: 860px;
+  }
+
+  .quiz-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .question {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .q-option {
+    display: block;
+    padding: 10px 16px;
+    margin: 6px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .q-option:hover { background: var(--surface2); color: var(--text); border-color: var(--accent4); }
+  .q-option.correct { background: rgba(63,185,80,0.12); border-color: var(--accent3); color: var(--accent3); }
+  .q-option.wrong { background: rgba(247,129,102,0.12); border-color: var(--accent2); color: var(--accent2); }
+
+  .q-answer {
+    display: none;
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: rgba(88,166,255,0.07);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    color: #cdd9e5;
+  }
+
+  /* ── VISUAL VARIABLE CARDS ─────────────────────────────────── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+    max-width: 860px;
+  }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: transform 0.2s;
+  }
+
+  .card:hover { transform: translateY(-2px); border-color: var(--accent4); }
+
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── HIGHLIGHT ─────────────────────────────────── */
+  mark {
+    background: rgba(227,179,65,0.2);
+    color: var(--gold);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent4);
+  }
+
+  ul, ol { padding-left: 24px; margin: 12px 0 16px; max-width: 720px; }
+  li { margin-bottom: 6px; color: #cdd9e5; }
+
+  /* ── BACK TO TOP ─────────────────────────────────── */
+  #btt {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 50%;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+    font-size: 18px;
+    z-index: 200;
+    text-decoration: none;
+  }
+  #btt.show { opacity: 1; }
+  #btt:hover { background: var(--border); color: var(--text); }
+
+  /* ── PIPELINE FLOW ─────────────────────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    max-width: 800px;
+  }
+
+  .flow-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-size: 14px;
+    text-align: center;
+    min-width: 130px;
+  }
+
+  .flow-step .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .flow-step .step-name { font-weight: 600; color: var(--accent); }
+
+  .flow-arrow { color: var(--text-muted); font-size: 22px; padding: 0 6px; }
+
+  /* ── COLOUR SWATCHES ─────────────────────────────────── */
+  .swatches { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .swatch-block {
+    width: 60px; height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── MANTRA BOX ─────────────────────────────────── */
+  .mantra {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--gold);
+    text-align: center;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, rgba(227,179,65,0.06), rgba(88,166,255,0.04));
+    border: 1px solid rgba(227,179,65,0.2);
+    border-radius: 14px;
+    margin: 28px 0;
+    max-width: 760px;
+  }
+
+  .mantra span { color: var(--text-muted); font-size: 1rem; display: block; margin-top: 8px; font-style: normal; font-family: 'Source Serif 4', serif; }
+
+  /* ── SCROLLBAR ─────────────────────────────────── */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ── RESPONSIVE ─────────────────────────────────── */
+  @media (max-width: 768px) {
+    #sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; }
+    .chapter { padding: 40px 24px 30px; }
+    .hero { padding: 50px 24px 40px; }
+    #menu-btn { display: flex; }
+  }
+
+  #menu-btn {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 300;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Information<br>Visualisation</div>
+    <div class="sidebar-sub">COMPSCI5099 · Exam: 07 May 2026</div>
+    <div id="progress-bar"></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Foundations</div>
+    <a class="nav-link" onclick="navigateTo('ch1')">1. Introduction to InfoVis</a>
+    <a class="nav-link" onclick="navigateTo('ch2')">2. Visual Variables (Bertin)</a>
+    <a class="nav-link" onclick="navigateTo('ch3')">3. Data Types & Attributes</a>
+    <a class="nav-link" onclick="navigateTo('ch4')">4. Visualisation Pipeline</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Interaction & Perception</div>
+    <a class="nav-link" onclick="navigateTo('ch5')">5. Shneiderman's Taxonomy</a>
+    <a class="nav-link" onclick="navigateTo('ch6')">6. Data Selection & Filtering</a>
+    <a class="nav-link" onclick="navigateTo('ch7')">7. Visual Perception</a>
+    <a class="nav-link" onclick="navigateTo('ch8')">8. Colour Theory</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Chart Types</div>
+    <a class="nav-link" onclick="navigateTo('ch9')">9. Quantitative Data</a>
+    <a class="nav-link" onclick="navigateTo('ch10')">10. Multidimensional Data</a>
+    <a class="nav-link" onclick="navigateTo('ch11')">11. Cognitive Amplification</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced Topics</div>
+    <a class="nav-link" onclick="navigateTo('ch12')">12. Design & Evaluation</a>
+    <a class="nav-link" onclick="navigateTo('ch13')">13. Network & Graph Vis</a>
+    <a class="nav-link" onclick="navigateTo('ch14')">14. Temporal Data</a>
+    <a class="nav-link" onclick="navigateTo('ch15')">15. Rules of Thumb</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Exam Prep</div>
+    <a class="nav-link" onclick="navigateTo('ch16')">16. Quick Reference</a>
+    <a class="nav-link" onclick="navigateTo('ch17')">17. Practice Questions</a>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<button id="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- Main content -->
+<main id="main">
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-label">📊 MSc Computing Science · University of Glasgow</div>
+  <h1>Information<br><span>Visualisation</span><br>Study Guide</h1>
+  <p>A complete, beginner-friendly tutorial covering every topic in COMPSCI5099. Designed for your 4 × 15-mark written exam. Read linearly or jump to any topic using the sidebar.</p>
+  <div class="exam-badge">📅 Exam: Thursday 07 May 2026 · 14:00 · 90 minutes · 4 × 15-mark questions · Closed Book</div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 1: Introduction -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch1">
+  <div class="chapter-num">Chapter 01</div>
+  <h2>Introduction to Information Visualisation</h2>
+
+  <p>Information Visualisation (InfoVis) is the practice of representing <em>abstract data</em> using interactive, computer-supported visual displays so we can understand it better. Think of it as turning numbers into pictures — but done carefully and scientifically.</p>
+
+  <div class="callout gold">
+    <strong>📖 Official Definition (Memorise This):</strong><br>
+    "The use of computer-supported, interactive, visual representations of abstract data to <strong>amplify cognition</strong>."
+  </div>
+
+  <h3>InfoVis vs Scientific Visualisation (SciVis)</h3>
+
+  <p>This is a classic exam distinction. The key difference is whether the data has a <em>natural spatial meaning</em>.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>InfoVis</th><th>SciVis</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Data type</strong></td><td>Abstract data (no inherent space)</td><td>Physically-based data (has real space)</td></tr>
+        <tr><td><strong>Spatial layout</strong></td><td>Designer must <em>choose</em> how to arrange it</td><td>Data already has a natural spatial form</td></tr>
+        <tr><td><strong>Example</strong></td><td>Scatter plot of GDP vs life expectancy</td><td>3D MRI brain scan</td></tr>
+        <tr><td><strong>Example</strong></td><td>Bar chart of sales figures</td><td>Wind flow visualisation over a map</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example">
+    <div class="example-label">🎯 Real-World Example</div>
+    <p>Imagine you have a spreadsheet with 10,000 customer records (age, income, location, purchases). <strong>This is InfoVis</strong> — there's no natural picture here. You must design how to show it. Contrast with a CT scan of your lungs — the data literally has a 3D physical position. That's SciVis.</p>
+  </div>
+
+  <h3>Why Do We Visualise?</h3>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">👁️</div>
+      <div class="card-title">Human Perception</div>
+      <div class="card-desc">We process visual information incredibly fast — much faster than reading numbers.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">Pattern Discovery</div>
+      <div class="card-desc">Patterns, clusters, gaps, and outliers hidden in raw data become obvious in a good chart.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <div class="card-title">Amplify Cognition</div>
+      <div class="card-desc">Offloads memory and computation to the visual system, freeing our brain for higher thinking.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📢</div>
+      <div class="card-title">Communication</div>
+      <div class="card-desc">Share findings with others in an accessible, persuasive format.</div>
+    </div>
+  </div>
+
+  <h3>Exploration vs Explanation</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>Exploratory</th><th>Explanatory</th></tr></thead>
+      <tbody>
+        <tr><td>Goal</td><td>Discover unknown patterns</td><td>Communicate known findings</td></tr>
+        <tr><td>Audience</td><td>Analyst (yourself)</td><td>Others (stakeholders, public)</td></tr>
+        <tr><td>Interaction</td><td>Highly interactive</td><td>Often static</td></tr>
+        <tr><td>Design</td><td>Flexible, try many views</td><td>Polished, focused narrative</td></tr>
+        <tr><td>Example</td><td>Data scientist exploring a new dataset</td><td>A newspaper infographic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Be ready to classify a given scenario as exploratory OR explanatory, and explain why. The key question is: "Do you already know what you want to show, or are you finding out?"
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 2: Visual Variables -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch2">
+  <div class="chapter-num">Chapter 02</div>
+  <h2>Visual Variables — Bertin's Semiology of Graphics</h2>
+
+  <p><strong>Jacques Bertin</strong> (1918–2010) was a French cartographer who published <em>Sémiologie Graphique</em> in 1967. He established the scientific foundation for how we map data to visual properties. His framework is still the gold standard today.</p>
+
+  <div class="callout info">
+    <strong>💡 Core Idea:</strong> A "visual variable" is any visual property you can change to convey information. When you make a dot bigger, or red instead of blue, or triangular instead of round — you're using visual variables.
+  </div>
+
+  <h3>The Two Main Categories</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">Bertin's Visual Variable Framework</div>
+    <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:780px;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#8b949e"/>
+        </marker>
+      </defs>
+      <!-- Root -->
+      <rect x="295" y="10" width="190" height="50" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="390" y="31" fill="#e3b341" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">VISUAL VARIABLES</text>
+      <text x="390" y="50" fill="#8b949e" font-family="monospace" font-size="10" text-anchor="middle">(Bertin, 1967)</text>
+
+      <!-- Branches -->
+      <line x1="390" y1="60" x2="180" y2="120" stroke="#30363d" stroke-width="1.5"/>
+      <line x1="390" y1="60" x2="600" y2="120" stroke="#30363d" stroke-width="1.5"/>
+
+      <!-- Location -->
+      <rect x="80" y="120" width="200" height="60" rx="8" fill="#1c2128" stroke="#58a6ff"/>
+      <text x="180" y="145" fill="#58a6ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">LOCATION (Position)</text>
+      <text x="180" y="163" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">X, Y coordinates on the plane</text>
+      <text x="180" y="176" fill="#3fb950" font-family="monospace" font-size="10" text-anchor="middle">★ Most powerful!</text>
+
+      <!-- Retinal -->
+      <rect x="500" y="120" width="200" height="60" rx="8" fill="#1c2128" stroke="#d2a8ff"/>
+      <text x="600" y="145" fill="#d2a8ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">RETINAL (6 types)</text>
+      <text x="600" y="163" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Properties of the mark itself</text>
+      <text x="600" y="176" fill="#8b949e" font-family="monospace" font-size="10" text-anchor="middle">No spatial relationship</text>
+
+      <!-- 6 retinal vars -->
+      <g font-size="10" font-family="sans-serif">
+        <!-- Row 1 -->
+        <rect x="30" y="240" width="105" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="82" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">SIZE</text>
+        <text x="82" y="276" fill="#8b949e" text-anchor="middle">px / mm</text>
+        <circle cx="62" cy="293" r="5" fill="#8b949e"/>
+        <circle cx="82" cy="293" r="8" fill="#8b949e"/>
+        <circle cx="102" cy="293" r="11" fill="#8b949e"/>
+
+        <rect x="145" y="240" width="105" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="197" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">SHAPE</text>
+        <text x="197" y="276" fill="#8b949e" text-anchor="middle">circle, square…</text>
+        <text x="165" y="293" fill="#8b949e" font-size="14">●</text>
+        <text x="188" y="293" fill="#8b949e" font-size="14">■</text>
+        <text x="212" y="293" fill="#8b949e" font-size="14">▲</text>
+        <text x="234" y="293" fill="#8b949e" font-size="14">★</text>
+
+        <rect x="260" y="240" width="105" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="312" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">HUE</text>
+        <text x="312" y="276" fill="#8b949e" text-anchor="middle">red, blue, green</text>
+        <circle cx="285" cy="293" r="7" fill="#f78166"/>
+        <circle cx="305" cy="293" r="7" fill="#58a6ff"/>
+        <circle cx="325" cy="293" r="7" fill="#3fb950"/>
+        <circle cx="345" cy="293" r="7" fill="#e3b341"/>
+
+        <rect x="375" y="240" width="105" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="427" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">VALUE</text>
+        <text x="427" y="276" fill="#8b949e" text-anchor="middle">light → dark</text>
+        <circle cx="397" cy="293" r="7" fill="#e0e0e0"/>
+        <circle cx="417" cy="293" r="7" fill="#a0a0a0"/>
+        <circle cx="437" cy="293" r="7" fill="#606060"/>
+        <circle cx="457" cy="293" r="7" fill="#202020"/>
+
+        <rect x="490" y="240" width="115" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="547" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">ORIENTATION</text>
+        <text x="547" y="276" fill="#8b949e" text-anchor="middle">angle of axis</text>
+        <line x1="510" y1="288" x2="510" y2="298" stroke="#8b949e" stroke-width="2"/>
+        <line x1="527" y1="285" x2="532" y2="298" stroke="#8b949e" stroke-width="2" transform="rotate(20,527,285)"/>
+        <line x1="550" y1="285" x2="565" y2="285" stroke="#8b949e" stroke-width="2"/>
+        <line x1="577" y1="285" x2="583" y2="298" stroke="#8b949e" stroke-width="2" transform="rotate(-30,577,285)"/>
+
+        <rect x="615" y="240" width="105" height="55" rx="6" fill="#161b22" stroke="#30363d"/>
+        <text x="667" y="261" fill="#ffa657" text-anchor="middle" font-weight="bold">TEXTURE</text>
+        <text x="667" y="276" fill="#8b949e" text-anchor="middle">fine ↔ coarse</text>
+        <text x="640" y="295" fill="#8b949e" font-size="9">▓▓▓▓</text>
+        <text x="676" y="295" fill="#8b949e" font-size="9">░░░░</text>
+      </g>
+
+      <!-- Lines from Retinal to 6 -->
+      <line x1="560" y1="180" x2="82" y2="240" stroke="#30363d" stroke-width="1"/>
+      <line x1="580" y1="180" x2="197" y2="240" stroke="#30363d" stroke-width="1"/>
+      <line x1="600" y1="180" x2="312" y2="240" stroke="#30363d" stroke-width="1"/>
+      <line x1="620" y1="180" x2="427" y2="240" stroke="#30363d" stroke-width="1"/>
+      <line x1="640" y1="180" x2="547" y2="240" stroke="#30363d" stroke-width="1"/>
+      <line x1="660" y1="180" x2="667" y2="240" stroke="#30363d" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <h3>The 4 Perceptual Properties</h3>
+
+  <p>Each visual variable has one or more of these properties, which tell us what kind of data they can encode:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Property</th><th>Meaning</th><th>Which Variables?</th><th>Use For</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Associative</strong></td>
+          <td>All variations look equally "important" — none dominates</td>
+          <td>Location, shape, orientation, hue, texture</td>
+          <td>Nominal / categorical data</td>
+        </tr>
+        <tr>
+          <td><strong>Dissociative</strong></td>
+          <td>One variation dominates — your eye is drawn to it</td>
+          <td>Size, colour value</td>
+          <td>Creating emphasis or hierarchy</td>
+        </tr>
+        <tr>
+          <td><strong>Selective</strong></td>
+          <td>You can isolate one group despite variation in others</td>
+          <td>ALL except <mark>Shape</mark></td>
+          <td>Filtering — "show me just the red ones"</td>
+        </tr>
+        <tr>
+          <td><strong>Ordered</strong></td>
+          <td>Variations are perceived as ranked/graduated</td>
+          <td>Size, colour value, texture</td>
+          <td>Ordinal data</td>
+        </tr>
+        <tr>
+          <td><strong>Quantitative</strong></td>
+          <td>You can estimate the numerical ratio</td>
+          <td>Position, size</td>
+          <td>Numeric/quantitative data</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 #1 Exam Favourite:</strong> <mark>Shape is the ONLY non-selective variable.</mark> This means if you colour dots by category, you can find the red ones by sight. But if you shape-code them, you can't isolate circles from squares without looking at every one carefully. This is why shape is poor for selective tasks.
+  </div>
+
+  <h3>Which Variable for Which Data Type?</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Data Type</th><th>Best Variables</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nominal</strong> (categories, no order)</td><td>Shape, Hue, Orientation, Texture</td><td>Associative — no category should look more important</td></tr>
+        <tr><td><strong>Ordinal</strong> (ordered, not numeric)</td><td>Colour Value, Size</td><td>Ordered — darker = more, bigger = more</td></tr>
+        <tr><td><strong>Quantitative</strong> (numeric)</td><td>Position, Size</td><td>Quantitative — we can judge exact ratios</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Bertin's Effectiveness Table</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Nominal</th><th>Ordinal</th><th>Quantitative</th><th>Selective?</th></tr></thead>
+      <tbody>
+        <tr><td>Position</td><td><span class="badge good">Good</span></td><td><span class="badge good">Good</span></td><td><span class="badge good">Good</span></td><td><span class="badge yes">Yes</span></td></tr>
+        <tr><td>Size</td><td><span class="badge marg">Marginal</span></td><td><span class="badge good">Good</span></td><td><span class="badge good">Good</span></td><td><span class="badge yes">Yes</span></td></tr>
+        <tr><td>Shape</td><td><span class="badge good">Good</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge no">NO ★</span></td></tr>
+        <tr><td>Value (lightness)</td><td><span class="badge poor">Poor</span></td><td><span class="badge good">Good</span></td><td><span class="badge marg">Marginal</span></td><td><span class="badge yes">Yes</span></td></tr>
+        <tr><td>Hue</td><td><span class="badge good">Good</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge yes">Yes</span></td></tr>
+        <tr><td>Orientation</td><td><span class="badge marg">Marginal</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge yes">Yes</span></td></tr>
+        <tr><td>Texture</td><td><span class="badge good">Good</span></td><td><span class="badge marg">Marginal</span></td><td><span class="badge poor">Poor</span></td><td><span class="badge yes">Yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example">
+    <div class="example-label">🎯 Concrete Example</div>
+    <p><strong>Scenario:</strong> You want to show which country each data point belongs to (nominal), and also their GDP rank (ordinal).</p>
+    <ul>
+      <li>For <strong>country</strong>: Use <strong>hue</strong> (red = USA, blue = UK, green = France) — associative, no country looks dominant</li>
+      <li>For <strong>GDP rank</strong>: Use <strong>size</strong> or <strong>colour value</strong> — bigger/darker = higher rank</li>
+      <li>For <strong>population</strong> (quantitative): Use <strong>position on y-axis</strong> or <strong>size</strong></li>
+    </ul>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Position and size are the ONLY two variables that are quantitative. All others cannot accurately convey numeric magnitude.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 3: Data Types -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch3">
+  <div class="chapter-num">Chapter 03</div>
+  <h2>Data Types and Data Attributes</h2>
+
+  <p>Before you can design a visualisation, you need to understand your data. Two frameworks are key here: <strong>Munzner's attribute types</strong> and <strong>Shneiderman's data types</strong>.</p>
+
+  <h3>Munzner's Attribute Types (The What)</h3>
+
+  <p>These describe the mathematical nature of data values:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Examples</th><th>Valid Operations</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Categorical / Nominal</strong></td>
+          <td>No implicit ordering between values</td>
+          <td>Country names, fruit types, job roles</td>
+          <td>= and ≠ only</td>
+        </tr>
+        <tr>
+          <td><strong>Ordinal</strong></td>
+          <td>Has order, but differences aren't meaningful</td>
+          <td>Low/Medium/High, T-shirt sizes (S/M/L/XL)</td>
+          <td>=, ≠, &lt;, &gt;</td>
+        </tr>
+        <tr>
+          <td><strong>Quantitative</strong></td>
+          <td>Numeric with measurable distances</td>
+          <td>Temperature, salary, age, distance</td>
+          <td>=, ≠, &lt;, &gt;, +, −</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="example">
+    <div class="example-label">🎯 Tricky Example</div>
+    <p>A <strong>satisfaction score from 1 to 5</strong> seems numeric but is actually <em>ordinal</em>. The difference between 1 and 2 isn't necessarily the same as between 4 and 5. You can say 3 &gt; 2, but you can't say 3 is "twice as satisfied" as 1.5.</p>
+    <p>A <strong>temperature in Kelvin</strong> is quantitative — the difference between 200K and 300K is exactly the same magnitude as 300K to 400K.</p>
+  </div>
+
+  <h3>Shneiderman's 7 Data Types (The Shape of the Data)</h3>
+
+  <p>This framework asks: "What <em>structure</em> does the data have?" It's different from asking about individual attribute values.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Shneiderman's 7 Data Types — Visual Overview</div>
+    <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <style>
+        .dtype-card { rx:8; }
+        .dt { font-family: monospace; font-size: 11px; }
+      </style>
+
+      <!-- 1D -->
+      <rect x="10" y="10" width="160" height="110" rx="8" fill="#1c2128" stroke="#58a6ff"/>
+      <text x="90" y="32" fill="#58a6ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">1D — Linear</text>
+      <text x="90" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Sequential data</text>
+      <!-- sequence viz -->
+      <rect x="25" y="62" width="25" height="14" rx="2" fill="#30363d"/>
+      <rect x="58" y="62" width="25" height="14" rx="2" fill="#30363d"/>
+      <rect x="91" y="62" width="25" height="14" rx="2" fill="#30363d"/>
+      <rect x="124" y="62" width="25" height="14" rx="2" fill="#30363d"/>
+      <line x1="50" y1="69" x2="58" y2="69" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="83" y1="69" x2="91" y2="69" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="116" y1="69" x2="124" y2="69" stroke="#8b949e" stroke-width="1.5"/>
+      <text x="90" y="100" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Text, source code, lists</text>
+      <text x="90" y="114" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ Timeline, text search</text>
+
+      <!-- 2D -->
+      <rect x="185" y="10" width="160" height="110" rx="8" fill="#1c2128" stroke="#3fb950"/>
+      <text x="265" y="32" fill="#3fb950" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">2D — Planar</text>
+      <text x="265" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Map / geographic</text>
+      <!-- simple map -->
+      <rect x="210" y="60" width="110" height="40" rx="3" fill="#30363d"/>
+      <circle cx="250" cy="80" r="5" fill="#3fb950"/>
+      <circle cx="285" cy="72" r="4" fill="#3fb950"/>
+      <circle cx="300" cy="85" r="3" fill="#3fb950"/>
+      <text x="265" y="114" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ Maps, floor plans</text>
+
+      <!-- 3D -->
+      <rect x="360" y="10" width="160" height="110" rx="8" fill="#1c2128" stroke="#d2a8ff"/>
+      <text x="440" y="32" fill="#d2a8ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">3D — Volumetric</text>
+      <text x="440" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Real-world volume</text>
+      <!-- cube -->
+      <polygon points="405,90 430,75 455,90 455,110 430,125 405,110" fill="none" stroke="#d2a8ff" stroke-width="1.5"/>
+      <line x1="430" y1="75" x2="430" y2="95" stroke="#d2a8ff" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="430" y1="95" x2="455" y2="90" stroke="#d2a8ff" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="430" y1="95" x2="405" y2="90" stroke="#d2a8ff" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="440" y="114" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ Molecules, buildings</text>
+
+      <!-- Temporal -->
+      <rect x="535" y="10" width="255" height="110" rx="8" fill="#1c2128" stroke="#ffa657"/>
+      <text x="662" y="32" fill="#ffa657" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">Temporal (Time-Series)</text>
+      <text x="662" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Time-varying data</text>
+      <!-- line chart sketch -->
+      <polyline points="550,100 580,88 610,92 640,72 670,80 700,65 730,70 760,55" fill="none" stroke="#ffa657" stroke-width="2"/>
+      <line x1="550" y1="105" x2="770" y2="105" stroke="#30363d" stroke-width="1"/>
+      <text x="662" y="114" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ Stock prices, heart rate, weather</text>
+
+      <!-- Multi-dimensional -->
+      <rect x="10" y="140" width="200" height="110" rx="8" fill="#1c2128" stroke="#e3b341"/>
+      <text x="110" y="162" fill="#e3b341" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">Multi-Dimensional</text>
+      <text x="110" y="180" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Many attributes per item</text>
+      <!-- small table -->
+      <rect x="25" y="186" width="170" height="40" rx="3" fill="#30363d"/>
+      <text x="110" y="201" fill="#8b949e" font-family="monospace" font-size="9" text-anchor="middle">Age | Income | Score | City</text>
+      <line x1="25" y1="207" x2="195" y2="207" stroke="#8b949e" stroke-width="0.5"/>
+      <text x="110" y="220" fill="#8b949e" font-family="monospace" font-size="9" text-anchor="middle">25  |  54k   |  72  | NYC</text>
+      <text x="110" y="240" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ Parallel coordinates, SPLOM</text>
+
+      <!-- Tree -->
+      <rect x="225" y="140" width="200" height="110" rx="8" fill="#1c2128" stroke="#f78166"/>
+      <text x="325" y="162" fill="#f78166" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">Tree / Hierarchy</text>
+      <text x="325" y="180" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Parent → child structure</text>
+      <!-- tree diagram -->
+      <circle cx="325" cy="198" r="7" fill="#f78166"/>
+      <line x1="318" y1="203" x2="295" y2="215" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="332" y1="203" x2="355" y2="215" stroke="#8b949e" stroke-width="1.5"/>
+      <circle cx="295" cy="220" r="6" fill="#f78166" opacity="0.7"/>
+      <circle cx="355" cy="220" r="6" fill="#f78166" opacity="0.7"/>
+      <line x1="291" y1="225" x2="278" y2="235" stroke="#8b949e" stroke-width="1"/>
+      <line x1="299" y1="225" x2="310" y2="235" stroke="#8b949e" stroke-width="1"/>
+      <circle cx="278" cy="238" r="5" fill="#f78166" opacity="0.5"/>
+      <circle cx="310" cy="238" r="5" fill="#f78166" opacity="0.5"/>
+      <text x="325" y="240" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">→ File systems, org charts</text>
+
+      <!-- Network -->
+      <rect x="440" y="140" width="350" height="110" rx="8" fill="#1c2128" stroke="#58a6ff"/>
+      <text x="615" y="162" fill="#58a6ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">Network / Graph</text>
+      <text x="615" y="180" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Arbitrary relationships between items</text>
+      <!-- network diagram -->
+      <circle cx="500" cy="220" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <circle cx="550" cy="200" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <circle cx="600" cy="230" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <circle cx="560" cy="245" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <circle cx="640" cy="210" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <line x1="510" y1="215" x2="540" y2="206" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="558" y1="208" x2="592" y2="224" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="600" y1="220" x2="568" y2="240" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="610" y1="225" x2="632" y2="215" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="508" y1="228" x2="552" y2="242" stroke="#8b949e" stroke-width="1.5"/>
+      <text x="690" y="215" fill="#8b949e" font-family="sans-serif" font-size="10">Social networks,</text>
+      <text x="690" y="228" fill="#8b949e" font-family="sans-serif" font-size="10">web links, roads</text>
+
+      <!-- Mnemonic -->
+      <rect x="10" y="265" width="780" height="55" rx="8" fill="rgba(227,179,65,0.06)" stroke="rgba(227,179,65,0.2)"/>
+      <text x="400" y="286" fill="#e3b341" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">MNEMONIC: "1-2-3-T-M-Tr-N"</text>
+      <text x="400" y="306" fill="#8b949e" font-family="sans-serif" font-size="11" text-anchor="middle">1D · 2D · 3D · Temporal · Multi-dimensional · Tree · Network</text>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Know all 7 data types by heart and give an example visualisation for each. A common question asks you to classify a new dataset into one of these types, then suggest an appropriate visualisation.
+  </div>
+
+  <h3>Munzner's Dataset Types</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dataset Type</th><th>Structure</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Tables</td><td>Rows (items) × Columns (attributes)</td><td>CSV file, Excel spreadsheet</td></tr>
+        <tr><td>Networks/Graphs</td><td>Nodes + edges (links)</td><td>Social network, road map</td></tr>
+        <tr><td>Trees</td><td>Hierarchical, connected, no cycles</td><td>File system, organisational chart</td></tr>
+        <tr><td>Fields</td><td>Continuous data, sampled at grid positions</td><td>Weather data, MRI scans</td></tr>
+        <tr><td>Geometry</td><td>Spatial positions and shapes</td><td>CAD models, geographic boundaries</td></tr>
+        <tr><td>Sets/Clusters</td><td>Groupings of items</td><td>K-means clusters, Venn diagram groups</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 4: Visualisation Pipeline -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch4">
+  <div class="chapter-num">Chapter 04</div>
+  <h2>The Visualisation Pipeline</h2>
+
+  <p>The visualisation pipeline describes the <em>stages</em> data goes through on its journey from raw numbers to pixels on your screen. Think of it like a factory assembly line — each stage transforms the data in a specific way.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">Stage 1</div>
+      <div class="step-name">Raw Data</div>
+      <div style="font-size:11px;color:#8b949e;margin-top:4px;">Original source</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="step-num">Stage 2</div>
+      <div class="step-name">Data Transform</div>
+      <div style="font-size:11px;color:#8b949e;margin-top:4px;">Filter, clean, aggregate</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="step-num">Stage 3 ★</div>
+      <div class="step-name">Visual Mapping</div>
+      <div style="font-size:11px;color:#ffa657;margin-top:4px;">Most critical!</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="step-num">Stage 4</div>
+      <div class="step-name">View Transform</div>
+      <div style="font-size:11px;color:#8b949e;margin-top:4px;">Zoom, pan, navigate</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="step-num">Stage 5</div>
+      <div class="step-name">Rendering</div>
+      <div style="font-size:11px;color:#8b949e;margin-top:4px;">Pixels on screen</div>
+    </div>
+  </div>
+
+  <h3>Each Stage Explained</h3>
+
+  <div class="example">
+    <div class="example-label">🎯 Running Example: Hospital Patient Data</div>
+    <p>Let's trace patient records (10 million rows, 50 columns) through the pipeline:</p>
+    <ul>
+      <li><strong>Stage 1 (Raw Data):</strong> CSV files from 100 hospitals, inconsistent formats, some missing values</li>
+      <li><strong>Stage 2 (Data Transform):</strong> Remove duplicates, fill missing ages with median, aggregate to daily counts, filter to last 5 years</li>
+      <li><strong>Stage 3 (Visual Mapping):</strong> Map DATE to x-axis position, ADMISSION COUNT to bar height, HOSPITAL to colour hue</li>
+      <li><strong>Stage 4 (View Transform):</strong> User zooms into Q3 2024, pans left to Q2</li>
+      <li><strong>Stage 5 (Rendering):</strong> Browser draws the final bar chart as coloured rectangles on screen</li>
+    </ul>
+  </div>
+
+  <h3>Marks and Channels (Munzner)</h3>
+
+  <p>The visual mapping stage uses two concepts: <strong>marks</strong> (what geometric shape represents an item) and <strong>channels</strong> (visual properties that encode data).</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Marks vs Channels</div>
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Marks section -->
+      <rect x="10" y="10" width="350" height="240" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="185" y="35" fill="#58a6ff" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">MARKS (Geometric Primitives)</text>
+      <text x="185" y="52" fill="#8b949e" font-family="sans-serif" font-size="11" text-anchor="middle">What shape represents each data item?</text>
+
+      <circle cx="60" cy="100" r="18" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <text x="60" y="130" fill="#58a6ff" font-family="monospace" font-size="10" text-anchor="middle">POINTS (0D)</text>
+      <text x="60" y="143" fill="#8b949e" font-family="sans-serif" font-size="9" text-anchor="middle">individuals</text>
+
+      <line x1="130" y1="90" x2="220" y2="110" stroke="#3fb950" stroke-width="3"/>
+      <text x="175" y="130" fill="#3fb950" font-family="monospace" font-size="10" text-anchor="middle">LINES (1D)</text>
+      <text x="175" y="143" fill="#8b949e" font-family="sans-serif" font-size="9" text-anchor="middle">connections</text>
+
+      <rect x="250" y="82" width="80" height="45" rx="4" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+      <text x="290" y="145" fill="#d2a8ff" font-family="monospace" font-size="10" text-anchor="middle">AREAS (2D)</text>
+      <text x="290" y="158" fill="#8b949e" font-family="sans-serif" font-size="9" text-anchor="middle">regions</text>
+
+      <text x="185" y="185" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Example: In a scatter plot, each data</text>
+      <text x="185" y="200" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">point is a POINT mark.</text>
+      <text x="185" y="215" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">In a line chart, trends are LINE marks.</text>
+
+      <!-- Channels section -->
+      <rect x="380" y="10" width="370" height="240" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="565" y="35" fill="#ffa657" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">CHANNELS (Visual Properties)</text>
+      <text x="565" y="52" fill="#8b949e" font-family="sans-serif" font-size="11" text-anchor="middle">How do marks encode data values?</text>
+
+      <text x="395" y="75" fill="#3fb950" font-family="monospace" font-size="11" font-weight="bold">Magnitude (Ordered/Quantitative):</text>
+      <text x="400" y="93" fill="#8b949e" font-family="sans-serif" font-size="10">① Position on scale  ← most accurate</text>
+      <text x="400" y="109" fill="#8b949e" font-family="sans-serif" font-size="10">② Length / Height</text>
+      <text x="400" y="125" fill="#8b949e" font-family="sans-serif" font-size="10">③ Angle / Slope</text>
+      <text x="400" y="141" fill="#8b949e" font-family="sans-serif" font-size="10">④ Area</text>
+      <text x="400" y="157" fill="#8b949e" font-family="sans-serif" font-size="10">⑤ Volume</text>
+      <text x="400" y="173" fill="#8b949e" font-family="sans-serif" font-size="10">⑥ Colour luminance/saturation  ← least accurate</text>
+
+      <text x="395" y="195" fill="#d2a8ff" font-family="monospace" font-size="11" font-weight="bold">Identity (Categorical):</text>
+      <text x="400" y="213" fill="#8b949e" font-family="sans-serif" font-size="10">Spatial region · Colour hue · Shape · Motion</text>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> <mark>Position on a common scale is ALWAYS the most effective channel for quantitative data.</mark> This is why bar charts and scatter plots work so well — they use position. Pie charts use angle (rank 4), which is why bars beat pies.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 5: Shneiderman's Taxonomy -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch5">
+  <div class="chapter-num">Chapter 05</div>
+  <h2>Interaction Techniques — Shneiderman's Taxonomy</h2>
+
+  <p>Ben Shneiderman gave us the most famous principle in all of information visualisation:</p>
+
+  <div class="mantra">
+    "Overview first, zoom and filter, then details-on-demand"
+    <span>— Ben Shneiderman, "The Eyes Have It" (1996)</span>
+  </div>
+
+  <p>This mantra describes how users should be able to navigate any complex visualisation. Start with the big picture, narrow it down, then get the specifics when needed.</p>
+
+  <div class="example">
+    <div class="example-label">🎯 Applying the Mantra — Google Maps</div>
+    <ul>
+      <li><strong>Overview:</strong> You open Maps and see your whole city</li>
+      <li><strong>Zoom:</strong> You pinch to zoom into your neighbourhood</li>
+      <li><strong>Filter:</strong> You toggle "Restaurants" to filter points of interest</li>
+      <li><strong>Details-on-demand:</strong> You tap a restaurant to see its hours, ratings, and menu</li>
+    </ul>
+  </div>
+
+  <h3>Shneiderman's 7 Tasks</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. Overview</strong></td><td>Gain a view of the entire collection</td><td>See all 10,000 data points at once in a scatter plot</td></tr>
+        <tr><td><strong>2. Zoom</strong></td><td>Zoom into items of interest</td><td>Magnify a dense cluster in a network graph</td></tr>
+        <tr><td><strong>3. Filter</strong></td><td>Remove uninteresting items</td><td>Show only records from the year 2024</td></tr>
+        <tr><td><strong>4. Details-on-demand</strong></td><td>Select an item to get full details</td><td>Hover on a bar to see the exact sales value</td></tr>
+        <tr><td><strong>5. Relate</strong></td><td>View relationships among items</td><td>Highlight connections from a selected node in a network</td></tr>
+        <tr><td><strong>6. History</strong></td><td>Keep history for undo and replay</td><td>Step back through your exploration states</td></tr>
+        <tr><td><strong>7. Extract</strong></td><td>Extract sub-collections for reuse</td><td>Export a filtered subset as a CSV file</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout tip">
+    <strong>💡 Mnemonic: "OZF-DRHE"</strong> — Overview, Zoom, Filter, Details-on-demand, Relate, History, Extract
+  </div>
+
+  <h3>Key Interaction Techniques</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">The 4 Major Interaction Patterns</div>
+    <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Overview+Detail -->
+      <rect x="10" y="10" width="355" height="140" rx="8" fill="#1c2128" stroke="#58a6ff"/>
+      <text x="187" y="32" fill="#58a6ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">OVERVIEW + DETAIL</text>
+      <text x="187" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Two simultaneous views: big picture + close-up</text>
+      <!-- Big view -->
+      <rect x="25" y="58" width="140" height="75" rx="4" fill="#161b22" stroke="#30363d"/>
+      <text x="95" y="74" fill="#8b949e" font-family="monospace" font-size="9" text-anchor="middle">Overview</text>
+      <rect x="35" y="80" width="120" height="40" rx="2" fill="#30363d" opacity="0.5"/>
+      <rect x="50" y="84" width="30" height="30" rx="2" fill="#58a6ff" opacity="0.5"/>
+      <!-- Detail view -->
+      <rect x="185" y="58" width="165" height="75" rx="4" fill="#161b22" stroke="#58a6ff"/>
+      <text x="267" y="74" fill="#58a6ff" font-family="monospace" font-size="9" text-anchor="middle">Detail (zoomed in)</text>
+      <rect x="195" y="80" width="145" height="45" rx="2" fill="#1c3a5e" opacity="0.8"/>
+      <text x="267" y="100" fill="#58a6ff" font-family="sans-serif" font-size="9" text-anchor="middle">⟵ Magnified area</text>
+      <text x="187" y="148" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Example: Google Maps minimap + main view</text>
+
+      <!-- Focus+Context -->
+      <rect x="385" y="10" width="365" height="140" rx="8" fill="#1c2128" stroke="#3fb950"/>
+      <text x="567" y="32" fill="#3fb950" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">FOCUS + CONTEXT</text>
+      <text x="567" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Distorted view: focus in detail, context still visible</text>
+      <!-- Fisheye viz -->
+      <ellipse cx="567" cy="100" rx="60" ry="35" fill="#1a3a2a" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="567" y="96" fill="#3fb950" font-family="sans-serif" font-size="9" text-anchor="middle">Focus Area</text>
+      <text x="567" y="108" fill="#3fb950" font-family="sans-serif" font-size="9" text-anchor="middle">(magnified)</text>
+      <text x="440" y="100" fill="#8b949e" font-family="sans-serif" font-size="9">Context</text>
+      <text x="680" y="100" fill="#8b949e" font-family="sans-serif" font-size="9">Context</text>
+      <text x="567" y="148" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Example: Fisheye lens on a map or menu</text>
+
+      <!-- Brushing & Linking -->
+      <rect x="10" y="165" width="355" height="145" rx="8" fill="#1c2128" stroke="#d2a8ff"/>
+      <text x="187" y="187" fill="#d2a8ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">BRUSHING &amp; LINKING</text>
+      <text x="187" y="205" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Select in one view → highlights everywhere</text>
+      <!-- Two linked charts -->
+      <rect x="20" y="215" width="140" height="80" rx="4" fill="#161b22" stroke="#30363d"/>
+      <text x="90" y="230" fill="#8b949e" font-family="monospace" font-size="9" text-anchor="middle">Scatter Plot</text>
+      <circle cx="55" cy="260" r="5" fill="#d2a8ff"/>
+      <circle cx="75" cy="248" r="5" fill="#d2a8ff"/>
+      <circle cx="90" cy="270" r="5" fill="#8b949e"/>
+      <circle cx="110" cy="255" r="5" fill="#d2a8ff"/>
+      <circle cx="130" cy="265" r="5" fill="#8b949e"/>
+      <!-- lasso -->
+      <ellipse cx="87" cy="257" rx="45" ry="22" fill="none" stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+      <rect x="175" y="215" width="175" height="80" rx="4" fill="#161b22" stroke="#30363d"/>
+      <text x="262" y="230" fill="#8b949e" font-family="monospace" font-size="9" text-anchor="middle">Bar Chart (linked)</text>
+      <rect x="185" y="250" width="20" height="40" rx="2" fill="#d2a8ff"/>
+      <rect x="215" y="260" width="20" height="30" rx="2" fill="#8b949e"/>
+      <rect x="245" y="245" width="20" height="45" rx="2" fill="#d2a8ff"/>
+      <rect x="275" y="255" width="20" height="35" rx="2" fill="#8b949e"/>
+      <rect x="305" y="258" width="20" height="32" rx="2" fill="#d2a8ff"/>
+      <text x="187" y="305" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Purple = selected in scatter, highlighted in bar</text>
+
+      <!-- Dynamic Queries -->
+      <rect x="385" y="165" width="365" height="145" rx="8" fill="#1c2128" stroke="#ffa657"/>
+      <text x="567" y="187" fill="#ffa657" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">DYNAMIC QUERIES</text>
+      <text x="567" y="205" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Sliders &amp; controls that filter data in real-time</text>
+      <!-- Sliders -->
+      <text x="400" y="228" fill="#8b949e" font-family="sans-serif" font-size="10">Price:</text>
+      <rect x="440" y="220" width="160" height="6" rx="3" fill="#30363d"/>
+      <rect x="440" y="220" width="100" height="6" rx="3" fill="#ffa657"/>
+      <circle cx="540" cy="223" r="7" fill="#ffa657"/>
+      <text x="610" y="228" fill="#8b949e" font-family="monospace" font-size="10">£500</text>
+
+      <text x="400" y="253" fill="#8b949e" font-family="sans-serif" font-size="10">Rooms:</text>
+      <rect x="440" y="245" width="160" height="6" rx="3" fill="#30363d"/>
+      <rect x="440" y="245" width="60" height="6" rx="3" fill="#ffa657"/>
+      <circle cx="500" cy="248" r="7" fill="#ffa657"/>
+      <text x="610" y="253" fill="#8b949e" font-family="monospace" font-size="10">2+</text>
+
+      <text x="400" y="278" fill="#8b949e" font-family="sans-serif" font-size="10">Distance:</text>
+      <rect x="440" y="270" width="160" height="6" rx="3" fill="#30363d"/>
+      <rect x="440" y="270" width="120" height="6" rx="3" fill="#ffa657"/>
+      <circle cx="560" cy="273" r="7" fill="#ffa657"/>
+      <text x="610" y="278" fill="#8b949e" font-family="monospace" font-size="10">5km</text>
+
+      <text x="567" y="305" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Example: Homefinder (Shneiderman) property search</text>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> The mantra "Overview first, zoom and filter, then details-on-demand" could appear in almost ANY question. Be able to apply it to a given scenario — hospitals, cars, social networks, whatever. Always apply this structure.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 6: Data Selection and Filtering -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch6">
+  <div class="chapter-num">Chapter 06</div>
+  <h2>Data Selection and Filtering — Heer et al.</h2>
+
+  <p>Heer et al. introduced <strong>Generalised Selection via Interactive Query Relaxation</strong>. The core insight: clicking on individual items or drawing a lasso is too primitive. We need a smarter, more expressive way to select data.</p>
+
+  <div class="callout info">
+    <strong>💡 Core Idea:</strong> Instead of selecting individual items (point selection), model selection as a <em>declarative query</em> (like SQL) that can be generalised and relaxed interactively.
+  </div>
+
+  <h3>What is Query Relaxation?</h3>
+
+  <p>You start with a very specific selection and gradually <em>broaden</em> it to include related items:</p>
+
+  <div class="example">
+    <div class="example-label">🎯 Example: Crime Data</div>
+    <ol>
+      <li><strong>Start:</strong> You click on one specific data point — a robbery on Main Street on 1st March</li>
+      <li><strong>Relax once:</strong> The system generalises to "all robberies on Main Street"</li>
+      <li><strong>Relax again:</strong> Generalises to "all robberies in this neighbourhood"</li>
+      <li><strong>Relax more:</strong> "All violent crimes in this neighbourhood"</li>
+      <li><strong>Relax fully:</strong> "All crimes in this city"</li>
+    </ol>
+    <p>At each step, you choose how far to generalise. This is the "relaxation" — loosening the query constraints.</p>
+  </div>
+
+  <h3>Types of Selection</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Point selection</td><td>Click on individual items</td><td>Click on one dot in a scatter plot</td></tr>
+        <tr><td>Region selection</td><td>Draw a lasso/rectangle around items</td><td>Select all items in East London on a map</td></tr>
+        <tr><td>Attribute selection</td><td>Select by data attribute values</td><td>"All gunshot victims aged 20–30"</td></tr>
+        <tr><td><strong>Generalised selection</strong></td><td>Relax from specific to general</td><td>"All items with similar colour to this one"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Dynamic Queries vs Query Relaxation — Key Difference</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>Dynamic Queries</th><th>Query Relaxation</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Direction</strong></td><td>Start broad → narrow down</td><td>Start specific → broaden out</td></tr>
+        <tr><td><strong>Mechanism</strong></td><td>Sliders, buttons, toggles</td><td>Click item → generalise interactively</td></tr>
+        <tr><td><strong>Approach</strong></td><td>Top-down (you define criteria first)</td><td>Bottom-up (data guides the query)</td></tr>
+        <tr><td><strong>Query type</strong></td><td>Predefined dimensions</td><td>Emergent from the data</td></tr>
+        <tr><td><strong>Example</strong></td><td>Property search with price slider</td><td>Click a crime, generalise to find similar crimes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Heer's key contribution is coupling declarative query structure with interactive generalisation. The system helps you refine your query by showing what "similar" items exist, making selections more accurate than simple point/region selection.
+  </div>
+
+  <h3>Selection Operations</h3>
+  <ul>
+    <li><strong>Union:</strong> Combine two selections — "show all red items OR all large items" (OR)</li>
+    <li><strong>Intersection:</strong> Items in both — "show items that are red AND large" (AND)</li>
+    <li><strong>Difference:</strong> Items in first but not second — "red items that are NOT large"</li>
+    <li><strong>Complement:</strong> Everything NOT selected — "all items except the red ones"</li>
+  </ul>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 7: Visual Perception -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch7">
+  <div class="chapter-num">Chapter 07</div>
+  <h2>Visual Perception and Pre-attentive Processing</h2>
+
+  <p>Understanding how the human visual system works is essential to designing effective visualisations. The brain processes visual information in two stages — a fast, automatic stage and a slower, conscious one.</p>
+
+  <h3>Pre-attentive Processing</h3>
+
+  <div class="callout gold">
+    <strong>📖 Definition:</strong> Visual features that are detected by the low-level visual system <em>before</em> conscious attention — typically in under 200–250 milliseconds, regardless of how many other items are present.
+  </div>
+
+  <p>This is often called the <strong>"pop-out" effect</strong> — the feature literally "pops out" at you without effort.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Pre-attentive Pop-Out Demonstration</div>
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Left: colour pop-out -->
+      <rect x="10" y="10" width="355" height="240" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="187" y="32" fill="#3fb950" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">✅ PRE-ATTENTIVE (immediate pop-out)</text>
+      <text x="187" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Find the red dot — instant! (colour feature)</text>
+
+      <!-- grid of blue dots + 1 red -->
+      <g fill="#58a6ff">
+        <circle cx="50" cy="80" r="7"/><circle cx="80" cy="80" r="7"/><circle cx="110" cy="80" r="7"/><circle cx="140" cy="80" r="7"/><circle cx="170" cy="80" r="7"/><circle cx="200" cy="80" r="7"/><circle cx="230" cy="80" r="7"/><circle cx="260" cy="80" r="7"/><circle cx="290" cy="80" r="7"/><circle cx="320" cy="80" r="7"/>
+        <circle cx="50" cy="110" r="7"/><circle cx="80" cy="110" r="7"/><circle cx="110" cy="110" r="7"/><circle cx="140" cy="110" r="7"/>
+        <circle cx="200" cy="110" r="7"/><circle cx="230" cy="110" r="7"/><circle cx="260" cy="110" r="7"/><circle cx="290" cy="110" r="7"/><circle cx="320" cy="110" r="7"/>
+        <circle cx="50" cy="140" r="7"/><circle cx="80" cy="140" r="7"/><circle cx="110" cy="140" r="7"/><circle cx="140" cy="140" r="7"/><circle cx="170" cy="140" r="7"/><circle cx="200" cy="140" r="7"/>
+        <circle cx="260" cy="140" r="7"/><circle cx="290" cy="140" r="7"/><circle cx="320" cy="140" r="7"/>
+        <circle cx="50" cy="170" r="7"/><circle cx="80" cy="170" r="7"/><circle cx="110" cy="170" r="7"/><circle cx="140" cy="170" r="7"/><circle cx="170" cy="170" r="7"/><circle cx="200" cy="170" r="7"/><circle cx="230" cy="170" r="7"/><circle cx="260" cy="170" r="7"/><circle cx="290" cy="170" r="7"/><circle cx="320" cy="170" r="7"/>
+      </g>
+      <!-- The red one! -->
+      <circle cx="170" cy="110" r="9" fill="#f78166"/>
+      <circle cx="230" cy="140" r="9" fill="#3fb950" opacity="0"/> <!-- hidden duplicate -->
+
+      <text x="187" y="205" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">You saw it immediately — that's pre-attentive.</text>
+      <text x="187" y="220" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">It doesn't matter if there are 10 or 10,000 blue dots.</text>
+      <text x="187" y="235" fill="#3fb950" font-family="sans-serif" font-size="10" text-anchor="middle">Why? Single colour feature → parallel processing</text>
+
+      <!-- Right: conjunction (NOT pre-attentive) -->
+      <rect x="385" y="10" width="365" height="240" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="567" y="32" fill="#f78166" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">❌ NOT Pre-Attentive (requires search)</text>
+      <text x="567" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Find the red circle (vs red squares &amp; blue circles)</text>
+
+      <!-- Mixed shapes/colours -->
+      <g font-size="18" font-family="serif">
+        <text x="405" y="88" fill="#f78166">■</text><text x="430" y="88" fill="#58a6ff">●</text><text x="455" y="88" fill="#f78166">■</text><text x="480" y="88" fill="#58a6ff">●</text><text x="505" y="88" fill="#f78166">■</text><text x="530" y="88" fill="#58a6ff">●</text><text x="555" y="88" fill="#f78166">■</text><text x="580" y="88" fill="#58a6ff">●</text><text x="605" y="88" fill="#f78166">■</text><text x="630" y="88" fill="#58a6ff">●</text><text x="655" y="88" fill="#f78166">■</text><text x="680" y="88" fill="#58a6ff">●</text>
+        <text x="405" y="118" fill="#58a6ff">●</text><text x="430" y="118" fill="#f78166">■</text><text x="455" y="118" fill="#58a6ff">●</text>
+        <!-- THE TARGET: red circle -->
+        <text x="480" y="118" fill="#f78166">●</text>
+        <text x="505" y="118" fill="#58a6ff">●</text><text x="530" y="118" fill="#f78166">■</text><text x="555" y="118" fill="#58a6ff">●</text><text x="580" y="118" fill="#f78166">■</text><text x="605" y="118" fill="#58a6ff">●</text><text x="630" y="118" fill="#f78166">■</text><text x="655" y="118" fill="#58a6ff">●</text><text x="680" y="118" fill="#f78166">■</text>
+        <text x="405" y="148" fill="#f78166">■</text><text x="430" y="148" fill="#58a6ff">●</text><text x="455" y="148" fill="#f78166">■</text><text x="480" y="148" fill="#58a6ff">●</text><text x="505" y="148" fill="#f78166">■</text><text x="530" y="148" fill="#58a6ff">●</text><text x="555" y="148" fill="#f78166">■</text><text x="580" y="148" fill="#58a6ff">●</text><text x="605" y="148" fill="#f78166">■</text><text x="630" y="148" fill="#58a6ff">●</text><text x="655" y="148" fill="#f78166">■</text><text x="680" y="148" fill="#58a6ff">●</text>
+        <text x="405" y="178" fill="#58a6ff">●</text><text x="430" y="178" fill="#f78166">■</text><text x="455" y="178" fill="#58a6ff">●</text><text x="480" y="178" fill="#f78166">■</text><text x="505" y="178" fill="#58a6ff">●</text><text x="530" y="178" fill="#f78166">■</text><text x="555" y="178" fill="#58a6ff">●</text><text x="580" y="178" fill="#f78166">■</text><text x="605" y="178" fill="#58a6ff">●</text><text x="630" y="178" fill="#f78166">■</text><text x="655" y="178" fill="#58a6ff">●</text><text x="680" y="178" fill="#f78166">■</text>
+      </g>
+      <text x="567" y="205" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">You had to search! That's attentive (slow, serial).</text>
+      <text x="567" y="220" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Conjunction of 2 features → can't pop out.</text>
+      <text x="567" y="235" fill="#f78166" font-family="sans-serif" font-size="10" text-anchor="middle">This is Treisman's Feature Integration Theory</text>
+    </svg>
+  </div>
+
+  <h3>Pre-attentive Features List</h3>
+  <div class="cards">
+    <div class="card"><div class="card-icon">🎨</div><div class="card-title">Colour (Hue & Value)</div><div class="card-desc">Red dot among blue ones pops out instantly</div></div>
+    <div class="card"><div class="card-icon">📏</div><div class="card-title">Size</div><div class="card-desc">A large circle among small ones</div></div>
+    <div class="card"><div class="card-icon">↗️</div><div class="card-title">Orientation</div><div class="card-desc">A diagonal line among vertical lines</div></div>
+    <div class="card"><div class="card-icon">🔺</div><div class="card-title">Shape (basic)</div><div class="card-desc">A circle among squares (simple shapes only)</div></div>
+    <div class="card"><div class="card-icon">💫</div><div class="card-title">Motion</div><div class="card-desc">A moving object among still ones</div></div>
+    <div class="card"><div class="card-icon">📍</div><div class="card-title">Spatial Position</div><div class="card-desc">An outlier far from a cluster</div></div>
+  </div>
+
+  <h3>Treisman's Feature Integration Theory</h3>
+  <ol>
+    <li><strong>Pre-attentive stage:</strong> Individual features (colour, orientation) are processed in parallel across your entire visual field — very fast</li>
+    <li><strong>Attentive stage:</strong> Features are "bound" together through focused attention — serial scanning, much slower</li>
+    <li><strong>Key implication:</strong> If you're searching for a single feature (red), it pops out. If you're searching for a combination (red AND circular), you must serially scan each item.</li>
+  </ol>
+
+  <h3>Gestalt Principles</h3>
+
+  <p>These describe how the brain naturally groups visual elements:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Principle</th><th>Description</th><th>Use in Visualisation</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Proximity</strong></td><td>Items close together are perceived as grouped</td><td>Spacing in small multiples, clustering</td></tr>
+        <tr><td><strong>Similarity</strong></td><td>Items that look alike are perceived as grouped</td><td>Colour coding categories</td></tr>
+        <tr><td><strong>Continuity</strong></td><td>Eye follows smooth paths</td><td>Line charts, flow diagrams</td></tr>
+        <tr><td><strong>Closure</strong></td><td>Mind completes incomplete shapes</td><td>Implied boundaries</td></tr>
+        <tr><td><strong>Connectedness</strong></td><td>Connected items are perceived as a group</td><td>Links in network diagrams</td></tr>
+        <tr><td><strong>Enclosure</strong></td><td>Items inside a boundary are a group</td><td>Bounding boxes, panel borders</td></tr>
+        <tr><td><strong>Common fate</strong></td><td>Items moving together are a group</td><td>Animated transitions</td></tr>
+        <tr><td><strong>Figure-ground</strong></td><td>Perception separates foreground from background</td><td>Contrast, layering</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Weber's Law & Stevens' Power Law</h3>
+
+  <div class="callout info">
+    <strong>Weber's Law:</strong> ΔS / S = k — the "Just Noticeable Difference" is proportional to the stimulus size. A 1g difference between 10g and 11g is easy to detect. The same 1g difference between 1000g and 1001g is imperceptible.
+  </div>
+
+  <div class="callout info">
+    <strong>Stevens' Power Law:</strong> Perceived magnitude P = k × S<sup>n</sup><br>
+    — Length: n ≈ 1.0 (perceived accurately)<br>
+    — Area: n ≈ 0.7 (underestimated by ~30%)<br>
+    — Volume: n ≈ 0.6 (even more underestimated)<br>
+    — Brightness: n ≈ 0.5<br>
+    This explains why area-based charts (bubble charts, treemaps) are less accurate than bar charts.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 8: Colour Theory -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch8">
+  <div class="chapter-num">Chapter 08</div>
+  <h2>Colour Theory in Visualisation</h2>
+
+  <h3>Colour Spaces</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Colour Space</th><th>How it Works</th><th>Problem</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>RGB</strong></td><td>Mix Red, Green, Blue light</td><td>Not perceptually uniform — equal steps don't look equal</td><td>Screens/displays</td></tr>
+        <tr><td><strong>HSL/HSV</strong></td><td>Hue + Saturation + Lightness/Value</td><td>Still not perceptually uniform</td><td>Design tools, intuitive control</td></tr>
+        <tr><td><strong>CIELAB (L*a*b*)</strong></td><td>Equal numerical change = equal perceived change</td><td>Complex to work with directly</td><td>Scientific visualisation, colour map design</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Colour Map Types</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">The 3 Types of Colour Maps</div>
+    <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Sequential -->
+      <rect x="10" y="10" width="225" height="260" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="122" y="35" fill="#58a6ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">SEQUENTIAL</text>
+      <text x="122" y="55" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Single hue, varying lightness</text>
+      <!-- gradient bar -->
+      <defs>
+        <linearGradient id="seq" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#fff5eb"/>
+          <stop offset="50%" style="stop-color:#fd8d3c"/>
+          <stop offset="100%" style="stop-color:#7f2704"/>
+        </linearGradient>
+        <linearGradient id="div" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#4575b4"/>
+          <stop offset="50%" style="stop-color:#ffffbf"/>
+          <stop offset="100%" style="stop-color:#d73027"/>
+        </linearGradient>
+        <linearGradient id="rainbow" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#ff0000"/>
+          <stop offset="16%" style="stop-color:#ff8800"/>
+          <stop offset="33%" style="stop-color:#ffff00"/>
+          <stop offset="50%" style="stop-color:#00ff00"/>
+          <stop offset="66%" style="stop-color:#0000ff"/>
+          <stop offset="83%" style="stop-color:#8800ff"/>
+          <stop offset="100%" style="stop-color:#ff00ff"/>
+        </linearGradient>
+      </defs>
+      <rect x="25" y="68" width="195" height="30" rx="4" fill="url(#seq)"/>
+      <text x="25" y="115" fill="#8b949e" font-family="monospace" font-size="9">Low</text>
+      <text x="195" y="115" fill="#8b949e" font-family="monospace" font-size="9">High</text>
+      <text x="122" y="140" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Use for: Ordered data</text>
+      <text x="122" y="158" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">with one direction</text>
+      <text x="122" y="185" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Examples:</text>
+      <text x="122" y="202" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Population density map</text>
+      <text x="122" y="218" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Rainfall amount</text>
+      <text x="122" y="234" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Age distribution</text>
+
+      <!-- Diverging -->
+      <rect x="250" y="10" width="225" height="260" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="362" y="35" fill="#d2a8ff" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">DIVERGING</text>
+      <text x="362" y="55" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Two hues from neutral midpoint</text>
+      <rect x="265" y="68" width="195" height="30" rx="4" fill="url(#div)"/>
+      <text x="265" y="115" fill="#8b949e" font-family="monospace" font-size="9">Below</text>
+      <text x="345" y="115" fill="#8b949e" font-family="monospace" font-size="9">Zero</text>
+      <text x="430" y="115" fill="#8b949e" font-family="monospace" font-size="9">Above</text>
+      <line x1="362" y1="68" x2="362" y2="98" stroke="white" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+      <text x="362" y="140" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Use for: Data with a</text>
+      <text x="362" y="158" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">meaningful centre/zero</text>
+      <text x="362" y="185" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Examples:</text>
+      <text x="362" y="202" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Temperature anomaly</text>
+      <text x="362" y="218" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">(above/below average)</text>
+      <text x="362" y="234" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Profit vs loss</text>
+
+      <!-- Categorical -->
+      <rect x="490" y="10" width="260" height="260" rx="8" fill="#1c2128" stroke="#30363d"/>
+      <text x="620" y="35" fill="#3fb950" font-family="monospace" font-size="12" text-anchor="middle" font-weight="bold">CATEGORICAL</text>
+      <text x="620" y="55" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Distinct hues, similar lightness</text>
+      <!-- Colour blocks -->
+      <g>
+        <rect x="505" y="68" width="30" height="30" rx="4" fill="#4e79a7"/>
+        <rect x="545" y="68" width="30" height="30" rx="4" fill="#f28e2b"/>
+        <rect x="585" y="68" width="30" height="30" rx="4" fill="#e15759"/>
+        <rect x="625" y="68" width="30" height="30" rx="4" fill="#76b7b2"/>
+        <rect x="665" y="68" width="30" height="30" rx="4" fill="#59a14f"/>
+        <rect x="705" y="68" width="30" height="30" rx="4" fill="#edc948"/>
+        <text x="520" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">A</text>
+        <text x="560" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">B</text>
+        <text x="600" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">C</text>
+        <text x="640" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">D</text>
+        <text x="680" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">E</text>
+        <text x="720" y="115" fill="#8b949e" font-family="monospace" font-size="8" text-anchor="middle">F</text>
+      </g>
+      <text x="620" y="140" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Use for: Nominal/categorical</text>
+      <text x="620" y="158" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">data (no order)</text>
+      <text x="620" y="175" fill="#ffa657" font-family="sans-serif" font-size="10" text-anchor="middle">Limit to ~5–8 colours max!</text>
+      <text x="620" y="202" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Examples:</text>
+      <text x="620" y="218" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Country regions</text>
+      <text x="620" y="234" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">• Product categories</text>
+    </svg>
+  </div>
+
+  <h3>Why the Rainbow Colour Map is BAD</h3>
+
+  <div class="callout warning">
+    <strong>⚠️ The Rainbow Map Problem:</strong> Despite being everywhere, the rainbow (spectrum) colour map is one of the worst choices for data visualisation because:
+    <ul style="margin-top:8px;">
+      <li>Not perceptually uniform — some bands appear wider/narrower than they really are</li>
+      <li>Creates false boundaries where hue changes abruptly (yellow→green boundary looks like a real threshold)</li>
+      <li>Obscures the actual data structure by adding artificial visual "cliffs"</li>
+      <li>Fails completely for colour-blind users (red-green transitions)</li>
+    </ul>
+    <strong>Use instead:</strong> Viridis, Inferno, Magma, Plasma (perceptually uniform, colour-blind safe)
+  </div>
+
+  <h3>Colour Blindness Design Guidelines</h3>
+
+  <div class="example">
+    <div class="example-label">📊 Key Statistics</div>
+    <p>~8% of males and ~0.5% of females have some form of colour vision deficiency. This means in a lecture hall of 100 people, roughly 5–8 cannot see your red-green colour coding!</p>
+  </div>
+
+  <ul>
+    <li><strong>Never</strong> use red and green as the only differentiator</li>
+    <li>Use <strong>redundant encoding</strong> — colour + shape, or colour + texture</li>
+    <li>Use colour-blind-safe palettes (e.g., ColorBrewer, Viridis palette family)</li>
+    <li>Test with colour blindness simulators (e.g., Coblis online)</li>
+  </ul>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 9: Depicting Quantitative Data -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch9">
+  <div class="chapter-num">Chapter 09</div>
+  <h2>Depicting Quantitative Data</h2>
+
+  <h3>Cleveland & McGill's Perceptual Accuracy Hierarchy</h3>
+
+  <p>This is one of the most important rankings in visualisation. It tells you how accurately humans can read different visual encodings:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Perceptual Accuracy Ranking (Most → Least Accurate)</div>
+    <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <defs>
+        <linearGradient id="rankGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#3fb950"/>
+          <stop offset="100%" style="stop-color:#f78166"/>
+        </linearGradient>
+      </defs>
+      <!-- Rank bar -->
+      <rect x="30" y="30" width="16" height="260" rx="4" fill="url(#rankGrad)"/>
+      <text x="22" y="45" fill="#3fb950" font-family="monospace" font-size="9" text-anchor="middle">BEST</text>
+      <text x="22" y="285" fill="#f78166" font-family="monospace" font-size="9" text-anchor="middle">WORST</text>
+
+      <!-- Rank entries -->
+      <g font-family="sans-serif" font-size="13">
+        <!-- 1 -->
+        <rect x="60" y="28" width="680" height="34" rx="6" fill="#1c3a2a" stroke="#3fb950" stroke-width="1.5"/>
+        <text x="75" y="50" fill="#3fb950" font-weight="bold">① Position on a common scale</text>
+        <text x="540" y="50" fill="#8b949e" font-size="11">→ Bar charts, scatter plots</text>
+        <!-- bar chart mini -->
+        <rect x="695" y="32" width="8" height="24" rx="1" fill="#3fb950"/>
+        <rect x="706" y="36" width="8" height="20" rx="1" fill="#3fb950" opacity="0.7"/>
+        <rect x="717" y="40" width="8" height="16" rx="1" fill="#3fb950" opacity="0.5"/>
+        <line x1="695" y1="56" x2="725" y2="56" stroke="#3fb950" stroke-width="1"/>
+
+        <!-- 2 -->
+        <rect x="60" y="66" width="680" height="34" rx="6" fill="#1c2128" stroke="#30363d"/>
+        <text x="75" y="88" fill="#cdd9e5" font-weight="bold">② Position on unaligned scales</text>
+        <text x="540" y="88" fill="#8b949e" font-size="11">→ Grouped charts</text>
+
+        <!-- 3 -->
+        <rect x="60" y="104" width="680" height="34" rx="6" fill="#1c2128" stroke="#30363d"/>
+        <text x="75" y="126" fill="#cdd9e5" font-weight="bold">③ Length / Height</text>
+        <text x="540" y="126" fill="#8b949e" font-size="11">→ Bar charts (length of bar)</text>
+
+        <!-- 4 -->
+        <rect x="60" y="142" width="680" height="34" rx="6" fill="#1c2128" stroke="#30363d"/>
+        <text x="75" y="164" fill="#cdd9e5">④ Direction / Angle / Slope</text>
+        <text x="540" y="164" fill="#8b949e" font-size="11">→ Pie charts use angle</text>
+
+        <!-- 5 -->
+        <rect x="60" y="180" width="680" height="34" rx="6" fill="#1c2128" stroke="#30363d"/>
+        <text x="75" y="202" fill="#cdd9e5">⑤ Area</text>
+        <text x="540" y="202" fill="#8b949e" font-size="11">→ Bubble charts, treemaps</text>
+
+        <!-- 6 -->
+        <rect x="60" y="218" width="680" height="34" rx="6" fill="#1c2128" stroke="#30363d"/>
+        <text x="75" y="240" fill="#cdd9e5">⑥ Volume / Curvature</text>
+        <text x="540" y="240" fill="#8b949e" font-size="11">→ 3D charts</text>
+
+        <!-- 7 -->
+        <rect x="60" y="256" width="680" height="34" rx="6" fill="#2a1515" stroke="#f78166" stroke-width="1.5"/>
+        <text x="75" y="278" fill="#f78166">⑦ Colour luminance / Saturation</text>
+        <text x="540" y="278" fill="#8b949e" font-size="11">→ Heatmaps</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Why Bar Charts Beat Pie Charts:</strong> Bar charts use channel ① (position on common scale). Pie charts use channel ④ (angle). Humans are much better at judging position than angle. This is the scientific reason pie charts are generally bad.
+  </div>
+
+  <h3>Fundamental Chart Types</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Chart</th><th>Data Type</th><th>Strength</th><th>Weakness</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bar chart</strong></td><td>Categorical × Quantitative</td><td>Precise comparison via aligned lengths</td><td>Only 1–2 variables</td></tr>
+        <tr><td><strong>Scatter plot</strong></td><td>Quantitative × Quantitative</td><td>Shows correlation, clusters, outliers</td><td>Overplotting with large N</td></tr>
+        <tr><td><strong>Line chart</strong></td><td>Temporal/Ordered × Quantitative</td><td>Shows trends over time</td><td>Implies continuity between points</td></tr>
+        <tr><td><strong>Pie chart</strong></td><td>Parts of a whole (nominal)</td><td>Intuitive for proportions</td><td>Hard to compare slices; limit to ~5</td></tr>
+        <tr><td><strong>Histogram</strong></td><td>Distribution of one variable</td><td>Shows shape of distribution</td><td>Bin size choice affects interpretation</td></tr>
+        <tr><td><strong>Box plot</strong></td><td>Distribution summary</td><td>Shows median, quartiles, outliers</td><td>Hides distribution shape (bimodality)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Tufte's Design Principles</h3>
+
+  <div class="example">
+    <div class="example-label">📐 Edward Tufte's Core Rules</div>
+    <ul>
+      <li><strong>Data-ink ratio</strong> = Data ink / Total ink. Maximise it. Remove all "non-data ink" (heavy grids, redundant labels, 3D effects).</li>
+      <li><strong>Chartjunk:</strong> Any visual element that doesn't carry data — 3D effects, moiré patterns, decorative images, excessive gridlines</li>
+      <li><strong>Lie factor</strong> = (size of effect in graphic) / (size of effect in data). Should be close to 1.0. A bar chart that doubles a value but the bar only grows by 50% has a lie factor of 0.5.</li>
+      <li><strong>Small multiples:</strong> Repeated similar charts showing different subsets — enables direct visual comparison</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 10: Multidimensional Data -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch10">
+  <div class="chapter-num">Chapter 10</div>
+  <h2>Depicting Multidimensional Data</h2>
+
+  <p>When your data has many attributes (dimensions), you can't simply map each one to X and Y — you've run out of axes! These techniques handle data with 5, 10, even 100+ dimensions.</p>
+
+  <h3>Parallel Coordinates</h3>
+
+  <p>Each dimension gets its own vertical axis. Each data item is drawn as a line (polyline) connecting its value on every axis.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">Parallel Coordinates — How They Work</div>
+    <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Axes -->
+      <g stroke="#30363d" stroke-width="2">
+        <line x1="80" y1="30" x2="80" y2="240"/>
+        <line x1="200" y1="30" x2="200" y2="240"/>
+        <line x1="320" y1="30" x2="320" y2="240"/>
+        <line x1="440" y1="30" x2="440" y2="240"/>
+        <line x1="560" y1="30" x2="560" y2="240"/>
+        <line x1="680" y1="30" x2="680" y2="240"/>
+      </g>
+      <!-- Axis labels -->
+      <g fill="#8b949e" font-family="monospace" font-size="11" text-anchor="middle">
+        <text x="80" y="22">Age</text>
+        <text x="200" y="22">Income</text>
+        <text x="320" y="22">Score</text>
+        <text x="440" y="22">Hours</text>
+        <text x="560" y="22">Rating</text>
+        <text x="680" y="22">Sales</text>
+        <!-- Min/Max labels -->
+        <text x="55" y="240" font-size="9">0</text>
+        <text x="55" y="35" font-size="9">100</text>
+      </g>
+      <!-- Data lines - Item 1 (cluster A) -->
+      <polyline points="80,80 200,100 320,60 440,120 560,90 680,70" fill="none" stroke="#58a6ff" stroke-width="1.5" opacity="0.8"/>
+      <polyline points="80,90 200,110 320,70 440,130 560,100 680,80" fill="none" stroke="#58a6ff" stroke-width="1.5" opacity="0.8"/>
+      <polyline points="80,70 200,90 320,55 440,115 560,85 680,65" fill="none" stroke="#58a6ff" stroke-width="1.5" opacity="0.8"/>
+      <polyline points="80,100 200,120 320,75 440,140 560,110 680,90" fill="none" stroke="#58a6ff" stroke-width="1.5" opacity="0.6"/>
+      <!-- Item 2 (cluster B - selected) -->
+      <polyline points="80,170 200,150 320,180 440,160 560,190 680,175" fill="none" stroke="#f78166" stroke-width="2" opacity="0.9"/>
+      <polyline points="80,160 200,140 320,170 440,150 560,180 680,165" fill="none" stroke="#f78166" stroke-width="2" opacity="0.9"/>
+      <polyline points="80,180 200,160 320,190 440,170 560,200 680,185" fill="none" stroke="#f78166" stroke-width="2" opacity="0.7"/>
+      <!-- Brushing indicator -->
+      <rect x="70" y="150" width="20" height="40" rx="2" fill="rgba(247,129,102,0.15)" stroke="#f78166" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="80" y="270" fill="#f78166" font-family="sans-serif" font-size="9" text-anchor="middle">Brush here</text>
+
+      <!-- Legend -->
+      <line x1="600" y1="255" x2="640" y2="255" stroke="#58a6ff" stroke-width="2"/>
+      <text x="645" y="258" fill="#58a6ff" font-family="sans-serif" font-size="10">Group A (young, high income)</text>
+      <line x1="600" y1="272" x2="640" y2="272" stroke="#f78166" stroke-width="2"/>
+      <text x="645" y="275" fill="#f78166" font-family="sans-serif" font-size="10">Group B (brushed / selected)</text>
+
+      <!-- Annotations -->
+      <text x="250" y="270" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">Parallel lines = positive correlation between adjacent axes</text>
+    </svg>
+  </div>
+
+  <div class="callout info">
+    <strong>💡 Reading Parallel Coords:</strong>
+    <ul style="margin-top:6px;">
+      <li><strong>Parallel lines</strong> between two axes → positive correlation</li>
+      <li><strong>Crossing lines</strong> (X-shape) → negative correlation</li>
+      <li><strong>Brushing:</strong> Draw a range on one axis → those lines are highlighted everywhere</li>
+      <li><strong>Major weakness:</strong> Only reveals correlations between <em>adjacent</em> axes. Axis ordering matters hugely!</li>
+    </ul>
+  </div>
+
+  <h3>Scatterplot Matrix (SPLOM)</h3>
+
+  <p>A grid showing every possible pairwise scatter plot. For N dimensions, you get N×(N−1) plots (or N×(N−1)/2 if you count each pair once).</p>
+
+  <div class="example">
+    <div class="example-label">📐 SPLOM Formula</div>
+    <p>For <strong>9-dimensional data</strong>: 9 × (9−1) = 72 scatter plots (if including both directions), or 9×8/2 = 36 unique pairs.</p>
+    <p>⚠️ <em>This was an actual exam question! Question 9 in your past paper.</em></p>
+  </div>
+
+  <h3>Comparison of Multidimensional Techniques</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Technique</th><th>Max Practical Dims</th><th>Best For</th><th>Key Weakness</th></tr></thead>
+      <tbody>
+        <tr><td>Parallel Coordinates</td><td>10–20</td><td>Finding correlations, clusters</td><td>Adjacent axes only; clutter with many items</td></tr>
+        <tr><td>SPLOM</td><td>8–12</td><td>All pairwise relationships</td><td>Scales poorly — N² plots</td></tr>
+        <tr><td>Star Plot / Radar</td><td>5–10</td><td>Comparing individual profiles</td><td>Area distorted by axis ordering</td></tr>
+        <tr><td>Chernoff Faces</td><td>10–15</td><td>Informal pattern detection</td><td>Arbitrary mapping; some features more salient</td></tr>
+        <tr><td>Heatmap</td><td>50+</td><td>Large matrices, patterns</td><td>Needs meaningful ordering; colour limits</td></tr>
+        <tr><td>Dimensionality Reduction</td><td>100+</td><td>Overview of very high-D data</td><td>Loses individual dimension interpretation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Dimensionality Reduction Methods</h3>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <div class="card-title">PCA</div>
+      <div class="card-desc">Linear projection. Preserves global variance. Good when data has linear structure.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <div class="card-title">t-SNE</div>
+      <div class="card-desc">Non-linear. Preserves local neighbourhood structure. Great for cluster visualisation.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">UMAP</div>
+      <div class="card-desc">Preserves both local AND global structure better than t-SNE. Faster.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📏</div>
+      <div class="card-title">MDS</div>
+      <div class="card-desc">Preserves pairwise distances. "Spring model" — nodes repel/attract based on similarity.</div>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-label">🎯 Exam Trap — t-SNE vs Spring Model</div>
+    <p>A question may ask: "Scientists need both fine-grained local detail AND accurate high-level cluster relationships. Which algorithm is NOT a good choice?"</p>
+    <p><strong>Answer:</strong> The <strong>spring model (basic MDS)</strong> — it doesn't preserve local neighbourhood structure well. t-SNE preserves local structure. UMAP preserves both local and global. Spring model/MDS focuses on preserving overall distances, but local detail can be lost.</p>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 11: Cognitive Amplification -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch11">
+  <div class="chapter-num">Chapter 11</div>
+  <h2>Cognitive Amplification — Larkin &amp; Simon (1987)</h2>
+
+  <p>Paper: <em>"Why a Diagram is (Sometimes) Worth Ten Thousand Words"</em> — Jill Larkin &amp; Herbert Simon</p>
+
+  <div class="callout gold">
+    <strong>📖 Central Argument:</strong> Diagrams are NOT always better than text. The advantage depends on <em>computational efficiency</em> — how easily an information-processing system can extract and use the information. The key distinction is between informational equivalence and computational equivalence.
+  </div>
+
+  <h3>The Two Key Concepts</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">Informational vs Computational Equivalence</div>
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Left: Sentential -->
+      <rect x="10" y="10" width="355" height="240" rx="8" fill="#1c2128" stroke="#f78166"/>
+      <text x="187" y="34" fill="#f78166" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">SENTENTIAL</text>
+      <text x="187" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">(Text / Equations)</text>
+
+      <text x="30" y="75" fill="#8b949e" font-family="sans-serif" font-size="10">• Sequential / linear organisation</text>
+      <text x="30" y="93" fill="#8b949e" font-family="sans-serif" font-size="10">• Information is explicit in propositions</text>
+      <text x="30" y="111" fill="#8b949e" font-family="sans-serif" font-size="10">• May require extensive sequential search</text>
+      <text x="30" y="129" fill="#8b949e" font-family="sans-serif" font-size="10">• Must compute spatial relationships</text>
+      <text x="30" y="147" fill="#8b949e" font-family="sans-serif" font-size="10">• No inherent adjacency of related cues</text>
+
+      <!-- Text example -->
+      <rect x="20" y="160" width="330" height="70" rx="4" fill="#161b22"/>
+      <text x="35" y="178" fill="#8b949e" font-family="monospace" font-size="9">"The hypotenuse C connects the right</text>
+      <text x="35" y="192" fill="#8b949e" font-family="monospace" font-size="9">angle vertex to the other two vertices.</text>
+      <text x="35" y="206" fill="#8b949e" font-family="monospace" font-size="9">Its length satisfies: C² = A² + B²"</text>
+      <text x="35" y="222" fill="#f78166" font-family="monospace" font-size="9">→ Must compute in your head</text>
+
+      <!-- Right: Diagrammatic -->
+      <rect x="385" y="10" width="365" height="240" rx="8" fill="#1c2128" stroke="#3fb950"/>
+      <text x="567" y="34" fill="#3fb950" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">DIAGRAMMATIC</text>
+      <text x="567" y="50" fill="#8b949e" font-family="sans-serif" font-size="10" text-anchor="middle">(Visual / Spatial)</text>
+
+      <text x="395" y="75" fill="#8b949e" font-family="sans-serif" font-size="10">• Indexed by location (2D space)</text>
+      <text x="395" y="93" fill="#8b949e" font-family="sans-serif" font-size="10">• Much information implicit in layout</text>
+      <text x="395" y="111" fill="#8b949e" font-family="sans-serif" font-size="10">• Related info grouped at one location</text>
+      <text x="395" y="129" fill="#8b949e" font-family="sans-serif" font-size="10">• Spatial relationships read directly</text>
+      <text x="395" y="147" fill="#8b949e" font-family="sans-serif" font-size="10">• Cues to next step often adjacent</text>
+
+      <!-- Triangle diagram -->
+      <polygon points="565,160 490,230 640,230" fill="none" stroke="#3fb950" stroke-width="2"/>
+      <line x1="565" y1="230" x2="565" y2="160" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- right angle -->
+      <rect x="565" y="222" width="8" height="8" fill="none" stroke="#3fb950" stroke-width="1"/>
+      <text x="490" y="245" fill="#8b949e" font-family="monospace" font-size="9">A</text>
+      <text x="635" y="245" fill="#8b949e" font-family="monospace" font-size="9">B</text>
+      <text x="545" y="185" fill="#8b949e" font-family="monospace" font-size="9">C (hyp)</text>
+      <text x="567" y="255" fill="#3fb950" font-family="monospace" font-size="9" text-anchor="middle">→ Relationships immediately visible!</text>
+    </svg>
+  </div>
+
+  <h3>The Three Advantages of Diagrams</h3>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <div class="card-title">1. Locality</div>
+      <div class="card-desc">Related information is grouped spatially. You don't need to search — it's all in one place.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏷️</div>
+      <div class="card-title">2. Minimise Labelling</div>
+      <div class="card-desc">Location itself carries information. No need for explicit variable names like "the longer side is..."</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">3. Perceptual Inference</div>
+      <div class="card-desc">Some inferences are made directly by the visual system (e.g., "these two lines intersect") without conscious calculation.</div>
+    </div>
+  </div>
+
+  <h3>The "(Sometimes)" Caveat</h3>
+
+  <div class="callout warning">
+    <strong>⚠️ Diagrams are NOT always better!</strong>
+    <ul style="margin-top:8px;">
+      <li>When the problem requires symbolic/algebraic manipulation (e.g., solving equations)</li>
+      <li>When the spatial layout does NOT map naturally to the problem structure</li>
+      <li>When the diagram is poorly designed (misleading layout)</li>
+      <li>When information is best expressed sequentially (e.g., a logical proof)</li>
+    </ul>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> The key takeaway is: two representations can be <em>informationally equivalent</em> (contain identical information) but differ hugely in <em>computational efficiency</em> (how easy they are to use). This is the theoretical foundation for why visualisation amplifies cognition.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 12: Design and Evaluation -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch12">
+  <div class="chapter-num">Chapter 12</div>
+  <h2>Design and Evaluation</h2>
+
+  <h3>Munzner's Nested Model of Visualisation Design</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">The 4-Level Nested Model</div>
+    <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Nested rectangles (outer to inner) -->
+      <rect x="10" y="10" width="740" height="280" rx="12" fill="#1c1a2e" stroke="#d2a8ff" stroke-width="1.5"/>
+      <text x="40" y="36" fill="#d2a8ff" font-family="monospace" font-size="12" font-weight="bold">LEVEL 1: Domain Characterisation</text>
+      <text x="40" y="52" fill="#8b949e" font-family="sans-serif" font-size="10">What do users need? What problems are they solving?</text>
+      <text x="580" y="44" fill="#f78166" font-family="sans-serif" font-size="10">Threat: Wrong problem!</text>
+
+      <rect x="40" y="65" width="680" height="215" rx="10" fill="#1c2128" stroke="#58a6ff" stroke-width="1.5"/>
+      <text x="68" y="88" fill="#58a6ff" font-family="monospace" font-size="12" font-weight="bold">LEVEL 2: Data / Task Abstraction</text>
+      <text x="68" y="104" fill="#8b949e" font-family="sans-serif" font-size="10">Map domain concepts to abstract data types &amp; tasks</text>
+      <text x="560" y="96" fill="#f78166" font-family="sans-serif" font-size="10">Threat: Wrong abstraction</text>
+
+      <rect x="80" y="118" width="600" height="152" rx="8" fill="#1c2830" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="108" y="142" fill="#3fb950" font-family="monospace" font-size="12" font-weight="bold">LEVEL 3: Visual Encoding / Interaction Design</text>
+      <text x="108" y="158" fill="#8b949e" font-family="sans-serif" font-size="10">Choose marks, channels, interactions — apply effectiveness principles</text>
+      <text x="540" y="150" fill="#f78166" font-family="sans-serif" font-size="10">Threat: Ineffective encoding</text>
+
+      <rect x="118" y="170" width="524" height="90" rx="6" fill="#1c2820" stroke="#ffa657" stroke-width="1.5"/>
+      <text x="148" y="196" fill="#ffa657" font-family="monospace" font-size="12" font-weight="bold">LEVEL 4: Algorithm / Implementation</text>
+      <text x="148" y="212" fill="#8b949e" font-family="sans-serif" font-size="10">How to compute and render the visualisation efficiently</text>
+      <text x="148" y="230" fill="#f78166" font-family="sans-serif" font-size="10">Threat: Slow algorithm, poor performance</text>
+      <text x="148" y="248" fill="#8b949e" font-family="monospace" font-size="10">Example: Force-directed layout taking 30 seconds to converge</text>
+    </svg>
+  </div>
+
+  <p>The nesting matters: errors at outer levels can't be fixed by getting inner levels right. Even if you implement a perfect algorithm, if you solved the wrong problem, it fails.</p>
+
+  <h3>Evaluation Methods</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>What You Measure</th><th>Strength</th><th>Weakness</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Controlled Experiments (Quantitative)</strong></td>
+          <td>Task time, error rate, accuracy. Compare Technique A vs B statistically.</td>
+          <td>Objective, reproducible, statistically rigorous</td>
+          <td>Lab setting ≠ real world; limited task scope</td>
+        </tr>
+        <tr>
+          <td><strong>Qualitative (Think-aloud, Interview)</strong></td>
+          <td>HOW and WHY users behave. Rich insights, unexpected issues.</td>
+          <td>Reveals unexpected problems; rich context</td>
+          <td>Subjective, hard to generalise, small samples</td>
+        </tr>
+        <tr>
+          <td><strong>Heuristic Evaluation</strong></td>
+          <td>Experts review against established principles</td>
+          <td>Fast, cheap, catches many issues early</td>
+          <td>Expert opinions may not reflect real users</td>
+        </tr>
+        <tr>
+          <td><strong>Case Study / Deployment</strong></td>
+          <td>Real users doing real tasks over extended time</td>
+          <td>Highest ecological validity</td>
+          <td>Very hard to control; difficult to generalise</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Evaluation Metrics</h3>
+  <ul>
+    <li><strong>Task completion time:</strong> Efficiency</li>
+    <li><strong>Error rate:</strong> Accuracy</li>
+    <li><strong>Insight count:</strong> How many discoveries did users make?</li>
+    <li><strong>Subjective satisfaction:</strong> Likert scale questionnaires (e.g., "I found this easy to use: 1–7")</li>
+    <li><strong>Learning curve:</strong> How quickly can new users become proficient?</li>
+  </ul>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Be able to explain when to use quantitative vs qualitative evaluation. Quantitative: when you want to prove Technique A is faster than B with statistical confidence. Qualitative: when you want to understand WHY users struggle, or what unexpected behaviours emerge.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 13: Network Visualisation -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch13">
+  <div class="chapter-num">Chapter 13</div>
+  <h2>Network and Graph Visualisation</h2>
+
+  <h3>Key Terminology</h3>
+  <ul>
+    <li><strong>Node (vertex):</strong> An entity (person, webpage, computer)</li>
+    <li><strong>Edge (link):</strong> A relationship between two nodes</li>
+    <li><strong>Directed graph:</strong> Edges have direction (Twitter follows)</li>
+    <li><strong>Undirected graph:</strong> Edges are symmetric (Facebook friends)</li>
+    <li><strong>Weighted graph:</strong> Edges have numeric values (flight distances)</li>
+    <li><strong>Tree:</strong> A connected graph with no cycles (hierarchical structure)</li>
+  </ul>
+
+  <h3>Node-Link vs Matrix Representation</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">Two Ways to Show the Same Graph</div>
+    <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Node-link -->
+      <rect x="10" y="10" width="355" height="280" rx="8" fill="#1c2128" stroke="#58a6ff"/>
+      <text x="187" y="34" fill="#58a6ff" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">NODE-LINK DIAGRAM</text>
+      <!-- Nodes -->
+      <circle cx="130" cy="100" r="18" fill="#1c3a5e" stroke="#58a6ff" stroke-width="2"/>
+      <text x="130" y="104" fill="#58a6ff" font-family="monospace" font-size="11" text-anchor="middle">A</text>
+      <circle cx="250" cy="80" r="18" fill="#1c3a5e" stroke="#58a6ff" stroke-width="2"/>
+      <text x="250" y="84" fill="#58a6ff" font-family="monospace" font-size="11" text-anchor="middle">B</text>
+      <circle cx="300" cy="170" r="18" fill="#1c3a5e" stroke="#58a6ff" stroke-width="2"/>
+      <text x="300" y="174" fill="#58a6ff" font-family="monospace" font-size="11" text-anchor="middle">C</text>
+      <circle cx="180" cy="200" r="18" fill="#1c3a5e" stroke="#58a6ff" stroke-width="2"/>
+      <text x="180" y="204" fill="#58a6ff" font-family="monospace" font-size="11" text-anchor="middle">D</text>
+      <circle cx="80" cy="180" r="18" fill="#1c3a5e" stroke="#58a6ff" stroke-width="2"/>
+      <text x="80" y="184" fill="#58a6ff" font-family="monospace" font-size="11" text-anchor="middle">E</text>
+      <!-- Edges -->
+      <line x1="148" y1="100" x2="232" y2="84" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="250" y1="98" x2="290" y2="157" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="284" y1="170" x2="198" y2="194" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="164" y1="198" x2="97" y2="183" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="80" y1="162" x2="118" y2="108" stroke="#8b949e" stroke-width="1.5"/>
+      <line x1="145" y1="113" x2="172" y2="186" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+      <text x="187" y="240" fill="#3fb950" font-family="sans-serif" font-size="10" text-anchor="middle">✅ Best for: Path tracing, sparse graphs</text>
+      <text x="187" y="256" fill="#f78166" font-family="sans-serif" font-size="10" text-anchor="middle">❌ Fails for: Dense graphs (becomes "hairball")</text>
+
+      <!-- Matrix -->
+      <rect x="385" y="10" width="365" height="280" rx="8" fill="#1c2128" stroke="#d2a8ff"/>
+      <text x="567" y="34" fill="#d2a8ff" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">ADJACENCY MATRIX</text>
+      <!-- Matrix grid -->
+      <g font-family="monospace" font-size="12">
+        <!-- Header row -->
+        <text x="440" y="70" fill="#d2a8ff" text-anchor="middle">A</text>
+        <text x="480" y="70" fill="#d2a8ff" text-anchor="middle">B</text>
+        <text x="520" y="70" fill="#d2a8ff" text-anchor="middle">C</text>
+        <text x="560" y="70" fill="#d2a8ff" text-anchor="middle">D</text>
+        <text x="600" y="70" fill="#d2a8ff" text-anchor="middle">E</text>
+        <!-- Header col -->
+        <text x="420" y="98" fill="#d2a8ff">A</text>
+        <text x="420" y="138" fill="#d2a8ff">B</text>
+        <text x="420" y="178" fill="#d2a8ff">C</text>
+        <text x="420" y="218" fill="#d2a8ff">D</text>
+        <text x="420" y="258" fill="#d2a8ff">E</text>
+        <!-- Cells -->
+        <!-- Row A: A-B, A-E connected -->
+        <rect x="425" y="80" width="30" height="30" rx="2" fill="#30363d"/><text x="440" y="100" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="465" y="80" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="480" y="100" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="505" y="80" width="30" height="30" rx="2" fill="#30363d"/><text x="520" y="100" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="545" y="80" width="30" height="30" rx="2" fill="#30363d"/><text x="560" y="100" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="585" y="80" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="600" y="100" fill="#58a6ff" text-anchor="middle">1</text>
+        <!-- Row B -->
+        <rect x="425" y="120" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="440" y="140" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="465" y="120" width="30" height="30" rx="2" fill="#30363d"/><text x="480" y="140" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="505" y="120" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="520" y="140" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="545" y="120" width="30" height="30" rx="2" fill="#30363d"/><text x="560" y="140" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="585" y="120" width="30" height="30" rx="2" fill="#30363d"/><text x="600" y="140" fill="#8b949e" text-anchor="middle">·</text>
+        <!-- Rows C D E abbreviated -->
+        <rect x="425" y="160" width="30" height="30" rx="2" fill="#30363d"/><text x="440" y="180" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="465" y="160" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="480" y="180" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="505" y="160" width="30" height="30" rx="2" fill="#30363d"/><text x="520" y="180" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="545" y="160" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="560" y="180" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="585" y="160" width="30" height="30" rx="2" fill="#30363d"/><text x="600" y="180" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="425" y="200" width="30" height="30" rx="2" fill="#30363d"/><text x="440" y="220" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="465" y="200" width="30" height="30" rx="2" fill="#30363d"/><text x="480" y="220" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="505" y="200" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="520" y="220" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="545" y="200" width="30" height="30" rx="2" fill="#30363d"/><text x="560" y="220" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="585" y="200" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="600" y="220" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="425" y="240" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="440" y="260" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="465" y="240" width="30" height="30" rx="2" fill="#30363d"/><text x="480" y="260" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="505" y="240" width="30" height="30" rx="2" fill="#30363d"/><text x="520" y="260" fill="#8b949e" text-anchor="middle">·</text>
+        <rect x="545" y="240" width="30" height="30" rx="2" fill="#2a3a5e"/><text x="560" y="260" fill="#58a6ff" text-anchor="middle">1</text>
+        <rect x="585" y="240" width="30" height="30" rx="2" fill="#30363d"/><text x="600" y="260" fill="#8b949e" text-anchor="middle">·</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Node-link vs Matrix — When to Use Which:</strong>
+    <ul style="margin-top:6px;">
+      <li><strong>Node-link:</strong> Sparse graphs, path-tracing tasks ("is there a route from A to D?"), topology exploration</li>
+      <li><strong>Matrix:</strong> Dense graphs, connection-checking ("are these two nodes connected?"), large N, no edge crossings</li>
+    </ul>
+  </div>
+
+  <h3>Tree Visualisation Techniques</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Technique</th><th>Description</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Node-link tree</td><td>Traditional branching diagram</td><td>Small–medium trees, showing hierarchy clearly</td></tr>
+        <tr><td><strong>Treemap</strong></td><td>Nested rectangles; area = attribute value</td><td>Large hierarchies with a quantitative attribute (e.g., file sizes)</td></tr>
+        <tr><td>Sunburst</td><td>Radial treemap; rings = hierarchy levels</td><td>Hierarchical navigation, proportional data</td></tr>
+        <tr><td>Icicle plot</td><td>Rectangular top-down partition</td><td>Hierarchies with clear levels, wide trees</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 14: Temporal Data -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch14">
+  <div class="chapter-num">Chapter 14</div>
+  <h2>Temporal Data Visualisation</h2>
+
+  <p>Time is special. It's ordered, continuous, has natural hierarchical structure (seconds → minutes → hours → days → weeks → years), and can have both linear trends and cyclic patterns.</p>
+
+  <h3>Techniques for Temporal Data</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Technique</th><th>Description</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td>Line chart</td><td>Position encodes value, x-axis = time</td><td>Single time series; showing trends</td></tr>
+        <tr><td>Stacked area chart</td><td>Multiple series stacked; total area = cumulative</td><td>Composition over time</td></tr>
+        <tr><td>Horizon chart</td><td>Layered bands; divides range into colour-coded bands</td><td>Comparing many time series in compact space</td></tr>
+        <tr><td>Sparklines</td><td>Tiny inline line charts (Tufte)</td><td>Embedding trends in text or tables</td></tr>
+        <tr><td>Small multiples</td><td>Same chart repeated for different subsets</td><td>Comparing patterns across categories</td></tr>
+        <tr><td>ThemeRiver / Streamgraph</td><td>Organic stacked area, centred</td><td>Thematic changes over time</td></tr>
+        <tr><td>Calendar heatmap</td><td>Grid layout (day × week) with colour encoding</td><td>Cyclic patterns, day-of-week effects</td></tr>
+        <tr><td>Gantt chart</td><td>Horizontal bars showing duration and overlap</td><td>Project scheduling, intervals, events</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Animation vs Small Multiples</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">Animation vs Small Multiples — The Trade-off</div>
+    <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;">
+      <!-- Animation column -->
+      <rect x="10" y="10" width="355" height="180" rx="8" fill="#1c2128" stroke="#ffa657"/>
+      <text x="187" y="34" fill="#ffa657" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">ANIMATION</text>
+      <g font-family="sans-serif" font-size="11" fill="#8b949e">
+        <text x="30" y="60">✅ High engagement and engagement</text>
+        <text x="30" y="78">✅ Good for presentations/storytelling</text>
+        <text x="30" y="96">✅ Shows change dramatically</text>
+        <text x="30" y="114">❌ Poor for analytical comparison</text>
+        <text x="30" y="132">❌ Change blindness — brain can't compare</text>
+        <text x="30" y="150">   what was vs what is now (relies on memory)</text>
+        <text x="30" y="168">❌ Hard to pause and examine details</text>
+      </g>
+
+      <!-- Small multiples column -->
+      <rect x="385" y="10" width="365" height="180" rx="8" fill="#1c2128" stroke="#3fb950"/>
+      <text x="567" y="34" fill="#3fb950" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">SMALL MULTIPLES</text>
+      <g font-family="sans-serif" font-size="11" fill="#8b949e">
+        <text x="400" y="60">✅ Direct visual comparison (side-by-side)</text>
+        <text x="400" y="78">✅ No reliance on memory</text>
+        <text x="400" y="96">✅ Best for analysis</text>
+        <text x="400" y="114">✅ Can examine all states simultaneously</text>
+        <text x="400" y="132">❌ Takes more screen space</text>
+        <text x="400" y="150">❌ Less engaging than animation</text>
+        <text x="400" y="168">❌ Labels needed for each panel</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Exam Tip:</strong> Animation is engaging but poor for analytical comparison due to <strong>change blindness</strong>. Small multiples are almost always better for analysis tasks. State this clearly if asked to compare them.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 15: Rules of Thumb -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch15">
+  <div class="chapter-num">Chapter 15</div>
+  <h2>Rules of Thumb for Visualisation</h2>
+
+  <h3>Tufte's Principles (Summary)</h3>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Show the Data</div>
+      <div class="card-desc">"Above all else, show the data." Everything else is secondary.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">✏️</div>
+      <div class="card-title">Data-ink Ratio</div>
+      <div class="card-desc">Maximise proportion of ink devoted to actual data. Remove all non-data ink.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚫</div>
+      <div class="card-title">No Chartjunk</div>
+      <div class="card-desc">3D effects, moiré patterns, heavy grids, decorations — delete them all.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <div class="card-title">Small Multiples</div>
+      <div class="card-desc">Use repeated similar charts for comparison rather than animation.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-title">Lie Factor ≈ 1.0</div>
+      <div class="card-desc">Visual effect size should equal data effect size. Never exaggerate.</div>
+    </div>
+  </div>
+
+  <h3>Munzner's Key Principles</h3>
+
+  <div class="callout warning">
+    <strong>⚠️ No Unjustified 3D:</strong> 3D introduces occlusion (objects blocking each other) and perspective distortion. Only use 3D when the data is <em>inherently</em> 3D (e.g., molecular structures, MRI scans). Never use 3D just to make something look impressive.
+  </div>
+
+  <div class="callout info">
+    <strong>💡 Eyes Beat Memory:</strong> Put information side-by-side rather than requiring users to remember. Small multiples > animation. Linked views > switching between tabs.
+  </div>
+
+  <div class="callout tip">
+    <strong>Expressiveness + Effectiveness:</strong>
+    <ul style="margin-top:6px;">
+      <li><strong>Expressiveness:</strong> Encode ALL and ONLY the data. Don't imply relationships that don't exist (e.g., don't use an ordered colour scale for nominal data).</li>
+      <li><strong>Effectiveness:</strong> Of all the correct (expressive) encodings, choose the most effective for the data type.</li>
+    </ul>
+  </div>
+
+  <h3>Common Design Pitfalls</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pitfall</th><th>Problem</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Truncated y-axis</td><td>Exaggerates differences — lie factor &gt;&gt; 1</td><td>Start bar chart y-axis at zero</td></tr>
+        <tr><td>Pie charts for comparison</td><td>Angle perception is poor (rank 4); hard to compare</td><td>Use bar charts instead</td></tr>
+        <tr><td>Rainbow colour map</td><td>Non-uniform; creates false boundaries</td><td>Use Viridis, Inferno, Magma</td></tr>
+        <tr><td>Unnecessary 3D</td><td>Occlusion, perspective distortion</td><td>Use 2D unless data is inherently 3D</td></tr>
+        <tr><td>Dual y-axes</td><td>Can create misleading apparent correlations</td><td>Use two separate charts</td></tr>
+        <tr><td>Overplotting</td><td>Can't see density or distribution in dense scatter plots</td><td>Use transparency, jittering, or aggregation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 16: Quick Reference -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch16">
+  <div class="chapter-num">Chapter 16</div>
+  <h2>Key Concepts Quick Reference</h2>
+
+  <h3>Key People and Contributions</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Person</th><th>Key Contribution</th><th>Year</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Jacques Bertin</strong></td><td>Semiology of Graphics — visual variables framework (position + 6 retinal variables)</td><td>1967</td></tr>
+        <tr><td><strong>Ben Shneiderman</strong></td><td>"The Eyes Have It" — Visual Information-Seeking Mantra; 7 data types × 7 tasks</td><td>1996</td></tr>
+        <tr><td><strong>Edward Tufte</strong></td><td>Data-ink ratio, chartjunk, lie factor, small multiples</td><td>1983+</td></tr>
+        <tr><td><strong>Tamara Munzner</strong></td><td>Nested model; marks and channels; effectiveness ranking</td><td>2015</td></tr>
+        <tr><td><strong>Cleveland &amp; McGill</strong></td><td>Perceptual accuracy hierarchy for graphical elements</td><td>1984</td></tr>
+        <tr><td><strong>Jeffrey Heer</strong></td><td>Generalised selection via interactive query relaxation</td><td>~2008</td></tr>
+        <tr><td><strong>Larkin &amp; Simon</strong></td><td>"Why a Diagram is (Sometimes) Worth Ten Thousand Words" — info vs computational equiv.</td><td>1987</td></tr>
+        <tr><td><strong>Anne Treisman</strong></td><td>Feature integration theory; pre-attentive processing</td><td>1985</td></tr>
+        <tr><td><strong>Colin Ware</strong></td><td>Information Visualization: Perception for Design</td><td>2004+</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Visual Variables Summary Table</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Nominal</th><th>Ordinal</th><th>Quantitative</th><th>Selective</th><th>Associative</th><th>Ordered</th><th>Quantitative Channel</th></tr></thead>
+      <tbody>
+        <tr><td>Position</td><td><span class="badge good">G</span></td><td><span class="badge good">G</span></td><td><span class="badge good">G</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td></tr>
+        <tr><td>Size</td><td><span class="badge marg">M</span></td><td><span class="badge good">G</span></td><td><span class="badge good">G</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td></tr>
+        <tr><td>Shape</td><td><span class="badge good">G</span></td><td><span class="badge poor">P</span></td><td><span class="badge poor">P</span></td><td><span class="badge no">NO ★</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge no">N</span></td></tr>
+        <tr><td>Hue</td><td><span class="badge good">G</span></td><td><span class="badge poor">P</span></td><td><span class="badge poor">P</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge no">N</span></td></tr>
+        <tr><td>Value (lightness)</td><td><span class="badge poor">P</span></td><td><span class="badge good">G</span></td><td><span class="badge marg">M</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td></tr>
+        <tr><td>Orientation</td><td><span class="badge marg">M</span></td><td><span class="badge poor">P</span></td><td><span class="badge poor">P</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge no">N</span></td></tr>
+        <tr><td>Texture</td><td><span class="badge good">G</span></td><td><span class="badge marg">M</span></td><td><span class="badge poor">P</span></td><td><span class="badge yes">Y</span></td><td><span class="badge yes">Y</span></td><td><span class="badge no">N</span></td><td><span class="badge no">N</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--text-muted);">G = Good, M = Marginal, P = Poor, Y = Yes, N = No, ★ = Only non-selective variable</p>
+
+  <h3>Essential Definitions Flash Cards</h3>
+
+  <div class="example">
+    <div class="example-label">📖 Definitions to Memorise</div>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td><strong>Information Visualisation</strong></td><td>Computer-supported, interactive, visual representation of abstract data to amplify cognition</td></tr>
+          <tr><td><strong>Pre-attentive processing</strong></td><td>Visual features detected in &lt;200ms without focused attention</td></tr>
+          <tr><td><strong>Data-ink ratio</strong></td><td>Proportion of a graphic's ink devoted to non-redundant display of data information</td></tr>
+          <tr><td><strong>Chartjunk</strong></td><td>Visual elements that don't carry data (decorations, 3D effects, redundant gridlines)</td></tr>
+          <tr><td><strong>Lie factor</strong></td><td>Size of effect in graphic ÷ size of effect in data (should be ≈ 1.0)</td></tr>
+          <tr><td><strong>Informational equivalence</strong></td><td>Two representations from which the same information can be derived</td></tr>
+          <tr><td><strong>Computational equivalence</strong></td><td>Two representations that require the same cognitive effort to extract information</td></tr>
+          <tr><td><strong>Brushing and linking</strong></td><td>Selecting items in one view highlights them in all linked views</td></tr>
+          <tr><td><strong>Focus + Context</strong></td><td>Showing detail in the focus area while maintaining surrounding context visible</td></tr>
+          <tr><td><strong>Dynamic queries</strong></td><td>Interactive widgets (sliders, toggles) that filter data with immediate visual feedback</td></tr>
+          <tr><td><strong>Small multiples</strong></td><td>Repeated similar visualisations each showing a different subset of data</td></tr>
+          <tr><td><strong>Expressiveness</strong></td><td>A visualisation encodes all AND only the information in the data</td></tr>
+          <tr><td><strong>Effectiveness</strong></td><td>The most suitable encoding for the data type and task is chosen</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- CHAPTER 17: Practice Questions -->
+<!-- ─────────────────────────────────────────── -->
+<section class="chapter" id="ch17">
+  <div class="chapter-num">Chapter 17</div>
+  <h2>Sample Exam Questions &amp; Model Answers</h2>
+
+  <div class="callout gold">
+    <strong>📝 Exam Format Reminder:</strong> Your exam has 4 × 15-mark written questions. 90 minutes. Closed book. No MCQ this year. Each answer should be ~250–350 words with clear structure.
+  </div>
+
+  <div class="quiz-section">
+    <h3>🎯 Practice Questions — Click to Reveal Answers</h3>
+
+    <!-- Q1 -->
+    <div class="question">
+      <div class="q-text">Q1. Explain Larkin &amp; Simon's distinction between informational equivalence and computational equivalence. Use an example to illustrate why a diagram is sometimes—but not always—more useful than text. [15 marks]</div>
+      <div class="q-option" onclick="revealAnswer(this, 'a1')">Click to reveal model answer</div>
+      <div class="q-answer" id="a1">
+        <p><strong>Informational Equivalence:</strong> Two representations are informationally equivalent if all information in one can be derived from the other and vice versa. A map and a set of written directions to the same location may contain identical information — both tell you how to get from A to B.</p>
+        <p><strong>Computational Equivalence:</strong> Even if two representations are informationally equivalent, they may NOT be computationally equivalent — meaning they differ in how much cognitive effort is required to extract and use the information.</p>
+        <p><strong>Why diagrams help:</strong> Larkin &amp; Simon identify three advantages: (1) <em>Locality</em> — related information is grouped spatially, reducing search; (2) <em>Minimising labelling</em> — location itself carries information without needing explicit text labels; (3) <em>Perceptual inference</em> — some inferences are made automatically by the visual system (e.g., seeing two lines cross) without conscious computation.</p>
+        <p><strong>Example:</strong> Consider a circuit diagram vs a text description of the same circuit. Both contain the same information. But to determine which components are connected, in the text you must mentally track "resistor R1 connects to capacitor C2 which connects to..." requiring extensive working memory. In the diagram, you simply follow the wires — a perceptual operation, not a cognitive one.</p>
+        <p><strong>The "(Sometimes)" caveat:</strong> Diagrams are NOT always better. For symbolic manipulation (solving an algebraic equation), text/equations are more appropriate. If the spatial layout doesn't map naturally to the problem (a poor diagram), it can hinder rather than help. The key criterion is whether the visual representation exploits human perceptual abilities to reduce computational load.</p>
+        <p><strong>Conclusion:</strong> The value of visualisation is not inherent in being visual — it lies in whether the representation makes relevant information accessible with minimal cognitive effort.</p>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question">
+      <div class="q-text">Q2. Describe the generalised selection interaction technique (Heer et al.). How does it differ from dynamic queries? Apply it to a dataset of cars' locations and speeds in an urban area. [15 marks]</div>
+      <div class="q-option" onclick="revealAnswer(this, 'a2')">Click to reveal model answer</div>
+      <div class="q-answer" id="a2">
+        <p><strong>Generalised Selection:</strong> Heer et al. propose modelling user selection as a declarative query over data attributes, not just as a set of individually selected items. The key innovation is "query relaxation" — starting from a specific selection and interactively broadening it to include related items.</p>
+        <p><strong>Semantic Model for Car Data:</strong> Each car is an object with attributes: location (lat/lng), speed (km/h), direction, vehicle type, timestamp. Relationships exist between cars: proximity, shared road segments, similar speeds.</p>
+        <p><strong>Applying Generalised Selection:</strong></p>
+        <ul>
+          <li><strong>Initial selection:</strong> User clicks on one specific car — a taxi stopped at Oxford Street</li>
+          <li><strong>Relax once:</strong> System generalises to "all stopped vehicles (speed &lt; 5 km/h) within 200m"</li>
+          <li><strong>Relax further:</strong> "All stopped vehicles on Oxford Street" — reveals a traffic jam pattern</li>
+          <li><strong>Relax more:</strong> "All vehicles with speed &lt; 20 km/h in the city centre" — shows congestion zones</li>
+        </ul>
+        <p>At each step, the user chooses how far to generalise. Selections can be combined with Union (jams OR accidents), Intersection (slow AND large vehicles), etc.</p>
+        <p><strong>Contrast with Dynamic Queries:</strong> Dynamic queries work top-down — the user defines a filter range with sliders ("show cars with speed 0–30 km/h") and observes the result. Generalised selection works bottom-up — the user starts by pointing at an interesting item and the system helps find more items like it. Dynamic queries have predefined dimensions; generalised selection discovers dimensions from the data itself.</p>
+        <p><strong>Advantages:</strong> Generalised selection enables discovery-oriented exploration — users find patterns they didn't know to look for. It also produces more accurate selections by anchoring on real examples rather than abstract thresholds.</p>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question">
+      <div class="q-text">Q3. Outline Shneiderman's Visual Information-Seeking Mantra and his seven task types. Design a visualisation for a medical records database (patient conditions, prescriptions, measurements over time) using dynamic queries as an alternative to SQL. [15 marks]</div>
+      <div class="q-option" onclick="revealAnswer(this, 'a3')">Click to reveal model answer</div>
+      <div class="q-answer" id="a3">
+        <p><strong>The Mantra:</strong> "Overview first, zoom and filter, then details-on-demand." This describes the ideal interaction sequence: start with a complete view of the data, narrow it progressively, and retrieve specific information only when needed.</p>
+        <p><strong>Seven Tasks:</strong> Overview, Zoom, Filter, Details-on-demand, Relate, History, Extract (OZF-DRHE).</p>
+        <p><strong>Dynamic Query Design for Medical Records:</strong></p>
+        <p><em>Overview:</em> A timeline view showing all patients as horizontal bars, colour-coded by primary condition. This reveals the distribution of conditions and time ranges at a glance.</p>
+        <p><em>Dynamic Query Controls (vs SQL):</em></p>
+        <ul>
+          <li><strong>Condition slider:</strong> Select one or multiple conditions (e.g., "diabetes") — results update instantly</li>
+          <li><strong>Age range slider:</strong> Filter patients aged 40–60 — results update in real-time</li>
+          <li><strong>Date range selector:</strong> Focus on hospital visits in the last 12 months</li>
+          <li><strong>Measurement range:</strong> "Patients with systolic BP &gt; 140" — slider with heart-rate graph updating live</li>
+          <li><strong>Toggle buttons:</strong> "Has prescription for X", "Had surgery", "Emergency admission"</li>
+        </ul>
+        <p><em>Details-on-demand:</em> Clicking any patient bar reveals their full timeline — conditions, prescriptions, measurements — using small multiples for different vitals.</p>
+        <p><em>Relate:</em> Brushing and linking: select patients on the timeline → linked scatter plot updates to show correlation between their age and blood pressure.</p>
+        <p><strong>Advantages over SQL:</strong> (1) Immediate visual feedback — results appear as you adjust sliders, enabling exploration of the data space. (2) No knowledge of SQL syntax required — accessible to non-technical clinicians. (3) Users can discover unexpected patterns (a physician might notice "all diabetic patients on Drug X have elevated BP" by seeing the visual correlation). (4) Query relaxation and refinement is natural — drag the slider slightly to see the effect. SQL requires rewriting and re-executing queries.</p>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question">
+      <div class="q-text">Q4. Outline Stevens' power law and its importance in visualisation design. Critique bar charts, pie charts, and bubble charts in terms of this law. [15 marks]</div>
+      <div class="q-option" onclick="revealAnswer(this, 'a4')">Click to reveal model answer</div>
+      <div class="q-answer" id="a4">
+        <p><strong>Stevens' Power Law:</strong> Perceived magnitude P = k × S<sup>n</sup>, where S is the physical stimulus magnitude, n is the exponent characteristic of that sensory dimension, and k is a scaling constant. The law states that our perception of physical stimuli follows a power function, not a linear one.</p>
+        <p><strong>Key exponents:</strong> Length/position: n ≈ 1.0 (accurate). Area: n ≈ 0.7 (underestimated by ~30%). Volume: n ≈ 0.6. Brightness: n ≈ 0.5.</p>
+        <p><strong>Importance for Visualisation:</strong> The exponent determines how accurately users can extract quantitative information from a visual channel. Channels with n = 1 (position, length) allow accurate magnitude judgements. Channels with n &lt; 1 cause systematic underestimation — a bubble twice as large as another will be perceived as only 1.6× larger (2<sup>0.7</sup> ≈ 1.6).</p>
+        <p><strong>Critique of Bar Charts:</strong> Bar height uses <em>length</em> (n ≈ 1.0), which is among the most accurate channels. Users can readily judge that one bar is twice another. Bar charts also use position on a common baseline (rank 1 in Cleveland &amp; McGill hierarchy). <em>Verdict: Excellent for quantitative comparison.</em></p>
+        <p><strong>Critique of Pie Charts:</strong> Pie slices use <em>angle</em> (n ≈ not directly in Stevens, but angle perception is known to be inaccurate). Cleveland &amp; McGill rank angle at position 4. Users systematically misestimate slice proportions, especially when comparing non-adjacent slices. <em>Verdict: Poor for quantitative comparison; bar charts are almost always preferable.</em></p>
+        <p><strong>Critique of Bubble Charts:</strong> Bubble size encodes data via <em>area</em> (n ≈ 0.7). A bubble representing a value of 100 will be perceived as representing only about 100<sup>0.7</sup>/some_baseline of that. Designers sometimes try to compensate by encoding the data in the radius rather than the area, but this creates even worse distortions (since perceived area = actual area, not radius). <em>Verdict: Systematically inaccurate; users underestimate larger values, leading to misleading impressions of the data.</em></p>
+        <p><strong>Conclusion:</strong> Stevens' law provides a psychophysical basis for Cleveland &amp; McGill's empirically derived hierarchy. Position and length are best because their exponents are close to 1.0. Area and volume are worse because their exponents cause systematic perceptual distortion.</p>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question">
+      <div class="q-text">Q5. Describe how you would visualise a dataset of 1,000,000 objects with 100 dimensions using multiple linked views, including a dimensionality reduction. [15 marks]</div>
+      <div class="q-option" onclick="revealAnswer(this, 'a5')">Click to reveal model answer</div>
+      <div class="q-answer" id="a5">
+        <p><strong>Overview of the Problem:</strong> With 1M objects and 100 dimensions, no single visualisation can show everything. We need a coordinated multi-view system following Shneiderman's mantra: overview first, zoom and filter, then details-on-demand.</p>
+        <p><strong>View 1 — Dimensionality Reduction Overview (Spring Model / UMAP):</strong> Apply dimensionality reduction to project all 1M objects to a 2D scatter plot. UMAP is preferred for this scale — it preserves both local neighbourhood structure and global cluster relationships, unlike t-SNE which can misrepresent inter-cluster distances. This provides the overview — users immediately see high-level clusters and outliers without examining all 100 dimensions.</p>
+        <p><strong>Why Linking Matters:</strong> The reduced 2D view loses individual dimension interpretability. To restore meaning, we link it to other views — selecting a cluster in the overview reveals what it means in original dimensions.</p>
+        <p><strong>View 2 — Parallel Coordinates:</strong> Linked to the spring model view. Brushing a cluster in the overview highlights those items as polylines in the parallel coordinates plot, showing their values across (a subset of) the 100 dimensions. Users can then brush on a specific axis in parallel coordinates to further refine the selection. This allows pattern discovery — "this cluster has high values on dimensions 15, 32, and 67."</p>
+        <p><strong>View 3 — Bar Charts / Histograms per Dimension:</strong> Selectable list of dimensions with distribution histograms for each. When a cluster is selected in the spring model, the histograms update to show the selected subset's distribution vs. the whole dataset. Users can then add dynamic query filters ("only objects where dim_15 &gt; 0.6") which propagate to all views.</p>
+        <p><strong>View 4 — Selectable Detail List:</strong> A sortable table showing individual object records for the currently selected subset. Supports details-on-demand — drill down to examine any individual item.</p>
+        <p><strong>Interaction Design:</strong> Brushing and linking connects all views bidirectionally. History supports undo. Extract allows exporting selected subsets. The mantra is satisfied: spring model = overview; zoom into regions; filter via parallel coordinates and dynamic queries; detail list = details-on-demand.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-section">
+    <h3>⚡ Quick-Fire MCQ-Style Checks</h3>
+
+    <div class="question">
+      <div class="q-text">Which visual variable is the ONLY non-selective one?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Hue</div>
+      <div class="q-option" onclick="markOption(this, false)">b) Size</div>
+      <div class="q-option" onclick="markOption(this, true)">c) Shape</div>
+      <div class="q-option" onclick="markOption(this, false)">d) Position</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">A scatter plot of GDP vs life expectancy is an example of...</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Scientific Visualisation (SciVis)</div>
+      <div class="q-option" onclick="markOption(this, true)">b) Information Visualisation (InfoVis)</div>
+      <div class="q-option" onclick="markOption(this, false)">c) Neither — it's just a chart</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Why does a bar chart outperform a pie chart for comparison tasks?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Bar charts are more colourful</div>
+      <div class="q-option" onclick="markOption(this, false)">b) Pie charts require too much space</div>
+      <div class="q-option" onclick="markOption(this, true)">c) Bar charts use position on a common scale (most accurate channel), while pie charts use angle (less accurate)</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">For a SPLOM of 9-dimensional data, how many scatter plots are shown (counting each pair once)?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) 81</div>
+      <div class="q-option" onclick="markOption(this, true)">b) 72 (or 36 unique pairs)</div>
+      <div class="q-option" onclick="markOption(this, false)">c) 45</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">What does "computational equivalence" mean in Larkin &amp; Simon's framework?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Two representations require the same number of bytes to store</div>
+      <div class="q-option" onclick="markOption(this, true)">b) Two representations require the same cognitive effort to extract information</div>
+      <div class="q-option" onclick="markOption(this, false)">c) Two representations can be computed by the same algorithm</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">What is the primary problem with the rainbow colour map?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Too many colours confuse users</div>
+      <div class="q-option" onclick="markOption(this, false)">b) It doesn't work on dark backgrounds</div>
+      <div class="q-option" onclick="markOption(this, true)">c) It's not perceptually uniform — equal data steps don't look visually equal, creating false boundaries</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Why is animation usually worse than small multiples for analysis tasks?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Animation requires more processing power</div>
+      <div class="q-option" onclick="markOption(this, true)">b) Animation causes change blindness — users can't compare "before" and "after" without relying on memory</div>
+      <div class="q-option" onclick="markOption(this, false)">c) Animation looks unprofessional</div>
+    </div>
+
+    <div class="question">
+      <div class="q-text">For showing NOMINAL (categorical) data, which visual variable is most appropriate?</div>
+      <div class="q-option" onclick="markOption(this, false)">a) Colour value (lightness)</div>
+      <div class="q-option" onclick="markOption(this, false)">b) Size</div>
+      <div class="q-option" onclick="markOption(this, true)">c) Colour hue or shape (associative variables — no value dominates)</div>
+    </div>
+  </div>
+
+  <h3>Exam Strategy Summary</h3>
+
+  <div class="callout gold">
+    <strong>📋 For Any IV Exam Question:</strong>
+    <ol style="margin-top:8px;">
+      <li><strong>Describe:</strong> State data types → choose marks and channels → justify with effectiveness ranking → describe interaction (apply Shneiderman) → mention evaluation</li>
+      <li><strong>Critique:</strong> What works → what's wrong (wrong variable for data type, chartjunk, misleading scales) → specific improvements → reference principles (Tufte, Munzner, Bertin)</li>
+      <li><strong>Compare:</strong> Structured comparison — expressiveness, effectiveness, scalability, tasks supported → when each is preferred</li>
+      <li><strong>Theory:</strong> Define precisely → give concrete example → explain WHY it matters → reference relevant paper/person</li>
+    </ol>
+  </div>
+
+  <div class="callout exam">
+    <strong>🎓 Final Tip:</strong> When in doubt, connect your answer back to the <strong>Visual Information-Seeking Mantra</strong> and the <strong>channel effectiveness ranking</strong>. These two frameworks answer almost every design question. Always justify visual encoding choices by referencing data types and perceptual properties.
+  </div>
+</section>
+
+</main>
+
+<!-- Back to top -->
+<a id="btt" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑</a>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('btt').classList.toggle('show', h.scrollTop > 400);
+
+    // Active nav link
+    const chapters = document.querySelectorAll('.chapter');
+    const links = document.querySelectorAll('.nav-link');
+    let current = '';
+    chapters.forEach(ch => {
+      if (ch.getBoundingClientRect().top <= 100) current = ch.id;
+    });
+    links.forEach(l => {
+      l.classList.toggle('active', l.getAttribute('onclick')?.includes(current));
+    });
+  });
+
+  function navigateTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function revealAnswer(el, answerId) {
+    const ans = document.getElementById(answerId);
+    if (ans.style.display === 'block') {
+      ans.style.display = 'none';
+      el.textContent = 'Click to reveal model answer';
+      el.classList.remove('correct');
+    } else {
+      ans.style.display = 'block';
+      el.textContent = 'Hide answer';
+      el.classList.add('correct');
+    }
+  }
+
+  function markOption(el, isCorrect) {
+    const question = el.closest('.question');
+    const opts = question.querySelectorAll('.q-option[onclick*="markOption"]');
+    opts.forEach(o => { o.classList.remove('correct', 'wrong'); });
+    el.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) {
+      opts.forEach(o => {
+        try {
+          const fn = o.getAttribute('onclick');
+          if (fn.includes('true')) o.classList.add('correct');
+        } catch(e) {}
+      });
+    }
+  }
+</script>
+</body>
+</html>

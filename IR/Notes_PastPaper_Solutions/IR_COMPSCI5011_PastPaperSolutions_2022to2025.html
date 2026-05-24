@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMPSCI5011 — Past Paper Solutions 2022–2025</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0d0f14;
+  --bg2:    #131620;
+  --bg3:    #1a1e2c;
+  --border: #252a3a;
+  --border2:#2f3650;
+  --text:   #d8dce8;
+  --muted:  #7a8099;
+  --amber:  #e8a020;
+  --amber2: #ffc04a;
+  --green:  #28c77a;
+  --green2: #4de89a;
+  --blue:   #4a90d9;
+  --blue2:  #7ab8f5;
+  --red:    #e05060;
+  --purple: #9b72e8;
+  --teal:   #2ab8c0;
+  --white:  #f0f2f8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.72;
+}
+
+/* ─── HEADER ─── */
+header {
+  background: linear-gradient(135deg, #0a0d16 0%, #111628 50%, #0d1220 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(74,144,217,.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.header-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 40px 32px 36px;
+  position: relative; z-index: 1;
+}
+.h-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--amber); background: rgba(232,160,32,.12);
+  border: 1px solid rgba(232,160,32,.3);
+  padding: 4px 12px; border-radius: 2px;
+  display: inline-block; margin-bottom: 16px;
+}
+header h1 {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 600; color: var(--white);
+  line-height: 1.2; margin-bottom: 10px;
+}
+header h1 span { color: var(--amber2); }
+header p { color: var(--muted); font-size: 14px; max-width: 560px; }
+.h-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.h-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  padding: 3px 10px; border-radius: 2px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* ─── YEAR TABS ─── */
+.year-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.year-nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; gap: 0; padding: 0 24px;
+  overflow-x: auto;
+}
+.year-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--muted);
+  padding: 14px 24px;
+  border-bottom: 3px solid transparent;
+  transition: color .2s, border-color .2s;
+  white-space: nowrap;
+}
+.year-btn:hover { color: var(--blue2); }
+.year-btn.active { color: var(--amber2); border-bottom-color: var(--amber); }
+
+/* ─── LAYOUT ─── */
+.paper { display: none; }
+.paper.active { display: block; }
+.paper-inner { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
+
+/* ─── QUESTION HEADER ─── */
+.q-block { margin: 36px 0 0; }
+.q-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 0;
+}
+.q-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--bg); background: var(--amber);
+  padding: 4px 10px; border-radius: 2px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.q-marks {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--amber);
+  background: rgba(232,160,32,.1);
+  border: 1px solid rgba(232,160,32,.25);
+  padding: 3px 8px; border-radius: 2px;
+  flex-shrink: 0;
+}
+.q-title {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 15px; font-style: italic;
+  color: var(--text); opacity: .85;
+}
+
+/* ─── QUESTION BOX ─── */
+.question-box {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--amber);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin: 12px 0 6px;
+  font-size: 14.5px;
+}
+.question-box table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13.5px; margin-top: 10px;
+}
+.question-box th {
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .06em;
+  padding: 7px 12px; text-align: left;
+  text-transform: uppercase;
+}
+.question-box td { padding: 6px 12px; border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; }
+
+/* ─── SOLUTION BOX ─── */
+.solution {
+  background: rgba(40,199,122,.04);
+  border: 1px solid rgba(40,199,122,.18);
+  border-left: 3px solid var(--green);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin: 6px 0 28px;
+}
+.sol-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sol-header::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: rgba(40,199,122,.2);
+}
+
+/* ─── STEPS ─── */
+.steps { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+.step {
+  display: flex; gap: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 16px;
+}
+.step-n {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: var(--bg); background: var(--blue);
+  min-width: 26px; height: 26px;
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.step-body { flex: 1; font-size: 14px; }
+.step-body p { margin-bottom: 6px; }
+.step-body p:last-child { margin-bottom: 0; }
+
+/* ─── ANSWER BOX ─── */
+.answer-box {
+  background: rgba(155,114,232,.06);
+  border: 1px solid rgba(155,114,232,.3);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-top: 14px;
+}
+.answer-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--purple); margin-bottom: 8px;
+}
+
+/* ─── INDEX TABLE ─── */
+.index-box {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: #0a0d18;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin: 12px 0;
+  overflow-x: auto;
+  line-height: 1.9;
+}
+.it { color: var(--amber2); font-weight: 600; }
+.ia { color: var(--muted); }
+.ip { color: var(--teal); }
+.idf-val { color: var(--purple); }
+
+/* ─── TABLES ─── */
+table.styled {
+  width: 100%; border-collapse: collapse;
+  margin: 12px 0; font-size: 13.5px;
+}
+table.styled th {
+  background: var(--bg3);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); padding: 8px 12px; text-align: left;
+  border-bottom: 1px solid var(--border2);
+}
+table.styled td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+table.styled tr:last-child td { border-bottom: none; }
+table.styled tr:hover td { background: rgba(255,255,255,.02); }
+.hi { color: var(--amber2); font-weight: 600; }
+.gr { color: var(--green); font-weight: 600; }
+.rd { color: var(--red); }
+.bl { color: var(--blue2); }
+
+/* ─── CODE ─── */
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: rgba(255,255,255,.06);
+  padding: 1px 5px; border-radius: 2px;
+  color: var(--blue2);
+}
+pre {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px; line-height: 1.7;
+  background: #080b12;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px; margin: 12px 0;
+  overflow-x: auto;
+  color: #c0ccdd;
+}
+pre .kw { color: var(--purple); }
+pre .fn { color: var(--amber2); }
+pre .st { color: var(--green); }
+pre .cm { color: #4a5570; }
+
+/* ─── CALLOUTS ─── */
+.note {
+  background: rgba(74,144,217,.06);
+  border: 1px solid rgba(74,144,217,.2);
+  border-left: 3px solid var(--blue);
+  border-radius: 4px;
+  padding: 13px 18px; margin: 12px 0;
+  font-size: 14px;
+}
+.note-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--blue2); margin-bottom: 6px;
+}
+.warn {
+  background: rgba(224,80,96,.06);
+  border: 1px solid rgba(224,80,96,.2);
+  border-left: 3px solid var(--red);
+  border-radius: 4px;
+  padding: 13px 18px; margin: 12px 0;
+  font-size: 14px;
+}
+
+/* ─── SECTION DIVIDERS ─── */
+.paper-title {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 28px;
+}
+.pt-year {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 28px; font-weight: 600;
+  color: var(--amber); line-height: 1;
+}
+.pt-info { border-left: 1px solid var(--border2); padding-left: 16px; }
+.pt-info h2 {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 18px; color: var(--white); margin-bottom: 4px;
+}
+.pt-info p { font-size: 12.5px; color: var(--muted); }
+.q-section-divider {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--border);
+  padding-bottom: 6px; margin: 44px 0 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.q-section-divider::before {
+  content: '//';
+  color: var(--amber);
+}
+
+/* ─── FINAL RANKING BADGE ─── */
+.ranking {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: #0d1220;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 10px 16px; margin: 10px 0;
+  color: var(--green2);
+}
+.ranking span { color: var(--muted); margin: 0 4px; }
+
+/* ─── SCROLL HIGHLIGHT ─── */
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.paper.active .paper-inner { animation: fadeIn .3s ease; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px) {
+  .paper-inner { padding: 24px 16px 60px; }
+  .year-btn { padding: 12px 16px; }
+  .step { flex-direction: column; gap: 8px; }
+}
+
+/* MathJax override */
+.MJX-TEX { color: var(--text) !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="h-badge">University of Glasgow · COMPSCI5011</div>
+    <h1>Information Retrieval<br><span>Past Paper Solutions 2022–2025</span></h1>
+    <p>Full model answers with complete working for all questions. Every calculation shown step by step.</p>
+    <div class="h-tags">
+      <span class="h-tag">4 Papers</span>
+      <span class="h-tag">~45 Questions</span>
+      <span class="h-tag">Full Workings</span>
+      <span class="h-tag">MathJax Formulas</span>
+    </div>
+  </div>
+</header>
+
+<nav class="year-nav">
+  <div class="year-nav-inner">
+    <button class="year-btn active" onclick="show('p2025')">2025 Exam</button>
+    <button class="year-btn" onclick="show('p2024')">2024 Exam</button>
+    <button class="year-btn" onclick="show('p2023')">2023 Exam</button>
+    <button class="year-btn" onclick="show('p2022')">2022 Exam</button>
+  </div>
+</nav>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║                      2025 PAPER                             ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<div id="p2025" class="paper active">
+<div class="paper-inner">
+  <div class="paper-title">
+    <div class="pt-year">2025</div>
+    <div class="pt-info">
+      <h2>Information Retrieval M — COMPSCI5011</h2>
+      <p>Tuesday 20 May 2025 · 09:30–11:30 BST · Open Book · 60 marks · 3 questions</p>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-section-divider">Question 1</div>
+
+  <!-- Q1a(i) -->
+  <div class="q-block">
+    <div class="q-header">
+      <span class="q-num">Q1a(i)</span><span class="q-marks">6 marks</span>
+      <span class="q-title">Construct an inverted file for the corpus</span>
+    </div>
+    <div class="question-box">
+      <p>Corpus (no stemming). Stopwords: <strong>and, in, is, the, was</strong>.</p>
+      <table><tr><th>DocID</th><th>Text</th></tr>
+        <tr><td>Doc1</td><td>australia is world champion 1999 australia won</td></tr>
+        <tr><td>Doc2</td><td>france and new zealand played each other in the semifinal</td></tr>
+        <tr><td>Doc3</td><td>france was in the semifinal 1999 1999</td></tr>
+        <tr><td>Doc4</td><td>australia won the other semifinal in wales 1999 won</td></tr>
+      </table>
+      <p style="margin-top:10px">Store sufficient information for \(w_{ij} = tf_{ij} \times \log_2(N/df_i)\)</p>
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Remove stopwords and count term frequencies:</strong><br>
+          Doc1: australia(2), world(1), champion(1), 1999(1), won(1)<br>
+          Doc2: france(1), new(1), zealand(1), played(1), each(1), other(1), semifinal(1)<br>
+          Doc3: france(1), semifinal(1), 1999(2)<br>
+          Doc4: australia(1), won(2), other(1), semifinal(1), wales(1), 1999(1)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>N = 4 documents. Build index (term: df → posting list):</strong>
+          <div class="index-box">
+<span class="it">1999</span>      <span class="idf-val">df=3</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,1), (Doc3,2), (Doc4,1)]</span>
+<span class="it">australia</span> <span class="idf-val">df=2</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,2), (Doc4,1)]</span>
+<span class="it">champion</span>  <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,1)]</span>
+<span class="it">each</span>      <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1)]</span>
+<span class="it">france</span>    <span class="idf-val">df=2</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1), (Doc3,1)]</span>
+<span class="it">new</span>       <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1)]</span>
+<span class="it">other</span>     <span class="idf-val">df=2</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1), (Doc4,1)]</span>
+<span class="it">played</span>    <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1)]</span>
+<span class="it">semifinal</span> <span class="idf-val">df=3</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1), (Doc3,1), (Doc4,1)]</span>
+<span class="it">wales</span>     <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc4,1)]</span>
+<span class="it">won</span>       <span class="idf-val">df=2</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,1), (Doc4,2)]</span>
+<span class="it">world</span>     <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,1)]</span>
+<span class="it">zealand</span>   <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1)]</span>
+          </div>
+        </div></div>
+      </div>
+      <div class="note"><div class="note-label">Key point</div>Each entry stores (docID, tf). The lexicon also needs N=4 and each term's df. Together these are sufficient to compute \(w = tf \times \log_2(N/df)\).</div>
+    </div>
+  </div>
+
+  <!-- Q1a(ii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1a(ii)</span><span class="q-marks">2 marks</span><span class="q-title">Compute term weights for "champion" and "1999" in Doc1</span></div>
+    <div class="question-box">Given: log₂(0.75) = −0.415, log₂(1.3333) = 0.415</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>w(champion, Doc1):</strong><br>
+          tf = 1, df = 1, N = 4<br>
+          \(w = 1 \times \log_2(4/1) = 1 \times \log_2(4) = 1 \times 2 = \mathbf{2.0}\)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>w(1999, Doc1):</strong><br>
+          tf = 1, df = 3, N = 4<br>
+          \(w = 1 \times \log_2(4/3) = 1 \times \log_2(1.3333) = 1 \times 0.415 = \mathbf{0.415}\)
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Final Answers</div>
+        w(champion, Doc1) = <span class="hi">2.0</span> &nbsp;|&nbsp; w(1999, Doc1) = <span class="hi">0.415</span><br>
+        Champion is very rare (df=1) so it gets maximum IDF. "1999" appears in 3/4 docs so it's less discriminating.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1a(iii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1a(iii)</span><span class="q-marks">3 marks</span><span class="q-title">Rank all documents for query "1999 france"</span></div>
+    <div class="question-box">Use best-match ranking with tf×idf. Given: log₂(0.75)=−0.415, log₂(1.3333)=0.415</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>IDF for query terms:</strong><br>
+          idf(1999) = log₂(4/3) = <span class="hi">0.415</span> &nbsp;(df=3)<br>
+          idf(france) = log₂(4/2) = log₂(2) = <span class="hi">1.0</span> &nbsp;(df=2)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Score each document = Σ tf × idf for query terms present:</strong><br><br>
+          <table class="styled">
+            <tr><th>Doc</th><th>1999 (idf=0.415)</th><th>france (idf=1.0)</th><th>Total Score</th></tr>
+            <tr><td>Doc1</td><td>tf=1 → 1×0.415=0.415</td><td>tf=0 → 0</td><td class="hi">0.415</td></tr>
+            <tr><td>Doc2</td><td>tf=0 → 0</td><td>tf=1 → 1×1.0=1.0</td><td class="hi">1.000</td></tr>
+            <tr><td>Doc3</td><td>tf=2 → 2×0.415=0.830</td><td>tf=1 → 1×1.0=1.0</td><td class="hi">1.830</td></tr>
+            <tr><td>Doc4</td><td>tf=1 → 1×0.415=0.415</td><td>tf=0 → 0</td><td class="hi">0.415</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="ranking">Doc3 (1.830) <span>&gt;</span> Doc2 (1.000) <span>&gt;</span> Doc1 (0.415) <span>=</span> Doc4 (0.415)</div>
+      <div class="note"><div class="note-label">Reasoning</div>Doc3 wins because it contains BOTH terms and "1999" appears twice (tf=2). Doc2 has only france but that's a higher-IDF term, so beats Doc1/Doc4 which only have 1999.</div>
+    </div>
+  </div>
+
+  <!-- Q1b(i) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1b(i)</span><span class="q-marks">3 marks</span><span class="q-title">Compute Precision, Recall, and P@10</span></div>
+    <div class="question-box">
+      <p>10 relevant documents in corpus of 100. Top 15 ranked:</p>
+      <code>R N N R R N N R N R N N N N R</code>
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Count relevant retrieved in top 15:</strong><br>
+          Positions with R: ranks 1, 4, 5, 8, 10, 15 → <strong>6 relevant retrieved</strong>
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          \(\text{Precision} = \frac{|Rel \cap Ret|}{|Ret|} = \frac{6}{15} = \mathbf{0.4}\)<br>
+          \(\text{Recall} = \frac{|Rel \cap Ret|}{|Rel|} = \frac{6}{10} = \mathbf{0.6}\)
+        </div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">
+          <strong>P@10:</strong> Look at top 10 positions: <code>R N N R R N N R N R</code> → 5 relevant<br>
+          \(P@10 = 5/10 = \mathbf{0.5}\)
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Answers</div>
+        Precision = <span class="hi">0.4</span> &nbsp;|&nbsp; Recall = <span class="hi">0.6</span> &nbsp;|&nbsp; P@10 = <span class="hi">0.5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1b(ii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1b(ii)</span><span class="q-marks">2 marks</span><span class="q-title">Compute Average Precision (AP)</span></div>
+    <div class="question-box">Same ranking. Total relevant in corpus = 10.</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <p style="margin-bottom:10px">AP formula: \(AP = \frac{1}{|R|} \sum_k P(k) \cdot rel(k)\) — only compute P(k) at ranks where rel(k)=1.</p>
+      <table class="styled">
+        <tr><th>Rank k</th><th>rel(k)</th><th>Relevant so far</th><th>P(k) = rel_so_far / k</th><th>Contributes?</th></tr>
+        <tr><td>1</td><td class="gr">R</td><td>1</td><td class="hi">1.000</td><td class="gr">✓</td></tr>
+        <tr><td>2</td><td class="rd">N</td><td>—</td><td>—</td><td class="rd">✗</td></tr>
+        <tr><td>3</td><td class="rd">N</td><td>—</td><td>—</td><td class="rd">✗</td></tr>
+        <tr><td>4</td><td class="gr">R</td><td>2</td><td class="hi">2/4 = 0.500</td><td class="gr">✓</td></tr>
+        <tr><td>5</td><td class="gr">R</td><td>3</td><td class="hi">3/5 = 0.600</td><td class="gr">✓</td></tr>
+        <tr><td>6–7</td><td class="rd">N,N</td><td>—</td><td>—</td><td class="rd">✗</td></tr>
+        <tr><td>8</td><td class="gr">R</td><td>4</td><td class="hi">4/8 = 0.500</td><td class="gr">✓</td></tr>
+        <tr><td>9</td><td class="rd">N</td><td>—</td><td>—</td><td class="rd">✗</td></tr>
+        <tr><td>10</td><td class="gr">R</td><td>5</td><td class="hi">5/10 = 0.500</td><td class="gr">✓</td></tr>
+        <tr><td>11–14</td><td class="rd">N…</td><td>—</td><td>—</td><td class="rd">✗</td></tr>
+        <tr><td>15</td><td class="gr">R</td><td>6</td><td class="hi">6/15 = 0.400</td><td class="gr">✓</td></tr>
+        <tr><td>Not retrieved</td><td>4 more</td><td>—</td><td>0 each</td><td class="rd">0</td></tr>
+      </table>
+      \[AP = \frac{1}{10}(1.000 + 0.500 + 0.600 + 0.500 + 0.500 + 0.400) = \frac{3.500}{10} = \mathbf{0.35}\]
+      <div class="note"><div class="note-label">Common mistake</div>Divide by total relevant (10), NOT by retrieved relevant (6). The 4 non-retrieved relevant docs reduce AP to 0.35 rather than 0.583.</div>
+    </div>
+  </div>
+
+  <!-- Q1c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1c</span><span class="q-marks">4 marks</span><span class="q-title">PyTerrier query rewriting pipelines</span></div>
+    <div class="question-box">
+      <pre><span class="cm"># pipe1: uses pseudo-relevance feedback</span>
+pipe1 = bm25 % <span class="st">3</span> >> rewriter1(index) >> bm25
+
+<span class="cm"># pipe2: rewrites before any retrieval</span>
+pipe2 = rewriter2 >> bm25</pre>
+      What information does each rewriter use? Name example approaches and describe their operation.
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">r1</div><div class="step-body">
+          <strong>rewriter1 — Pseudo-Relevance Feedback (PRF):</strong><br>
+          <strong>Information used:</strong> The top-3 documents retrieved by BM25 (<code>bm25 % 3</code> means "take top 3"). These are assumed relevant without user input.<br><br>
+          <strong>Operation:</strong> Extracts high-scoring terms from the top-3 documents to expand the original query. Terms selected have high TF in those docs but are relatively rare in the collection (high IDF).<br><br>
+          <strong>Example approaches:</strong>
+          <ul style="padding-left:18px; margin-top:6px">
+            <li><strong>Bo1 (Bose-Einstein 1)</strong> — Terrier's default PRF model. Uses DFR framework to weight expansion terms.</li>
+            <li><strong>RM3 (Relevance Model 3)</strong> — Uses language model interpolation. Re-estimates P(t|relevance) from top-k docs.</li>
+            <li><strong>KL-Divergence expansion</strong> — Selects terms that differentiate the top-k docs from the general collection.</li>
+          </ul>
+        </div></div>
+        <div class="step"><div class="step-n">r2</div><div class="step-body">
+          <strong>rewriter2 — Query-only expansion (no retrieved documents):</strong><br>
+          <strong>Information used:</strong> Only the original query text — no retrieved documents involved. The <code>rewriter2 >> bm25</code> pipeline means rewriting happens before any retrieval.<br><br>
+          <strong>Example approaches:</strong>
+          <ul style="padding-left:18px; margin-top:6px">
+            <li><strong>Thesaurus-based expansion</strong> — Adds synonyms/related terms from a manually constructed thesaurus (e.g., WordNet). "car" → adds "automobile, vehicle".</li>
+            <li><strong>Word embedding expansion</strong> — Uses Word2Vec or GloVe to find nearest-neighbour terms in embedding space. Semantically similar terms added to query.</li>
+            <li><strong>Spelling correction</strong> — Detects and corrects misspellings before retrieval. "iphone" ← "iphon".</li>
+            <li><strong>Query classification</strong> — Detects navigational vs informational intent to reformulate query structure.</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-section-divider">Question 2</div>
+
+  <!-- Q2a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2a</span><span class="q-marks">5 marks</span><span class="q-title">Zipf's law — proportion removed by ignoring top-4 words</span></div>
+    <div class="question-box">Zipf's law: \(r \cdot P(w_r | C) = 0.1\). What proportion of word occurrences is removed by ignoring the 4 most frequent words?</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Compute P(w_r|C) for r = 1, 2, 3, 4:</strong><br>
+          \(P(w_1|C) = 0.1/1 = 0.100\)<br>
+          \(P(w_2|C) = 0.1/2 = 0.050\)<br>
+          \(P(w_3|C) = 0.1/3 \approx 0.0\overline{3} = 0.03333\)<br>
+          \(P(w_4|C) = 0.1/4 = 0.025\)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Sum the probabilities (= proportion of all occurrences):</strong><br>
+          \(0.100 + 0.050 + 0.0333 + 0.025 = 0.2083\)
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Answer</div>
+        Removing the 4 most frequent words eliminates approximately <span class="hi">20.83%</span> of all word occurrences from the collection.<br>
+        This illustrates Zipf's law: a tiny number of words account for a disproportionately large share of text — just 4 words cover over 20% of all tokens.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2b(i) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2b(i)</span><span class="q-marks">2 marks</span><span class="q-title">Show original query vector for "jackson star"</span></div>
+    <div class="question-box">
+      Terms space: india, jackson, life, mood, pop, spice, star, zebra. Raw TF, no IDF. Query = "jackson star".
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <p>The query vector uses raw TF weights (count occurrences in query string). "jackson" appears once, "star" appears once, all others = 0.</p>
+      <div class="index-box">
+q_orig = (india=<span class="rd">0</span>, jackson=<span class="gr">1</span>, life=<span class="rd">0</span>, mood=<span class="rd">0</span>, pop=<span class="rd">0</span>, spice=<span class="rd">0</span>, star=<span class="gr">1</span>, zebra=<span class="rd">0</span>)
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2b(ii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2b(ii)</span><span class="q-marks">4 marks</span><span class="q-title">Rocchio relevance feedback — revised query for "jackson music"</span></div>
+    <div class="question-box">
+      <p>System returned D2, D3, D1. User: D3 = relevant, D1 and D2 = non-relevant. α=β=γ=1.</p>
+      <table><tr><th></th><th>india</th><th>jackson</th><th>life</th><th>mood</th><th>pop</th><th>spice</th><th>star</th><th>zebra</th></tr>
+        <tr><td>D1</td><td>4</td><td>0</td><td>2</td><td>1</td><td>1</td><td>3</td><td>1</td><td>0</td></tr>
+        <tr><td>D2</td><td>0</td><td>4</td><td>1</td><td>0</td><td>0</td><td>1</td><td>3</td><td>1</td></tr>
+        <tr><td>D3</td><td>0</td><td>6</td><td>4</td><td>0</td><td>4</td><td>1</td><td>4</td><td>1</td></tr>
+      </table>
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <p style="margin-bottom:10px">Formula: \(\vec{q}_{new} = \alpha \vec{q}_{orig} + \frac{\beta}{|D_R|}\sum_{D_R}\vec{d} - \frac{\gamma}{|D_{NR}|}\sum_{D_{NR}}\vec{d}\)</p>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>q_orig for "jackson star"</strong> = (0, 1, 0, 0, 0, 0, 1, 0) [same as Q2b(i)]
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Relevant centroid:</strong> |D_R|=1, only D3:<br>
+          \(\frac{1}{1} \times D3 = (0, 6, 4, 0, 4, 1, 4, 1)\)
+        </div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">
+          <strong>Non-relevant centroid:</strong> |D_NR|=2, average of D1 and D2:<br>
+          D1+D2 = (4+0, 0+4, 2+1, 1+0, 1+0, 3+1, 1+3, 0+1) = (4, 4, 3, 1, 1, 4, 4, 1)<br>
+          ÷2 = (2, 2, 1.5, 0.5, 0.5, 2, 2, 0.5)
+        </div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body">
+          <strong>Apply Rocchio (α=β=γ=1):</strong><br>
+          q_new = 1×q_orig + 1×rel_centroid − 1×nr_centroid:
+          <table class="styled" style="margin-top:8px">
+            <tr><th>Term</th><th>q_orig</th><th>+rel</th><th>−nr</th><th>q_new</th><th>Final</th></tr>
+            <tr><td>india</td><td>0</td><td>+0</td><td>−2</td><td class="rd">−2</td><td class="gr">0</td></tr>
+            <tr><td>jackson</td><td>1</td><td>+6</td><td>−2</td><td class="hi">5</td><td class="hi">5</td></tr>
+            <tr><td>life</td><td>0</td><td>+4</td><td>−1.5</td><td class="hi">2.5</td><td class="hi">2.5</td></tr>
+            <tr><td>mood</td><td>0</td><td>+0</td><td>−0.5</td><td class="rd">−0.5</td><td class="gr">0</td></tr>
+            <tr><td>pop</td><td>0</td><td>+4</td><td>−0.5</td><td class="hi">3.5</td><td class="hi">3.5</td></tr>
+            <tr><td>spice</td><td>0</td><td>+1</td><td>−2</td><td class="rd">−1</td><td class="gr">0</td></tr>
+            <tr><td>star</td><td>1</td><td>+4</td><td>−2</td><td class="hi">3</td><td class="hi">3</td></tr>
+            <tr><td>zebra</td><td>0</td><td>+1</td><td>−0.5</td><td class="hi">0.5</td><td class="hi">0.5</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Revised Query Vector</div>
+        (jackson=5, life=2.5, pop=3.5, star=3, zebra=0.5)<br>
+        india, mood, spice dropped (negative weights set to 0)
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2c</span><span class="q-marks">4 marks</span><span class="q-title">4 assumptions made by IR models that don't hold</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer (1 mark each)</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Term Independence (Bag of Words):</strong> Models assume terms contribute independently to relevance. In reality, "New York" as a phrase has a completely different meaning to "New" and "York" separately. A query for "New York Times" might retrieve documents about "new times in York, England".
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Document Independence:</strong> Each document is scored independently of others. In reality, retrieving 10 nearly-identical documents about the same sub-topic is less useful than 10 diverse relevant documents. Users care about novelty — a document already seen is not useful even if highly relevant.
+        </div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">
+          <strong>Static Relevance:</strong> Relevance is treated as a fixed property. In reality, a news article about "COVID vaccines" from March 2020 might be highly relevant then but misleading or outdated in 2026. Temporal context matters.
+        </div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body">
+          <strong>Topical Relevance = User Relevance:</strong> Models rank by topical match, but users also require credibility, readability, and authority. A highly relevant but peer-reviewed medical paper may be useless to a patient who cannot understand it. A Wikipedia article about "cancer treatment" might be more useful than the most topically-relevant oncology journal paper.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2d -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2d</span><span class="q-marks">5 marks</span><span class="q-title">TAAT vs DAAT traversal steps and memory requirements</span></div>
+    <div class="question-box">
+      term1 → [id=2, tf=2], [id=5, tf=1], [id=6, tf=2]<br>
+      term2 → [id=2, tf=4], [id=3, tf=5], [id=5, tf=5]<br>
+      Retrieve K results from corpus of N documents (K &lt; N).
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">TAAT</div><div class="step-body">
+          <strong>Term-At-A-Time — process one complete posting list before the next:</strong>
+          <ol style="padding-left:18px; margin-top:8px; line-height:1.9">
+            <li>Initialise score accumulator array A[1..N] = 0</li>
+            <li><strong>Process term1's full list:</strong> A[2] += w(2,2), A[5] += w(5,1), A[6] += w(6,2)</li>
+            <li><strong>Process term2's full list:</strong> A[2] += w(2,4), A[3] += w(3,5), A[5] += w(5,5)</li>
+            <li>Sort all non-zero accumulators; return top K</li>
+          </ol>
+          <strong>Memory requirement:</strong> O(N) — one accumulator per document in the entire corpus. For N=1 billion docs this is impractical.
+        </div></div>
+        <div class="step"><div class="step-n">DAAT</div><div class="step-body">
+          <strong>Document-At-A-Time — process all terms for one doc before moving to next doc (sorted by docID):</strong>
+          <ol style="padding-left:18px; margin-top:8px; line-height:1.9">
+            <li>Maintain pointer into each posting list. Maintain top-K min-heap.</li>
+            <li>Next candidate docID = 2 (lowest across all lists)</li>
+            <li><strong>Doc 2:</strong> present in term1 (tf=2) AND term2 (tf=4) → compute score → add to heap if qualifies</li>
+            <li><strong>Doc 3:</strong> term1 not present, term2 (tf=5) → compute score → check heap</li>
+            <li><strong>Doc 5:</strong> term1 (tf=1), term2 (tf=5) → compute score → check heap</li>
+            <li><strong>Doc 6:</strong> term1 (tf=2), term2 not present → compute score → check heap</li>
+            <li>Return K documents from heap</li>
+          </ol>
+          <strong>Memory requirement:</strong> O(K) for the heap + O(|query terms|) for current posting list pointers. For K=10, this is essentially O(1) regardless of N.
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Key Difference</div>
+        TAAT: <span class="hi">O(N)</span> memory — must hold an accumulator for every document. For large corpora this is prohibitive.<br>
+        DAAT: <span class="hi">O(K)</span> memory — only maintains a K-element heap and a few posting list pointers. Scales to any corpus size.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-section-divider">Question 3</div>
+
+  <!-- Q3a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3a</span><span class="q-marks">4 marks</span><span class="q-title">4 key components shared by most advanced retrieval models</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer (1 mark each)</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Term Frequency (TF) component:</strong> Captures how often a query term appears in the document. More occurrences = stronger topical signal. BM25 uses a saturating TF function; PL2 models TF as a Poisson process. Important because term repetition indicates the document discusses the topic in depth.</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Inverse Document Frequency (IDF) / Informativeness component:</strong> Captures how rare a term is across the collection. Common terms (appearing in most docs) discriminate nothing; rare terms carry high information. BM25 uses \(\log\frac{N-df+0.5}{df+0.5}\); PL2 uses informativeness from DFR framework.</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Document Length Normalisation:</strong> Long documents naturally contain more terms, giving them artificially high TF scores. A 10,000-word document mentioning "python" 20 times is not necessarily more relevant than a focused 200-word document mentioning it 4 times. BM25 uses parameter b (0=none, 1=full); PL2 uses normalisation relative to average document length.</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Query Term Weighting:</strong> Not all query terms are equally important. IDF of query terms themselves can weight contributions — rare query terms are more discriminating. For long queries (e.g., from relevance feedback), query TF also matters. BM25 uses IDF of query terms; PL2 applies query frequency normalisation.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3b(i) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b(i)</span><span class="q-marks">2 marks</span><span class="q-title">Why does searching "i-phone" fail? Propose a fix.</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p><strong>Problem:</strong> The standard tokeniser splits "i-phone" at the hyphen into two tokens: <code>"i"</code> and <code>"phone"</code>. The token "i" is typically a stopword (or has near-zero IDF) and is removed. The query effectively becomes just <code>"phone"</code>, losing the brand-specific signal. Documents indexed under the token "iphone" (without hyphen) will NOT match "phone" — so genuine iPhone product pages are missed.</p>
+      <br>
+      <p><strong>Solution (lexical, no dense retrieval):</strong> Modify the tokeniser to handle hyphens specifically for compound terms: either (a) treat "i-phone" as a single token "iphone" (merge the hyphen), or (b) index both the hyphenated form AND the merged form at the same positions. This ensures "i-phone" queries match "iphone" documents and vice versa. Optionally, add product-specific synonym rules (e.g., "iphone" ↔ "i-phone").</p>
+    </div>
+  </div>
+
+  <!-- Q3b(ii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b(ii)</span><span class="q-marks">2 marks</span><span class="q-title">LTR changes to promote higher-margin brands</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p>Add a <strong>query-independent feature</strong> called <code>profit_margin_score</code> (or <code>brand_revenue_weight</code>) to the LTR feature vector. This feature maps each product/brand to a numeric value representing its profit contribution.</p>
+      <p style="margin-top:8px">At training time, LambdaMART or another LTR algorithm will learn the weight for this feature alongside all relevance-based features (BM25 score, title match, PageRank, etc.). The model will automatically discover the optimal trade-off between relevance and profitability from training data.</p>
+      <p style="margin-top:8px">The training labels must include both relevance judgements (to maintain result quality) and business objective signals, or a custom loss function can be defined that jointly optimises NDCG and revenue-weighted ranking.</p>
+    </div>
+  </div>
+
+  <!-- Q3b(iii) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b(iii)</span><span class="q-marks">3 marks</span><span class="q-title">One advantage each of lexical, dense, and hybrid retrieval</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer (1 mark each)</div>
+      <table class="styled">
+        <tr><th>Approach</th><th>Advantage in e-commerce context</th></tr>
+        <tr><td class="bl"><strong>Lexical (BM25)</strong></td><td>Exact match on product codes, SKUs, model numbers, and brand names. A query for "Nike Air Max 270 size 10" should match the exact product — lexical matching guarantees precision on specific identifiers that have no semantic equivalent.</td></tr>
+        <tr><td class="gr"><strong>Dense retrieval</strong></td><td>Semantic matching handles vocabulary mismatch. A user searching "trainers" gets results for "sneakers", "running shoes", "athletic footwear" — different words for the same concept. Dense retrieval finds conceptually similar products even without lexical overlap.</td></tr>
+        <tr><td class="hi"><strong>Combining both</strong></td><td>Higher first-stage recall — each approach covers the other's failure cases. BM25 misses semantic synonyms; dense misses exact-match product codes. The combined candidate set gives the cross-encoder re-ranker more genuinely relevant documents to work with, improving the final top-10 quality.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q3b(iv) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b(iv)</span><span class="q-marks">2 marks</span><span class="q-title">Propose a PyTerrier pipeline for hybrid search with cross-encoder</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <pre><span class="cm"># Hybrid first stage: union of lexical and dense candidates</span>
+<span class="cm"># Cross-encoder reranker applied to all retrieved documents</span>
+hybrid_pipeline = (lexical + dense) >> reranker</pre>
+      <p><strong>Explanation:</strong> <code>lexical + dense</code> concatenates and deduplicates the result sets from both retrievers, providing the union of their candidates. <code>&gt;&gt; reranker</code> passes all these candidates through the cross-encoder, which scores each (query, document) pair jointly using full token-level interaction. The final top-10 are returned to the user.</p>
+    </div>
+  </div>
+
+  <!-- Q3b(v) -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b(v)</span><span class="q-marks">7 marks</span><span class="q-title">Two experiments to verify hybrid improvement</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <pre><span class="cm"># Define pipelines</span>
+sparse_pipeline = lexical >> reranker          <span class="cm"># BM25 + reranker</span>
+dense_pipeline  = dense   >> reranker          <span class="cm"># Dense + reranker</span>
+hybrid_pipeline = (lexical + dense) >> reranker <span class="cm"># Hybrid + reranker</span>
+
+<span class="cm"># Experiment 1: Hybrid vs sparse-only</span>
+pt.Experiment(
+    [sparse_pipeline, hybrid_pipeline],
+    topics, qrels,
+    eval_metrics=[<span class="st">"ndcg_cut_10"</span>, <span class="st">"map"</span>, <span class="st">"recall_1000"</span>],
+    names=[<span class="st">"BM25+Reranker"</span>, <span class="st">"Hybrid+Reranker"</span>],
+    baseline=<span class="st">0</span>
+)
+
+<span class="cm"># Experiment 2: Hybrid vs dense-only</span>
+pt.Experiment(
+    [dense_pipeline, hybrid_pipeline],
+    topics, qrels,
+    eval_metrics=[<span class="st">"ndcg_cut_10"</span>, <span class="st">"map"</span>, <span class="st">"recall_1000"</span>],
+    names=[<span class="st">"Dense+Reranker"</span>, <span class="st">"Hybrid+Reranker"</span>],
+    baseline=<span class="st">0</span>
+)</pre>
+      <div class="steps" style="margin-top:14px">
+        <div class="step"><div class="step-n">E1</div><div class="step-body"><strong>Experiment 1 justification:</strong> Tests whether adding dense retrieval to BM25 provides additional relevant candidates that lexical matching misses. If hybrid significantly outperforms sparse on NDCG@10 and MAP (p&lt;0.05), it confirms dense retrieval adds semantic recall beyond BM25.</div></div>
+        <div class="step"><div class="step-n">E2</div><div class="step-body"><strong>Experiment 2 justification:</strong> Tests whether adding BM25 to dense provides additional relevant candidates that dense misses. Validates that exact-match capability is necessary beyond semantic similarity.</div></div>
+        <div class="step"><div class="step-n">⚙</div><div class="step-body">
+          <strong>Choice of metrics:</strong><br>
+          • <strong>NDCG@10</strong> — measures quality of top-10 results shown to users, handles graded relevance, most directly reflects user experience in e-commerce<br>
+          • <strong>MAP</strong> — measures overall ranking quality across the full list, ensures hybrid doesn't sacrifice mid-list quality<br>
+          • <strong>Recall@1000</strong> — verifies hybrid improves first-stage candidate coverage (prerequisite for better re-ranking)<br>
+          • <strong>baseline=0</strong> — enables automatic paired t-test vs baseline; significant p&lt;0.05 confirms improvement is real
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║                      2024 PAPER                             ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<div id="p2024" class="paper">
+<div class="paper-inner">
+  <div class="paper-title">
+    <div class="pt-year">2024</div>
+    <div class="pt-info">
+      <h2>Information Retrieval — COMPSCI5011</h2>
+      <p>Thursday 16 May 2024 · 14:00–16:00 BST · Open Book · 60 marks · 3 questions</p>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 1</div>
+
+  <!-- Q1a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1a(i–iii)</span><span class="q-marks">4 marks</span><span class="q-title">Word variants in IR</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>What are word variants?</strong> Different surface forms of the same underlying concept. Includes: inflectional forms (run/running/ran), derivational forms (nation/national/nationality), spelling variants (colour/color, organise/organize), hyphenation (e-mail/email), abbreviations (USA/United States).<br><br>
+          <strong>Example not in lectures:</strong> "utilise" vs "utilize" — British vs American spelling. A system without variant handling would fail to match a UK document about "utilise" to a US query "utilize".
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Why variants affect IR performance:</strong> Different variant forms are indexed as completely distinct terms. A document containing "organise" will NOT be retrieved for a query containing "organize", even though they represent the same concept. This reduces effectiveness because relevant documents become unreachable.
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Mainly affects Recall, not Precision.</strong> Recall is reduced because relevant documents using alternative variant forms of the query terms will not be retrieved — they're simply absent from the result set. Precision may actually improve slightly (only exact matches are retrieved), but the system misses too many relevant documents overall. Stemming/lemmatisation is the standard solution — it conflates variants to a common root so "organise" and "organize" both → "organis".
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1b</span><span class="q-marks">6 marks</span><span class="q-title">Recall-precision graph analysis and AP computation</span></div>
+    <div class="question-box">
+      Query has 10 relevant documents. Interpolated recall-precision graph shown (curve starts at P=1.0 at R=0, drops to P=0 by R=1.0, with specific data points at standard recall levels).
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Precision after 3 relevant retrieved:</strong> With 10 total relevant docs, recall after 3 retrieved = 3/10 = 0.3. From the interpolated graph, read the precision value at recall = 0.3. Based on typical exam graph values: P(recall=0.3) ≈ <span class="hi">0.75</span> (the maximum precision at any recall ≥ 0.3).
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>"All k returned docs are relevant" — finding k:</strong> This means P@k = 1.0. From the graph, precision = 1.0 only at the very start of the recall-precision curve, at the point where the first relevant document is retrieved. If the graph shows P=1.0 at recall = 0.1 (=1/10), then the first retrieved document is relevant (rank 1) and precision = 1/1 = 1.0. Therefore <span class="hi">k = 1</span>.
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Deriving ranks of relevant documents from graph:</strong><br>
+          At each relevant document (the kth), precision P = k/rank. So rank = k/P.<br>
+          Reading precision values at each recall point (0.1, 0.2, ...) from the graph:<br>
+          • R=0.1 (k=1): P=1.0 → rank = 1/1.0 = <strong>1</strong><br>
+          • R=0.2 (k=2): P≈0.667 → rank = 2/0.667 ≈ 3 → <strong>rank 3</strong><br>
+          • R=0.3 (k=3): P≈0.75 → rank = 3/0.75 = <strong>4</strong><br>
+          • R=0.4 (k=4): P≈0.571 → rank = 4/0.571 ≈ 7 → <strong>rank 7</strong><br>
+          • R=0.5 (k=5): P≈0.556 → rank = 5/0.556 ≈ 9 → <strong>rank 9</strong><br>
+          Non-relevant docs fill all other positions: ranks 2, 5, 6, 8 etc.
+        </div></div>
+        <div class="step"><div class="step-n">iv</div><div class="step-body">
+          <strong>Average Precision:</strong> Using derived ranks above (with total |R|=10):<br>
+          \(AP = \frac{1}{10}(P(1) + P(3) + P(4) + P(7) + P(9) + \ldots)\)<br>
+          \(= \frac{1}{10}(1.000 + 0.667 + 0.750 + 0.571 + 0.556 + \ldots)\)<br>
+          Remaining 5 relevant docs not retrieved contribute 0.<br>
+          <em>[Exact value depends on graph reading — show the formula and working clearly for full marks]</em>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1c</span><span class="q-marks">10 marks</span><span class="q-title">Inverted index, TF-IDF vectors, query representation, ranking</span></div>
+    <div class="question-box">
+      Corpus (stopwords: I, and, do, not, the):<br>
+      Doc1: I like Terrier Terrier Terrier | Doc2: I like Terrier and I like the course<br>
+      Doc3: I like the Terrier course | Doc4: I do not like dogs
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Inverted file (after stopword removal):</strong><br>
+          Terms remaining: like, Terrier, course, dogs (N=4)<br>
+          <div class="index-box">
+<span class="it">course</span>  <span class="idf-val">df=2</span>  <span class="ia">→</span>  <span class="ip">[(Doc2,1), (Doc3,1)]</span>  <span class="ia">idf=log₂(4/2)=1.0</span>
+<span class="it">dogs</span>    <span class="idf-val">df=1</span>  <span class="ia">→</span>  <span class="ip">[(Doc4,1)]</span>           <span class="ia">idf=log₂(4/1)=2.0</span>
+<span class="it">like</span>    <span class="idf-val">df=4</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,1),(Doc2,2),(Doc3,1),(Doc4,1)]</span>  <span class="ia">idf=log₂(4/4)=0</span>
+<span class="it">terrier</span> <span class="idf-val">df=3</span>  <span class="ia">→</span>  <span class="ip">[(Doc1,3),(Doc2,1),(Doc3,1)]</span>  <span class="ia">idf=log₂(4/3)=0.415</span>
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>TF-IDF vectors \(w = tf \times \log_2(N/df)\):</strong>
+          <table class="styled">
+            <tr><th>Doc</th><th>like (idf=0)</th><th>terrier (idf=0.415)</th><th>course (idf=1.0)</th><th>dogs (idf=2.0)</th></tr>
+            <tr><td>Doc1</td><td>1×0=<span class="hi">0</span></td><td>3×0.415=<span class="hi">1.245</span></td><td>0×1.0=<span class="hi">0</span></td><td>0×2.0=<span class="hi">0</span></td></tr>
+            <tr><td>Doc2</td><td>2×0=<span class="hi">0</span></td><td>1×0.415=<span class="hi">0.415</span></td><td>1×1.0=<span class="hi">1.0</span></td><td>0=<span class="hi">0</span></td></tr>
+            <tr><td>Doc3</td><td>1×0=<span class="hi">0</span></td><td>1×0.415=<span class="hi">0.415</span></td><td>1×1.0=<span class="hi">1.0</span></td><td>0=<span class="hi">0</span></td></tr>
+            <tr><td>Doc4</td><td>1×0=<span class="hi">0</span></td><td>0=<span class="hi">0</span></td><td>0=<span class="hi">0</span></td><td>1×2.0=<span class="hi">2.0</span></td></tr>
+          </table>
+          Note: "like" appears in ALL 4 docs → idf=0 → zero weight everywhere. It contributes nothing to discrimination.
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Query "I like terrier dogs"</strong> — after removing stopword "I": terms = {like, terrier, dogs}. Binary weights (1 if present, 0 otherwise):<br>
+          q = (like=1, terrier=1, course=0, dogs=1)
+        </div></div>
+        <div class="step"><div class="step-n">iv</div><div class="step-body">
+          <strong>Dot product scores (q·d = Σ w_q_i × w_d_i):</strong><br>
+          Doc1: 1×0 + 1×1.245 + 0×0 + 1×0 = <span class="hi">1.245</span><br>
+          Doc2: 1×0 + 1×0.415 + 0×1.0 + 1×0 = <span class="hi">0.415</span><br>
+          Doc3: 1×0 + 1×0.415 + 0×1.0 + 1×0 = <span class="hi">0.415</span><br>
+          Doc4: 1×0 + 1×0 + 0×0 + 1×2.0 = <span class="hi">2.0</span>
+        </div></div>
+      </div>
+      <div class="ranking">Doc4 (2.0) <span>&gt;</span> Doc1 (1.245) <span>&gt;</span> Doc2 (0.415) <span>=</span> Doc3 (0.415)</div>
+      <div class="note"><div class="note-label">Insight</div>Doc4 wins because "dogs" is extremely rare (df=1, IDF=2.0) — it's the only document containing the most discriminating query term. "like" contributes nothing (IDF=0).</div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 2</div>
+
+  <!-- Q2a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2a</span><span class="q-marks">2 marks</span><span class="q-title">Zipf's law — estimate probabilities of two most frequent words</span></div>
+    <div class="question-box">Term at rank 1021 has tf = 5095 in collection. Estimate P(w₁|C) and P(w₂|C).</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Find Zipf's constant A:</strong><br>
+          Zipf: \(r \times P(w_r|C) = A\)<br>
+          We have r=1021 and term frequency tf=5095. Frequency ≈ tf/total_tokens. Let total tokens = T.<br>
+          \(P(w_{1021}|C) = 5095/T\)<br>
+          \(A = 1021 \times \frac{5095}{T} = \frac{5{,}201{,}995}{T}\)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Apply Zipf's law for ranks 1 and 2:</strong><br>
+          \(P(w_1|C) = \frac{A}{1} = \frac{1021 \times 5095}{T} = \frac{5{,}201{,}995}{T}\)<br>
+          \(P(w_2|C) = \frac{A}{2} = \frac{1021 \times 5095}{2T} = \frac{2{,}600{,}997.5}{T}\)
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Final Answers (cannot simplify further without total T)</div>
+        \(P(w_1|C) = \frac{1021 \times 5095}{T}\) &nbsp;&nbsp; \(P(w_2|C) = \frac{1021 \times 5095}{2T}\)<br>
+        Key point: P(w₂) = P(w₁)/2 — the second most frequent word has exactly half the probability of the most frequent one.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2b</span><span class="q-marks">3 marks</span><span class="q-title">Heaps' Law — estimate vocabulary size</span></div>
+    <div class="question-box">Collection: 10⁶ tokens. First 64 tokens → V=40 terms. First 2500 tokens → V=250 terms. β=0.5. √2500=50.</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          Heaps' Law: \(V = K \cdot n^{\beta} = K \cdot n^{0.5} = K\sqrt{n}\)<br>
+          Using n=64: \(40 = K \times \sqrt{64} = K \times 8\) → \(K = 40/8 = \mathbf{5}\)
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          Verify with n=2500: \(V = 5 \times \sqrt{2500} = 5 \times 50 = 250\) ✓
+        </div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">
+          Full collection (n=10⁶):<br>
+          \(V = 5 \times \sqrt{1{,}000{,}000} = 5 \times 1000 = \mathbf{5000}\) unique terms
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2c</span><span class="q-marks">5 marks</span><span class="q-title">Rocchio relevance feedback on "bank interest"</span></div>
+    <div class="question-box">
+      α=β=γ=1. D1=relevant, D2 and D3=non-relevant.
+      <table><tr><th></th><th>bank</th><th>interest</th><th>jogging</th><th>look</th><th>raise</th><th>rate</th><th>river</th><th>sailboat</th></tr>
+        <tr><td>D1 (R)</td><td>2</td><td>2</td><td>4</td><td>3</td><td>0</td><td>0</td><td>3</td><td>0</td></tr>
+        <tr><td>D2 (NR)</td><td>4</td><td>1</td><td>3</td><td>1</td><td>0</td><td>0</td><td>3</td><td>3</td></tr>
+        <tr><td>D3 (NR)</td><td>6</td><td>4</td><td>0</td><td>0</td><td>3</td><td>4</td><td>0</td><td>0</td></tr>
+      </table>
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Initial query vector "bank interest" (raw TF):</strong><br>
+          q_orig = (bank=<span class="hi">1</span>, interest=<span class="hi">1</span>, jogging=0, look=0, raise=0, rate=0, river=0, sailboat=0)
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Relevant centroid</strong> (|D_R|=1 → just D1):<br>
+          = (2, 2, 4, 3, 0, 0, 3, 0)<br><br>
+          <strong>Non-relevant centroid</strong> (|D_NR|=2, average of D2+D3):<br>
+          D2+D3 = (10, 5, 3, 1, 3, 4, 3, 3) → ÷2 = (5, 2.5, 1.5, 0.5, 1.5, 2, 1.5, 1.5)
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Apply Rocchio (α=β=γ=1):</strong>
+          <table class="styled">
+            <tr><th>Term</th><th>q_orig</th><th>+rel_centroid</th><th>−nr_centroid</th><th>q_new</th><th>Final</th></tr>
+            <tr><td>bank</td><td>1</td><td>+2</td><td>−5</td><td class="rd">−2</td><td class="gr">0</td></tr>
+            <tr><td>interest</td><td>1</td><td>+2</td><td>−2.5</td><td class="hi">0.5</td><td class="hi">0.5</td></tr>
+            <tr><td>jogging</td><td>0</td><td>+4</td><td>−1.5</td><td class="hi">2.5</td><td class="hi">2.5</td></tr>
+            <tr><td>look</td><td>0</td><td>+3</td><td>−0.5</td><td class="hi">2.5</td><td class="hi">2.5</td></tr>
+            <tr><td>raise</td><td>0</td><td>+0</td><td>−1.5</td><td class="rd">−1.5</td><td class="gr">0</td></tr>
+            <tr><td>rate</td><td>0</td><td>+0</td><td>−2</td><td class="rd">−2</td><td class="gr">0</td></tr>
+            <tr><td>river</td><td>0</td><td>+3</td><td>−1.5</td><td class="hi">1.5</td><td class="hi">1.5</td></tr>
+            <tr><td>sailboat</td><td>0</td><td>+0</td><td>−1.5</td><td class="rd">−1.5</td><td class="gr">0</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Revised Query Vector</div>
+        q_new = (bank=0, interest=0.5, jogging=2.5, look=2.5, river=1.5)<br>
+        "bank" gets dropped — it's prominent in both relevant and non-relevant docs, so the feedback signal cancels out. "jogging" and "look" appear strongly in D1 but not in D2/D3.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2d -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2d</span><span class="q-marks">5 marks</span><span class="q-title">BIM model — document-term matrix and RSV calculation</span></div>
+    <div class="question-box">
+      D1: Rise pay rise pay for employees | D2: I like my pay | D3: Employees like employees<br>
+      Stopwords: a, i, for, my. Query Q = "pay rise". N=3. No relevance info. p_i=0.5. Log base 10.<br>
+      log₁₀(0.25)=−0.602, log₁₀(0.5)=−0.301, log₁₀(0.75)=−0.125, log₁₀(2)=0.301
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>After removing stopwords (a, i, for, my):</strong><br>
+          D1: rise(2), pay(2), employees(1)<br>
+          D2: like(1), pay(1)<br>
+          D3: employees(2), like(1)<br><br>
+          <strong>Binary document-term matrix:</strong>
+          <table class="styled">
+            <tr><th>Term</th><th>D1</th><th>D2</th><th>D3</th><th>df</th></tr>
+            <tr><td>rise</td><td class="gr">1</td><td class="rd">0</td><td class="rd">0</td><td>1</td></tr>
+            <tr><td>pay</td><td class="gr">1</td><td class="gr">1</td><td class="rd">0</td><td>2</td></tr>
+            <tr><td>employees</td><td class="gr">1</td><td class="rd">0</td><td class="gr">1</td><td>2</td></tr>
+            <tr><td>like</td><td class="rd">0</td><td class="gr">1</td><td class="gr">1</td><td>2</td></tr>
+          </table>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Compute s_i (for query terms only: rise, pay):</strong><br>
+          s(rise) = df(rise)/N = 1/3, &nbsp; s(pay) = df(pay)/N = 2/3<br><br>
+          <strong>Log-odds weight:</strong> \(\log_{10}\frac{p_i(1-s_i)}{s_i(1-p_i)}\) with p_i=0.5:<br>
+          \(w(\text{rise}) = \log_{10}\frac{0.5 \times (1-1/3)}{(1/3)(1-0.5)} = \log_{10}\frac{0.5 \times 2/3}{(1/3)(0.5)} = \log_{10}\frac{1/3}{1/6} = \log_{10}(2) = \mathbf{0.3010}\)<br>
+          \(w(\text{pay}) = \log_{10}\frac{0.5 \times (1-2/3)}{(2/3)(0.5)} = \log_{10}\frac{0.5 \times 1/3}{(2/3)(0.5)} = \log_{10}\frac{1/6}{1/3} = \log_{10}(0.5) = \mathbf{-0.3010}\)
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>RSV = sum of weights for query terms where d_i=1:</strong><br>
+          RSV(D1): rise(1)→+0.3010, pay(1)→−0.3010 → RSV = <span class="hi">0.0</span><br>
+          RSV(D2): rise(0)→skip, pay(1)→−0.3010 → RSV = <span class="hi">−0.3010</span><br>
+          RSV(D3): rise(0)→skip, pay(0)→skip → RSV = <span class="hi">0.0</span>
+        </div></div>
+      </div>
+      <div class="ranking">D1 (0.0) <span>=</span> D3 (0.0) <span>&gt;</span> D2 (−0.3010)</div>
+      <div class="note"><div class="note-label">Key insight</div>"pay" has a NEGATIVE weight because it appears in 2/3 documents — it's too common to discriminate. "rise" gets a positive weight because it's rarer (1/3 docs). D3 scores 0 because no query terms are present — it's neither boosted nor penalised.</div>
+    </div>
+  </div>
+
+  <!-- Q2e -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2e</span><span class="q-marks">5 marks</span><span class="q-title">Positional index — bigram XY and #uw4(X Y)</span></div>
+    <div class="question-box">
+      X → [0,&lt;5&gt;], [1,&lt;3,10&gt;], [2,&lt;4&gt;], [9,&lt;3,12&gt;]<br>
+      Y → [1,&lt;4,11&gt;], [2,&lt;8&gt;], [9,&lt;4,10&gt;]
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Bigram XY posting list</strong> (Y must appear immediately after X: pos_Y = pos_X + 1):<br><br>
+          <strong>Doc 0:</strong> X at {5}, Y not present → ✗<br>
+          <strong>Doc 1:</strong> X at {3,10}, Y at {4,11}<br>
+          &nbsp;&nbsp;X=3, Y=4: 4=3+1 ✓ &nbsp;&nbsp; X=10, Y=11: 11=10+1 ✓ → phrase at positions 3,10<br>
+          <strong>Doc 2:</strong> X at {4}, Y at {8}: 8≠4+1 ✗<br>
+          <strong>Doc 9:</strong> X at {3,12}, Y at {4,10}<br>
+          &nbsp;&nbsp;X=3, Y=4: ✓ &nbsp;&nbsp; X=12, Y=10: 10≠13 ✗ → phrase at position 3 only<br>
+          <div class="index-box">
+XY → <span class="ip">[1, &lt;3,10&gt;]</span>  <span class="ip">[9, &lt;3&gt;]</span>
+          </div>
+          <strong>Efficiency advantage:</strong> Without pre-computation, a phrase query traverses both X and Y posting lists and checks positions for every candidate document. A pre-computed bigram list provides direct access to only those documents containing the exact phrase — no position arithmetic at query time.
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          Already covered above.
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>#uw4(X Y):</strong> Both X and Y appear within a window of 4 consecutive positions (any order). Condition: |pos_X − pos_Y| &lt; 4.<br><br>
+          <strong>Doc 1:</strong> X={3,10}, Y={4,11}<br>
+          &nbsp;&nbsp;(3,4): |3−4|=1&lt;4 ✓ &nbsp;&nbsp; (3,11): |3−11|=8 ✗ &nbsp;&nbsp; (10,4): ✗ &nbsp;&nbsp; (10,11): |10−11|=1&lt;4 ✓<br>
+          → 2 windows: positions 3 and 10<br><br>
+          <strong>Doc 2:</strong> X={4}, Y={8}: |4−8|=4, NOT &lt;4 ✗ (strict inequality)<br><br>
+          <strong>Doc 9:</strong> X={3,12}, Y={4,10}<br>
+          &nbsp;&nbsp;(3,4): |3−4|=1&lt;4 ✓ &nbsp;&nbsp; (3,10): |3−10|=7 ✗ &nbsp;&nbsp; (12,4): ✗ &nbsp;&nbsp; (12,10): |12−10|=2&lt;4 ✓<br>
+          → 2 windows: positions 3 and 12<br>
+          <div class="index-box">
+#uw4(XY) → <span class="ip">[1, &lt;3,10&gt;, count=2]</span>  <span class="ip">[9, &lt;3,12&gt;, count=2]</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 3</div>
+
+  <!-- Q3a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3a</span><span class="q-marks">4 marks</span><span class="q-title">Linear LTR model — example and main disadvantage</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p><strong>Example linear model</strong> (features: PL2, Proximity, PageRank, URLlength):</p>
+      <div class="index-box">score(q,d) = 0.5×PL2(q,d) + 0.2×Proximity(q,d) + 0.2×PageRank(d) + 0.1×(1/URLlength(d))</div>
+      <p style="margin-top:12px"><strong>Main disadvantage: Cannot capture non-linear feature interactions.</strong></p>
+      <p>The linear model assumes each feature contributes independently to the relevance score with a fixed weight. In reality, features interact non-linearly. For example: a very high PageRank combined with a low PL2 might indicate an authoritative page on a related topic — more relevant than the linear sum suggests. Conversely, a document with both high PageRank AND very short URLlength (e.g., a homepage like "bbc.co.uk") may always be highly relevant for navigational queries but never relevant for specific informational queries — the model can't capture this conditional relationship. Tree-based models (LambdaMART) can learn such "if PageRank is high AND PL2 is moderate, then boost score" rules naturally through tree splits.</p>
+    </div>
+  </div>
+
+  <!-- Q3b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b</span><span class="q-marks">4 marks</span><span class="q-title">HITS authority scores using matrices (4-page graph)</span></div>
+    <div class="question-box">4 web pages with links: 1→3, 1→4, 2→1, 2→3, 3→1, 3→4, 4→1 (inferred from typical exam graph pattern)</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body">
+          <strong>Adjacency matrix A</strong> where A[i][j]=1 if page i links TO page j:
+          <div class="index-box">
+     1  2  3  4
+1 [  0, 0, 1, 1 ]    <span class="ia">(1 links to 3 and 4)</span>
+2 [  1, 0, 1, 0 ]    <span class="ia">(2 links to 1 and 3)</span>
+3 [  1, 0, 0, 1 ]    <span class="ia">(3 links to 1 and 4)</span>
+4 [  1, 0, 0, 0 ]    <span class="ia">(4 links to 1)</span>
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">
+          <strong>Transpose A<sup>T</sup></strong> (A<sup>T</sup>[j][i] = A[i][j]):
+          <div class="index-box">
+     1  2  3  4
+1 [  0, 1, 1, 1 ]    <span class="ia">(1 receives from 2,3,4)</span>
+2 [  0, 0, 0, 0 ]
+3 [  1, 1, 0, 0 ]    <span class="ia">(3 receives from 1,2)</span>
+4 [  1, 0, 1, 0 ]    <span class="ia">(4 receives from 1,3)</span>
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">
+          <strong>Authority score equations:</strong> \(\vec{a} = A^T \cdot \vec{h}\)<br>
+          Start with h=(1,1,1,1). Then:<br>
+          a(1) = h(2)+h(3)+h(4) = 3<br>
+          a(2) = 0<br>
+          a(3) = h(1)+h(2) = 2<br>
+          a(4) = h(1)+h(3) = 2<br><br>
+          After normalisation: a=(1, 0, 0.667, 0.667) [divide by max=3]<br>
+          Continue iterating h = A·a, then a = Aᵀ·h until convergence.
+        </div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body">
+          <strong>For full matrix-based solution:</strong> Authority scores are the principal eigenvector of \(A^T A\). Hub scores are the principal eigenvector of \(A A^T\). Compute these products, then apply power iteration.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3c(i)</span><span class="q-marks">5 marks</span><span class="q-title">Why is Recall@1000 p-value NaN for reranker?</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p>The pipeline is: <code>reranker = first_stage >> pt.text.get_text(dataset, "text") >> MonoT5()</code></p>
+      <p style="margin-top:10px">The MonoT5 cross-encoder re-ranker <strong>only re-scores and re-orders documents already retrieved by first_stage</strong>. It cannot retrieve new documents — it is applied to a fixed candidate set of 1000 documents provided by BM25.</p>
+      <p style="margin-top:10px">Therefore, Recall@1000 for <code>reranker</code> is <strong>identical to Recall@1000 for first_stage on every single query</strong>. The set of 1000 documents in both cases is exactly the same; only their ordering changes.</p>
+      <p style="margin-top:10px">When the <strong>paired t-test</strong> computes the per-query differences: <em>Recall@1000(reranker) − Recall@1000(first_stage) = 0 for ALL queries</em>. The variance of these differences is zero. A t-test requires dividing by standard deviation — dividing by 0 produces an undefined (NaN) result. The test statistic is undefined because there is literally no variance to test.</p>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3c(ii)</span><span class="q-marks">3 marks</span><span class="q-title">3 ways to improve Recall@1000 using neural networks</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Dense bi-encoder as first stage:</strong> Replace BM25 with a dense retriever (e.g., DPR, ANCE). Dense models encode queries and documents in semantic vector space — they can retrieve relevant documents that share no lexical overlap with the query ("vocabulary mismatch" problem). This directly increases Recall@1000 by finding semantically similar but lexically different relevant documents.</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Hybrid first stage (BM25 + Dense):</strong> Use the UNION of BM25 and dense retrieval candidates as the pool of 1000 documents. Each method retrieves documents the other misses — BM25 excels at exact match, dense at semantic match. Their combination achieves higher recall than either alone.</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Neural query expansion / SPLADE:</strong> Use a learned sparse model (e.g., SPLADE) that expands both queries and documents with additional semantically-related terms before BM25 retrieval. By adding related terms to the query representation, the first-stage retrieval captures documents that would have been missed with the original query terms alone.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3d -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3d</span><span class="q-marks">4 marks</span><span class="q-title">Lossy vs lossless compression of inverted index</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <table class="styled">
+        <tr><th></th><th>Lossless</th><th>Lossy</th></tr>
+        <tr><td><strong>Definition</strong></td><td>Perfect reconstruction — no information lost. Retrieval effectiveness unchanged.</td><td>Some information discarded. Index smaller but retrieval results may differ.</td></tr>
+        <tr><td><strong>Examples</strong></td><td>d-gap encoding (delta between docIDs); Variable-byte (VByte) encoding; Gamma/Delta codes; PForDelta block compression</td><td>Static index pruning (remove low-weight postings); Stop word removal; Aggressive stemming; Removing rare terms below df threshold</td></tr>
+        <tr><td><strong>Measuring success</strong></td><td>Compression ratio (compressed/original size); Decompression speed (must be faster than disk I/O). No change in MAP/NDCG expected.</td><td>Compression ratio AND retrieval effectiveness (MAP, NDCG@10, Recall@1000). Must verify that discarding postings doesn't significantly hurt quality. Acceptable if MAP drops &lt;1–2%.</td></tr>
+      </table>
+      <div class="note" style="margin-top:10px"><div class="note-label">Example</div>Static index pruning removes postings where a document's BM25 contribution for a term would be very low (e.g., document length 50,000 words, term appears once). These documents are unlikely to rank in top-K for any query. The index shrinks by 20–40% with minimal effectiveness loss on standard test collections.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║                      2023 PAPER                             ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<div id="p2023" class="paper">
+<div class="paper-inner">
+  <div class="paper-title">
+    <div class="pt-year">2023</div>
+    <div class="pt-info">
+      <h2>Information Retrieval (M) — COMPSCI5011</h2>
+      <p>Wednesday 10 May 2023 · 14:00–16:00 BST + 30min extra · Open Book · 60 marks</p>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 1</div>
+
+  <!-- Q1a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1a(i–iv)</span><span class="q-marks">13 marks</span><span class="q-title">VSM representations, cosine similarity, inverted index, best-match ranking</span></div>
+    <div class="question-box">
+      Corpus (stopwords: an, as, and, are, do, in, is, of, not, the, up):<br>
+      Doc1: Real estate speculation is of interest.<br>
+      Doc2: Interest rates are increasing interest in home costs.<br>
+      Doc3: Students have no real interest in interest rates.<br>
+      Doc4: As interest rates fall, the real estate market is heating up.<br>
+      Doc5: The government is considering increasing interest rates.
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">prep</div><div class="step-body">
+          <strong>After stopword removal:</strong><br>
+          Doc1: real(1), estate(1), speculation(1), interest(1)<br>
+          Doc2: interest(2), rates(1), increasing(1), home(1), costs(1)<br>
+          Doc3: students(1), have(1), no(1), real(1), interest(2), rates(1)<br>
+          Doc4: interest(1), rates(1), fall(1), real(1), estate(1), market(1), heating(1)<br>
+          Doc5: government(1), considering(1), increasing(1), interest(1), rates(1)
+        </div></div>
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>VSM of Doc1 and Doc2 (raw TF):</strong><br>
+          Doc1 = (real=1, estate=1, speculation=1, interest=1) [other terms = 0]<br>
+          Doc2 = (interest=2, rates=1, increasing=1, home=1, costs=1) [other terms = 0]
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Query Q = "interest rates":</strong> q = (interest=1, rates=1)<br><br>
+          <strong>cos(Q, Doc1):</strong><br>
+          Q·Doc1 = 1×1 + 1×0 = 1 [only "interest" matches]<br>
+          |Q| = √(1²+1²) = √2 = 1.414<br>
+          |Doc1| = √(1²+1²+1²+1²) = √4 = 2<br>
+          cos(Q,Doc1) = 1/(1.414×2) = 1/2.828 = <span class="hi">0.354</span><br><br>
+          <strong>cos(Q, Doc2):</strong><br>
+          Q·Doc2 = 1×2 + 1×1 = 3 [interest=2, rates=1]<br>
+          |Doc2| = √(2²+1²+1²+1²+1²) = √8 = 2.828<br>
+          cos(Q,Doc2) = 3/(1.414×2.828) = 3/4.000 = <span class="hi">0.750</span>
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Full inverted index (N=5):</strong>
+          <div class="index-box">
+<span class="it">considering</span> <span class="idf-val">df=1</span> → <span class="ip">[(Doc5,1)]</span>
+<span class="it">costs</span>       <span class="idf-val">df=1</span> → <span class="ip">[(Doc2,1)]</span>
+<span class="it">estate</span>      <span class="idf-val">df=2</span> → <span class="ip">[(Doc1,1),(Doc4,1)]</span>
+<span class="it">fall</span>        <span class="idf-val">df=1</span> → <span class="ip">[(Doc4,1)]</span>
+<span class="it">government</span>  <span class="idf-val">df=1</span> → <span class="ip">[(Doc5,1)]</span>
+<span class="it">have</span>        <span class="idf-val">df=1</span> → <span class="ip">[(Doc3,1)]</span>
+<span class="it">heating</span>     <span class="idf-val">df=1</span> → <span class="ip">[(Doc4,1)]</span>
+<span class="it">home</span>        <span class="idf-val">df=1</span> → <span class="ip">[(Doc2,1)]</span>
+<span class="it">increasing</span>  <span class="idf-val">df=2</span> → <span class="ip">[(Doc2,1),(Doc5,1)]</span>
+<span class="it">interest</span>    <span class="idf-val">df=5</span> → <span class="ip">[(Doc1,1),(Doc2,2),(Doc3,2),(Doc4,1),(Doc5,1)]</span>
+<span class="it">market</span>      <span class="idf-val">df=1</span> → <span class="ip">[(Doc4,1)]</span>
+<span class="it">no</span>          <span class="idf-val">df=1</span> → <span class="ip">[(Doc3,1)]</span>
+<span class="it">rates</span>       <span class="idf-val">df=4</span> → <span class="ip">[(Doc2,1),(Doc3,1),(Doc4,1),(Doc5,1)]</span>
+<span class="it">real</span>        <span class="idf-val">df=3</span> → <span class="ip">[(Doc1,1),(Doc3,1),(Doc4,1)]</span>
+<span class="it">speculation</span> <span class="idf-val">df=1</span> → <span class="ip">[(Doc1,1)]</span>
+<span class="it">students</span>    <span class="idf-val">df=1</span> → <span class="ip">[(Doc3,1)]</span>
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">iv</div><div class="step-body">
+          <strong>Query "real estate interest" — best-match ranking:</strong><br>
+          idf(real) = log₂(5/3) = log₂(1.6666) = <span class="hi">0.7369</span><br>
+          idf(estate) = log₂(5/2) = log₂(2.5) = <span class="hi">1.3219</span><br>
+          idf(interest) = log₂(5/5) = log₂(1) = <span class="hi">0</span> ← appears in ALL 5 docs!
+          <table class="styled" style="margin-top:10px">
+            <tr><th>Doc</th><th>real (0.7369)</th><th>estate (1.3219)</th><th>interest (0)</th><th>Total</th></tr>
+            <tr><td>Doc1</td><td>1×0.7369=0.737</td><td>1×1.3219=1.322</td><td>1×0=0</td><td class="hi">2.059</td></tr>
+            <tr><td>Doc2</td><td>0</td><td>0</td><td>2×0=0</td><td class="hi">0</td></tr>
+            <tr><td>Doc3</td><td>1×0.737=0.737</td><td>0</td><td>0</td><td class="hi">0.737</td></tr>
+            <tr><td>Doc4</td><td>1×0.737=0.737</td><td>1×1.322=1.322</td><td>0</td><td class="hi">2.059</td></tr>
+            <tr><td>Doc5</td><td>0</td><td>0</td><td>0</td><td class="hi">0</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="ranking">Doc1 (2.059) <span>=</span> Doc4 (2.059) <span>&gt;</span> Doc3 (0.737) <span>&gt;</span> Doc2 (0) <span>=</span> Doc5 (0)</div>
+      <div class="note"><div class="note-label">Key insight</div>"interest" contributes ZERO to any document's score because it appears in all 5 documents (IDF = log₂(5/5) = 0). The entire ranking is driven by "real" and "estate".</div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 2</div>
+
+  <!-- Q2a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2a</span><span class="q-marks">4 marks</span><span class="q-title">Heaps' Law — estimate additional unique terms</span></div>
+    <div class="question-box">Collection A: 5000 docs, V=10000, avgdl=200. Collection B: 11250 docs, V=15000, avgdl=200. Add 2200 docs to each (β=0.5).</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">A</div><div class="step-body">
+          Current tokens n_A = 5000 × 200 = 1,000,000.<br>
+          V_A = K × √n_A → 10000 = K × √1,000,000 = K × 1000 → K = 10<br><br>
+          New tokens after 2200 docs: n_A' = 1,000,000 + 2200×200 = 1,440,000<br>
+          V_A' = 10 × √1,440,000 = 10 × 1200 = 12,000<br>
+          <strong>Additional unique terms in A = 12,000 − 10,000 = 2,000</strong>
+        </div></div>
+        <div class="step"><div class="step-n">B</div><div class="step-body">
+          Current tokens n_B = 11250 × 200 = 2,250,000.<br>
+          V_B = K × √n_B → 15000 = K × √2,250,000 = K × 1500 → K = 10<br><br>
+          New tokens: n_B' = 2,250,000 + 440,000 = 2,690,000<br>
+          V_B' = 10 × √2,690,000 = 10 × 1640.1 ≈ 16,401<br>
+          <strong>Additional unique terms in B ≈ 16,401 − 15,000 = 1,401</strong>
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Analysis</div>
+        A gains ~2000 new terms; B gains only ~1400 new terms, despite both adding the same 2200 documents. This is expected — B starts with a larger vocabulary, meaning more common words are already indexed. Each new document in B adds fewer genuinely new terms. This is Heaps' Law's sublinear growth property: the marginal contribution of new documents to vocabulary decreases as the collection grows.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2b</span><span class="q-marks">7 marks</span><span class="q-title">Rocchio RF + "Find Similar" feature</span></div>
+    <div class="question-box">
+      Query: "bargain books bargain DVDs really bargain books". d1 (relevant): "great books bargain bestsellers really bargain books". d2 (non-relevant): "big big bargain DVDs". α=1, β=0.75, γ=0.25.
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Raw TF vectors:</strong><br>
+          Terms: bargain, books, DVDs, really, great, bestsellers, big<br>
+          q_orig: bargain=3, books=2, DVDs=1, really=1, great=0, bestsellers=0, big=0<br>
+          d1: bargain=2, books=2, DVDs=0, really=1, great=1, bestsellers=1, big=0<br>
+          d2: bargain=1, books=0, DVDs=1, really=0, great=0, bestsellers=0, big=2
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Rocchio (α=1, β=0.75, γ=0.25), |D_R|=1, |D_NR|=1:</strong>
+          <table class="styled">
+            <tr><th>Term</th><th>1×q_orig</th><th>+0.75×d1</th><th>−0.25×d2</th><th>q_new</th><th>Final</th></tr>
+            <tr><td>bargain</td><td>3</td><td>+0.75×2=1.5</td><td>−0.25×1=0.25</td><td class="hi">4.25</td><td class="hi">4.25</td></tr>
+            <tr><td>books</td><td>2</td><td>+0.75×2=1.5</td><td>−0</td><td class="hi">3.5</td><td class="hi">3.5</td></tr>
+            <tr><td>DVDs</td><td>1</td><td>+0</td><td>−0.25×1=0.25</td><td class="hi">0.75</td><td class="hi">0.75</td></tr>
+            <tr><td>really</td><td>1</td><td>+0.75×1=0.75</td><td>−0</td><td class="hi">1.75</td><td class="hi">1.75</td></tr>
+            <tr><td>great</td><td>0</td><td>+0.75×1=0.75</td><td>−0</td><td class="hi">0.75</td><td class="hi">0.75</td></tr>
+            <tr><td>bestsellers</td><td>0</td><td>+0.75×1=0.75</td><td>−0</td><td class="hi">0.75</td><td class="hi">0.75</td></tr>
+            <tr><td>big</td><td>0</td><td>+0</td><td>−0.25×2=0.5</td><td class="rd">−0.5</td><td class="gr">0</td></tr>
+          </table>
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>"Find documents like this one" — which α,β,γ?</strong><br>
+          Use <strong>α=0, β=1, γ=0</strong>.<br>
+          q_new = 0×q_orig + 1×d_clicked − 0×NR = d_clicked<br><br>
+          <strong>Justification:</strong> The original query is irrelevant — the user has found something they like and wants more of it. Setting α=0 discards the original query. Setting β=1 makes the clicked document the entire query (its TF vector). Setting γ=0 ignores negative feedback as we don't know what the user dislikes. The new query IS the clicked document.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2c</span><span class="q-marks">9 marks</span><span class="q-title">BIM without and with relevance information</span></div>
+    <div class="question-box">
+      N=1000. Doc1: like Terrier×3 | Doc2: like Terrier course | Doc3: like course | Doc4: like Terrier | Doc5: like dogs | Doc6: like puppies. Query Q="Terrier". Relevant = {Doc1, Doc2, Doc6}. R=3.
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>No relevance info — p_i=0.5 for all. s_i=df/N.</strong><br>
+          Terrier appears in: Doc1, Doc2, Doc4 → df(Terrier)=3<br>
+          s(Terrier) = 3/1000 = 0.003<br><br>
+          \(w(\text{Terrier}) = \log_{10}\frac{0.5 \times (1-0.003)}{0.003 \times (1-0.5)} = \log_{10}\frac{0.5 \times 0.997}{0.003 \times 0.5} = \log_{10}\frac{0.4985}{0.0015} = \log_{10}(332.3) \approx 2.522\)<br><br>
+          RSV: Only docs containing Terrier (d_i=1) get non-zero scores:<br>
+          RSV(Doc1) = RSV(Doc2) = RSV(Doc4) = <span class="hi">2.522</span><br>
+          RSV(Doc3) = RSV(Doc5) = RSV(Doc6) = <span class="hi">0</span>
+          <div class="ranking">Doc1 = Doc2 = Doc4 (2.522) &gt; Doc3 = Doc5 = Doc6 (0)</div>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>With relevance info — R=3 (Doc1,2,6 relevant).</strong><br>
+          Terrier in relevant docs: Doc1 ✓, Doc2 ✓, Doc6 ✗ → r_i = 2<br><br>
+          \(p_i = \frac{r_i + 0.5}{R + 1} = \frac{2 + 0.5}{3 + 1} = \frac{2.5}{4} = 0.625\)<br>
+          \(s_i = \frac{df_i - r_i + 0.5}{N - R + 1} = \frac{3 - 2 + 0.5}{1000 - 3 + 1} = \frac{1.5}{998} \approx 0.001503\)<br><br>
+          \(w = \log_{10}\frac{0.625 \times (1-0.001503)}{0.001503 \times (1-0.625)} = \log_{10}\frac{0.625 \times 0.9985}{0.001503 \times 0.375} = \log_{10}\frac{0.6241}{0.000564} = \log_{10}(1107) \approx 3.044\)<br><br>
+          RSV(Doc1) = RSV(Doc2) = RSV(Doc4) = <span class="hi">3.044</span><br>
+          RSV(Doc3) = RSV(Doc5) = RSV(Doc6) = <span class="hi">0</span>
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Key takeaways:</strong><br>
+          1. With relevance info, Terrier's weight dramatically increased (3.044 vs 2.522) because now we KNOW it's associated with relevance (2/3 relevant docs contain it) yet rare in non-relevant docs.<br>
+          2. Doc6 remains at RSV=0 despite being relevant — it contains no Terrier, so BIM cannot recognise its relevance. This is the model's fundamental limitation: it cannot retrieve relevant documents that don't contain query terms.<br>
+          3. Doc4 (non-relevant) scores equally with Doc1,Doc2 (relevant) simply because it contains Terrier. BIM cannot distinguish between these — it can only look at term presence.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 3</div>
+
+  <!-- Q3b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b</span><span class="q-marks">4 marks</span><span class="q-title">Why upper bounds facilitate search efficiency</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p>For each term t in a posting list, we precompute <strong>UB(t) = the maximum possible score contribution of t to any document</strong> in its posting list (the highest tf×idf or BM25 partial score across all documents).</p>
+      <p style="margin-top:10px">During DAAT query processing, we maintain a threshold θ = the score of the Kth-best document found so far. For candidate document D currently being processed, we know its accumulated partial score from terms already evaluated. The <strong>maximum total score D could possibly achieve</strong> = current partial score + sum of UB(t) for all remaining unprocessed query terms.</p>
+      <p style="margin-top:10px">If this maximum is less than θ, document D <em>cannot enter the top-K</em> regardless of its remaining term scores. We can <strong>skip D entirely</strong> without evaluating the remaining terms.</p>
+      <p style="margin-top:10px"><strong>Concrete example:</strong> Query terms t1, t2, t3. UB(t1)=5, UB(t2)=3, UB(t3)=1. Current threshold θ=7. After processing t1, doc D has score 2. Max possible = 2+3+1=6 &lt; 7 → skip D. We never look up t2 and t3 for D. This is MaxScore. WAND extends this by also advancing posting list pointers to jump over entire blocks of skippable documents at once.</p>
+    </div>
+  </div>
+
+  <!-- Q3c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3c</span><span class="q-marks">5 marks</span><span class="q-title">HITS — adjacency matrix and 2-iteration computation</span></div>
+    <div class="question-box">4 web pages A, B, C, D with links: A→C, A→B, B→D, C→A, C→D, D→A (typical exam graph)</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Adjacency matrix A</strong> (A[i][j]=1 if i→j, pages A=1,B=2,C=3,D=4):
+          <div class="index-box">
+   A  B  C  D
+A[ 0, 1, 1, 0 ]
+B[ 0, 0, 0, 1 ]
+C[ 1, 0, 0, 1 ]
+D[ 1, 0, 0, 0 ]
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">It.1</div><div class="step-body">
+          <strong>Initialise:</strong> h(A)=h(B)=h(C)=h(D)=1, a(A)=a(B)=a(C)=a(D)=1<br><br>
+          <strong>Update authority</strong> a(p) = Σ h(q) for all q→p:<br>
+          a(A): B→A? No. C→A: yes. D→A: yes → a(A) = h(C)+h(D) = 1+1 = 2<br>
+          a(B): A→B: yes → a(B) = h(A) = 1<br>
+          a(C): A→C: yes → a(C) = h(A) = 1<br>
+          a(D): B→D: yes. C→D: yes → a(D) = h(B)+h(C) = 1+1 = 2<br>
+          Unnorm: (2,1,1,2). Normalise by max=2: a = (1, 0.5, 0.5, 1)<br><br>
+          <strong>Update hub</strong> h(p) = Σ a(q) for all p→q:<br>
+          h(A): A→B, A→C → h(A) = a(B)+a(C) = 1+1 = 2<br>
+          h(B): B→D → h(B) = a(D) = 2<br>
+          h(C): C→A, C→D → h(C) = a(A)+a(D) = 2+2 = 4<br>
+          h(D): D→A → h(D) = a(A) = 2<br>
+          Unnorm: (2,2,4,2). Normalise by max=4: h = (0.5, 0.5, 1, 0.5)
+        </div></div>
+        <div class="step"><div class="step-n">It.2</div><div class="step-body">
+          <strong>Update authority</strong> using h=(0.5,0.5,1,0.5):<br>
+          a(A) = h(C)+h(D) = 1+0.5 = 1.5<br>
+          a(B) = h(A) = 0.5<br>
+          a(C) = h(A) = 0.5<br>
+          a(D) = h(B)+h(C) = 0.5+1 = 1.5<br>
+          Normalise by 1.5: a = (1, 0.333, 0.333, 1)<br><br>
+          <strong>Update hub</strong> using a=(1,0.333,0.333,1):<br>
+          h(A) = a(B)+a(C) = 0.333+0.333 = 0.666<br>
+          h(B) = a(D) = 1<br>
+          h(C) = a(A)+a(D) = 1+1 = 2<br>
+          h(D) = a(A) = 1<br>
+          Normalise by 2: h = (0.333, 0.5, 1, 0.5)
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ After 2 iterations: Best authority = A and D. Best hub = C</div>
+        A and D are pointed to by C (best hub) which confirms their authority. C points to both high-authority pages → best hub.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3d -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3d</span><span class="q-marks">7 marks</span><span class="q-title">Dense retrieval, long documents, passage aggregation</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">why</div><div class="step-body">
+          <strong>Why dense retrieval can't handle long documents:</strong><br>
+          Dense bi-encoders (e.g., BERT-based) compress an entire document into a single fixed-size dense vector (e.g., 768 dimensions from the [CLS] token). For long documents, this single vector cannot capture all the information — early content dominates, later content is "forgotten". Furthermore, BERT has a hard token limit (~512 tokens), so long documents physically cannot be processed in one pass without truncation, causing loss of potentially relevant content later in the document.
+        </div></div>
+        <div class="step"><div class="step-n">sol</div><div class="step-body">
+          <strong>Solution:</strong> Split documents into short overlapping passages (e.g., 100-word windows with 50-word overlap). Encode each passage independently. At query time, retrieve relevant passages and aggregate passage scores to produce a document-level score.
+        </div></div>
+        <div class="step"><div class="step-n">M1</div><div class="step-body">
+          <strong>MaxPassage:</strong> Document score = score of its single highest-scoring passage.<br>
+          Intuition: "A document is only as relevant as its most relevant section." One strong passage is sufficient evidence of relevance.<br>
+          <em>For a document with relevant content spread throughout:</em> MaxPassage is suboptimal — it finds the single best passage but ignores the cumulative evidence from multiple relevant sections. A document with 5 moderately relevant passages might score lower than one with 1 highly relevant passage, even though the first is more comprehensively on-topic.
+        </div></div>
+        <div class="step"><div class="step-n">M2</div><div class="step-body">
+          <strong>SumPassage / AveragePassage:</strong> Document score = sum (or average) of all passage scores.<br>
+          Intuition: "Multiple relevant passages provide stronger cumulative evidence." Each relevant passage contributes to the final score.<br>
+          <em>For spread relevant content:</em> SumPassage is much better — it accumulates evidence across all relevant passages, rewarding documents where relevant information is distributed throughout rather than concentrated. However, it can bias towards longer documents (more passages = higher sum), which is why normalisation (average) may be preferred.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║                      2022 PAPER                             ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<div id="p2022" class="paper">
+<div class="paper-inner">
+  <div class="paper-title">
+    <div class="pt-year">2022</div>
+    <div class="pt-info">
+      <h2>Information Retrieval M — COMPSCI5011</h2>
+      <p>Friday 29 April 2022 · 14:00–16:00 BST + 30min extra · Open Book · 60 marks</p>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 1</div>
+
+  <!-- Q1a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1a(i–iii)</span><span class="q-marks">10 marks</span><span class="q-title">Inverted index, TF-IDF weights, best-match ranking</span></div>
+    <div class="question-box">
+      Stopwords: and, in, is, the, was.<br>
+      Doc1: france is world champion 1998 france won | Doc2: croatia and france played each other in the semifinal<br>
+      Doc3: croatia was in the semifinal 1998 | Doc4: croatia won the other semifinal in russia 2018
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>After stopword removal:</strong><br>
+          Doc1: france(2), world(1), champion(1), 1998(1), won(1)<br>
+          Doc2: croatia(1), france(1), played(1), each(1), other(1), semifinal(1)<br>
+          Doc3: croatia(1), semifinal(1), 1998(1)<br>
+          Doc4: croatia(1), won(1), other(1), semifinal(1), russia(1), 2018(1)<br><br>
+          <strong>Inverted Index (N=4):</strong>
+          <div class="index-box">
+<span class="it">1998</span>      <span class="idf-val">df=2</span> → <span class="ip">[(Doc1,1),(Doc3,1)]</span>
+<span class="it">2018</span>      <span class="idf-val">df=1</span> → <span class="ip">[(Doc4,1)]</span>
+<span class="it">champion</span>  <span class="idf-val">df=1</span> → <span class="ip">[(Doc1,1)]</span>
+<span class="it">croatia</span>   <span class="idf-val">df=3</span> → <span class="ip">[(Doc2,1),(Doc3,1),(Doc4,1)]</span>
+<span class="it">each</span>      <span class="idf-val">df=1</span> → <span class="ip">[(Doc2,1)]</span>
+<span class="it">france</span>    <span class="idf-val">df=2</span> → <span class="ip">[(Doc1,2),(Doc2,1)]</span>
+<span class="it">other</span>     <span class="idf-val">df=2</span> → <span class="ip">[(Doc2,1),(Doc4,1)]</span>
+<span class="it">played</span>    <span class="idf-val">df=1</span> → <span class="ip">[(Doc2,1)]</span>
+<span class="it">russia</span>    <span class="idf-val">df=1</span> → <span class="ip">[(Doc4,1)]</span>
+<span class="it">semifinal</span> <span class="idf-val">df=3</span> → <span class="ip">[(Doc2,1),(Doc3,1),(Doc4,1)]</span>
+<span class="it">won</span>       <span class="idf-val">df=2</span> → <span class="ip">[(Doc1,1),(Doc4,1)]</span>
+<span class="it">world</span>     <span class="idf-val">df=1</span> → <span class="ip">[(Doc1,1)]</span>
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Weights for "champion" and "1998" in Doc1:</strong><br>
+          w(champion, Doc1) = 1 × log₂(4/1) = 1 × 2.0 = <span class="hi">2.0</span><br>
+          w(1998, Doc1) = 1 × log₂(4/2) = 1 × log₂(2) = 1 × 1.0 = <span class="hi">1.0</span>
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Query "1998 croatia":</strong><br>
+          idf(1998) = log₂(4/2) = <span class="hi">1.0</span> &nbsp; idf(croatia) = log₂(4/3) = <span class="hi">0.415</span>
+          <table class="styled" style="margin-top:8px">
+            <tr><th>Doc</th><th>1998 (idf=1.0)</th><th>croatia (idf=0.415)</th><th>Score</th></tr>
+            <tr><td>Doc1</td><td>1×1.0=1.0</td><td>0</td><td class="hi">1.0</td></tr>
+            <tr><td>Doc2</td><td>0</td><td>1×0.415=0.415</td><td class="hi">0.415</td></tr>
+            <tr><td>Doc3</td><td>1×1.0=1.0</td><td>1×0.415=0.415</td><td class="hi">1.415</td></tr>
+            <tr><td>Doc4</td><td>0</td><td>1×0.415=0.415</td><td class="hi">0.415</td></tr>
+          </table>
+          <div class="ranking">Doc3 (1.415) &gt; Doc1 (1.0) &gt; Doc2 (0.415) = Doc4 (0.415)</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1b</span><span class="q-marks">5 marks</span><span class="q-title">Raw TF problem and solutions</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p><strong>(i) Problem with raw TF in web search:</strong> Raw TF is proportional to document length — a 10,000-word document containing "python" 20 times is ranked above a focused 200-word document containing it 4 times, even though the shorter document may be more relevant. Spammers can also artificially inflate TF by keyword stuffing ("python python python python...") to manipulate rankings without genuine relevance.</p>
+      <p style="margin-top:10px"><strong>(ii) Solutions:</strong></p>
+      <ul style="padding-left:18px; margin-top:8px; line-height:1.9">
+        <li><strong>Log TF:</strong> \(w = 1 + \log(tf)\) if tf&gt;0. Ten occurrences gives weight 1+log(10)=2, but 100 occurrences only gives 1+log(100)=3 — not 10×. Diminishing returns.</li>
+        <li><strong>BM25 TF saturation (k₁ parameter):</strong> \(\frac{tf \times (k_1+1)}{tf + k_1 \times (\ldots)}\). As tf→∞, this approaches (k₁+1) — a hard ceiling. With k₁=1.2: tf=1 → 1.09, tf=5 → 1.75, tf=100 → 2.18, tf→∞ → 2.2. The contribution saturates and cannot be gamed by keyword stuffing.</li>
+        <li><strong>Length normalisation (BM25 b parameter):</strong> Divides TF by a function of document length relative to average. Long documents pay a penalty, short documents get a boost.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q1c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q1c</span><span class="q-marks">5 marks</span><span class="q-title">Evaluate a new neural web ranking approach</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Define test collection:</strong> Use an existing standard test collection (e.g., TREC Web Track, MS MARCO) with a fixed document corpus, query set (topics), and relevance judgements (qrels). This ensures fair comparison on identical data.</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Run both systems:</strong> Apply the original ranking approach and the new neural approach to all queries in the test set. Collect the full ranked lists (top 1000 per query) for each system.</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Compute evaluation metrics:</strong> Calculate MAP, NDCG@10, P@10, Recall@1000 for each system on each query using the relevance judgements. These capture different aspects of retrieval quality (early precision vs overall ranking quality).</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Statistical significance test:</strong> Apply paired t-test or Wilcoxon signed-rank test on per-query metric values (e.g., per-query AP for MAP comparison). If p&lt;0.05 AND the new system has a higher mean metric value, we conclude the improvement is statistically significant and not due to random variation.</div></div>
+        <div class="step"><div class="step-n">5</div><div class="step-body"><strong>Sanity check:</strong> Run an A/A test (compare system vs itself) to verify the evaluation pipeline produces p≈1.0 (no spurious differences). Report both the metric improvement and p-value.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 2</div>
+
+  <!-- Q2a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2a</span><span class="q-marks">4 marks</span><span class="q-title">Zipf — P(w₁|C) and P(w₂|C)</span></div>
+    <div class="question-box">Zipf's law: r × P(wr|C) = 0.1</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      \[P(w_1|C) = \frac{0.1}{1} = \mathbf{0.1}\]
+      <p>The most frequent word in English (typically "the") accounts for approximately 10% of all word occurrences in the collection.</p>
+      \[P(w_2|C) = \frac{0.1}{2} = \mathbf{0.05}\]
+      <p>The second most frequent word accounts for approximately 5% of occurrences. Each word's probability is inversely proportional to its rank — the 10th most frequent word would have probability 0.1/10 = 0.01.</p>
+    </div>
+  </div>
+
+  <!-- Q2b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2b</span><span class="q-marks">6 marks</span><span class="q-title">Rocchio on "michael jackson music"</span></div>
+    <div class="question-box">
+      α=β=γ=1. D3=relevant, D1 and D2=non-relevant.<br>
+      Terms: indiana, jackson, life, michael, music, pop, really<br>
+      D1: 0,4,1,3,0,6,1 | D2: 4,0,3,4,1,0,2 | D3: 0,4,0,5,4,4,0
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>q_orig "michael jackson music"</strong> (raw TF):<br>
+          (indiana=0, jackson=1, life=0, michael=1, music=1, pop=0, really=0)
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          Relevant centroid (D3): (0, 4, 0, 5, 4, 4, 0)<br>
+          NR centroid avg of D1+D2 = (1/2)(4,4,4,7,1,6,3) = (2, 2, 2, 3.5, 0.5, 3, 1.5)<br><br>
+          q_new = 1×q_orig + 1×rel − 1×nr:
+          <table class="styled">
+            <tr><th>Term</th><th>q_orig</th><th>+D3</th><th>−NR</th><th>q_new</th><th>Final</th></tr>
+            <tr><td>indiana</td><td>0</td><td>+0</td><td>−2</td><td class="rd">−2</td><td class="gr">0</td></tr>
+            <tr><td>jackson</td><td>1</td><td>+4</td><td>−2</td><td class="hi">3</td><td class="hi">3</td></tr>
+            <tr><td>life</td><td>0</td><td>+0</td><td>−2</td><td class="rd">−2</td><td class="gr">0</td></tr>
+            <tr><td>michael</td><td>1</td><td>+5</td><td>−3.5</td><td class="hi">2.5</td><td class="hi">2.5</td></tr>
+            <tr><td>music</td><td>1</td><td>+4</td><td>−0.5</td><td class="hi">4.5</td><td class="hi">4.5</td></tr>
+            <tr><td>pop</td><td>0</td><td>+4</td><td>−3</td><td class="hi">1</td><td class="hi">1</td></tr>
+            <tr><td>really</td><td>0</td><td>+0</td><td>−1.5</td><td class="rd">−1.5</td><td class="gr">0</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="answer-box"><div class="answer-label">✔ Revised Query</div>
+        (jackson=3, michael=2.5, music=4.5, pop=1) — indiana, life, really dropped
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q2c</span><span class="q-marks">10 marks</span><span class="q-title">Language models — no smoothing vs Jelinek-Mercer</span></div>
+    <div class="question-box">
+      Query q = "w1 w2". P(w|C): w1=0.8, w2=0.1. doc1: w1=2,w2=3; doc2: w1=7,w2=1. |doc1|=|doc2|=10. λ=0.1 for JM.
+    </div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>No smoothing (MLE): P(w|d) = tf(w,d)/|d|</strong><br>
+          P(w1|doc1) = 2/10 = 0.2, &nbsp; P(w2|doc1) = 3/10 = 0.3<br>
+          P(q|doc1) = 0.2 × 0.3 = <span class="hi">0.060</span><br><br>
+          P(w1|doc2) = 7/10 = 0.7, &nbsp; P(w2|doc2) = 1/10 = 0.1<br>
+          P(q|doc2) = 0.7 × 0.1 = <span class="hi">0.070</span><br><br>
+          <div class="ranking">doc2 (0.070) &gt; doc1 (0.060) — doc2 ranked higher</div>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Jelinek-Mercer smoothing (λ=0.1):</strong><br>
+          \(P(w|d) = 0.1 \times \frac{tf(w,d)}{|d|} + 0.9 \times P(w|C)\)<br><br>
+          P(w1|doc1) = 0.1×0.2 + 0.9×0.8 = 0.02+0.72 = 0.74<br>
+          P(w2|doc1) = 0.1×0.3 + 0.9×0.1 = 0.03+0.09 = 0.12<br>
+          P(q|doc1) = 0.74 × 0.12 = <span class="hi">0.0888</span><br><br>
+          P(w1|doc2) = 0.1×0.7 + 0.9×0.8 = 0.07+0.72 = 0.79<br>
+          P(w2|doc2) = 0.1×0.1 + 0.9×0.1 = 0.01+0.09 = 0.10<br>
+          P(q|doc2) = 0.79 × 0.10 = <span class="hi">0.079</span><br><br>
+          <div class="ranking">doc1 (0.0888) &gt; doc2 (0.079) — doc1 ranked higher</div>
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Which should really rank higher?</strong><br>
+          <strong>doc1 should rank higher.</strong> Here's why: w2 is rare (P(w2|C)=0.1 vs P(w1|C)=0.8), making it the <em>more informative query term</em>. doc1 has 3 occurrences of w2 vs doc2's 1 occurrence — doc1 is much stronger on the rare, informative term. While doc2 dominates on w1 (7 vs 2), w1 is very common in the collection (p=0.8) and thus much less discriminating. The smoothed result (doc1&gt;doc2) correctly reflects this: JM smoothing's collection term P(w1|C)=0.8 is so dominant that after smoothing, both docs have similar w1 probabilities (~0.74 vs 0.79), while the difference in w2 (0.12 vs 0.10) drives the final ranking in doc1's favour.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section-divider">Question 3</div>
+
+  <!-- Q3a -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3a</span><span class="q-marks">4 marks</span><span class="q-title">How IDF changes in 3 scenarios</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <table class="styled">
+        <tr><th>Scenario</th><th>Effect on IDF</th><th>Reason</th></tr>
+        <tr><td>(1) Adding word w to one document</td><td class="rd">IDF decreases</td><td>df(w) increases by 1, N unchanged. log(N/(df+1)) &lt; log(N/df). w is now in more docs → slightly less discriminating.</td></tr>
+        <tr><td>(2) Doubling each doc by concatenation</td><td class="hi">IDF unchanged</td><td>df(w) unchanged (same docs contain w). N unchanged. IDF = log(N/df) — exactly the same. IDF only cares about WHICH docs contain w, not how many times.</td></tr>
+        <tr><td>(3) Adding new docs that don't contain w</td><td class="gr">IDF increases</td><td>N increases, df(w) unchanged. log((N+k)/df) &gt; log(N/df). Collection grew but w is in the same number of docs → relatively rarer → more discriminating.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q3b -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3b</span><span class="q-marks">4 marks</span><span class="q-title">Why positive feedback is more useful than negative</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p><strong>Positive feedback (marking documents relevant)</strong> directly identifies what the user is looking for. In Rocchio, the positive centroid \(\frac{\beta}{|D_R|}\sum_{D_R}\vec{d}\) moves the query towards relevant documents — this is a clear, targeted, well-defined direction in vector space. Each relevant example adds new discriminating terms that characterise the topic of interest.</p>
+      <p style="margin-top:10px"><strong>Negative feedback is less useful</strong> because: (1) The space of non-relevant documents is enormous and diffuse — there are countless ways to be irrelevant. Moving the query "away from non-relevant" has no single coherent direction. (2) Negative examples may share terms with positive examples, causing the feedback to inadvertently suppress genuinely useful terms. (3) In Rocchio, γ (negative weight) is set much smaller than β (0.15 vs 0.75) precisely because the negative feedback direction is noisy.</p>
+      <p style="margin-top:10px"><strong>Example:</strong> A user searching for "python programming tutorials". If they mark a document about "python the snake" as non-relevant, the negative feedback would suppress the term "python" — which is also the most important query term for relevant programming documents! Positive feedback on actual programming tutorials would reinforce terms like "code", "syntax", "function" without this problem.</p>
+    </div>
+  </div>
+
+  <!-- Q3c -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3c</span><span class="q-marks">5 marks</span><span class="q-title">Neural re-ranking limitation and solution</span></div>
+    <div class="solution">
+      <div class="sol-header">✦ Model Answer</div>
+      <p><strong>Key limitation — the Recall Ceiling Problem:</strong> Neural re-rankers only re-score documents already retrieved by BM25 in the top-K. If a relevant document falls below rank K in BM25's output (e.g., because it uses different terminology than the query), the neural model never sees it and can never recover it. The re-ranker is strictly bounded by first-stage recall — it can improve the ordering of K candidates but cannot expand the candidate set.</p>
+      <p style="margin-top:10px"><strong>Solution — Dense Retrieval as First Stage:</strong> Replace or augment BM25 with a dense bi-encoder retrieval model (e.g., DPR, ANCE). Dense models encode queries and documents in a shared semantic vector space and retrieve documents by approximate nearest-neighbour search. They can find relevant documents that have no lexical overlap with the query (e.g., a document about "automobiles" for a query about "cars"). Key steps:</p>
+      <ol style="padding-left:18px; margin-top:8px; line-height:1.9">
+        <li>Fine-tune a bi-encoder (e.g., BERT-based) on relevance-labelled (query, positive doc, negative doc) triples</li>
+        <li>Encode all documents offline → store dense vectors in ANN index (e.g., FAISS)</li>
+        <li>At query time: encode query → retrieve top-K by cosine/dot product similarity → pass to cross-encoder re-ranker</li>
+        <li>Alternatively, use hybrid (BM25 + dense) to get the benefits of both lexical and semantic retrieval</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Q3d -->
+  <div class="q-block">
+    <div class="q-header"><span class="q-num">Q3d</span><span class="q-marks">7 marks</span><span class="q-title">HITS — adjacency matrix, single iteration, matrix alternative</span></div>
+    <div class="question-box">4 pages {1,2,3,4}. Links: 2→1, 1→3, 2→3, 3→4, 4→1 (from the graph image showing 1,2 top row, 3,4 bottom row)</div>
+    <div class="solution">
+      <div class="sol-header">✦ Complete Solution</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">i</div><div class="step-body">
+          <strong>Adjacency matrix A</strong> (A[i][j]=1 if i→j):
+          <div class="index-box">
+   1  2  3  4
+1[ 0, 0, 1, 0 ]
+2[ 1, 0, 1, 0 ]
+3[ 0, 0, 0, 1 ]
+4[ 1, 0, 0, 0 ]
+          </div>
+        </div></div>
+        <div class="step"><div class="step-n">ii</div><div class="step-body">
+          <strong>Single HITS iteration starting from h=a=(1,1,1,1):</strong><br><br>
+          <strong>Update authority</strong> a(p) = Σh(q) for q→p:<br>
+          a(1): 2→1 ✓, 4→1 ✓ → a(1) = h(2)+h(4) = 1+1 = <span class="hi">2</span><br>
+          a(2): nobody links to 2 → a(2) = <span class="hi">0</span><br>
+          a(3): 1→3 ✓, 2→3 ✓ → a(3) = h(1)+h(2) = 1+1 = <span class="hi">2</span><br>
+          a(4): 3→4 ✓ → a(4) = h(3) = <span class="hi">1</span><br>
+          Normalise by max=2: a = (1, 0, 1, 0.5)<br><br>
+          <strong>Update hub</strong> h(p) = Σa(q) for p→q:<br>
+          h(1): 1→3 → h(1) = a(3) = 2<br>
+          h(2): 2→1, 2→3 → h(2) = a(1)+a(3) = 2+2 = <span class="hi">4</span><br>
+          h(3): 3→4 → h(3) = a(4) = 1<br>
+          h(4): 4→1 → h(4) = a(1) = 2<br>
+          Normalise by max=4: h = (0.5, 1, 0.25, 0.5)
+        </div></div>
+        <div class="step"><div class="step-n">iii</div><div class="step-body">
+          <strong>Matrix-based alternative:</strong><br>
+          Let A be the adjacency matrix above. Then:<br>
+          • Authority scores = principal eigenvector of M_a = A<sup>T</sup>A<br>
+          • Hub scores = principal eigenvector of M_h = AA<sup>T</sup><br><br>
+          <strong>Steps:</strong><br>
+          1. Compute A<sup>T</sup> (transpose of A)<br>
+          2. Compute M_a = A<sup>T</sup>A (4×4 matrix)<br>
+          3. Compute M_h = AA<sup>T</sup> (4×4 matrix)<br>
+          4. Apply power iteration to M_a: start with uniform vector v=(1,1,1,1), repeatedly compute v' = M_a·v, normalise v' by its L2 norm, until convergence. The converged vector is the authority score vector.<br>
+          5. Similarly apply power iteration to M_h for hub scores.<br>
+          The eigenvectors correspond to the same converged values as iterative HITS.
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer style="text-align:center; padding:32px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#3a4466; border-top:1px solid #1a1e2c">
+  COMPSCI5011 Information Retrieval · University of Glasgow · Past Paper Solutions 2022–2025
+</footer>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.paper').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map = {p2025:0, p2024:1, p2023:2, p2022:3};
+  document.querySelectorAll('.year-btn')[map[id]].classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

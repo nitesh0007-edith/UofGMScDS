@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text as Data — Study Notes 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1814;
+    --surface2: #232019;
+    --border: #2e2a22;
+    --accent: #e8a030;
+    --accent2: #5ba8a0;
+    --accent3: #c95f3c;
+    --text: #e8e2d6;
+    --text-muted: #8a8070;
+    --green: #5a9e6a;
+    --red: #c95f5f;
+    --blue: #5b8ec9;
+    --purple: #9b5fc9;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── Layout ── */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .sidebar-header p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .crib-badge {
+    display: inline-block;
+    background: var(--accent3);
+    color: white;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nav-section { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .nav-section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 20px 4px;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(232,160,48,0.06); }
+  .nav-link .num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+  .nav-link.active .num { background: var(--accent); color: #0f0e0c; }
+
+  /* ── Main content ── */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #1a1814 0%, #12100e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'TaD';
+    position: absolute;
+    right: 40px; top: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    font-weight: 900;
+    color: rgba(232,160,48,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    color: var(--accent);
+    line-height: 1.1;
+    max-width: 600px;
+  }
+  .hero p { color: var(--text-muted); margin-top: 12px; max-width: 550px; font-size: 15px; }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .pill-amber { border-color: var(--accent); color: var(--accent); }
+  .pill-teal  { border-color: var(--accent2); color: var(--accent2); }
+  .pill-red   { border-color: var(--accent3); color: var(--accent3); }
+
+  /* ── Section ── */
+  .section {
+    display: none;
+    padding: 40px 60px 80px;
+    max-width: 900px;
+  }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    margin-top: 6px;
+    line-height: 1.2;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  .concept-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .concept-box.warn { border-color: var(--accent3); }
+  .concept-box.tip { border-color: var(--green); }
+  .concept-box.exam { border-color: var(--accent); }
+
+  .concept-box strong {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .concept-box.exam strong { color: var(--accent); }
+  .concept-box.warn strong { color: var(--accent3); }
+  .concept-box.tip strong { color: var(--green); }
+  .concept-box strong { color: var(--accent2); }
+
+  /* ── Formula ── */
+  .formula-block {
+    background: #0a0908;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+  .formula-block .label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .hi-amber { color: var(--accent); }
+  .hi-teal { color: var(--accent2); }
+  .hi-red { color: var(--accent3); }
+  .hi-green { color: var(--green); }
+  .hi-blue { color: var(--blue); }
+
+  /* ── Worked example ── */
+  details.worked {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+  details.worked summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+  details.worked summary::-webkit-details-marker { display: none; }
+  details.worked summary::before {
+    content: '▶';
+    font-size: 10px;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+  }
+  details[open].worked summary::before { transform: rotate(90deg); }
+  details.worked .worked-body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  details.worked .worked-body p { margin-top: 12px; font-size: 15px; }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th {
+    background: var(--surface2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+    color: var(--accent);
+  }
+  td { padding: 8px 14px; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* ── Step list ── */
+  .steps { counter-reset: steps; list-style: none; margin: 12px 0; }
+  .steps li {
+    counter-increment: steps;
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 15px;
+  }
+  .steps li::before {
+    content: counter(steps);
+    width: 26px; height: 26px;
+    background: var(--accent);
+    color: #0f0e0c;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── Crib note ── */
+  .crib-note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(232,160,48,0.07);
+    border: 1px solid rgba(232,160,48,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .crib-note::before {
+    content: '📋';
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .crib-note span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 3px; letter-spacing: 0.05em; }
+
+  .mem-note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(201,95,60,0.07);
+    border: 1px solid rgba(201,95,60,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .mem-note::before {
+    content: '🧠';
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .mem-note span { color: var(--accent3); font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 3px; letter-spacing: 0.05em; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  h4 { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--accent2); margin: 20px 0 8px; }
+  p { margin: 8px 0; font-size: 15px; }
+  ul, ol { margin: 8px 0 8px 24px; font-size: 15px; }
+  li { margin: 4px 0; }
+  strong { color: var(--accent); }
+  em { color: var(--accent2); }
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: rgba(255,255,255,0.05);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent2);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* ── Quiz ── */
+  .quiz-q {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .quiz-q .q { font-weight: 600; margin-bottom: 10px; }
+  .quiz-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+  }
+  .quiz-btn:hover { background: var(--accent2); color: #0f0e0c; }
+  .quiz-ans {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(91,168,160,0.08);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent2);
+    font-size: 14px;
+  }
+  .quiz-ans.show { display: block; }
+
+  #home-section { display: block; padding: 0; max-width: none; }
+
+  /* Exam year tag */
+  .exam-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── SIDEBAR ── -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h1>Text as Data<br>Study Notes</h1>
+    <p>COMPSCI 5096/5106 · 2026</p>
+    <div class="crib-badge">📋 Closed Book + Crib Sheet</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <button class="nav-link active" onclick="show('home')"><span class="num">🏠</span>Home & Strategy</button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Topics</div>
+    <button class="nav-link" onclick="show('tok')"><span class="num">1</span>Tokens & Similarity</button>
+    <button class="nav-link" onclick="show('vec')"><span class="num">2</span>TF-IDF & Vectors</button>
+    <button class="nav-link" onclick="show('lm')"><span class="num">3</span>Language Models</button>
+    <button class="nav-link" onclick="show('cls')"><span class="num">4</span>Text Classification</button>
+    <button class="nav-link" onclick="show('emb')"><span class="num">5</span>Word Embeddings</button>
+    <button class="nav-link" onclick="show('pos')"><span class="num">6</span>POS & Parsing</button>
+    <button class="nav-link" onclick="show('ie')"><span class="num">7</span>Information Extraction</button>
+    <button class="nav-link" onclick="show('llm')"><span class="num">8</span>LLMs & BERT</button>
+    <button class="nav-link" onclick="show('eth')"><span class="num">9</span>Ethics</button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Practice</div>
+    <button class="nav-link" onclick="show('worked')"><span class="num">★</span>Worked Examples</button>
+    <button class="nav-link" onclick="show('quiz')"><span class="num">?</span>Quick Quiz</button>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div id="main">
+
+<!-- HOME -->
+<div id="home-section" class="section active">
+  <div class="hero">
+    <h1>Text as Data<br>Complete Revision</h1>
+    <p>Closed-book exam with crib sheet access. Know what the crib sheet covers — everything else needs to live in your head. This guide flags both.</p>
+    <div class="hero-pills">
+      <span class="pill pill-amber">📋 On crib sheet</span>
+      <span class="pill pill-red">🧠 Must memorise</span>
+      <span class="pill pill-teal">★ Past exam question</span>
+    </div>
+  </div>
+  <div style="padding:40px 60px 80px; max-width:900px;">
+    <div class="card">
+      <h3>Exam Strategy</h3>
+      <ul>
+        <li><strong>3 questions, all compulsory</strong> — 20 marks each (60 total), 1h30 min.</li>
+        <li>Past pattern: Q1 = Tokens/Similarity or TF-IDF, Q2 = Language Models, Q3 = Applied NLP/Classification/LLMs</li>
+        <li>Show <strong>all working</strong> for numerical questions (marks for method, not just answer).</li>
+        <li>For "critique GPT" style questions (2023 Q3): identify wrong/incomplete/missing information, then correct it.</li>
+        <li>Always justify choices — "because X" earns marks, bare assertions don't.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What's on the Crib Sheet (use it freely)</h3>
+      <div class="grid-2">
+        <div>
+          <strong style="color:var(--accent2)">Formulas provided:</strong>
+          <ul>
+            <li>All similarity measures (Dice, Jaccard, Overlap, Cosine, Euclidean)</li>
+            <li>All metric properties (identity, positivity, symmetry, triangle inequality)</li>
+            <li>TF-IDF formula + log-transformed variants</li>
+            <li>Perplexity & cross-entropy</li>
+            <li>Precision, Recall, F1, Fβ</li>
+            <li>Silhouette score, K-means steps</li>
+            <li>Add-k smoothing, interpolation</li>
+            <li>Self-attention formula</li>
+            <li>BPE algorithm steps</li>
+          </ul>
+        </div>
+        <div>
+          <strong style="color:var(--accent3)">Must memorise (not on crib):</strong>
+          <ul>
+            <li>BPE mechanics — how to execute step by step</li>
+            <li>Perplexity calculation (the working)</li>
+            <li>Beam search algorithm</li>
+            <li>Viterbi algorithm logic</li>
+            <li>Word2vec / distributional semantics concepts</li>
+            <li>BERT vs GPT architecture differences</li>
+            <li>IOB tagging scheme</li>
+            <li>Why polysemy is a problem for static embeddings</li>
+            <li>What Fleiss κ means and how to reason about it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Topic Frequency in Past Exams</h3>
+      <table>
+        <tr><th>Topic</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>Likely 2026?</th></tr>
+        <tr><td>Tokens / BPE</td><td></td><td>✅ Q1</td><td>✅ Q1</td><td></td><td>🔥 High</td></tr>
+        <tr><td>Similarity (Dice/Jaccard)</td><td>✅ Q2</td><td></td><td></td><td>✅ Q1</td><td>🔥 High</td></tr>
+        <tr><td>TF-IDF</td><td></td><td></td><td></td><td>✅ Q1</td><td>⬆ Medium-High</td></tr>
+        <tr><td>N-gram Language Models</td><td>✅ Q2</td><td>✅ Q2</td><td>✅ Q2</td><td></td><td>🔥 High</td></tr>
+        <tr><td>Beam Search / Greedy</td><td></td><td>✅ Q2</td><td>✅ Q2</td><td></td><td>🔥 High</td></tr>
+        <tr><td>Word Embeddings / Word2Vec</td><td>✅ Q1</td><td></td><td></td><td></td><td>⬆ Medium</td></tr>
+        <tr><td>POS / HMM</td><td>✅ Q3</td><td>✅ Q3</td><td></td><td></td><td>⬆ Medium</td></tr>
+        <tr><td>Text Classification / Eval</td><td>✅ Q3</td><td></td><td></td><td>✅ Q2</td><td>🔥 High</td></tr>
+        <tr><td>BERT / LLMs</td><td>✅ Q3</td><td>✅ Q3</td><td>✅ Q3</td><td>✅ Q3</td><td>🔥 Very High</td></tr>
+        <tr><td>NER / Information Extraction</td><td></td><td>✅ Q3</td><td></td><td></td><td>⬆ Medium</td></tr>
+        <tr><td>Sentiment Analysis</td><td></td><td></td><td></td><td>✅ Q3</td><td>⬆ Medium</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 1: TOKENS & SIMILARITY ─── -->
+<div id="tok-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 1</div>
+    <div class="section-title">Tokens & Text Similarity</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>All four similarity formulas, metric properties (identity, positivity, symmetry, triangle inequality), NLP pipeline steps, ASCII/Unicode note.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>How to execute BPE step-by-step. What "word" vs "token" means. Why BPE handles unknown words. Stemming vs lemmatisation trade-offs.</div></div>
+
+  <h4>Word vs Token</h4>
+  <div class="card">
+    <p>A <strong>word</strong> is a linguistic unit (white space delimited, has a dictionary entry). A <strong>token</strong> is the output of a tokeniser — it may differ from a word. A single word like "don't" may become two tokens ("do", "n't"). Systems use tokens because they're more predictable and consistent across edge cases (punctuation, contractions, URLs, numbers).</p>
+    <p><em>Why systems prefer tokens:</em> consistent unit for downstream processing; handles punctuation, clitics, and special characters systematically.</p>
+  </div>
+
+  <h4>Tokenisation Approaches</h4>
+  <div class="grid-2">
+    <div class="concept-box">
+      <strong>Rule-Based</strong>
+      Advantages: deterministic, human-interpretable, domain-customisable, fast.<br>
+      Disadvantages: language-specific, brittle to new patterns, requires expert knowledge.
+    </div>
+    <div class="concept-box">
+      <strong>BPE (Byte Pair Encoding)</strong>
+      Advantages: handles any word (no [UNK] for known characters), learns from data, compact vocab.<br>
+      Disadvantages: may split meaningful morphemes arbitrarily, less interpretable.
+    </div>
+  </div>
+
+  <h4>BPE Algorithm — Step by Step</h4>
+  <div class="mem-note"><div><span>Must Memorise</span>The exam always asks you to run BPE manually. Know every step.</div></div>
+  <ol class="steps">
+    <li>Pre-tokenise the text into words (split on whitespace). Add end-of-word marker if used.</li>
+    <li>Initialise vocabulary = all unique characters that appear.</li>
+    <li>Find the most frequent adjacent pair of symbols across all words.</li>
+    <li>Merge that pair everywhere and add it to the vocabulary as a new symbol.</li>
+    <li>Repeat steps 3–4 until target vocabulary size is reached.</li>
+  </ol>
+
+  <details class="worked">
+    <summary>★ Worked: BPE on "mississippi is pie" — 2023 Q1(c), 8 marks</summary>
+    <div class="worked-body">
+      <p>Build vocab of size 8. Start = characters: {m,i,s,p,e,_} → initial vocab size = 6, need 2 more merges.</p>
+      <div class="formula-block">
+Initial words: m-i-s-s-i-s-s-i-p-p-i  i-s  p-i-e
+Step 1 — count pairs: (s,s)=3, (i,s)=4, (s,i)=2, (i,p)=2, (p,p)=1, (p,i)=1, (i,e)=1
+Most frequent: (i,s) = 4 → merge to "is". Vocab: {m,i,s,p,e,is} (size 6)
+Updated: m-is-s-is-s-i-p-p-i  is  p-i-e
+
+Step 2 — count pairs: (m,is)=1, (is,s)=2, (s,is)=1, (is,i)=1, (i,p)=1, (p,p)=1, (p,i)=1,(i,e)=1
+Most frequent: (is,s) = 2 → merge to "iss". Vocab: {m,i,s,p,e,is,iss} (size 7)
+
+Step 3 — find most frequent with size-7 vocab: need 1 more merge.
+Updated: m-iss-is-s-i-p-p-i  is  p-i-e
+Count: (m,iss)=1, (iss,is)=1, (is,s)=1, (s,i)=1, (i,p)=1, (p,p)=1, (p,i)=1, (i,e)=1
+All tied at 1 — pick (p,p) → "pp". Vocab size = 8. ✓
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ Worked: BPE encoding given rules — 2024 Q1(c), 6 marks</summary>
+    <div class="worked-body">
+      <p>Encode "mississippi pie" using rules: i,s→is; p,i→pi; i,e→ie; p,ie→pie; p,pi→ppi; si,ppi→sippi</p>
+      <div class="formula-block">
+<span class="hi-teal">mississippi</span>:
+m i s s i s s i p p i
+→ apply i,s→is:  m [is] s [is] s i p p i  → m-is-s-is-si-p-p-i
+→ apply p,i→pi: m-is-s-is-s-[pi]-p-i → check... careful: left-to-right
+  m i s s i s s i p p i
+  Pairs: (m,i),(i,s),(s,s),(s,i),(i,s),(s,s),(s,i),(i,p),(p,p),(p,i)
+  Apply i,s→is: m [is] s [is] s i p p i  = m-is-s-is-si-ppi ... 
+
+<span class="hi-amber">Key insight:</span> Apply rules in order given, left-to-right, one rule fully before next.
+
+<span class="hi-teal">pie</span>:
+p i e → apply i,e→ie: p-[ie] → apply p,ie→pie: [pie] ✓
+
+Final: mississippi = m-is-s-is-sippi (using si,ppi rule)
+       pie = pie
+      </div>
+      <p>The key point the exam tests: apply rules sequentially, in the given order, and show each step.</p>
+    </div>
+  </details>
+
+  <h4>BPE Vocabulary Size Trade-offs</h4>
+  <table>
+    <tr><th>Vocab Size</th><th>Effect</th><th>Problem</th></tr>
+    <tr><td>Too small (e.g. 100)</td><td>Lots of character-level tokens; very long sequences</td><td>Loses word-level patterns; transformer attention becomes expensive; poor semantics</td></tr>
+    <tr><td>Too large (e.g. 100M)</td><td>Almost every word is a single token</td><td>Huge embedding matrix (memory); many rare tokens with poor representations; essentially no subword benefit</td></tr>
+    <tr><td>Good range (~30k–50k)</td><td>Balance of common words as tokens, rare words split to meaningful subwords</td><td>—</td></tr>
+  </table>
+
+  <h4>Stemming vs Lemmatisation vs Stopword Removal</h4>
+  <table>
+    <tr><th>Technique</th><th>What it does</th><th>Use when</th><th>Avoid when</th></tr>
+    <tr><td>Stemming</td><td>Crude suffix chop (e.g. "running"→"run", "studies"→"studi")</td><td>Search, classification — when recall matters more than precision</td><td>Grammar correction, machine translation</td></tr>
+    <tr><td>Lemmatisation</td><td>Dictionary lookup (e.g. "studies"→"study") — preserves real words</td><td>Needs linguistically valid forms</td><td>Speed-critical systems</td></tr>
+    <tr><td>Stopword removal</td><td>Remove "the", "of", "is" etc.</td><td>BoW classification, search engines</td><td>Writing assistants, transformers (BERT needs them for context)</td></tr>
+  </table>
+
+  <div class="concept-box exam">
+    <strong>Exam Insight (2023 Q1e)</strong>
+    For a grammar suggestion writing assistant: <em>do NOT use stemming, lemmatisation, or stopword removal</em>. A grammar checker needs the original surface forms (was/were matters!), needs stopwords ("a" vs "the" is a grammatical choice), and needs full inflections. Modifying them destroys the grammatical signal.
+  </div>
+
+  <hr>
+  <h4>Similarity Measures</h4>
+  <div class="crib-note"><div><span>On Crib Sheet</span>All four formulas are given. You just need to know how to compute them and when each applies.</div></div>
+
+  <div class="formula-block">
+<span class="label">Given two sets X and Y (their unique tokens):</span>
+<span class="hi-amber">Overlap Coefficient</span>  = |X ∩ Y| / min(|X|, |Y|)
+<span class="hi-teal">Sørensen–Dice</span>          = 2|X ∩ Y| / (|X| + |Y|)
+<span class="hi-green">Jaccard Similarity</span>      = |X ∩ Y| / |X ∪ Y|
+<span class="hi-blue">Simple overlap</span>          = |X ∩ Y|
+
+Relation: Jaccard ≤ Dice (Dice is always ≥ Jaccard for non-empty sets)
+Relation: Overlap ≥ Dice ≥ Jaccard
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Dice & Jaccard between Probe A and B — 2022 Q2(d)(i), 4 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Probe A tokens: {a, eda, bceda, bcda, bce}   |A|=5
+Probe B tokens: {ca, eda, bcba, bceda, bce}  |B|=5
+
+A ∩ B = {eda, bceda, bce}   →  |A∩B| = 3
+A ∪ B = {a, eda, bceda, bcda, bce, ca, bcba}  →  |A∪B| = 7
+
+<span class="hi-teal">Dice</span>  = 2×3 / (5+5) = 6/10 = <span class="hi-amber">0.6</span>
+<span class="hi-green">Jaccard</span> = 3/7 ≈ <span class="hi-amber">0.4286</span>
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ Worked: Triangle Inequality proof (Dice is semi-metric) — 2022 Q2(d)(ii)</summary>
+    <div class="worked-body">
+      <p>A metric satisfies: d(X,Z) ≤ d(X,Y) + d(Y,Z). Similarity → distance via: d = 1 − sim.</p>
+      <div class="formula-block">
+Probe C tokens: {beda, bceda, bceca, ebeda, b}
+
+A∩C = {bceda}  → Dice(A,C) = 2×1/(5+5) = 0.2  → d(A,C) = 0.8
+B∩C = {bceda}  → Dice(B,C) = 2×1/(5+5) = 0.2  → d(B,C) = 0.8
+Dice(A,B) = 0.6 (above)                          → d(A,B) = 0.4
+
+Triangle inequality requires: d(A,C) ≤ d(A,B) + d(B,C)
+0.8 ≤ 0.4 + 0.8 = 1.2  ✓  — holds here
+
+Try: d(A,B) ≤ d(A,C) + d(C,B)
+0.4 ≤ 0.8 + 0.8 = 1.6  ✓
+
+To show violation: need specific sets where d(X,Z) > d(X,Y) + d(Y,Z).
+Counter-example: X={a,b}, Y={a,b,c,d,e,f}, Z={c,d}
+Dice(X,Y)=0.4 → d=0.6; Dice(Y,Z)=0.4→d=0.6; Dice(X,Z)=0→d=1.0
+1.0 ≤ 0.6+0.6=1.2 ✓ — need a sharper example.
+Key point for exam: Dice is a <span class="hi-amber">semi-metric</span> — satisfies identity, positivity, symmetry
+but can violate triangle inequality for certain set combinations.
+      </div>
+    </div>
+  </details>
+
+  <h4>Metric vs Semi-metric</h4>
+  <div class="card">
+    <table>
+      <tr><th>Property</th><th>Definition</th><th>Dice?</th><th>Jaccard?</th></tr>
+      <tr><td>Identity</td><td>d(X,X) = 0</td><td>✅</td><td>✅</td></tr>
+      <tr><td>Positivity</td><td>d(X,Y) > 0 if X≠Y</td><td>✅</td><td>✅</td></tr>
+      <tr><td>Symmetry</td><td>d(X,Y) = d(Y,X)</td><td>✅</td><td>✅</td></tr>
+      <tr><td>Triangle ineq.</td><td>d(X,Z) ≤ d(X,Y)+d(Y,Z)</td><td>❌ Can fail</td><td>✅</td></tr>
+    </table>
+    <p>Therefore: <em>Jaccard distance is a true metric</em>; <em>Dice distance is only a semi-metric</em>.</p>
+  </div>
+</div>
+
+<!-- ─── SECTION 2: TF-IDF & VECTORS ─── -->
+<div id="vec-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 2</div>
+    <div class="section-title">TF-IDF & Vector Representations</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>TF-IDF formula, log-transformed versions, cosine similarity, Euclidean distance, Zipf's law, K-means steps, silhouette score.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>What IDF measures (rarity), why high IDF = more discriminating, how to interpret TF-IDF vectors, how to reconstruct text from TF-IDF.</div></div>
+
+  <h4>TF-IDF Intuition</h4>
+  <div class="card">
+    <p><strong>TF (Term Frequency)</strong> — how often a term appears in a document. Common terms in a doc get high TF.</p>
+    <p><strong>IDF (Inverse Document Frequency)</strong> — log(N/df). Words appearing in few documents get high IDF (they're discriminating). "The" appears everywhere → low IDF. "Quantum" appears rarely → high IDF.</p>
+    <p><strong>TF-IDF</strong> = TF × IDF. High value = word is frequent in this doc AND rare overall = important to this doc.</p>
+  </div>
+
+  <div class="formula-block">
+<span class="label">Variants (crib sheet has these):</span>
+Linear TF:          tf(t,d) = count(t,d)
+Log TF:             tf(t,d) = 1 + log₁₀(count) if count > 0, else 0
+Log IDF:            idf(t) = log(N / df(t))
+TF-IDF (log-log):   (1 + log(tf)) × log(N/df)
+
+<span class="label">For 2025 exam Q1 — they used LINEAR tf × integer IDF:</span>
+TF-IDF(t, d) = count(t, d) × IDF(t)
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Build TF-IDF vector for DocX — 2025 Q1(a), 4 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+DocX: G C G A H A G    (tokenise on whitespace)
+
+Counts: G=3, C=1, A=2, H=1 (all others=0)
+
+IDF values (from table): A=2, B=4, C=1, D=3, E=6, F=4, G=1, H=3, I=3, J=5
+
+TF-IDF per token position [A,B,C,D,E,F,G,H,I,J]:
+A: 2 × 2 = 4
+B: 0 × 4 = 0
+C: 1 × 1 = 1
+D: 0 × 3 = 0
+E: 0 × 6 = 0
+F: 0 × 4 = 0
+G: 3 × 1 = 3
+H: 1 × 3 = 3
+I: 0 × 3 = 0
+J: 0 × 5 = 0
+
+<span class="hi-amber">DocX vector: [4, 0, 1, 0, 0, 0, 3, 3, 0, 0]</span>
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ Worked: Reconstruct text from TF-IDF vector — 2025 Q1(b), 4 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+DocY: [6, 8, 0, 6, 6, 0, 2, 3, 3, 10]
+IDFs: [2, 4, 1, 3, 6, 4, 1, 3, 3, 5]
+
+Count(t) = TF-IDF / IDF:
+A: 6/2=3  B: 8/4=2  C: 0  D: 6/3=2  E: 6/6=1  F: 0
+G: 2/1=2  H: 3/3=1  I: 3/3=1  J: 10/5=2
+
+DocY contains: A×3, B×2, D×2, E×1, G×2, H×1, I×1, J×2 (11 tokens total)
+
+<span class="hi-amber">Ambiguity:</span> TF-IDF tells us counts of each token but NOT their order.
+So any permutation of these tokens is a valid reconstruction.
+One possible text: A B A D G J B D E G A H I J
+
+Marks go to: correct counts AND noting the ordering ambiguity.
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ Worked: Overlap Coefficient & Jaccard (DocX vs DocY) — 2025 Q1(c)</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+DocX tokens (present): {A, C, G, H}
+DocY tokens (present): {A, B, D, E, G, H, I, J}
+
+X ∩ Y = {A, G, H}     |X∩Y|=3
+|X|=4, |Y|=8
+
+<span class="hi-amber">Overlap Coefficient</span> = 3 / min(4,8) = 3/4 = 0.75
+<span class="hi-green">Jaccard</span> = 3 / (4+8-3) = 3/9 = 0.333
+      </div>
+    </div>
+  </details>
+
+  <h4>Cosine vs Euclidean Similarity</h4>
+  <table>
+    <tr><th>Measure</th><th>What it captures</th><th>Use case</th></tr>
+    <tr><td>Cosine similarity</td><td>Angle between vectors — direction, not magnitude</td><td>Text similarity (doc length doesn't matter)</td></tr>
+    <tr><td>Euclidean distance</td><td>Absolute distance in space</td><td>When magnitude matters (e.g. image pixels)</td></tr>
+  </table>
+
+  <h4>Zipf's Law</h4>
+  <div class="concept-box">
+    <strong>Zipf's Law</strong>
+    Word frequency ∝ 1/rank. The most frequent word appears ~2× more than the 2nd most frequent, ~3× more than the 3rd, etc. Few words are very frequent, many words are very rare. This makes IDF useful: rare words carry more information.
+  </div>
+
+  <h4>Clustering</h4>
+  <div class="crib-note"><div><span>On Crib Sheet</span>K-Means steps and centroid initialisation options. Elbow method. Silhouette formula.</div></div>
+  <p>K-Means: (0) initialise centroids → (1) assign each point to nearest centroid → (2) recompute centroids → repeat until convergence.</p>
+  <p><strong>Choosing k</strong>: Elbow method — plot inertia (within-cluster distance) vs k; pick k where improvement "elbows".</p>
+  <p><strong>Silhouette</strong>: ranges −1 to +1. Close to 1 = well-clustered. Close to 0 = on boundary. Close to −1 = possibly in wrong cluster.</p>
+</div>
+
+<!-- ─── SECTION 3: LANGUAGE MODELS ─── -->
+<div id="lm-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 3</div>
+    <div class="section-title">Language Models</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>Perplexity formula, cross-entropy, add-k smoothing, interpolation, chain rule, Markov assumption, generation strategies listed.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>How to calculate perplexity (step by step). How beam search works (the algorithm). How to read and apply a bigram table. Effect of n too small/large.</div></div>
+
+  <h4>N-gram Language Models</h4>
+  <div class="card">
+    <p><strong>Goal:</strong> estimate P(w₁, w₂, …, wₙ) and P(next word | history).</p>
+    <p><strong>Markov assumption:</strong> only look at last n−1 words. Bigram: P(wᵢ | wᵢ₋₁). Trigram: P(wᵢ | wᵢ₋₁, wᵢ₋₂).</p>
+    <p><strong>Count-based:</strong> P(b|a) = Count(a,b) / Count(a)</p>
+  </div>
+
+  <h4>Too small vs too large n</h4>
+  <table>
+    <tr><th>n value</th><th>Problem</th></tr>
+    <tr><td>Too small (unigram)</td><td>Ignores context — "dog bites man" and "man bites dog" have same probability. Poor coherence.</td></tr>
+    <tr><td>Too large</td><td>Data sparsity — very few training examples match long sequences → many zero probabilities. Model doesn't generalise.</td></tr>
+    <tr><td>Selection</td><td>Use held-out perplexity on validation set to choose n. Or interpolate multiple n values.</td></tr>
+  </table>
+
+  <h4>Perplexity — How to Calculate</h4>
+  <div class="mem-note"><div><span>Must Memorise</span>The exam always asks you to compute perplexity. You must remember the algorithm: multiply probabilities, take 1/N-th power, then inverse (or use log-sum).</div></div>
+  <div class="formula-block">
+<span class="label">Perplexity of sequence w₁...wₙ under model M:</span>
+PP = P(w₁, w₂, ..., wₙ)^(-1/N)
+   = (P(w₁)·P(w₂|w₁)·...·P(wₙ|wₙ₋₁))^(-1/N)
+
+where N = number of tokens in the sequence (including ⟨E⟩, sometimes excluding ⟨S⟩)
+
+<span class="hi-amber">Lower perplexity = better model</span> (more certain about the sequence)
+
+Log version: PP = 2^(-1/N · Σ log₂ P(wᵢ|context))
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Perplexity calculation — 2023 Q2(a), 6 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Sequence: ⟨S⟩ a b b a ⟨E⟩   (N = 5 tokens after ⟨S⟩, i.e. a,b,b,a,⟨E⟩)
+
+Model X probabilities:
+P(a|⟨S⟩) = 0.1
+P(b|a)   = 0.3
+P(b|b)   = 0.4
+P(a|b)   = 0.3
+P(⟨E⟩|a) = 0.5
+
+Product = 0.1 × 0.3 × 0.4 × 0.3 × 0.5 = 0.0018
+PP(X) = (0.0018)^(-1/5) = (0.0018)^(-0.2) ≈ <span class="hi-amber">7.86</span>
+
+Model Y probabilities:
+P(a|⟨S⟩) = 0.3
+P(b|a)   = 0.1
+P(b|b)   = 0.6
+P(a|b)   = 0.3
+P(⟨E⟩|a) = 0.1
+
+Product = 0.3 × 0.1 × 0.6 × 0.3 × 0.1 = 0.00054
+PP(Y) = (0.00054)^(-0.2) ≈ <span class="hi-amber">10.56</span>
+
+<span class="hi-green">Model X better</span> (lower perplexity = more confident about the sequence)
+      </div>
+    </div>
+  </details>
+
+  <h4>Greedy Generation</h4>
+  <div class="concept-box">
+    <strong>Greedy Decoding</strong>
+    At each step, pick the token with the highest conditional probability given the current context. Fast but can miss globally better sequences (local optima problem).
+  </div>
+
+  <h4>Beam Search</h4>
+  <div class="mem-note"><div><span>Must Memorise</span>Beam search is asked every year (2023, 2024). Know the algorithm cold.</div></div>
+  <ol class="steps">
+    <li>Start with the prefix. Maintain B "beams" (candidate sequences), each with a running probability.</li>
+    <li>For each beam, expand by computing P(next token | beam) for ALL vocab tokens.</li>
+    <li>Keep only the top B sequences overall (across all beams × all extensions).</li>
+    <li>If a beam ends with ⟨E⟩, move it to the completed set. Otherwise keep extending.</li>
+    <li>Return the completed sequence with highest total probability.</li>
+  </ol>
+  <div class="concept-box warn">
+    <strong>Common Mistake</strong>
+    Beam search keeps the top B globally, not top B per beam. After expanding, rank ALL B×|V| candidates, keep only the best B.
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Greedy + Beam Search (B=2) — 2023 Q2(b), 8 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Prefix: ⟨S⟩ a c   (Model X, vocab: {a,b,c,⟨E⟩})
+
+After "⟨S⟩ a c", the last token is "c". We generate from P(·|c):
+P(a|c)=0.1, P(b|c)=0.6, P(c|c)=0.2, P(⟨E⟩|c)=0.1
+
+<span class="hi-amber">Greedy:</span>
+Step 1 after prefix: pick max P(·|c) = b (0.6) → "⟨S⟩ a c b"
+Step 2 after "b": P(a|b)=0.3, P(b|b)=0.4, P(c|b)=0.2, P(⟨E⟩|b)=0.1
+  pick b (0.4) → "⟨S⟩ a c b b"
+Step 3 after "b": same → pick b (0.4) → "⟨S⟩ a c b b b" ...
+  (eventually pick ⟨E⟩ = 0.1 or keep going)
+
+To terminate, pick ⟨E⟩ at some point. Greedy: c b ⟨E⟩ or c b b ⟨E⟩ etc.
+
+<span class="hi-amber">Beam Search (B=2):</span>
+Step 0 (from prefix "...c"):
+P(a|c)=0.1, P(b|c)=0.6, P(c|c)=0.2, P(⟨E⟩|c)=0.1
+Top 2 beams: <span class="hi-green">b (0.6)</span>, <span class="hi-teal">c (0.2)</span>
+
+Step 1:
+From "b": P(a|b)=0.3, P(b|b)=0.4, P(c|b)=0.2, P(⟨E⟩|b)=0.1
+  → ba: 0.6×0.3=0.18, bb: 0.6×0.4=0.24, bc: 0.6×0.2=0.12, b⟨E⟩: 0.6×0.1=0.06
+
+From "c": P(a|c)=0.1, P(b|c)=0.6, P(c|c)=0.2, P(⟨E⟩|c)=0.1
+  → ca: 0.2×0.1=0.02, cb: 0.2×0.6=0.12, cc: 0.2×0.2=0.04, c⟨E⟩: 0.2×0.1=0.02
+
+All candidates ranked: bb(0.24), ba(0.18), bc/cb(0.12), ...
+Top 2: <span class="hi-green">bb (0.24)</span>, <span class="hi-teal">ba (0.18)</span>
+
+Step 2 from "bb": best next = b(0.4) or a(0.3) → bbb(0.096), bba(0.072)
+Step 2 from "ba": P(·|a): a=0.1,b=0.3,c=0.1,⟨E⟩=0.5
+  → bab: 0.18×0.3=0.054, ba⟨E⟩: 0.18×0.5=0.09
+
+Top 2: bbb(0.096), ba⟨E⟩(0.09) → <span class="hi-amber">ba⟨E⟩</span> terminates!
+Continue bbb one more step → bbb⟨E⟩: 0.096×0.1=0.0096
+
+Final: ba⟨E⟩ (prob 0.09) wins over bbb⟨E⟩ (0.0096)
+<span class="hi-green">Best sequence: ⟨S⟩ a c b a ⟨E⟩  (probability 0.09 from prefix)</span>
+      </div>
+    </div>
+  </details>
+
+  <h4>Smoothing</h4>
+  <div class="card">
+    <p>Zero probabilities in unsmoothed models cause perplexity = ∞. Smoothing redistributes probability mass to unseen n-grams.</p>
+    <div class="formula-block">
+Add-k smoothing: P(t|θ) = (count(t,θ) + k) / (Σcount(t',θ) + k|V|)
+k=1 = Laplace smoothing (too aggressive in practice)
+
+Too much smoothing → all words get similar probabilities → model loses discriminative power
+    </div>
+    <p><strong>Which values benefit most?</strong> Zero counts (unseen bigrams) — they go from 0 to k/kV which is small but non-zero. Also very rare counts.</p>
+  </div>
+
+  <h4>Character N-grams</h4>
+  <details class="worked">
+    <summary>★ Worked: Character unigram generation — 2024 Q2(a)</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Text: BCBBCBBABCCCBBCCBCCB (20 chars)
+
+Unigram counts: A=1, B=11, C=8
+Total = 20
+
+P(A)=1/20=0.05, P(B)=11/20=0.55, P(C)=8/20=0.40
+
+<span class="hi-amber">Greedy → always pick B (highest prob)</span>
+Next 3 tokens: B, B, B
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ Worked: Character trigram generation — 2024 Q2(b)</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Text: BCBBCBBABCCCBBCCBCCB
+Last 2 chars = "CB" → need P(·|CB)
+
+Find all "CB" occurrences in text: positions...
+BCBBCBBABCCCBBCCBCCB
+      CB occurs at: pos 3-4 (CB→B), pos 15-16 (CB→C), pos 18-19 (CB→?)
+      Actually: B-C-B-B-C-B-B-A-B-C-C-C-B-B-C-C-B-C-C-B
+      CB followed by: B(pos4), B(pos6), C(pos15), C(pos18) → and nothing at end?
+      → after CB: B appears 2x, C appears 2x. Tie → pick either (say B)
+
+Step 1: P(·|CB): B or C equally likely → pick B (greedy picks first/alphabetical or B)
+Sequence now ends: ...CCB → B → ...CCBB
+Step 2: P(·|BB) — find BB in text: pos 3-4(→C), pos 5-6(→A), pos 12-13(→C)
+  After BB: C(2x), A(1x) → P(C|BB)=2/3, P(A|BB)=1/3 → greedy picks C
+Step 3: P(·|BC) — find BC in text: pos 1-2(→B), pos 8-9(→C), 
+  → after BC: B(1x), C(1x) → pick B
+<span class="hi-amber">Generated: B, C, B</span>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ─── SECTION 4: TEXT CLASSIFICATION ─── -->
+<div id="cls-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 4</div>
+    <div class="section-title">Text Classification & Evaluation</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>All metric formulas (Precision, Recall, F1, Fβ), macro/micro/weighted definitions, ROC/AUROC, training/validation/test split, K-fold cross-validation.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>How to read a confusion matrix. What over/underfitting looks like in train vs test metrics. What class imbalance does. How to spot anomalies in evaluation setups.</div></div>
+
+  <h4>Reading a Confusion Matrix</h4>
+  <div class="formula-block">
+<span class="label">Binary (Pos/Neg):</span>
+               Predicted Pos    Predicted Neg
+Actual Pos         TP               FN
+Actual Neg         FP               TN
+
+Precision = TP / (TP + FP)  ← "of what we predicted pos, how many were?"
+Recall    = TP / (TP + FN)  ← "of all actual pos, how many did we find?"
+F1        = 2·P·R / (P+R)
+Accuracy  = (TP+TN) / (TP+FP+TN+FN)
+  </div>
+
+  <h4>Multi-class Averaging</h4>
+  <table>
+    <tr><th>Method</th><th>How</th><th>When to use</th></tr>
+    <tr><td>Macro</td><td>Unweighted average of per-class metric</td><td>All classes equally important</td></tr>
+    <tr><td>Weighted</td><td>Average weighted by class sample count</td><td>Class imbalance, want overall performance</td></tr>
+    <tr><td>Micro</td><td>Sum TP/FP/FN across all classes, then compute</td><td>Same as accuracy for multi-class</td></tr>
+  </table>
+
+  <h4>Overfitting vs Underfitting</h4>
+  <div class="grid-2">
+    <div class="concept-box warn">
+      <strong>Overfitting (System B — 2022 Q3d)</strong>
+      High train performance, low test performance. Model memorises training data but doesn't generalise. System B: train P=0.67, R=0.48 (sig) but test P=0.51, R=0.42 (not sig vs baseline). Classic overfit.
+    </div>
+    <div class="concept-box tip">
+      <strong>Good Generalisation (System A)</strong>
+      Train and test performance both improve modestly vs baseline. Both statistically significant. Smaller overall gains but they hold up — suggests genuine learning.
+    </div>
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Identify 8 anomalies in eval setup — 2025 Q2(c), 8 marks</summary>
+    <div class="worked-body">
+      <p>This is a high-value "spot the errors" question. The key anomalies in the 2025 Q2c data:</p>
+      <ol>
+        <li><strong>Training confusion matrix sums to 15, not matching</strong>: TP=2, FN=2, FP=8, TN=3 → total=15. Accuracy = (2+3)/15 = 0.33, but table says 0.5. <em>Accuracy is wrong.</em></li>
+        <li><strong>Perplexity shouldn't appear in classification metrics</strong> — Perplexity is a language model metric, not a classifier metric.</li>
+        <li><strong>Macro-F1 cannot exceed Macro-Precision and Macro-Recall</strong> — F1=0.6 > P=0.2 and R=0.5 is impossible (F1 is always between P and R).</li>
+        <li><strong>Validation set has 3 classes (Pos, Neg, Neutral) but training only has 2</strong> — inconsistent label space.</li>
+        <li><strong>Validation accuracy = 1.00 is suspicious</strong> — perfect accuracy on validation is almost never real; suggests data leakage or the validation set is too easy.</li>
+        <li><strong>Training on 15 samples is far too small</strong> — any metric from 15 samples is statistically meaningless.</li>
+        <li><strong>Macro-Precision = Macro-Recall = Macro-F1 = 1.00</strong> on validation is suspicious — this only holds if F1=P=R=1.0 per class.</li>
+        <li><strong>Evaluating on training set</strong> — reporting metrics on the training data is not a valid measure of generalisation.</li>
+      </ol>
+    </div>
+  </details>
+
+  <h4>Dataset Construction Pitfalls</h4>
+  <div class="concept-box exam">
+    <strong>Common Dataset Problems (2025 Q2a, Q2b)</strong>
+    <ul>
+      <li><strong>Search bias</strong>: searching for "comfort food" to label comfort food recipes = labels are circular/biased; the first 5 results ≠ representative sample.</li>
+      <li><strong>Class overlap</strong>: "pasta" and "Italian" overlap — a recipe can be both. Multi-label issue masquerading as multi-class.</li>
+      <li><strong>Label leakage</strong>: if dataset split after triplication, the same sample appears in train AND test → inflated metrics.</li>
+      <li><strong>Class imbalance from triplication</strong>: comfort food class 3× overrepresented → model biased toward that class.</li>
+      <li><strong>Evaluation on train set</strong>: triplication before split = train/test not independent.</li>
+    </ul>
+  </div>
+
+  <h4>Statistical Significance</h4>
+  <div class="card">
+    <p>A result marked * (p&lt;0.05) means there's less than 5% chance the improvement over baseline is due to random chance. <em>Significance on train but not test</em> = likely overfitting or the train gain doesn't generalise.</p>
+    <p>Significance does NOT mean the improvement is practically important — a 1% improvement can be significant with enough data.</p>
+  </div>
+</div>
+
+<!-- ─── SECTION 5: WORD EMBEDDINGS ─── -->
+<div id="emb-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 5</div>
+    <div class="section-title">Word Embeddings & Distributional Semantics</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>Static vs contextual embeddings listed. Self-attention formula. BPE steps. Special tokens [CLS],[SEP],[PAD],[MASK].</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>Distributional hypothesis. Word2vec negative sampling role. Why function words are unreliable. Polysemy problem. SVD dimensionality reduction role.</div></div>
+
+  <h4>Distributional Hypothesis</h4>
+  <div class="concept-box">
+    <strong>Core Idea</strong>
+    "A word is known by the company it keeps" (Firth). Words with similar contexts have similar meanings. This is the foundation of all distributional semantics.
+  </div>
+
+  <h4>Bag-of-Words Context Vectors</h4>
+  <div class="card">
+    <p>Each word w is represented by a vector counting co-occurrences within a window of size k.</p>
+    <p><strong>Window size k effects:</strong></p>
+    <ul>
+      <li><strong>k too small</strong>: only captures syntactic/local relationships; misses topical/semantic associations.</li>
+      <li><strong>k too large</strong>: captures thematic similarity but loses syntactic signal; also every word looks similar to every other word (all share common contexts).</li>
+    </ul>
+  </div>
+
+  <h4>Why Function Words Are Unreliable</h4>
+  <details class="worked">
+    <summary>★ Worked: 2022 Q1(d) — Function word problem</summary>
+    <div class="worked-body">
+      <p>Function words like "the", "of", "is" appear everywhere. They co-occur with virtually every content word in the corpus. Therefore their context vectors are nearly uniform across all other words.</p>
+      <p><em>Example:</em> "the" appears before nouns like "cat", "dog", "car", "bank". So the vector for "the" has high counts for ALL nouns. This means "the" appears similar to every noun — it has no discriminating power. Also, all content words will have "the" as a context, meaning their vectors all share this dimension. The function word's representation doesn't capture any specific meaning.</p>
+      <p><em>Fix:</em> Use PPMI (Positive Pointwise Mutual Information) which downweights frequent co-occurrences, effectively de-emphasising function word contexts.</p>
+    </div>
+  </details>
+
+  <h4>Word2Vec & Negative Sampling</h4>
+  <div class="card">
+    <p><strong>Word2vec</strong> learns word vectors by training to predict: "is word w a real context word for target t, or a randomly sampled noise word?"</p>
+    <p><strong>Role of negative samples:</strong> Without them, the model could trivially satisfy the objective by making all probabilities = 1. Negative samples (words that did NOT appear in context) provide a contrastive signal — the model must push real context words closer and noise words further away. This shapes the geometry of the embedding space.</p>
+  </div>
+
+  <h4>Polysemy Problem</h4>
+  <div class="concept-box warn">
+    <strong>Polysemy (2022 Q1f)</strong>
+    Word2vec produces ONE vector per word. For polysemous words (jaguar = car brand OR animal; bank = financial institution OR river bank; python = snake OR programming language), the single vector is a blend of all senses. Nearest neighbours will be a confusing mix (Ferrari AND jaguar the animal). For downstream classification, this creates ambiguity — the model can't distinguish which sense is active in context. <em>Fix:</em> Contextual embeddings (ELMo, BERT) produce different vectors depending on context.
+  </div>
+
+  <h4>Word Intrusion (Outlier Detection)</h4>
+  <details class="worked">
+    <summary>★ Worked: Outlier detection pseudo-code — 2022 Q1(a), 5 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Input: set W = {w₁, w₂, ..., wₙ}, vectors {v(w) for each w ∈ W}
+Output: outlier word
+
+1. For each word wᵢ in W:
+     Compute average similarity to all other words:
+     score(wᵢ) = (1/|W|-1) Σⱼ≠ᵢ cosine_similarity(v(wᵢ), v(wⱼ))
+
+2. Return argmin_wᵢ score(wᵢ)   // word with lowest avg similarity to others
+
+<span class="hi-amber">Assumption:</span> The "true" group words will be mutually similar; the outlier
+will be dissimilar to the majority.
+
+Alternative: compute centroid c = mean(v(wᵢ)), return argmax distance(v(wᵢ), c)
+      </div>
+    </div>
+  </details>
+
+  <h4>Dimensionality Reduction (SVD)</h4>
+  <div class="concept-box">
+    <strong>Role in Dense Embeddings (2023 Q3c — GPT critique)</strong>
+    Raw co-occurrence vectors are sparse (mostly zeros) and very high-dimensional (vocab size). SVD (Singular Value Decomposition) compresses them into dense low-dimensional vectors by finding the most important axes of variation. Benefits: (1) removes noise from irrelevant dimensions, (2) captures latent semantic structure, (3) makes vectors computationally tractable. The GPT answer in 2023 only mentioned computational benefits — it missed the key point that SVD discovers latent semantic structure by treating similar contexts as related dimensions.
+  </div>
+</div>
+
+<!-- ─── SECTION 6: POS & PARSING ─── -->
+<div id="pos-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 6</div>
+    <div class="section-title">POS Tagging & Parsing</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>HMM: transitions P(yᵢ|yᵢ₋₁) and emissions P(xᵢ|yᵢ). Greedy and Viterbi listed. Constituency parsing (NPs, VPs, PPs) and dependency parsing listed. IOB/transition-based parsing described.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>Why domain shift causes HMM errors. What you'd do to fix a domain-shifted POS tagger. The Viterbi algorithm intuition. Why POS features help classification. How to include POS in BERT.</div></div>
+
+  <h4>Hidden Markov Model for POS Tagging</h4>
+  <div class="formula-block">
+<span class="label">Two probability tables:</span>
+Transition: P(tag_t | tag_{t-1})  ← "after a NOUN, likely a VERB"
+Emission:   P(word | tag)         ← "given tag NOUN, likely to see 'dog'"
+
+Viterbi: dynamic programming — find the tag sequence that maximises the joint
+         probability of words AND tags. O(n · T²) where T = number of tags.
+
+Greedy: at each position, pick the tag maximising P(tag | prev_tag) × P(word | tag)
+        Fast but suboptimal — doesn't look ahead.
+  </div>
+
+  <h4>Domain Shift Problem</h4>
+  <details class="worked">
+    <summary>★ Worked: Why POS tagger fails on patents — 2022 Q3(c), 4 marks</summary>
+    <div class="worked-body">
+      <p><strong>Why the problem arises:</strong> The off-the-shelf HMM tagger was trained on general text (e.g. news). Its emission probabilities P(word|tag) were estimated from that corpus. Patent text contains specialised vocabulary ("alkylation", "infringement", "oscillator") that never appeared in training — these words have zero emission probability for any known tag. Also, domain-specific words may be used as different POS than in general text (e.g. technical nouns used as verbs).</p>
+      <p><strong>What to do:</strong></p>
+      <ul>
+        <li><strong>Annotate patent data</strong>: manually tag a sample of patent sentences for POS, then retrain or fine-tune the tagger.</li>
+        <li><strong>Handle unknown words</strong>: add smoothing to emission probabilities; use morphological features (suffixes like "-tion", "-ing", capitalisation) to guess tags for unseen words.</li>
+        <li><strong>Fine-tune a neural tagger (BERT-based)</strong> on patent data — better at generalising to new vocabulary.</li>
+        <li><strong>Active learning</strong>: have the system flag uncertain tags for human correction, iteratively improving.</li>
+      </ul>
+    </div>
+  </details>
+
+  <h4>POS Features for Classification</h4>
+  <details class="worked">
+    <summary>★ Worked: POS feature for patent classification — 2022 Q3(b), 3 marks</summary>
+    <div class="worked-body">
+      <p><em>Example:</em> The word "bearing" can be a NOUN (a mechanical bearing — relevant to Section F: Mechanics) or a VERB (bearing weight — different context). Without POS, both uses are conflated in a bag-of-words. With POS, the feature "bearing/NN" (bearing as noun) strongly predicts Section F, while "bearing/VBG" (bearing as verb) doesn't. Similarly, "compound/NN" (a chemical compound) → Section C (Chemistry), vs "compound/VB" (to compound interest) → Section G (Finance).</p>
+      <p><em>Justification:</em> POS disambiguates word sense at the feature level without needing full word sense disambiguation.</p>
+    </div>
+  </details>
+
+  <h4>Including POS in BERT (2022 Q3e)</h4>
+  <div class="card">
+    <p>In a <strong>linear bag-of-features model</strong>, POS is easy: create a feature "word_POS" (e.g. "bearing_NN") as a string token in the feature vector.</p>
+    <p>In a <strong>BERT model</strong>, you can't just add string features. Options:</p>
+    <ul>
+      <li><strong>Concatenate POS embeddings:</strong> Run a POS tagger, embed each POS tag, concatenate the POS embedding to each BERT token embedding at the input layer. BERT then attends over the combined representations.</li>
+      <li><strong>Add as additional tokens:</strong> Insert POS tag tokens into the sequence (e.g. "bearing [NN] weight [VBG]") — hacky but works.</li>
+      <li><strong>Multi-task learning:</strong> Add a POS tagging head alongside the classification head. The shared BERT layers learn POS-aware representations.</li>
+    </ul>
+    <p><em>Difference from linear model:</em> In linear models features are independent and hand-engineered. In BERT, the POS information interacts with all other contextual signals through attention — it's fused, not concatenated at the decision boundary.</p>
+  </div>
+
+  <h4>Constituency vs Dependency Parsing</h4>
+  <table>
+    <tr><th>Type</th><th>What it produces</th><th>Example</th></tr>
+    <tr><td>Constituency</td><td>Hierarchical phrase structure (NP, VP, PP)</td><td>[S [NP The dog] [VP [V chased] [NP the cat]]]</td></tr>
+    <tr><td>Dependency</td><td>Directed graph of word-word grammatical relations</td><td>chased→dog (nsubj), chased→cat (dobj)</td></tr>
+  </table>
+</div>
+
+<!-- ─── SECTION 7: INFORMATION EXTRACTION ─── -->
+<div id="ie-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 7</div>
+    <div class="section-title">Information Extraction</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>NER with IOB tagging, CRF/transformers mentioned. Entity linking steps. Relation extraction methods. Coreference (Hobbs algorithm) listed.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>IOB tagging scheme. What nested entities are. Why "Tim Cook" is NOT a nested entity mention of "CEO" and "Apple". How Hobbs works (conceptually). Entity linking pipeline.</div></div>
+
+  <h4>Named Entity Recognition (NER)</h4>
+  <div class="formula-block">
+<span class="label">IOB tagging scheme:</span>
+B-TYPE = Beginning of entity of type TYPE
+I-TYPE = Inside (continuation) of entity of type TYPE
+O      = Outside (not an entity)
+
+Example: "Tim Cook, CEO of Apple"
+Tim/B-PER Cook/I-PER ,/O CEO/B-ROLE of/O Apple/B-ORG
+  </div>
+
+  <h4>Nested Entity Mentions</h4>
+  <details class="worked">
+    <summary>★ Worked: Critique GPT answer on nested entities — 2023 Q3(e), 3 marks</summary>
+    <div class="worked-body">
+      <p><strong>GPT's answer:</strong> "Tim Cook" is a nested entity containing "CEO" and "Apple".</p>
+      <p><strong>This is wrong.</strong></p>
+      <p>A <em>nested entity mention</em> is when one named entity spans contains another named entity span. The correct example is:</p>
+      <p>"The <strong>CEO of <strong>Apple</strong></strong> announced..." — here, "[CEO of Apple]" is an ORG entity, and "[Apple]" is also an ORG entity, nested inside the larger one. The inner mention is Apple, the outer mention is "CEO of Apple".</p>
+      <p>Tim Cook is a PERSON entity. CEO is a ROLE. Apple is an ORG. Tim Cook is NOT a nested combination of CEO and Apple — they're separate entities in the sentence. Tim Cook just happens to hold that role. A true nested mention would be "[Bank of [England]]" where England is a GPE entity nested inside the "Bank of England" ORG entity.</p>
+    </div>
+  </details>
+
+  <h4>Entity Linking</h4>
+  <ol class="steps">
+    <li>Detect entity mentions in text (via NER).</li>
+    <li>Generate candidate entities from a knowledge base (using a dictionary/lexicon lookup, or dense vector retrieval).</li>
+    <li>(Optional) Rerank candidates using a transformer model that considers context.</li>
+    <li>Link the mention to the best candidate entity (or NIL if not in KB).</li>
+  </ol>
+
+  <h4>Relation Extraction</h4>
+  <table>
+    <tr><th>Approach</th><th>How</th><th>Limitation</th></tr>
+    <tr><td>Co-occurrence</td><td>Count how often two entities appear together</td><td>No actual relation type; high false positives</td></tr>
+    <tr><td>Rule-based</td><td>Patterns like "X, who starred in Y"</td><td>Brittle; doesn't scale to new relation types</td></tr>
+    <tr><td>BERT + entity markers</td><td>Mark entity positions with special tokens, pool, classify</td><td>Needs labelled data per relation type</td></tr>
+  </table>
+
+  <h4>Coreference Resolution</h4>
+  <div class="card">
+    <p><strong>Anaphora:</strong> reference back ("John left. <em>He</em> was tired.") — pronoun refers to earlier mention.</p>
+    <p><strong>Cataphora:</strong> reference forward ("Before <em>he</em> left, John grabbed his coat.") — pronoun refers to later mention.</p>
+    <p><strong>Hobbs Algorithm:</strong> Finds the noun phrase a pronoun refers to by traversing the parse tree in a specific order. Start from the pronoun, go up the tree, then search left-to-right in a breadth-first manner for a matching NP (correct gender/number).</p>
+  </div>
+</div>
+
+<!-- ─── SECTION 8: LLMs & BERT ─── -->
+<div id="llm-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 8</div>
+    <div class="section-title">LLMs, BERT & Transformers</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>Self-attention formula (Att=softmax(QKT/√dk)V). BERT vs GPT (encoder vs decoder). Pretraining tasks listed. Instruction tuning, RLHF listed. Prompt engineering strategies listed.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>BERT = encoder (bidirectional, masked LM). GPT = decoder (causal, next-token). Fine-tuning process. Zero-shot vs few-shot. Issues with LLM factuality. How knowledge is stored. Sub-word tokenisation and the brand name problem.</div></div>
+
+  <h4>BERT vs GPT Architecture</h4>
+  <table>
+    <tr><th></th><th>BERT</th><th>GPT</th></tr>
+    <tr><td>Type</td><td>Encoder (bidirectional)</td><td>Decoder (causal/unidirectional)</td></tr>
+    <tr><td>Pretraining task</td><td>Masked LM + Next Sentence Prediction</td><td>Causal LM (predict next word)</td></tr>
+    <tr><td>Use for</td><td>Classification, NER, sentence embeddings</td><td>Text generation, chat, completion</td></tr>
+    <tr><td>Sees context</td><td>Both left AND right of a token</td><td>Only left (past tokens)</td></tr>
+  </table>
+
+  <h4>Fine-tuning Process</h4>
+  <ol class="steps">
+    <li>Take a pre-trained model (BERT/GPT). It has general language understanding.</li>
+    <li>Add a task-specific head (e.g. linear classifier on [CLS] token for classification).</li>
+    <li>Train on labelled task data — the whole model (or just the head) is updated.</li>
+    <li>Evaluate on held-out test set.</li>
+  </ol>
+
+  <h4>Multi-stage Fine-tuning (2024 Q3d)</h4>
+  <div class="concept-box">
+    <strong>Motivation</strong>
+    Fine-tuning on intermediate datasets (even if not exactly the target task) can improve performance if they share linguistic features with the target. E.g., fine-tuning on general sentiment before IAC (indirect answer classification) helps because sentiment and indirect answers share affective language.
+  </div>
+  <div class="concept-box warn">
+    <strong>Why it sometimes hurts</strong>
+    Catastrophic forgetting — fine-tuning on an unrelated or poorly-aligned dataset can overwrite useful representations from pretraining. Also, if the intermediate dataset has different label distributions or linguistic styles, the model may adapt in ways that hurt the target task.
+  </div>
+
+  <h4>Zero-shot vs Few-shot Prompting</h4>
+  <div class="concept-box exam">
+    <strong>Exam Trap (2024 Q3a)</strong>
+    To assert "zero-shot" performance, you must verify: (1) the model's training data doesn't contain examples of the task (test set leakage risk), (2) the model wasn't instruction-tuned on similar tasks, (3) no in-context examples were provided. GPT-3 and large models are trained on internet text which may include NLP datasets — this is test set leakage.
+  </div>
+
+  <h4>Factuality Problems in LLMs</h4>
+  <div class="card">
+    <p>LLMs store knowledge implicitly in weights — not like a database lookup. Issues:</p>
+    <ul>
+      <li><strong>Hallucination:</strong> model generates plausible-sounding but false facts with confidence.</li>
+      <li><strong>Knowledge cutoff:</strong> model doesn't know events after training.</li>
+      <li><strong>Conflation:</strong> multiple similar entities (different people named "John Smith") get confused.</li>
+      <li><strong>No source attribution:</strong> can't verify where a claim comes from.</li>
+    </ul>
+    <p><em>How GPT3 "knows" Tim Cook is Apple's CEO:</em> Trained on billions of web pages — this fact appeared many times in the training corpus, and the model learned the association through next-token prediction. It's statistical pattern matching, not true knowledge retrieval.</p>
+  </div>
+
+  <details class="worked">
+    <summary>★ Worked: Critique all 6 GPT answers — 2023 Q3, 20 marks total</summary>
+    <div class="worked-body">
+      <div class="concept-box">
+        <strong>(a) Perplexity & Coverage — 3 marks</strong>
+        GPT says: Perplexity (correct) and Coverage (wrong). The two probabilities are actually (1) Perplexity and (2) Cross-Entropy OR (1) P(next word | history) and (2) P(word sequence). "Coverage" is not a standard LM probability measure.
+      </div>
+      <div class="concept-box">
+        <strong>(b) TF vs IDF — 2 marks</strong>
+        GPT's IDF formula is wrong — it says "log(N/documents containing word)" which is actually the correct formula but describes it as log(documents / N) which is inverted. Also, GPT says "higher IDF = more important to collection" — correct in direction — but IDF applies to discrimination across documents, not importance within a collection. TF description is correct.
+      </div>
+      <div class="concept-box">
+        <strong>(c) Dimensionality Reduction — 4 marks</strong>
+        GPT only mentions computational benefits. Missing key points: (1) dense vectors generalise better because similar words share dimensions; (2) SVD discovers latent semantic structure (synonyms occupy similar dimensions even if they never co-occur directly); (3) reduces sparsity which is the main statistical problem; (4) helps with the "curse of dimensionality" for downstream learning.
+      </div>
+      <div class="concept-box">
+        <strong>(d) HMMs for POS — 3 marks</strong>
+        Mostly correct. Missing: HMMs explicitly model the distinction between hidden states (POS tags) and observable outputs (words). Viterbi is correct. Should also mention: emission probabilities P(word|tag) and transition probabilities P(tag|prev_tag) as the two key components.
+      </div>
+      <div class="concept-box">
+        <strong>(e) Nested entities — 3 marks</strong>
+        Wrong. "Tim Cook" is not a nested entity combining CEO and Apple. See Section 7 for the full correction.
+      </div>
+      <div class="concept-box">
+        <strong>(f) LLM knowledge + 2 challenges — 5 marks</strong>
+        Mechanism described correctly (pattern matching in training data). Challenges given: "accuracy" and "generalizability" — too vague. Better challenges: (1) Knowledge cutoff — model cannot update with new facts; (2) Hallucination — model confidently states false facts; (3) Conflation of entities with similar names; (4) No provenance — can't cite sources.
+      </div>
+    </div>
+  </details>
+
+  <h4>Sub-word Tokenisation & Brand Name Problem (2025 Q3d)</h4>
+  <details class="worked">
+    <summary>★ Worked: BeStep brand name classified as positive — 2025 Q3d, 4 marks</summary>
+    <div class="worked-body">
+      <p><strong>The problem:</strong> "bestep" / "BeStep" / "@Bestep" is an unknown brand name. BPE will split it into subwords that happen to exist in the vocabulary — e.g. "be", "step", "##step", "Best", "ep". The token "Best" or the subword sequence "be-step" may have positive sentiment associations in the pre-training data ("best" → good). This causes the model to classify all mentions of the brand as positive, regardless of the sentiment expressed.</p>
+      <p><strong>Proposed fix:</strong></p>
+      <ul>
+        <li><strong>Replace the brand name</strong> with a placeholder token (e.g. [BRAND]) before processing, so the model can't use spurious token-level associations.</li>
+        <li><strong>Fine-tune on data containing the brand</strong> so the model learns the brand token's actual usage patterns.</li>
+        <li><strong>Expand the vocabulary</strong> to include "bestep" as a single token, avoiding fragmentation.</li>
+      </ul>
+    </div>
+  </details>
+
+  <h4>Fleiss' Kappa & Inter-Annotator Agreement (2024 Q3b)</h4>
+  <div class="concept-box exam">
+    <strong>Counter-arguments to replacing human labels with LLM labels:</strong>
+    <ol>
+      <li>κ=0.61 is "substantial agreement" (κ: &lt;0 = worse than chance; 0–0.2 = slight; 0.21–0.4 = fair; 0.41–0.6 = moderate; 0.61–0.8 = substantial; 0.81–1.0 = almost perfect). This is acceptable quality for NLP tasks.</li>
+      <li>LLMs also have biases from their training data — replacing human noise with model bias doesn't necessarily improve quality.</li>
+      <li>LLMs have a knowledge cutoff and may not understand domain-specific or cultural nuances that human annotators can.</li>
+      <li>Human disagreement reflects genuine label ambiguity in the data — this is valuable signal, not error. LLM labels would hide this uncertainty.</li>
+      <li>Annotation guidelines were designed for humans — LLMs may interpret them differently, introducing systematic errors.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ─── SECTION 9: ETHICS ─── -->
+<div id="eth-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Topic 9</div>
+    <div class="section-title">Ethics in NLP</div>
+  </div>
+
+  <div class="crib-note"><div><span>On Crib Sheet</span>Bias, environmental cost, transparency, copyright, liability, education impact listed as bullet points.</div></div>
+  <div class="mem-note"><div><span>Must Memorise</span>Specific examples of each ethical concern. How bias enters models (training data). What datasheets and model cards are for.</div></div>
+
+  <div class="card">
+    <h3>Key Ethical Concerns</h3>
+    <table>
+      <tr><th>Issue</th><th>Detail</th><th>Mitigation</th></tr>
+      <tr><td>Bias</td><td>Models inherit biases from training data (gender stereotypes, racial bias in word embeddings, sentiment analysis that performs differently on AAVE)</td><td>Diverse training data, bias audits, fairness metrics per demographic</td></tr>
+      <tr><td>Environmental cost</td><td>Training large models uses huge compute (GPT-3 training ≈ lifetime CO₂ of several cars)</td><td>Efficient architectures, renewable energy, model sharing</td></tr>
+      <tr><td>Transparency</td><td>Black-box models — can't explain decisions. Problematic for high-stakes decisions (loan approval, medical)</td><td>Explainability methods (LIME, SHAP), model cards</td></tr>
+      <tr><td>Copyright</td><td>Training on copyrighted text without permission; generating copyrighted content</td><td>License-cleared datasets, output filtering</td></tr>
+      <tr><td>Liability</td><td>Who is responsible when an LLM gives harmful advice?</td><td>Legal frameworks, clear terms of service</td></tr>
+      <tr><td>Education</td><td>Students using LLMs for assignments; academic integrity</td><td>Rethink assessment design</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box">
+    <strong>Datasheets & Model Cards</strong>
+    <strong>Datasheet for Datasets:</strong> Documents what data was collected, how, from whom, under what conditions, potential biases, intended uses. <br>
+    <strong>Model Card:</strong> Documents model performance across different demographic groups and use cases, known limitations, and who the model is appropriate (and inappropriate) for.
+  </div>
+</div>
+
+<!-- ─── WORKED EXAMPLES ─── -->
+<div id="worked-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Practice</div>
+    <div class="section-title">All Worked Examples by Year</div>
+  </div>
+
+  <h4>2022 Exam — Key Points</h4>
+  <div class="card">
+    <ul>
+      <li>Q1: Outlier detection pseudo-code, distributional semantics, window size, function words, word2vec negatives, polysemy</li>
+      <li>Q2: Trigrams (count those appearing >1x), N-gram theoretical max = min(5ⁿ, text_length−n+1), tokenisation rules, Dice/Jaccard, triangle inequality violation</li>
+      <li>Q3: Patent classification, pre-processing justification, POS features, HMM domain shift, system comparison, BERT + POS integration</li>
+    </ul>
+  </div>
+
+  <details class="worked">
+    <summary>★ 2022 Q2(a) — Trigrams appearing more than once</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Text: abcaedabccbaedabceda
+
+Extract all trigrams (sliding window of 3):
+abc, bca, cae, aed, eda, dab, abc, bcc, ccb, cba, bae, aed, eda, dab, abc, bce, ced, eda
+
+Count each:
+abc = 3  ← appears >1 ✓
+aed = 2  ← appears >1 ✓
+eda = 3  ← appears >1 ✓
+dab = 2  ← appears >1 ✓
+bca = 1, cae = 1, bcc = 1, ccb = 1, cba = 1, bae = 1, bce = 1, ced = 1
+
+<span class="hi-amber">Answer: abc(3), aed(2), eda(3), dab(2)</span>
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ 2022 Q2(b) — Max number of n-grams for text of length 593</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+5-letter alphabet: [a,b,c,d,e]
+Theoretical max n-grams (types):
+n=1: min(5¹, 593) = min(5, 593) = 5
+n=2: min(5², 592) = min(25, 592) = 25
+n=3: min(5³, 591) = min(125, 591) = 125
+n=4: min(5⁴, 590) = min(625, 590) = 590  ← bounded by text length
+n=5: min(5⁵, 589) = min(3125, 589) = 589
+
+<span class="hi-amber">For n ≥ 4, the text length limits more than the alphabet size.</span>
+Number of possible token positions for n-grams = text_length - n + 1
+      </div>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ 2023 Q1(a) — Word vs Token (2 marks)</summary>
+    <div class="worked-body">
+      <p>A <strong>word</strong> is a linguistic unit defined by its meaning and grammatical function — it's what you'd find in a dictionary. A <strong>token</strong> is the output of a tokeniser — the actual unit a system processes.</p>
+      <p>They differ because: "don't" = 1 word but often 2 tokens ("do", "n't"). URLs, numbers, and compound words create further divergence. Systems use tokens for consistency: tokenisation creates a standard, reproducible unit for downstream processing regardless of linguistic complexity.</p>
+    </div>
+  </details>
+
+  <details class="worked">
+    <summary>★ 2024 Q2(c) — Beam search (B=2) on character bigram — 8 marks</summary>
+    <div class="worked-body">
+      <div class="formula-block">
+Text: BCBBCBBABCCCBBCCBCCB  (last char = B)
+
+Build bigram counts from text:
+B→C: BC appears at pos 0,8,14 = 3 times
+B→B: BB appears at pos 2,4,12 = 3 times
+B→A: BA appears at pos 6 = 1 time
+C→B: CB appears at pos 1,9(?),15,17 → need careful count...
+
+Let's count explicitly:
+B C B B C B B A B C C C B B C C B C C B
+Pairs: BC,CB,BB,BC,CB,BB,BA,AB,BC,CC,CC,CB,BB,BC,CC,CB,BC,CC,CB
+BC=5, CB=4, BB=3, BA=1, AB=1, CC=4
+
+<span class="hi-amber">Bigram model (normalize per first char):</span>
+From B: BC=5, BB=3, BA=1  total=9 → P(C|B)=5/9, P(B|B)=3/9, P(A|B)=1/9
+From C: CB=4, CC=4  total=8 → P(B|C)=0.5, P(C|C)=0.5
+From A: AB=1  total=1 → P(B|A)=1
+
+Beam Search (B=2), start from last char B:
+Step 1 — expand B: 
+  BC: 5/9≈0.556, BB: 3/9≈0.333, BA: 1/9≈0.111
+Top 2 beams: [C, 0.556], [B, 0.333]
+
+Step 2 — expand each:
+  From C: CC(0.556×0.5=0.278), CB(0.556×0.5=0.278)
+  From B: BC(0.333×5/9=0.185), BB(0.333×3/9=0.111), BA(0.333×1/9=0.037)
+All candidates: CC(0.278), CB(0.278), BC(0.185), BB(0.111), BA(0.037)
+Top 2: [CC, 0.278], [CB, 0.278]
+
+<span class="hi-amber">Best 2-token extension: CC or CB (tied at prob 0.278 each)</span>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ─── QUIZ ─── -->
+<div id="quiz-section" class="section">
+  <div class="section-header">
+    <div class="section-num">Practice</div>
+    <div class="section-title">Quick Recall Quiz</div>
+  </div>
+
+  <p style="color:var(--text-muted);margin-bottom:20px;">Test yourself — click "Show Answer" only after you've thought it through.</p>
+
+  <div class="quiz-q">
+    <p class="q">Q1. What is the Dice coefficient between sets {a,b,c} and {b,c,d,e}?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">|X∩Y| = 2 ({b,c}). |X|=3, |Y|=4. Dice = 2×2/(3+4) = 4/7 ≈ 0.571. Jaccard = 2/(3+4−2) = 2/5 = 0.4.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q2. Perplexity of "a b" under a model where P(a|S)=0.5, P(b|a)=0.4, P(E|b)=0.2?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Product = 0.5 × 0.4 × 0.2 = 0.04. N=3 (tokens: a, b, E). PP = (0.04)^(-1/3) = (0.04)^(-0.333) ≈ 2.924.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q3. Name two reasons why removing stopwords is bad for transformer-based models like BERT.</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">(1) BERT uses positional encoding — removing words shifts positions, corrupting the sequence. (2) Stopwords carry grammatical structure that attention mechanisms use to understand sentence meaning ("I did NOT do it" — "not" is critical). (3) BERT was pre-trained on full text — removing stopwords creates a distribution mismatch.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q4. What is the difference between Macro and Micro F1?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Macro F1: compute F1 for each class independently, then take the unweighted average. All classes count equally regardless of size. Micro F1: aggregate TP, FP, FN across all classes first, then compute a single F1. For multi-class, micro F1 equals accuracy when each sample has exactly one true label.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q5. Why is Jaccard a true metric but Dice is only a semi-metric?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Both satisfy identity, positivity, and symmetry. Jaccard distance = 1 − Jaccard similarity satisfies the triangle inequality. Dice distance = 1 − Dice can violate it: there exist sets where d(A,C) > d(A,B) + d(B,C). You can construct a counter-example with a large "bridge" set B that shares tokens with both A and C, making pairwise distances small but d(A,C) large.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q6. In word2vec, why are negative samples needed?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Without negatives, the model could trivially set all output probabilities to 1 and always "predict" the context word correctly. Negative samples (words NOT in the context window) provide a contrastive objective — the model must push real context words closer in vector space AND push randomly sampled words further away. This tension shapes the embedding geometry.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q7. Describe beam search in 3 sentences.</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Beam search maintains B candidate sequences (beams), each with a running joint probability. At each step, every beam is extended with all vocabulary tokens, and only the top B sequences (by probability) are kept. This continues until the desired length or until all beams reach the end-of-sequence token, at which point the highest-probability completed sequence is returned.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q8. What does κ=0.61 (Fleiss' kappa) mean, and is it reliable for NLP annotation?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">κ=0.61 falls in the "substantial agreement" range (0.61–0.80). It corrects for agreement by chance, so it means annotators agree substantially more than would be expected if they guessed randomly. For NLP tasks, this is generally considered acceptable — many published NLP datasets are built with κ in this range. It does NOT mean the labels are unreliable.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q9. How would you include POS tags in a BERT classifier?</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Run a POS tagger on the input. Create learned embeddings for each POS tag. Concatenate (or add) each token's POS embedding to its BERT sub-word embedding at the input layer. Then fine-tune the whole model on the classification task. The POS information interacts with other tokens through the self-attention mechanism, unlike a bag-of-features linear model where features are independent.</div>
+  </div>
+
+  <div class="quiz-q">
+    <p class="q">Q10. TF-IDF for "apple" in a document with 100 words where "apple" appears 4 times, across a corpus of 1000 documents where "apple" appears in 200: use log TF and log IDF.</p>
+    <button class="quiz-btn" onclick="toggleAns(this)">Show Answer</button>
+    <div class="quiz-ans">Log TF = 1 + log₁₀(4) = 1 + 0.602 = 1.602. Log IDF = log₁₀(1000/200) = log₁₀(5) = 0.699. TF-IDF = 1.602 × 0.699 ≈ 1.120.</div>
+  </div>
+</div>
+
+</div><!-- end #main -->
+</div><!-- end #app -->
+
+<script>
+function show(id) {
+  // Hide all sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  // Show selected
+  const sec = document.getElementById(id + '-section');
+  if (sec) sec.classList.add('active');
+  // Activate nav link
+  const links = document.querySelectorAll('.nav-link');
+  links.forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + id + "'")) {
+      l.classList.add('active');
+    }
+  });
+  window.scrollTo(0, 0);
+}
+
+function toggleAns(btn) {
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('show');
+  btn.textContent = ans.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const sections = ['home','tok','vec','lm','cls','emb','pos','ie','llm','eth','worked','quiz'];
+  if (e.key >= '1' && e.key <= '9') {
+    show(sections[parseInt(e.key)]);
+  }
+  if (e.key === '0') show('home');
+});
+</script>
+</body>
+</html>
